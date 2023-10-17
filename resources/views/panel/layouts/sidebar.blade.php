@@ -2,9 +2,9 @@
 <div class="navigation">
     <div class="navigation-icon-menu">
         <ul>
-            <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
+            <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
                 <a href="#navigationDashboards" title="داشبوردها">
-                    <i class="icon ti-pie-chart"></i>
+                    <i class="icon ti-dashboard"></i>
                 </a>
             </li>
             @canany(['categories-list','products-list','printers-list'])
@@ -54,7 +54,7 @@
         </ul>
     </div>
     <div class="navigation-menu-body">
-        <ul id="navigationDashboards" class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit']) ? 'navigation-active' : '' }}">
+        <ul id="navigationDashboards" class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">داشبورد</li>
             <li>
                 <a class="{{ active_sidebar(['panel']) ? 'active' : '' }}" href="{{ route('panel') }}">پنل</a>
@@ -67,6 +67,11 @@
             @can('roles-list')
                 <li>
                     <a class="{{ active_sidebar(['roles','roles/create','roles/{role}/edit']) ? 'active' : '' }}" href="{{ route('roles.index') }}">نقش ها</a>
+                </li>
+            @endcan
+            @can('tasks-list')
+                <li>
+                    <a class="{{ active_sidebar(['tasks','tasks/create','tasks/{task}/edit']) ? 'active' : '' }}" href="{{ route('tasks.index') }}">وظایف</a>
                 </li>
             @endcan
         </ul>
