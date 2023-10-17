@@ -13,8 +13,8 @@
                         <label for="invoice">فاکتور<span class="text-danger">*</span></label>
                         <select class="form-control" name="invoice" id="invoice">
                             @if($invoices->count())
-                                @foreach($invoices as $invoice)
-                                    <option value="{{ $invoice->id }}" {{ old('invoice') == $invoice->id ? 'selected' : '' }}> {{ $invoice->id }} - {{ $invoice->buyer_name }}</option>
+                                @foreach($invoices as $invoiceId => $customerName)
+                                    <option value="{{ $invoiceId }}" {{ old('invoice') == $invoiceId ? 'selected' : '' }}> {{ $invoiceId }} - {{ $customerName }}</option>
                                 @endforeach
                             @else
                                 <option value="" disabled selected>فاکتوری موجود نیست!</option>

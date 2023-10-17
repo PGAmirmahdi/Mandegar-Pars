@@ -16,8 +16,8 @@ class CreateInvoicesTable extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id');
-            $table->unsignedInteger('economical_number')->comment('شماره اقتصادی');
-            $table->unsignedInteger('national_number')->comment('شماره ملی');
+            $table->string('economical_number')->comment('شماره اقتصادی');
+            $table->string('national_number')->comment('شماره ملی');
             $table->string('province');
             $table->string('city');
             $table->text('address');

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Jobs\InvoiceDeadlineJob;
 use App\Models\Packet;
+use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -23,6 +24,11 @@ class Kernel extends ConsoleKernel
 
         // cron set every day at 00:00 for this job
         $schedule->job(InvoiceDeadlineJob::class);
+
+        // test cron job
+        // $schedule->call(function(){
+        //     Notification::send(User::find(1), new SendMessage('test', 'test'));
+        // });
     }
 
     /**

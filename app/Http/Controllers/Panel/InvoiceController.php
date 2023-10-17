@@ -209,6 +209,10 @@ class InvoiceController extends Controller
 
     private function storeInvoiceProducts(Invoice $invoice, $request)
     {
+        if (!$request->products) {
+            return back();
+        }
+
         foreach ($request->products as $key => $product_id){
             if ($request->status == 'paid' && $request->status != $invoice->status){
                 // decrease product counts
