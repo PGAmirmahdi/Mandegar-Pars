@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Invoice;
+use App\Models\Packet;
 use App\Models\Permission;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -40,6 +42,14 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('edit-profile', function ($user, $user_id){
             return $user->id == $user_id;
+        });
+
+        Gate::define('edit-packet', function ($user, Packet $packet){
+            return $user->id == $packet->user_id || $user->isAdmin();
+        });
+
+        Gate::define('edit-invoice', function ($user, Invoice $invoice){
+            return $user->id == $invoice->user_id || $user->isAdmin();
         });
     }
 }

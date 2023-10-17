@@ -17,7 +17,12 @@ class PacketController extends Controller
     {
         $this->authorize('packets-list');
 
-        $packets = Packet::latest()->paginate(30);
+        if (auth()->user()->isAdmin()){
+            $packets = Packet::latest()->paginate(30);
+        }else{
+            $packets = Packet::where('user_id', auth()->id())->latest()->paginate(30);
+        }
+
         return view('panel.packets.index', compact('packets'));
     }
 
@@ -61,7 +66,12 @@ class PacketController extends Controller
 
     public function edit(Packet $packet)
     {
+        // access to packets-edit permission
         $this->authorize('packets-edit');
+
+        // edit own packet OR is admin
+        $this->authorize('edit-packet', $packet);
+
         $invoices = Invoice::with('customer')->doesntHave('packet')->latest()->get()->pluck('customer.name','id');
 
         return view('panel.packets.edit', compact('invoices', 'packet'));
@@ -69,7 +79,11 @@ class PacketController extends Controller
 
     public function update(UpdatePacketRequest $request, Packet $packet)
     {
+        // access to packets-edit permission
         $this->authorize('packets-edit');
+
+        // edit own packet OR is admin
+        $this->authorize('edit-packet', $packet);
 
         $sent_time = Verta::parse($request->sent_time)->datetime();
 

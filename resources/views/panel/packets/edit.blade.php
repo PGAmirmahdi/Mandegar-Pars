@@ -19,7 +19,7 @@
                                     <option value="{{ $invoiceId }}" {{ $packet->invoice_id == $invoiceId ? 'selected' : '' }}> {{ $invoiceId }} - {{ $customerName }}</option>
                                 @endforeach
                             @else
-                                <option value="{{ $packet->invoice_id }}" selected> {{ $packet->invoice_id }} - {{ $packet->invoice->buyer_name }}</option>
+                                <option value="{{ $packet->invoice_id }}" selected> {{ $packet->invoice_id }} - {{ $packet->invoice->customer->name }}</option>
                             @endif
                         </select>
                         @error('invoice')

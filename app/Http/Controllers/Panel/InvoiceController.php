@@ -19,7 +19,12 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-list');
 
-        $invoices = Invoice::latest()->paginate(30);
+        if (auth()->user()->isAdmin()){
+            $invoices = Invoice::latest()->paginate(30);
+        }else{
+            $invoices = Invoice::where('user_id', auth()->id())->latest()->paginate(30);
+        }
+
         return view('panel.invoices.index', compact('invoices'));
     }
 
@@ -35,6 +40,7 @@ class InvoiceController extends Controller
         $this->authorize('invoices-create');
 
         $invoice = Invoice::create([
+            'user_id' => auth()->id(),
             'customer_id' => $request->buyer_name,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
@@ -55,21 +61,33 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
+        // access to invoices-edit permission
         $this->authorize('invoices-edit');
+
+        // edit own invoice OR is admin
+        $this->authorize('edit-invoice', $invoice);
 
         return view('panel.invoices.printable', compact('invoice'));
     }
 
     public function edit(Invoice $invoice)
     {
+        // access to invoices-edit permission
         $this->authorize('invoices-edit');
+
+        // edit own invoice OR is admin
+        $this->authorize('edit-invoice', $invoice);
 
         return view('panel.invoices.edit', compact('invoice'));
     }
 
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
+        // access to invoices-edit permission
         $this->authorize('invoices-edit');
+
+        // edit own invoice OR is admin
+        $this->authorize('edit-invoice', $invoice);
 
         $invoice->products()->detach();
 
@@ -77,6 +95,7 @@ class InvoiceController extends Controller
         $this->storeInvoiceProducts($invoice, $request);
 
         $invoice->update([
+            'user_id' => auth()->id(),
             'customer_id' => $request->buyer_name,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,

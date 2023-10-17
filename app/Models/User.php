@@ -61,4 +61,8 @@ class User extends Authenticatable
         return $this->hasPermission('system-user');
     }
 
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }
