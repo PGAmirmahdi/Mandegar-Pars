@@ -14,3 +14,9 @@ yarn-error.log
 /.idea
 /.vscode
 /.cpanel
+/access-logs
+/tmp
+/.well-known
+/logs
+.lastlogin
+error_log
