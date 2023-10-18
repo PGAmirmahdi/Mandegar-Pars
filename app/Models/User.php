@@ -65,4 +65,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class)
+            ->withPivot(['id','status','done_at','description'])
+            ->withTimestamps();
+    }
+
+    public function fullName()
+    {
+        return $this->name.' '.$this->family;
+    }
 }

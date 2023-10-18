@@ -8,6 +8,7 @@ use App\Http\Controllers\Panel\PacketController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
 use App\Http\Controllers\Panel\RoleController;
+use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\PanelController;
 use App\Models\Packet;
@@ -71,6 +72,12 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Notifications
     Route::get('read-notifications/{notification?}',[PanelController::class,'readNotification'])->name('notifications.read');
+
+    // Tasks
+    Route::resource('tasks',TaskController::class);
+    Route::post('task/change-status',[TaskController::class, 'changeStatus']);
+    Route::post('task/add-desc',[TaskController::class, 'addDescription']);
+    Route::post('task/get-desc',[TaskController::class, 'getDescription']);
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);

@@ -65,6 +65,11 @@ class PermissionSeeder extends Seeder
 //            'customers-create' => 'ایجاد مشتری',
 //            'customers-edit' => 'ویرایش مشتری ',
 //            'customers-delete' => 'حذف مشتری',
+
+//            'tasks-list' => 'لیست وظایف',
+//            'tasks-create' => 'ایجاد وظیفه',
+//            'tasks-edit' => 'ویرایش وظیفه ',
+//            'tasks-delete' => 'حذف وظیفه',
         ];
 
         foreach ($items as $key => $item)

@@ -16,8 +16,6 @@ class ProductController extends Controller
     {
         $this->authorize('products-list');
 
-//        dd(Product::whereJsonContains('properties', [["counts" => "5"]])->get());
-
         $products = Product::latest()->paginate(30);
         return view('panel.products.index', compact('products'));
     }
