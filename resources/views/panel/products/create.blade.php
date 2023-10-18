@@ -63,28 +63,28 @@
                         <hr>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="system_price">قیمت سامانه (تومان)<span class="text-danger">*</span></label>
+                        <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="system_price" class="form-control" id="system_price" value="{{ old('system_price') }}">
                         @error('system_price')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="partner_price_tehran">قیمت همکار - تهران (تومان)<span class="text-danger">*</span></label>
+                        <label for="partner_price_tehran">قیمت همکار - تهران (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="partner_price_tehran" class="form-control" id="partner_price_tehran" value="{{ old('partner_price_tehran') }}">
                         @error('partner_price_tehran')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="partner_price_other">قیمت همکار - شهرستان (تومان)<span class="text-danger">*</span></label>
+                        <label for="partner_price_other">قیمت همکار - شهرستان (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="partner_price_other" class="form-control" id="partner_price_other" value="{{ old('partner_price_other') }}">
                         @error('partner_price_other')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="single_price">قیمت تک فروشی (تومان)<span class="text-danger">*</span></label>
+                        <label for="single_price">قیمت تک فروشی (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="single_price" class="form-control" id="single_price" value="{{ old('single_price') }}">
                         @error('single_price')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
