@@ -40,7 +40,7 @@ class ProductController extends Controller
         // create product
         $product = Product::create([
             'title' => $request->title,
-            'slug' => make_slug($request->slug),
+//            'slug' => make_slug($request->slug),
             'code' => $request->code,
             'image' => $image,
             'category_id' => $request->category,
@@ -89,7 +89,7 @@ class ProductController extends Controller
         // create product
         $product->update([
             'title' => $request->title,
-            'slug' => make_slug($request->slug),
+//            'slug' => make_slug($request->slug),
             'code' => $request->code,
             'image' => $image ?? $product->image,
             'category_id' => $request->category,

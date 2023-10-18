@@ -23,13 +23,13 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="slug">اسلاگ<span class="text-danger">*</span></label>
-                        <input type="text" name="slug" class="form-control" id="slug" value="{{ old('slug') }}" placeholder="hp-printer">
-                        @error('slug')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
+{{--                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">--}}
+{{--                        <label for="slug">اسلاگ<span class="text-danger">*</span></label>--}}
+{{--                        <input type="text" name="slug" class="form-control" id="slug" value="{{ old('slug') }}" placeholder="hp-printer">--}}
+{{--                        @error('slug')--}}
+{{--                            <div class="invalid-feedback d-block">{{ $message }}</div>--}}
+{{--                        @enderror--}}
+{{--                    </div>--}}
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="image">تصویر<span class="text-danger">*</span></label>
                         <input type="file" name="image" class="form-control" id="image" value="{{ old('image') }}">
