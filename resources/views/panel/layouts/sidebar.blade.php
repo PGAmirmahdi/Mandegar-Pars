@@ -2,7 +2,7 @@
 <div class="navigation">
     <div class="navigation-icon-menu">
         <ul>
-            <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
+            <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
                 <a href="#navigationDashboards" title="داشبوردها">
                     <i class="icon ti-dashboard"></i>
                 </a>
@@ -54,7 +54,7 @@
         </ul>
     </div>
     <div class="navigation-menu-body">
-        <ul id="navigationDashboards" class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit']) ? 'navigation-active' : '' }}">
+        <ul id="navigationDashboards" class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">داشبورد</li>
             <li>
                 <a class="{{ active_sidebar(['panel']) ? 'active' : '' }}" href="{{ route('panel') }}">پنل</a>
@@ -71,7 +71,7 @@
             @endcan
             @can('tasks-list')
                 <li>
-                    <a class="{{ active_sidebar(['tasks','tasks/create','tasks/{task}/edit']) ? 'active' : '' }}" href="{{ route('tasks.index') }}">وظایف</a>
+                    <a class="{{ active_sidebar(['tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}']) ? 'active' : '' }}" href="{{ route('tasks.index') }}">وظایف</a>
                 </li>
             @endcan
         </ul>

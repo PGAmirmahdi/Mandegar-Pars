@@ -11,10 +11,15 @@ class Task extends Model
 
     protected $guarded = [];
 
+    const STATUS = [
+        'done' => 'انجام شده',
+        'doing' => 'انجام نشده',
+    ];
+
     public function users()
     {
         return $this->belongsToMany(User::class)
-            ->withPivot(['status','done_at','description'])
+            ->withPivot(['id','status','done_at','description'])
             ->withTimestamps();
     }
 

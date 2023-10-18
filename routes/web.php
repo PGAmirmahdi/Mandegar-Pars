@@ -76,6 +76,8 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Tasks
     Route::resource('tasks',TaskController::class);
     Route::post('task/change-status',[TaskController::class, 'changeStatus']);
+    Route::post('task/add-desc',[TaskController::class, 'addDescription']);
+    Route::post('task/get-desc',[TaskController::class, 'getDescription']);
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);

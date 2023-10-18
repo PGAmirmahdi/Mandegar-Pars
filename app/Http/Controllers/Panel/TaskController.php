@@ -15,17 +15,13 @@ class TaskController extends Controller
     {
         $this->authorize('tasks-list');
 
-        if (auth()->user()->isAdmin()){
-            $tasks = Task::latest()->paginate(30);
-        }else{
-            $userId = auth()->id();
+        $userId = auth()->id();
 
-            $tasks = Task::where('creator_id', $userId)->orWhereHas('users', function ($q) use ($userId) {
-                $q->where('user_id', $userId);
-            })
-            ->orderByDesc('created_at')
-            ->paginate(30);
-        }
+        $tasks = Task::where('creator_id', $userId)->orWhereHas('users', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })
+        ->orderByDesc('created_at')
+        ->paginate(30);
 
         return view('panel.tasks.index', compact('tasks'));
     }
@@ -108,14 +104,27 @@ class TaskController extends Controller
         if ($task->first()->status == 'done'){
             $task_status = 'doing';
             $message = 'انجام نشده';
+            $done_at = null;
         }else{
             $task_status = 'done';
             $message = 'انجام شده';
+            $done_at = now();
         }
 
-        $task->update(['status' => $task_status]);
+        $task->update(['status' => $task_status, 'done_at' => $done_at]);
 
         return response()->json(['task_status' => $task_status,'message' => $message]);
+    }
+
+    public function addDescription(Request $request)
+    {
+        $task = DB::table('task_user')->where(['task_id' => $request->task_id, 'user_id' => auth()->id()]);
+        $task->update(['description' => $request->description]);
+    }
+    public function getDescription(Request $request)
+    {
+        $task = DB::table('task_user')->find($request->pivot_id);
+        return response()->json(['data' => $task->description]);
     }
 
     private function assignTask(Task $task, $request)
