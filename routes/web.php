@@ -82,8 +82,6 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-
 Route::fallback(function (){
     abort(404);
 });
