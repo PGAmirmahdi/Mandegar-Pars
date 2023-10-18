@@ -74,4 +74,15 @@ class NoteController extends Controller
         $note->delete();
         return back();
     }
+
+    public function changeStatus(Request $request)
+    {
+        $note = Note::find($request->note_id);
+
+        if ($note->status == 'done'){
+            $note->update(['status' => 'undone']);
+        }else{
+            $note->update(['status' => 'done']);
+        }
+    }
 }

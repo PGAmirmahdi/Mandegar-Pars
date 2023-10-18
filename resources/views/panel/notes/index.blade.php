@@ -18,6 +18,7 @@
                     <tr>
                         <th>#</th>
                         <th>عنوان</th>
+                        <th>وضعیت</th>
                         <th>تاریخ ایجاد</th>
                         @can('notes-edit')
                             <th>ویرایش</th>
@@ -32,6 +33,12 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $note->title }}</td>
+                            <td>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input btn_status" id="customSwitch" data-id="{{ $note->id }}" {{ $note->status == 'done' ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="customSwitch"></label>
+                                </div>
+                            </td>
                             <td>{{ verta($note->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('notes-edit')
                                 <td>
@@ -60,5 +67,26 @@
         </div>
     </div>
 @endsection
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', '.btn_status', function () {
+                var self = $(this);
+                self.attr('disabled','disabled');
+                let note_id = self.data('id');
 
+                $.ajax({
+                    url: '/panel/note/change-status',
+                    type: 'post',
+                    data: {
+                        note_id
+                    },
+                    success: function (res) {
+                        self.removeAttr('disabled');
+                    }
+                })
+            })
+        })
+    </script>
+@endsection
 

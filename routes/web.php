@@ -82,6 +82,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Notes
     Route::resource('notes', NoteController::class)->except('show');
+    Route::post('note/change-status', [NoteController::class, 'changeStatus']);
 
 });
 
