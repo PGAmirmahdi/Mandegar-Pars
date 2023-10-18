@@ -70,6 +70,11 @@ class PermissionSeeder extends Seeder
 //            'tasks-create' => 'ایجاد وظیفه',
 //            'tasks-edit' => 'ویرایش وظیفه ',
 //            'tasks-delete' => 'حذف وظیفه',
+
+//            'notes-list' => 'لیست یادداشت ها',
+//            'notes-create' => 'ایجاد یادداشت',
+//            'notes-edit' => 'ویرایش یادداشت ',
+//            'notes-delete' => 'حذف یادداشت',
         ];
 
         foreach ($items as $key => $item)

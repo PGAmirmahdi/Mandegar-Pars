@@ -73,6 +73,11 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
+
     public function fullName()
     {
         return $this->name.' '.$this->family;

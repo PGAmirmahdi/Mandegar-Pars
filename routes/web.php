@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\InvoiceController;
+use App\Http\Controllers\Panel\NoteController;
 use App\Http\Controllers\Panel\PacketController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
@@ -78,6 +79,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('task/change-status',[TaskController::class, 'changeStatus']);
     Route::post('task/add-desc',[TaskController::class, 'addDescription']);
     Route::post('task/get-desc',[TaskController::class, 'getDescription']);
+
+    // Notes
+    Route::resource('notes', NoteController::class)->except('show');
+
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);

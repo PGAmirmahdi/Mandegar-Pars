@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Invoice;
+use App\Models\Note;
 use App\Models\Packet;
 use App\Models\Permission;
 use App\Models\Task;
@@ -60,5 +61,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('delete-task', function ($user, Task $task){
             return $user->id == $task->creator_id;
         });
+
+        Gate::define('edit-note', function ($user, Note $note){
+            return $user->id == $note->user_id;
+        });
+
     }
 }
