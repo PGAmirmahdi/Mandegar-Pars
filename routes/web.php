@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\InvoiceController;
+use App\Http\Controllers\Panel\LeaveController;
 use App\Http\Controllers\Panel\NoteController;
 use App\Http\Controllers\Panel\PacketController;
 use App\Http\Controllers\Panel\PrinterController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\PanelController;
 use App\Models\Packet;
+use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -83,6 +85,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Notes
     Route::resource('notes', NoteController::class)->except('show');
     Route::post('note/change-status', [NoteController::class, 'changeStatus']);
+
+    // Leaves
+    Route::resource('leaves',LeaveController::class)->except('show')->parameters(['leaves' => 'leave']);
+    Route::post('get-leave-info',[LeaveController::class, 'getLeaveInfo']);
 
 });
 

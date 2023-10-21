@@ -58,6 +58,10 @@
 <script src="/vendors/datepicker/daterangepicker.js"></script>
 <script src="/assets/js/examples/datepicker.js"></script>
 
+<!-- Clockpicker -->
+<script src="/vendors/clockpicker/bootstrap-clockpicker.min.js"></script>
+<script src="/assets/js/examples/clockpicker.js"></script>
+
 @yield('scripts')
 
 <script>

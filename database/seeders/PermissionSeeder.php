@@ -75,6 +75,12 @@ class PermissionSeeder extends Seeder
 //            'notes-create' => 'ایجاد یادداشت',
 //            'notes-edit' => 'ویرایش یادداشت ',
 //            'notes-delete' => 'حذف یادداشت',
+
+//            'leaves-list' => 'لیست مرخصی',
+//            'leaves-create' => 'درخواست مرخصی',
+//            'leaves-delete' => 'حذف درخواست مرخصی',
+
+//            'ceo' => 'مدیرعامل',
         ];
 
         foreach ($items as $key => $item)

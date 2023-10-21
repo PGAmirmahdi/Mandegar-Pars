@@ -82,4 +82,9 @@ class User extends Authenticatable
     {
         return $this->name.' '.$this->family;
     }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
+    }
 }

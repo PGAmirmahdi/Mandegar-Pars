@@ -21,6 +21,9 @@
     <!-- Datepicker -->
     <link rel="stylesheet" href="/vendors/datepicker/daterangepicker.css">
 
+    <!-- Clockpicker -->
+    <link rel="stylesheet" href="/vendors/clockpicker/bootstrap-clockpicker.min.css" type="text/css">
+
     <!-- Slick -->
     <link rel="stylesheet" href="/vendors/slick/slick.css">
     <link rel="stylesheet" href="/vendors/slick/slick-theme.css">
