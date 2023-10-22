@@ -1,5 +1,15 @@
 @extends('panel.layouts.master')
 @section('title', 'ویرایش مشتری')
+@section('styles')
+    <style>
+        .social_sec{
+            font-size: large !important;
+        }
+        .social_sec a{
+            margin: 0 10px !important;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="card">
         <div class="card-body">
@@ -70,6 +80,17 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="phone1">شماره تماس 1 <span class="text-danger">*</span></label>
                         <input type="text" name="phone1" class="form-control" id="phone1" value="{{ $customer->phone1 }}">
+                        <div class="social_sec">
+                            <a href="https://t.me/+98{{ $customer->phone1 }}" target="_blank">
+                                <i class="fa fa-telegram text-info"></i>
+                            </a>
+                            <a href="https://wa.me/+98{{ $customer->phone1 }}" target="_blank">
+                                <i class="fa fa-whatsapp text-success"></i>
+                            </a>
+                            <a href="tel:{{ $customer->phone1 }}">
+                                <i class="fa fa-phone-square text-success"></i>
+                            </a>
+                        </div>
                         @error('phone1')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -77,6 +98,19 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="phone2">شماره تماس 2</label>
                         <input type="text" name="phone2" class="form-control" id="phone2" value="{{ $customer->phone2 }}">
+                        @if($customer->phone2)
+                            <div class="social_sec">
+                                <a href="https://t.me/+98{{ $customer->phone2 }}" target="_blank">
+                                    <i class="fa fa-telegram text-info"></i>
+                                </a>
+                                <a href="https://wa.me/+98{{ $customer->phone2 }}" target="_blank">
+                                    <i class="fa fa-whatsapp text-success"></i>
+                                </a>
+                                <a href="tel:{{ $customer->phone2 }}">
+                                    <i class="fa fa-phone-square text-success"></i>
+                                </a>
+                            </div>
+                        @endif
                         @error('phone2')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -84,6 +118,19 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="phone3">شماره تماس 3</label>
                         <input type="text" name="phone3" class="form-control" id="phone3" value="{{ $customer->phone3 }}">
+                        @if($customer->phone3)
+                            <div class="social_sec">
+                                <a href="https://t.me/+98{{ $customer->phone3 }}" target="_blank">
+                                    <i class="fa fa-telegram text-info"></i>
+                                </a>
+                                <a href="https://wa.me/+98{{ $customer->phone3 }}" target="_blank">
+                                    <i class="fa fa-whatsapp text-success"></i>
+                                </a>
+                                <a href="tel:{{ $customer->phone3 }}">
+                                    <i class="fa fa-phone-square text-success"></i>
+                                </a>
+                            </div>
+                        @endif
                         @error('phone3')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
