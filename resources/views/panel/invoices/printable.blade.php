@@ -36,10 +36,50 @@
                 transform: scale(0.9);
             }
         }
+
+        .guide_box{
+            text-align: center;
+        }
     </style>
 
 @endsection
 @section('content')
+    {{--  Screenshot Guide Modal  --}}
+    <div class="modal fade" id="screenshotModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="screenshotModalLabel">راهنمای اسکرین شات</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="guide_box">
+                        <strong>Google Chrome</strong>
+                        <p>از کلید <code>Print Screen</code> در کیبورد خود استفاده کنید</p>
+                    </div>
+                    <div class="guide_box">
+                        <strong>Mozilla Firefox</strong>
+                        <p>از کلید های ترکیبی <code>Ctrl + Shift + S</code> استفاده کنید</p>
+                    </div>
+                    <div class="guide_box">
+                        <strong>Safari</strong>
+                        <p>از کلید های ترکیبی <code>Command + Shift + 4</code>  استفاده کنید </p>
+                    </div>
+                    <div class="guide_box">
+                        <strong>Microsoft Edge</strong>
+                        <p>از کلید <code>Print Screen</code> در کیبورد خود استفاده کنید</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{--  End Screenshot Guide Modal  --}}
+
     <div class="card">
         <div class="card-body" id="printable_sec">
             <div class="card-title">
@@ -213,6 +253,10 @@
             <a href="{{ url()->previous() }}" class="btn btn-primary"><i class="fa fa-chevron-right mr-2"></i>برگشت</a>
             <button class="btn btn-info" id="btn_print"><i class="fa fa-print mr-2"></i>چاپ</button>
         </div>
+    </div>
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle font-size-20"></i>
+        برای اشتراک گذاری پیش فاکتور/فاکتور ابتدا با استفاده از دکمه <a href="javascript:void(0)">چاپ</a> آن را چاپ کرده یا از <a href="#screenshotModal" data-toggle="modal">اسکرین شات مرورگر</a> استفاده کنید
     </div>
 @endsection
 @section('scripts')
