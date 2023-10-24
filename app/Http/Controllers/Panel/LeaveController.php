@@ -38,6 +38,13 @@ class LeaveController extends Controller
     {
         $this->authorize('leaves-create');
 
+        // limit daily leave
+        if(!auth()->user()->leavesCount() && $request->type == 'daily'){
+            alert()->error('سقف مرخصی های روزانه شما تمام شده است','عدم امکان مرخصی');
+            return back();
+        }
+        // end limit daily leave
+
         Leave::create([
             'user_id' => auth()->id(),
             'title' => $request->title,

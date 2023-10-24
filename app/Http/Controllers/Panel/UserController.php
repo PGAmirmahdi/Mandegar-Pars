@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
@@ -30,13 +31,15 @@ class UserController extends Controller
     {
         $this->authorize('users-create');
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'family' => $request->family,
             'phone' => $request->phone,
             'role_id' => $request->role,
             'password' => bcrypt($request->password),
         ]);
+
+        $this->createLeaveInfo($user);
 
         alert()->success('کاربر مورد نظر با موفقیت ایجاد شد','ایجاد کاربر');
         return redirect()->route('users.index');
@@ -85,5 +88,14 @@ class UserController extends Controller
 
         $user->delete();
         return back();
+    }
+
+    private function createLeaveInfo(User $user)
+    {
+        DB::table('leave_info')->insert([
+            'user_id' => $user->id,
+            'count' => 2,
+            'month_updated' => verta()->month,
+        ]);
     }
 }

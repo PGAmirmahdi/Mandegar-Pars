@@ -3,6 +3,13 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            @if(!auth()->user()->leavesCount())
+                <div class="alert alert-warning">
+                    <i class="fa fa-warning" style="font-size: large"></i>
+                    <strong>توجه!</strong>
+                    سقف مرخصی های روزانه شما در این ماه تمام شده است.
+                </div>
+            @endif
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>درخواست مرخصی</h6>
             </div>
