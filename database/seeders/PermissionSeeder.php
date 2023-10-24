@@ -81,6 +81,9 @@ class PermissionSeeder extends Seeder
 //            'leaves-delete' => 'حذف درخواست مرخصی',
 
 //            'ceo' => 'مدیرعامل',
+//            'prices-list' => 'لیست قیمت ها',
+
+
         ];
 
         foreach ($items as $key => $item)

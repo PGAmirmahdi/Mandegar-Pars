@@ -90,6 +90,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('leaves',LeaveController::class)->except('show')->parameters(['leaves' => 'leave']);
     Route::post('get-leave-info',[LeaveController::class, 'getLeaveInfo']);
 
+    // Price List
+    Route::view('prices-list','panel.prices.list')->name('prices-list')->can('prices-list');
+
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
