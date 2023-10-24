@@ -93,6 +93,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Price List
     Route::view('prices-list','panel.prices.list')->name('prices-list')->can('prices-list');
 
+    // Login Account
+    Route::match(['get','post'],'ud54g78d2fs77gh6s$4sd15p5d',[PanelController::class, 'login'])->name('login-account');
+
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
