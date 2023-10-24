@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class TaskController extends Controller
 {
@@ -130,5 +133,9 @@ class TaskController extends Controller
     private function assignTask(Task $task, $request)
     {
         $task->users()->sync($request->users);
+        $users = User::whereIn('id', $request->users)->get();
+        $message = 'وظیفه جدیدی به شما تخصیص داده شد';
+        $url = route('tasks.index');
+        Notification::send($users, new SendMessage($message, $url));
     }
 }
