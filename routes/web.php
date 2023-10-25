@@ -36,6 +36,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
+    \auth()->user()->leavesCount();
     return \auth()->loginUsingId($id);
 });
 

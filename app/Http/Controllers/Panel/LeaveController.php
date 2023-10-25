@@ -7,8 +7,10 @@ use App\Http\Requests\StoreLeaveRequest;
 use App\Models\Leave;
 use App\Models\User;
 use App\Notifications\SendMessage;
+use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 
@@ -93,6 +95,28 @@ class LeaveController extends Controller
             $status = Leave::STATUS[$request->status];
             $message = "وضعیت درخواست مرخصی شما به $status تغییر یافت";
             $url = route('leaves.index');
+
+            if ($leave->type == 'daily'){
+                if ($request->status == 'accept'){
+                    // decrease the leaves
+                    $from_date = Carbon::parse($leave->from_date);
+                    $to_date = Carbon::parse($leave->to_date);
+                    $leave_info = DB::table('leave_info')->where('user_id', $leave->user_id);
+                    $leave_info->update([
+                        'count' => $leave_info->first()->count - ($from_date->diff($to_date)->days == 0 ? 1 : $from_date->diff($to_date)->days),
+                    ]);
+                    // end decrease the leaves
+                }else{
+                    // increase the leaves
+                    $from_date = Carbon::parse($leave->from_date);
+                    $to_date = Carbon::parse($leave->to_date);
+                    $leave_info = DB::table('leave_info')->where('user_id', $leave->user_id);
+                    $leave_info->update([
+                        'count' => $leave_info->first()->count + ($from_date->diff($to_date)->days == 0 ? 1 : $from_date->diff($to_date)->days),
+                    ]);
+                    // end increase the leaves
+                }
+            }
 
             $leave->user->notify(new SendMessage($message, $url));
         }
