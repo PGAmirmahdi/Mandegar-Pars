@@ -63,7 +63,7 @@
                         <label for="province">استان <span class="text-danger">*</span></label>
                         <select name="province" id="province" class="js-example-basic-single select2-hidden-accessible" data-select2-id="4" tabindex="-1" aria-hidden="true">
                             @foreach(\App\Models\Province::all() as $province)
-                                <option value="{{ $province->name }}" {{ old('province') == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
+                                <option value="{{ $province->name }}" {{ $customer->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
                             @endforeach
                         </select>
                         @error('province')
