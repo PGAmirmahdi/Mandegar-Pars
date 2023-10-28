@@ -19,6 +19,8 @@ use App\Notifications\SendMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +39,11 @@ Route::get('/', function () {
 
 Route::get('test/{id?}',function ($id = null){
     return \auth()->loginUsingId($id);
+});
+
+Route::match(['get','post'], 'api/invoice', function (Request $request){
+    \Illuminate\Support\Facades\Log::info(json_encode($request->all()));
+//    User::factory(1)->create();
 });
 
 Route::middleware('auth')->prefix('/panel')->group(function (){
