@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
@@ -33,7 +35,7 @@ class ApiController extends Controller
         // end users where has single-price-user permission
 
         // create invoice
-        \App\Models\Invoice::create([
+        $invoice = \App\Models\Invoice::create([
             'user_id' => $single_price_user->id,
             'customer_id' => $customer->id,
             'economical_number' => 0,
@@ -45,5 +47,28 @@ class ApiController extends Controller
             'phone' => $customer->phone1,
             'status' => $data['status'],
         ]);
+
+        // create product items
+        foreach ($request->items as $item){
+            // for test
+//            $product = Product::first();
+            // end for test
+
+            $product = Product::where('title', $item['name'])->first();
+
+            $price = ($item['total'] / $item['quantity']) .'0';
+            $total = $item['total'].'0';
+
+            $invoice->products()->attach($product->id, [
+                'color' => 'black',
+                'count' => $item['quantity'],
+                'price' => $price,
+                'total_price' => $total,
+                'discount_amount' => 0,
+                'extra_amount' => 0,
+                'tax' => 0,
+                'invoice_net' => $total,
+            ]);
+        }
     }
 }
