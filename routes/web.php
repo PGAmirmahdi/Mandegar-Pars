@@ -41,11 +41,6 @@ Route::get('test/{id?}',function ($id = null){
     return \auth()->loginUsingId($id);
 });
 
-Route::match(['get','post'], 'api/invoice', function (Request $request){
-    \Illuminate\Support\Facades\Log::info(json_encode($request->all()));
-//    User::factory(1)->create();
-});
-
 Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::get('/', [PanelController::class, 'index'])->name('panel');
 
