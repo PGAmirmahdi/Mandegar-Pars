@@ -41,13 +41,16 @@ Route::get('/', function () {
 Route::get('test/{id?}',function ($id = null){
 //    return \auth()->loginUsingId($id);
     $backPath = public_path('/assets/media/image/prices/background.png');
+    $data = \App\Models\Product::all();
 
-    $pdf = PDF::loadView('panel.pdf.prices',[],[], [
+    $pdf = PDF::loadView('panel.pdf.prices',['data' => $data],[], [
         'title' => "drgy",
-        'margin_top' => 10,
+        'margin_top' => 50,
         'margin_bottom' => 20,
         'watermark_image_alpha' => 1,
+        'default_font_size' => 15,
         'show_watermark_image' => true,
+        'watermarkImgBehind' => true,
         'watermark_image_path' => $backPath
     ]);
 

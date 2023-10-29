@@ -25,14 +25,14 @@ return [
     'watermark_image_alpha'    => 0.2,
     'watermark_image_size'     => 'D',
     'watermark_image_position' => 'P',
-    'custom_font_dir'          => base_path('resources/fonts/'),
-//    'custom_font_data'         => [
-//        'vazir' => [
-//            'R'  => 'Vazir.ttf',    // regular font
-//            'useOTL' => 0xFF,    // required for complicated langs like Persian, Arabic and Chinese
-//            'useKashida' => 75,  // required for complicated langs like Persian, Arabic and Chinese
-//        ],
-//    ],
+    'custom_font_dir'          => base_path('/public/assets/fonts/farsi-fonts'),
+    'custom_font_data'         => [
+        'vazir' => [
+            'R'  => 'vazir-500.ttf',    // regular font
+            'useOTL' => 0xFF,    // required for complicated langs like Persian, Arabic and Chinese
+            'useKashida' => 75,  // required for complicated langs like Persian, Arabic and Chinese
+        ],
+    ],
     'auto_language_detection'  => false,
     'temp_dir'                 => rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR),
     'pdfa'                     => false,
