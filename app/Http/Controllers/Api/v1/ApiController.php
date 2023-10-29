@@ -25,6 +25,7 @@ class ApiController extends Controller
             'address1' => $data['address_1'],
             'postal_code' => $data['postal_code'],
             'phone1' => $data['phone'],
+            'customer_type' => 'single-sale',
         ]);
 
         // users where has single-price-user permission
@@ -46,6 +47,7 @@ class ApiController extends Controller
             'postal_code' => $customer->postal_code,
             'phone' => $customer->phone1,
             'status' => $data['status'],
+            'created_in' => 'website',
         ]);
 
         // create product items
