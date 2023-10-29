@@ -82,7 +82,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('invoices.edit', $invoice->id) }}">
+                                    <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>

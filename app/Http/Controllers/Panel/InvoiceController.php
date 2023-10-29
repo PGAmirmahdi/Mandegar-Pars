@@ -49,6 +49,7 @@ class InvoiceController extends Controller
             'province' => $request->province,
             'city' => $request->city,
             'address' => $request->address,
+            'created_in' => 'automation',
 //            'status' => $request->status,
         ]);
 
@@ -77,6 +78,10 @@ class InvoiceController extends Controller
 
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
+
+        if ($invoice->created_in == 'website'){
+            return back();
+        }
 
         return view('panel.invoices.edit', compact('invoice'));
     }

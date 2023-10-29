@@ -17,6 +17,11 @@ class Invoice extends Model
         'return' => 'عودت داده شده',
     ];
 
+    const CREATED_IN = [
+        'website' => 'وبسایت',
+        'automation' => 'اتوماسیون',
+    ];
+
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot([
