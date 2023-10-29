@@ -19,6 +19,7 @@
                         <th>#</th>
                         <th>نام حقیقی/حقوقی</th>
                         <th>نوع</th>
+                        <th>مشتری</th>
                         <th>شماره تماس 1</th>
                         <th>تعداد فاکتور</th>
                         <th>تاریخ ایجاد</th>
@@ -36,6 +37,7 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $customer->name }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
+                            <td>{{ \App\Models\Customer::CUSTOMER_TYPE[$customer->customer_type] }}</td>
                             <td>{{ $customer->phone1 }}</td>
                             <td>{{ $customer->invoices()->count() }}</td>
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>

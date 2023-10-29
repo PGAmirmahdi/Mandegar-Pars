@@ -32,6 +32,7 @@ class CustomerController extends Controller
         Customer::create([
             'name' => $request->name,
             'type' => $request->type,
+            'customer_type' => $request->customer_type,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
             'postal_code' => $request->postal_code,
@@ -68,6 +69,7 @@ class CustomerController extends Controller
         $customer->update([
             'name' => $request->name,
             'type' => $request->type,
+            'customer_type' => $request->customer_type,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
             'postal_code' => $request->postal_code,

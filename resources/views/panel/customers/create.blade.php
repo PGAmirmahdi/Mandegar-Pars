@@ -28,6 +28,17 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="customer_type">مشتری <span class="text-danger">*</span></label>
+                        <select class="form-control" name="customer_type" id="customer_type">
+                            @foreach(\App\Models\Customer::CUSTOMER_TYPE as $key => $value)
+                                <option value="{{ $key }}" {{ old('customer_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
+                        @error('customer_type')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="economical_number">شماره اقتصادی</label>
                         <input type="text" name="economical_number" class="form-control" id="economical_number" value="{{ old('economical_number') }}">
                         @error('economical_number')

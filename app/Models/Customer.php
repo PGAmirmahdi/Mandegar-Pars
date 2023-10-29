@@ -16,6 +16,13 @@ class Customer extends Model
         'private' => 'خصوصی',
     ];
 
+    const CUSTOMER_TYPE = [
+        'system' => 'سامانه',
+        'tehran' => 'تهران',
+        'city' => 'شهرستان',
+        'single-sale' => 'تک فروشی',
+    ];
+
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
