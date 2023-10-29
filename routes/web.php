@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use PDF as PDF;
 
 
 /*
@@ -38,7 +39,19 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
+    $backPath = public_path('/assets/media/image/prices/background.png');
+
+    $pdf = PDF::loadView('panel.pdf.prices',[],[], [
+        'title' => "drgy",
+        'margin_top' => 10,
+        'margin_bottom' => 20,
+        'watermark_image_alpha' => 1,
+        'show_watermark_image' => true,
+        'watermark_image_path' => $backPath
+    ]);
+
+    return $pdf->stream("test.pdf");
 });
 
 Route::middleware('auth')->prefix('/panel')->group(function (){
