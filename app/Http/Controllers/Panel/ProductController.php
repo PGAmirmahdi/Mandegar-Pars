@@ -130,6 +130,8 @@ class ProductController extends Controller
     {
         $this->authorize('prices-list');
 
+        ini_set('memory_limit', '64M');
+
         $backPath = public_path('/assets/media/image/prices/background.png');
         $data = \App\Models\Product::all();
 
@@ -143,7 +145,9 @@ class ProductController extends Controller
             'watermark_image_path' => $backPath
         ]);
 
-        return $pdf->stream("test.pdf");
+        $name = 'لیست '.Product::PRICE_TYPE[$type];
+
+        return $pdf->stream("$name.pdf");
     }
 
     private function json_properties($request){

@@ -19,6 +19,13 @@ class Product extends Model
         'number' => 'عدد'
     ];
 
+    const PRICE_TYPE = [
+        'system_price' => 'قیمت سامانه',
+        'partner_price_tehran' => 'قیمت همکار - تهران',
+        'partner_price_other' => 'قیمت همکار - شهرستان',
+        'single_price' => 'قیمت تک فروشی',
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
