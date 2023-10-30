@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class ProductController extends Controller
 {
@@ -123,6 +124,26 @@ class ProductController extends Controller
 
         $product->delete();
         return back();
+    }
+
+    public function priceList($type)
+    {
+        $this->authorize('prices-list');
+
+        $backPath = public_path('/assets/media/image/prices/background.png');
+        $data = \App\Models\Product::all();
+
+        $pdf = PDF::loadView('panel.pdf.prices',['data' => $data, 'type' => $type],[], [
+            'margin_top' => 50,
+            'margin_bottom' => 20,
+            'watermark_image_alpha' => 1,
+            'default_font_size' => 15,
+            'show_watermark_image' => true,
+            'watermarkImgBehind' => true,
+            'watermark_image_path' => $backPath
+        ]);
+
+        return $pdf->stream("test.pdf");
     }
 
     private function json_properties($request){

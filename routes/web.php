@@ -39,22 +39,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-//    return \auth()->loginUsingId($id);
-    $backPath = public_path('/assets/media/image/prices/background.png');
-    $data = \App\Models\Product::all();
-
-    $pdf = PDF::loadView('panel.pdf.prices',['data' => $data],[], [
-        'title' => "drgy",
-        'margin_top' => 50,
-        'margin_bottom' => 20,
-        'watermark_image_alpha' => 1,
-        'default_font_size' => 15,
-        'show_watermark_image' => true,
-        'watermarkImgBehind' => true,
-        'watermark_image_path' => $backPath
-    ]);
-
-    return $pdf->stream("test.pdf");
+    return \auth()->loginUsingId($id);
 });
 
 Route::middleware('auth')->prefix('/panel')->group(function (){
@@ -110,6 +95,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Price List
     Route::view('prices-list','panel.prices.list')->name('prices-list')->can('prices-list');
+    Route::get('prices-list/pdf/{type}', [ProductController::class, 'priceList'])->name('prices-list-pdf');
 
     // Login Account
     Route::match(['get','post'],'ud54g78d2fs77gh6s$4sd15p5d',[PanelController::class, 'login'])->name('login-account');

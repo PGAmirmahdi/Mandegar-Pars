@@ -10,20 +10,29 @@
     body{
         font-size: larger;
     }
+    tbody tr:nth-child(odd) {
+        background-color: #fff;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #eee;
+    }
 </style>
 <body>
-    <table style="text-align: center; width: 100%">
+    <table style="text-align: center; width: 100%; border-collapse: collapse;">
         <thead>
         <tr>
+            <th style="border-bottom: 2px solid #000; padding-bottom: 10px">ردیف</th>
             <th style="border-bottom: 2px solid #000; padding-bottom: 10px">مدل</th>
             <th style="border-bottom: 2px solid #000; padding-bottom: 10px">قیمت (ریال)</th>
         </tr>
         </thead>
         <tbody>
-        @foreach($data as $item)
+        @foreach($data as $key => $item)
             <tr>
+                <td>{{ ++$key }}</td>
                 <td>{{ $item->title }}</td>
-                <td>{{ number_format($item->system_price) }}</td>
+                <td>{{ number_format($item->{$type}) }}</td>
             </tr>
         @endforeach
         </tbody>

@@ -10,10 +10,22 @@
                     <thead>
                     <tr>
                         <th class="bg-primary"></th>
-                        <th>سامانه</th>
-                        <th>همکار - تهران</th>
-                        <th>همکار - شهرستان</th>
-                        <th>تک فروشی</th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'system_price']) }}"><i class="fa fa-download text-info"></i></a>
+                            سامانه
+                        </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'partner_price_tehran']) }}"><i class="fa fa-download text-info"></i></a>
+                            همکار - تهران
+                        </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'partner_price_other']) }}"><i class="fa fa-download text-info"></i></a>
+                            همکار - شهرستان
+                        </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'single_price']) }}"><i class="fa fa-download text-info"></i></a>
+                            تک فروشی
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
