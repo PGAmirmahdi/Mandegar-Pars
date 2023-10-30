@@ -17,6 +17,10 @@
     tbody tr:nth-child(even) {
         background-color: #eee;
     }
+
+    td{
+        padding: 10px 0 !important;
+    }
 </style>
 <body>
     <table style="text-align: center; width: 100%; border-collapse: collapse;">
@@ -29,7 +33,7 @@
         </thead>
         <tbody>
         @foreach($data as $key => $item)
-            <tr>
+            <tr style="border-spacing: 1em">
                 <td>{{ ++$key }}</td>
                 <td>{{ $item->title }}</td>
                 <td>{{ number_format($item->{$type}) }}</td>
