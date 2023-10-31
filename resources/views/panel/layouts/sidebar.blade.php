@@ -7,7 +7,7 @@
                     <i class="icon ti-dashboard"></i>
                 </a>
             </li>
-            @canany(['categories-list','products-list','printers-list'])
+            @canany(['categories-list','products-list','printers-list','prices-list'])
                 <li class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="محصولات">
                     <a href="#navigationProducts" title="محصولات">
                         <i class="icon ti-view-list"></i>
