@@ -45,7 +45,6 @@
                         <th>تاریخ ایجاد</th>
                         @can('invoices-edit')
                             <th>پیش فاکتور</th>
-                            <th>فاکتور</th>
                             <th>ویرایش</th>
                         @endcan
                         @can('invoices-delete')
@@ -73,11 +72,6 @@
                             @can('invoices-edit')
                                 <td>
                                     <a class="btn btn-info btn-floating" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-info btn-floating" href="{{ route('invoices.show', [$invoice->id, 'type' => 'factor']) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 </td>

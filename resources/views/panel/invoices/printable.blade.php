@@ -93,9 +93,9 @@
                     </div>
                     <div class="col-3"></div>
                     <div class="col-2 text-center">
-                        <p class="m-0">شماره سریال: {{ $invoice->id }}</p>
+                        <p class="m-0">شماره سریال: {{ request()->type == 'pishfactor' ? $invoice->id : $factor->id }}</p>
                         <hr class="mt-0">
-                        <p class="m-0">تاریخ: {{ verta($invoice->created_at)->format('Y/m/d') }}</p>
+                        <p class="m-0">تاریخ: {{ request()->type == 'pishfactor' ? verta($invoice->created_at)->format('Y/m/d') : verta($factor->created_at)->format('Y/m/d') }}</p>
                         <hr class="mt-0">
                     </div>
                 </div>
@@ -264,8 +264,10 @@
         $(document).ready(function () {
             $('#btn_print').click(function () {
                 $('#print_sec').addClass('d-none').removeClass('d-flex');
+                $('.alert-info').addClass('d-none').removeClass('d-flex');
                 window.print();
                 $('#print_sec').removeClass('d-none').addClass('d-flex');
+                $('.alert-info').removeClass('d-none').addClass('d-flex');
             })
         })
     </script>

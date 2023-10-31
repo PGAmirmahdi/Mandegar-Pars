@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
+use App\Http\Controllers\Panel\FactorController;
 use App\Http\Controllers\Panel\InvoiceController;
 use App\Http\Controllers\Panel\LeaveController;
 use App\Http\Controllers\Panel\NoteController;
@@ -100,6 +101,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Login Account
     Route::match(['get','post'],'ud54g78d2fs77gh6s$4sd15p5d',[PanelController::class, 'login'])->name('login-account');
+
+    // Factors
+    Route::resource('factors', FactorController::class)->except(['show','create','store']);
 
 });
 

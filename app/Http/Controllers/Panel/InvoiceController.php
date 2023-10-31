@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Coupon;
+use App\Models\Factor;
 use App\Models\Invoice;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -20,9 +21,9 @@ class InvoiceController extends Controller
         $this->authorize('invoices-list');
 
         if (auth()->user()->isAdmin()){
-            $invoices = Invoice::latest()->paginate(30);
+            $invoices = Invoice::where('created_in', 'automation')->where('status','!=','invoiced')->latest()->paginate(30);
         }else{
-            $invoices = Invoice::where('user_id', auth()->id())->latest()->paginate(30);
+            $invoices = Invoice::where('created_in', 'automation')->where('user_id', auth()->id())->where('status','!=','invoiced')->latest()->paginate(30);
         }
 
         return view('panel.invoices.index', compact('invoices'));
@@ -68,7 +69,9 @@ class InvoiceController extends Controller
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
 
-        return view('panel.invoices.printable', compact('invoice'));
+        $factor = \request()->type == 'factor' ? $invoice->factor : null;
+
+        return view('panel.invoices.printable', compact('invoice','factor'));
     }
 
     public function edit(Invoice $invoice)
@@ -111,6 +114,11 @@ class InvoiceController extends Controller
             'address' => $request->address,
             'status' => $request->status,
         ]);
+
+        // create factor
+        if ($request->status == 'invoiced'){
+            $invoice->factor()->updateOrCreate(['status' => 'invoiced']);
+        }
 
         alert()->success('پیش فاکتور مورد نظر با موفقیت ویرایش شد','ویرایش پیش فاکتور');
         return redirect()->route('invoices.index');

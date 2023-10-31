@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'ویرایش پیش فاکتور')
+@section('title', 'ویرایش فاکتور')
 @section('styles')
     <style>
         #products_table input, #products_table select{
@@ -39,10 +39,10 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>ویرایش پیش فاکتور</h6>
-                <a href="{{ route('invoices.show', $invoice->id) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
+                <h6>ویرایش فاکتور</h6>
+                <a href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'factor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
             </div>
-            <form action="{{ route('invoices.update', $invoice->id) }}" method="post">
+            <form action="{{ route('factors.update', $factor->id) }}" method="post">
                 @csrf
                 @method('PATCH')
                 <div class="form-row">
@@ -51,9 +51,9 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="buyer_name">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
-                        <select name="buyer_name" id="buyer_name" class="js-example-basic-single select2-hidden-accessible" data-select2-id="6" tabindex="-3" aria-hidden="true">
+                        <select name="buyer_name" id="buyer_name" class="js-example-basic-single select2-hidden-accessible" data-select2-id="6" tabindex="-3" aria-hidden="true" disabled>
                             @foreach(\App\Models\Customer::all(['id','name']) as $customer)
-                                <option value="{{ $customer->id }}" {{ $invoice->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                                <option value="{{ $customer->id }}" {{ $factor->invoice->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
                             @endforeach
                         </select>
                         @error('buyer_name')
@@ -62,28 +62,28 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="economical_number">شماره اقتصادی@can('system-user')<span class="text-danger">*</span>@endcan</label>
-                        <input type="text" name="economical_number" class="form-control" id="economical_number" value="{{ $invoice->economical_number }}">
+                        <input type="text" name="economical_number" class="form-control" id="economical_number" value="{{ $factor->invoice->economical_number }}">
                         @error('economical_number')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="national_number">شماره ثبت/ملی<span class="text-danger">*</span></label>
-                        <input type="text" name="national_number" class="form-control" id="national_number" value="{{ $invoice->national_number }}">
+                        <input type="text" name="national_number" class="form-control" id="national_number" value="{{ $factor->invoice->national_number }}">
                         @error('national_number')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="postal_code">کد پستی<span class="text-danger">*</span></label>
-                        <input type="text" name="postal_code" class="form-control" id="postal_code" value="{{ $invoice->postal_code }}">
+                        <input type="text" name="postal_code" class="form-control" id="postal_code" value="{{ $factor->invoice->postal_code }}">
                         @error('postal_code')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="phone">شماره تماس<span class="text-danger">*</span></label>
-                        <input type="text" name="phone" class="form-control" id="phone" value="{{ $invoice->phone }}">
+                        <input type="text" name="phone" class="form-control" id="phone" value="{{ $factor->invoice->phone }}">
                         @error('phone')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -92,7 +92,7 @@
                         <label for="province">استان <span class="text-danger">*</span></label>
                         <select name="province" id="province" class="js-example-basic-single select2-hidden-accessible" data-select2-id="4" tabindex="-1" aria-hidden="true">
                             @foreach(\App\Models\Province::all() as $province)
-                                <option value="{{ $province->name }}" {{ $invoice->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
+                                <option value="{{ $province->name }}" {{ $factor->invoice->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
                             @endforeach
                         </select>
                         @error('province')
@@ -101,14 +101,14 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="city">شهر<span class="text-danger">*</span></label>
-                        <input type="text" name="city" class="form-control" id="city" value="{{ $invoice->city }}">
+                        <input type="text" name="city" class="form-control" id="city" value="{{ $factor->invoice->city }}">
                         @error('city')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="address">نشانی<span class="text-danger">*</span></label>
-                        <textarea name="address" id="address" class="form-control">{{ $invoice->address }}</textarea>
+                        <textarea name="address" id="address" class="form-control">{{ $factor->invoice->address }}</textarea>
                         @error('address')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -116,9 +116,8 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="status">وضعیت <span class="text-danger">*</span></label>
                         <select name="status" id="status" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5" tabindex="-2" aria-hidden="true">
-                            <option value="pending" {{ $invoice->status == 'pending' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['pending'] }}</option>
-                            <option value="invoiced" {{ $invoice->status == 'invoiced' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['invoiced'] }}</option>
-                            <option value="return" {{ $invoice->status == 'return' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['return'] }}</option>
+                            <option value="invoiced" {{ $factor->status == 'invoiced' ? 'selected' : '' }}>{{ \App\Models\Factor::STATUS['invoiced'] }}</option>
+                            <option value="paid" {{ $factor->status == 'paid' ? 'selected' : '' }}>{{ \App\Models\Factor::STATUS['paid'] }}</option>
                         </select>
                         @error('status')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -152,7 +151,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if(!$invoice->products()->exists())
+                                @if(!$factor->invoice->products()->exists())
                                     <tr>
                                         <td>1</td>
                                         <td>
@@ -207,11 +206,11 @@
                                         </td>
                                     </tr>
                                 @else
-                                    @foreach($invoice->products as $item)
+                                    @foreach($factor->invoice->products as $item)
                                         @php
                                             $usedCoupon = DB::table('coupon_invoice')->where([
                                                 'product_id' => $item->pivot->product_id,
-                                                'invoice_id' => $invoice->id,
+                                                'invoice_id' => $factor->id,
                                             ])->first();
 
                                             if ($usedCoupon){
@@ -291,7 +290,7 @@
 
         var products = [];
         var colors = [];
-        var invoice_id = "{{ $invoice->id }}";
+        var invoice_id = "{{ $factor->invoice->id }}";
 
         @foreach(\App\Models\Product::all(['id','title']) as $product)
         products.push({

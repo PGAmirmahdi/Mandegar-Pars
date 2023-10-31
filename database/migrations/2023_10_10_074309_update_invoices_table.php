@@ -14,7 +14,7 @@ class UpdateInvoicesTable extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->enum('status',['paid','pending','return'])->default('pending')->after('phone');
+            $table->enum('status',['invoiced','pending','return'])->default('pending')->after('phone');
         });
     }
 

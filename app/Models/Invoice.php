@@ -13,7 +13,7 @@ class Invoice extends Model
 
     const STATUS = [
         'pending' => 'در دست اقدام',
-        'paid' => 'تسویه شده',
+        'invoiced' => 'فاکتور شده',
         'return' => 'عودت داده شده',
     ];
 
@@ -55,5 +55,10 @@ class Invoice extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function factor()
+    {
+        return $this->hasOne(Factor::class);
     }
 }
