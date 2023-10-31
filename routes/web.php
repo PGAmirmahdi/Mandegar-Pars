@@ -16,6 +16,7 @@ use App\Http\Controllers\PanelController;
 use App\Models\Packet;
 use App\Models\User;
 use App\Notifications\SendMessage;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
@@ -39,7 +40,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
 });
 
 Route::middleware('auth')->prefix('/panel')->group(function (){
