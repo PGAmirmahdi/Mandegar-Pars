@@ -19,7 +19,7 @@ class ApiController extends Controller
             'name' => $data['first_name'].' '.$data['last_name'],
             'type' => 'private',
             'economical_number' => 0,
-            'national_number' => $data['national_number'],
+            'national_number' => $data['national_code'],
             'province' => $data['province'],
             'city' => $data['city'],
             'address1' => $data['address_1'],
@@ -46,7 +46,7 @@ class ApiController extends Controller
             'address' => $customer->address1,
             'postal_code' => $customer->postal_code,
             'phone' => $customer->phone1,
-            'status' => $data['status'],
+            'status' => 'invoiced',
             'created_in' => 'website',
         ]);
 
@@ -71,6 +71,8 @@ class ApiController extends Controller
                 'tax' => 0,
                 'invoice_net' => $total,
             ]);
+
+            $invoice->factor()->updateOrCreate(['status' => 'paid']);
         }
     }
 }
