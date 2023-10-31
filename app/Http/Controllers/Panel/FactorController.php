@@ -124,5 +124,24 @@ class FactorController extends Controller
             ]);
 
         }
+
+        $invoice->other_products()->delete();
+
+        if ($request->other_products){
+            foreach ($request->other_products as $key => $product){
+                $invoice->other_products()->create([
+                    'title' => $product,
+                    'color' => $request->other_colors[$key],
+                    'count' => $request->other_counts[$key],
+                    'unit' => $request->other_units[$key],
+                    'price' => $request->other_prices[$key],
+                    'total_price' => $request->other_total_prices[$key],
+                    'discount_amount' => $request->other_discount_amounts[$key],
+                    'extra_amount' => $request->other_extra_amounts[$key],
+                    'tax' => $request->other_taxes[$key],
+                    'invoice_net' => $request->other_invoice_nets[$key],
+                ]);
+            }
+        }
     }
 }

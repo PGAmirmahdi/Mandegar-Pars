@@ -169,6 +169,30 @@ class InvoiceController extends Controller
         return response()->json(['data' => $data]);
     }
 
+    public function calcOtherProductsInvoice(Request $request)
+    {
+        $price = $request->price;
+        $total_price = $price * $request->count;
+        $discount_amount = $request->discount_amount;
+
+        $extra_amount = 0;
+        $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
+        $tax = (int) ($total_price_with_off * self::TAX_AMOUNT);
+        $invoice_net = $tax + $total_price_with_off;
+
+        $data = [
+            'price' => $price,
+            'total_price' => $total_price,
+            'discount_amount' => $discount_amount,
+            'extra_amount' => $extra_amount,
+            'total_price_with_off' => $total_price_with_off,
+            'tax' => $tax,
+            'invoice_net' => $invoice_net,
+        ];
+
+        return response()->json(['data' => $data]);
+    }
+
     public function search(Request $request)
     {
         $this->authorize('invoices-list');
@@ -274,6 +298,25 @@ class InvoiceController extends Controller
                 'invoice_net' => $request->invoice_nets[$key],
             ]);
 
+        }
+
+        $invoice->other_products()->delete();
+
+        if ($request->other_products){
+            foreach ($request->other_products as $key => $product){
+                $invoice->other_products()->create([
+                    'title' => $product,
+                    'color' => $request->other_colors[$key],
+                    'count' => $request->other_counts[$key],
+                    'unit' => $request->other_units[$key],
+                    'price' => $request->other_prices[$key],
+                    'total_price' => $request->other_total_prices[$key],
+                    'discount_amount' => $request->other_discount_amounts[$key],
+                    'extra_amount' => $request->other_extra_amounts[$key],
+                    'tax' => $request->other_taxes[$key],
+                    'invoice_net' => $request->other_invoice_nets[$key],
+                ]);
+            }
         }
     }
 }

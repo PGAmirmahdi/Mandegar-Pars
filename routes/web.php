@@ -65,6 +65,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Invoices
     Route::resource('invoices', InvoiceController::class);
     Route::post('calcProductsInvoice', [InvoiceController::class, 'calcProductsInvoice'])->name('calcProductsInvoice');
+    Route::post('calcOtherProductsInvoice', [InvoiceController::class, 'calcOtherProductsInvoice'])->name('calcOtherProductsInvoice');
     Route::match(['get','post'],'search/invoices', [InvoiceController::class, 'search'])->name('invoices.search');
     Route::post('applyDiscount', [InvoiceController::class, 'applyDiscount'])->name('invoices.applyDiscount');
 

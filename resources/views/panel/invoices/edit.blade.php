@@ -5,6 +5,10 @@
         #products_table input, #products_table select{
             width: auto;
         }
+
+        #other_products_table input, #other_products_table select{
+            width: auto;
+        }
     </style>
 @endsection
 @section('content')
@@ -40,7 +44,7 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ویرایش پیش فاکتور</h6>
-                <a href="{{ route('invoices.show', $invoice->id) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
+                <a href="{{ route('invoices.show', ['invoice' => $invoice->id, 'type' => 'pishfactor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
             </div>
             <form action="{{ route('invoices.update', $invoice->id) }}" method="post">
                 @csrf
@@ -127,6 +131,9 @@
                     <div class="col-12 mb-4 mt-2 text-center">
                         <hr>
                         <h4>مشخصات کالا یا خدمات مورد معامله</h4>
+                    </div>
+                    <div class="col-12 mt-2 text-center">
+                        <h5>محصولات آرتین</h5>
                     </div>
                     <div class="col-12 mb-3">
                         <div class="d-flex justify-content-between mb-3">
@@ -279,6 +286,80 @@
                             </table>
                         </div>
                     </div>
+                    <div class="col-12 mt-4 text-center">
+                        <h5>محصولات دیگر</h5>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="d-flex justify-content-between mb-3">
+                            <button class="btn btn-outline-success" type="button" id="btn_other_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
+                        </div>
+                            <div class="overflow-auto">
+                            <table class="table table-bordered table-striped text-center" id="other_products_table">
+                                <thead>
+                                    <tr>
+                                    <th>کالا</th>
+                                    <th>رنگ</th>
+                                    <th>تعداد</th>
+                                    <th>واحد اندازه گیری</th>
+                                    <th>مبلغ واحد</th>
+                                    <th>مبلغ کل</th>
+                                    <th>مبلغ تخفیف</th>
+                                    <th>مبلغ اضافات</th>
+                                    <th>مبلغ کل پس از تخفیف و اضافات</th>
+                                    <th>جمع مالیات و عوارض</th>
+                                    <th>خالص فاکتور</th>
+                                    <th>حذف</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @if($invoice->other_products()->exists())
+                                    @foreach($invoice->other_products as $product)
+                                        <tr>
+                                            <td>
+                                                <input type="text" name="other_products[]" class="form-control" value="{{ $product->title }}" placeholder="عنوان کالا" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="other_colors[]" class="form-control" value="{{ $product->color }}" placeholder="نام رنگ" required>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_counts[]" class="form-control" min="1" value="{{ $product->count }}" required>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" name="other_units[]">
+                                                    <option value="number">عدد</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ $product->price }}" required>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_total_prices[]" class="form-control" min="0" value="{{ $product->total_price }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="{{ $product->discount_amount }}" required>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="{{ $product->extra_amount }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="{{ $product->total_price - ($product->extra_amount + $product->discount_amount) }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_taxes[]" class="form-control" min="0" value="{{ $product->tax }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="{{ $product->invoice_net }}" readonly>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <button class="btn btn-primary" type="submit">ثبت فرم</button>
             </form>
@@ -374,6 +455,54 @@
             })
             // end add property
 
+            // add other property
+            $('#btn_other_add').on('click', function () {
+                $('#other_products_table tbody').append(`
+                <tr>
+                <td>
+                    <input type="text" class="form-control" name="other_products[]" placeholder="عنوان کالا" required>
+                </td>
+                <td>
+                    <input type="text" class="form-control" name="other_colors[]" placeholder="نام رنگ" required>
+                </td>
+                <td>
+                    <input type="number" name="other_counts[]" class="form-control" min="1" value="1" required>
+                </td>
+                <td>
+                    <select class="form-control" name="other_units[]">
+                        <option value="number">عدد</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="other_prices[]" class="form-control" min="0" value="0" required>
+                </td>
+                <td>
+                    <input type="number" name="other_total_prices[]" class="form-control" min="0" value="0" readonly>
+                </td>
+                <td>
+                    <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="0" required>
+                </td>
+                <td>
+                    <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0" readonly>
+                </td>
+                <td>
+                    <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
+                </td>
+                <td>
+                    <input type="number" name="other_taxes[]" class="form-control" min="0" value="0" readonly>
+                </td>
+                <td>
+                    <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="0" readonly>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                </td>
+            </tr>
+
+`);
+            })
+            // end add other property
+
             // remove property
             $(document).on('click','.btn_remove', function () {
                 $(this).parent().parent().remove();
@@ -386,6 +515,15 @@
             })
             $(document).on('change', '#products_table input[name="counts[]"]', function () {
                 CalcProductInvoice(this)
+            })
+            $(document).on('change', '#other_products_table input[name="other_counts[]"]', function () {
+                CalcOtherProductInvoice(this)
+            })
+            $(document).on('change', '#other_products_table input[name="other_prices[]"]', function () {
+                CalcOtherProductInvoice(this)
+            })
+            $(document).on('change', '#other_products_table input[name="other_discount_amounts[]"]', function () {
+                CalcOtherProductInvoice(this)
             })
             // end calc the product invoice
 
@@ -483,6 +621,32 @@
                     $('#products_table input[name="total_prices_with_off[]"]')[index].value = res.data.total_price_with_off;
                     $('#products_table input[name="taxes[]"]')[index].value = res.data.tax;
                     $('#products_table input[name="invoice_nets[]"]')[index].value = res.data.invoice_net;
+                }
+            })
+        }
+
+        function CalcOtherProductInvoice(changeable) {
+            var index = $(changeable).parent().parent().index()
+            let count =  $('#other_products_table input[name="other_counts[]"]')[index].value;
+            let price = $('#other_products_table input[name="other_prices[]"]')[index].value;
+            let discount_amount = $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
+
+            $.ajax({
+                url: "{{ route('calcOtherProductsInvoice') }}",
+                type: 'post',
+                data: {
+                    'price': price,
+                    'count': count,
+                    'discount_amount': discount_amount,
+                },
+                success: function (res) {
+                    $('#other_products_table input[name="other_prices[]"]')[index].value = res.data.price;
+                    $('#other_products_table input[name="other_total_prices[]"]')[index].value = res.data.total_price;
+                    $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = res.data.discount_amount;
+                    $('#other_products_table input[name="other_extra_amounts[]"]')[index].value = res.data.extra_amount;
+                    $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = res.data.total_price_with_off;
+                    $('#other_products_table input[name="other_taxes[]"]')[index].value = res.data.tax;
+                    $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = res.data.invoice_net;
                 }
             })
         }

@@ -61,4 +61,9 @@ class Invoice extends Model
     {
         return $this->hasOne(Factor::class);
     }
+
+    public function other_products()
+    {
+        return $this->hasMany(OtherProduct::class);
+    }
 }

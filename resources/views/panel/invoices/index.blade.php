@@ -20,7 +20,7 @@
                             <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                                 <select class="form-control" name="status">
                                     <option value="all">وضعیت (همه)</option>
-                                    <option value="paid">تسویه شده</option>
+                                    <option value="return">عودت داده شده</option>
                                     <option value="pending">در دست اقدام</option>
                                 </select>
                             </div>
