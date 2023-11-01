@@ -14,7 +14,12 @@ class CustomerController extends Controller
     {
         $this->authorize('customers-list');
 
-        $customers = Customer::latest()->paginate(30);
+        if (auth()->user()->isAdmin()){
+            $customers = Customer::latest()->paginate(30);
+        }else{
+            $customers = Customer::where('user_id', auth()->id())->latest()->paginate(30);
+        }
+
         return view('panel.customers.index', compact('customers'));
     }
 
@@ -30,6 +35,7 @@ class CustomerController extends Controller
         $this->authorize('customers-create');
 
         Customer::create([
+            'user_id' => auth()->id(),
             'name' => $request->name,
             'type' => $request->type,
             'customer_type' => $request->customer_type,

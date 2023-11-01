@@ -14,6 +14,7 @@ class UpdateCustomersTable2 extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
+            $table->string('user_id')->after('id');
             $table->string('need_no')->nullable()->after('economical_number');
         });
     }
@@ -26,7 +27,7 @@ class UpdateCustomersTable2 extends Migration
     public function down()
     {
         Schema::table('customers', function (Blueprint $table) {
-            //
+            $table->dropColumn('need_no');
         });
     }
 }
