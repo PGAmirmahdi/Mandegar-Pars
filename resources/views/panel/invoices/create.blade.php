@@ -266,7 +266,6 @@
 
 @section('scripts')
     <script>
-
         var products = [];
         var colors = [];
 

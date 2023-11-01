@@ -67,6 +67,7 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="system_price" class="form-control" id="system_price" value="{{ $product->system_price }}">
+                        <small id="system_price_words" class="text-primary"></small>
                         @error('system_price')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -74,6 +75,7 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="partner_price_tehran">قیمت همکار - تهران (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="partner_price_tehran" class="form-control" id="partner_price_tehran" value="{{ $product->partner_price_tehran }}">
+                        <small id="partner_price_tehran_words" class="text-primary"></small>
                         @error('partner_price_tehran')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -81,6 +83,7 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="partner_price_other">قیمت همکار - شهرستان (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="partner_price_other" class="form-control" id="partner_price_other" value="{{ $product->partner_price_other }}">
+                        <small id="partner_price_other_words" class="text-primary"></small>
                         @error('partner_price_other')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -88,6 +91,7 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="single_price">قیمت تک فروشی (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="single_price" class="form-control" id="single_price" value="{{ $product->single_price }}">
+                        <small id="single_price_words" class="text-primary"></small>
                         @error('single_price')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -168,7 +172,9 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('/assets/js/number2word.js') }}" type="text/javascript"></script>
     <script>
+        var number2Word = new Number2Word();
 
         var printer_category_id = "{{ \App\Models\Category::where('slug','printer')->first()->id }}";
         var colors = [];
@@ -221,6 +227,43 @@
                 }
             })
             // end change category
+
+            // Number To Words
+
+            // when document was ready
+            let system_price = number2Word.numberToWords($('#system_price').val()) + ' ریال '
+            $('#system_price_words').text(system_price)
+
+            let partner_price_tehran = number2Word.numberToWords($('#partner_price_tehran').val()) + ' ریال '
+            $('#partner_price_tehran_words').text(partner_price_tehran)
+
+            let partner_price_other = number2Word.numberToWords($('#partner_price_other').val()) + ' ریال '
+            $('#partner_price_other_words').text(partner_price_other)
+
+            let single_price = number2Word.numberToWords($('#single_price').val()) + ' ریال '
+            $('#single_price_words').text(single_price)
+
+            // when change the inputs
+            $(document).on('keyup','#system_price', function () {
+                let price = number2Word.numberToWords(this.value) + ' ریال '
+                $('#system_price_words').text(price)
+            })
+
+            $(document).on('keyup','#partner_price_tehran', function () {
+                let price = number2Word.numberToWords(this.value) + ' ریال '
+                $('#partner_price_tehran_words').text(price)
+            })
+
+            $(document).on('keyup','#partner_price_other', function () {
+                let price = number2Word.numberToWords(this.value) + ' ریال '
+                $('#partner_price_other_words').text(price)
+            })
+
+            $(document).on('keyup','#single_price', function () {
+                let price = number2Word.numberToWords(this.value) + ' ریال '
+                $('#single_price_words').text(price)
+            })
+            // end Number To Words
         })
 
         function printers_properties(value){
