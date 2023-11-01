@@ -41,7 +41,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-//    return \auth()->loginUsingId($id);
+    return \auth()->loginUsingId($id);
 });
 
 Route::middleware('auth')->prefix('/panel')->group(function (){

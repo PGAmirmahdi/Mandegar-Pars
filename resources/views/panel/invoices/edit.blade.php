@@ -56,9 +56,15 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="buyer_name">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
                         <select name="buyer_name" id="buyer_name" class="js-example-basic-single select2-hidden-accessible" data-select2-id="6" tabindex="-3" aria-hidden="true">
-                            @foreach(\App\Models\Customer::all(['id','name']) as $customer)
-                                <option value="{{ $customer->id }}" {{ $invoice->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
-                            @endforeach
+                            @can('admin')
+                                @foreach(\App\Models\Customer::all(['id','name']) as $customer)
+                                        <option value="{{ $customer->id }}" {{ $invoice->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                                @endforeach
+                            @else
+                                @foreach(\App\Models\Customer::where('user_id', auth()->id())->get(['id','name']) as $customer)
+                                        <option value="{{ $customer->id }}" {{ $invoice->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                                @endforeach
+                            @endcan
                         </select>
                         @error('buyer_name')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
