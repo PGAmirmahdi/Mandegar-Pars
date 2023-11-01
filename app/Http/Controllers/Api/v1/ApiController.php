@@ -14,8 +14,16 @@ class ApiController extends Controller
     {
         $data = $request->all();
 
+        // users where has single-price-user permission
+        $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
+            $permission->where('name', 'single-price-user');
+        })->pluck('id');
+        $single_price_user = User::whereIn('role_id', $role_id)->first();
+        // end users where has single-price-user permission
+
         // create customer
         $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
+            'user_id' => $single_price_user->id,
             'name' => $data['first_name'].' '.$data['last_name'],
             'type' => 'private',
             'economical_number' => 0,
@@ -28,12 +36,6 @@ class ApiController extends Controller
             'customer_type' => 'single-sale',
         ]);
 
-        // users where has single-price-user permission
-        $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
-            $permission->where('name', 'single-price-user');
-        })->pluck('id');
-        $single_price_user = User::where('role_id', $role_id)->first();
-        // end users where has single-price-user permission
 
         // create invoice
         $invoice = \App\Models\Invoice::create([
