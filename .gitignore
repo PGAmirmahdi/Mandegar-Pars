@@ -21,3 +21,4 @@ yarn-error.log
 .lastlogin
 error_log
 /public/uploads/
+/ssl
