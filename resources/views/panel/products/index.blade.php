@@ -74,7 +74,4 @@
 @endsection
 @section('scripts')
     <script src="{{ asset('assets/js/lazysizes.min.js') }}"></script>
-    <script>
-
-    </script>
 @endsection

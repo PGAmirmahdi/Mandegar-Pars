@@ -77,7 +77,7 @@
                     <a href="javascript:void(0)" class="nav-link bg-none">
                         <div>
                             <figure class="avatar avatar-state-success avatar-sm">
-                                <img src="/assets/media/image/avatar.png" class="rounded-circle" alt="image">
+                                <img src="/assets/media/image/avatar.png" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ auth()->user()->fullName() }}" class="rounded-circle" alt="image">
                             </figure>
                         </div>
                     </a>
