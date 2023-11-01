@@ -37,6 +37,9 @@ use PDF as PDF;
 */
 
 Route::get('/', function () {
+    if (Auth::check()){
+        return redirect()->to('/panel');
+    }
     return view('auth.login');
 });
 
