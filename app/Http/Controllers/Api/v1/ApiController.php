@@ -52,6 +52,8 @@ class ApiController extends Controller
             'created_in' => 'website',
         ]);
 
+        $tax = 0.09;
+
         // create product items
         foreach ($request->items as $item){
             // for test
@@ -70,8 +72,8 @@ class ApiController extends Controller
                 'total_price' => $total,
                 'discount_amount' => 0,
                 'extra_amount' => 0,
-                'tax' => 0,
-                'invoice_net' => $total,
+                'tax' => $total * $tax,
+                'invoice_net' => (int)$total + ($total * $tax),
             ]);
 
             $invoice->factor()->updateOrCreate(['status' => 'paid']);
