@@ -46,6 +46,13 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="need_no">شماره نیاز</label>
+                        <input type="text" name="need_no" class="form-control" id="need_no" value="{{ old('need_no') }}">
+                        @error('need_no')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="national_number">شماره ثبت/ملی<span class="text-danger">*</span></label>
                         <input type="text" name="national_number" class="form-control" id="national_number" value="{{ old('national_number') }}">
                         @error('national_number')
