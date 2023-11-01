@@ -35,7 +35,11 @@
                     @foreach($products as $key => $product)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td><a href="{{ $product->image }}" target="_blank"><img src="{{ $product->image }}" width="40px"></a></td>
+                            <td>
+                                <a href="{{ $product->image }}" target="_blank">
+                                    <img data-src="{{ $product->image }}" class="lazyload" width="40px">
+                                </a>
+                            </td>
                             <td>{{ $product->title }}</td>
                             <td>{{ $product->code }}</td>
                             <td>{{ $product->category->name }}</td>
@@ -68,5 +72,9 @@
         </div>
     </div>
 @endsection
+@section('scripts')
+    <script src="{{ asset('assets/js/lazysizes.min.js') }}"></script>
+    <script>
 
-
+    </script>
+@endsection
