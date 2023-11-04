@@ -47,6 +47,15 @@
         <div class="form-group">
             <input type="password" name="password" class="form-control text-left" placeholder="رمز عبور" dir="ltr" required>
         </div>
+        <div class="form-group">
+            {!! captcha_img() !!}
+            <input type="text" name="captcha_code" class="form-control text-left mt-2 mb-0" placeholder="کد امنیتی" dir="ltr" required autofocus>
+            @error('captcha_code')
+                <span class="invalid-feedback d-block" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
         <button class="btn btn-primary btn-block">ورود</button>
         @error('phone')
         <span class="invalid-feedback d-block" role="alert">
