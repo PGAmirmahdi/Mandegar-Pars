@@ -79,6 +79,160 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title m-b-20">گزارشات پیش فاکتور</h6>
+                        <canvas id="chart_sale1" style="width: auto"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
+                        <canvas id="chart_sale2" style="width: auto"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endcan
+@endsection
+@section('scripts')
+    <script>
+        // sales chart
+        var invoices_provinces = {!! json_encode($invoices->pluck('province')) !!};
+        var invoices_amounts = {!! json_encode($invoices->pluck('amount')) !!};
+
+        var factors_provinces = {!! json_encode($factors->pluck('province')) !!};
+        var factors_amounts = {!! json_encode($factors->pluck('amount')) !!};
+
+        // invoices
+        if ($('#chart_sale1').length) {
+            var element1 = document.getElementById("chart_sale1");
+            element1.height = 146;
+            new Chart(element1, {
+                type: 'bar',
+                data: {
+                    labels: invoices_provinces,
+                    datasets: [
+                        {
+                            label: "مجموع فروش",
+                            backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            data: invoices_amounts,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function(value, index, values) {
+                                    const options = { style: 'decimal', useGrouping: true };
+                                    const formattedNumber = value.toLocaleString('en-US', options);
+                                    return formattedNumber + ' ریال ';
+                                }
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return formattedValue + ' ریال ';
+                            }
+                        }
+                    }
+                },
+            })
+        }
+        // end invoices
+
+        // factors
+        if ($('#chart_sale2').length) {
+            var element2 = document.getElementById("chart_sale2");
+            element2.height = 146;
+            new Chart(element2, {
+                type: 'bar',
+                data: {
+                    labels: factors_provinces,
+                    datasets: [
+                        {
+                            label: "مجموع فروش",
+                            backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            data: factors_amounts,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function(value, index, values) {
+                                    const options = { style: 'decimal', useGrouping: true };
+                                    const formattedNumber = value.toLocaleString('en-US', options);
+                                    return formattedNumber + ' ریال ';
+                                }
+
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return formattedValue + ' ریال ';
+                            }
+                        }
+                    }
+                },
+            })
+        }
+        //end factors
+        // end sales chart
+    </script>
 @endsection
 

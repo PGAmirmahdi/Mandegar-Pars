@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,7 +13,23 @@ class PanelController extends Controller
 {
     public function index()
     {
-        return view('panel.index');
+        $invoices = Invoice::whereHas('products', function ($query) {
+            $query->select('products.id', 'invoice_product.invoice_net');
+        })->where('status','!=','invoiced')
+            ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
+            ->groupBy('province')
+            ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
+            ->get(['province','amount']);
+
+        $factors = Invoice::whereHas('products', function ($query) {
+            $query->select('products.id', 'invoice_product.invoice_net');
+        })->where('status','invoiced')
+            ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
+            ->groupBy('province')
+            ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
+            ->get(['province','amount']);
+
+        return view('panel.index', compact('invoices','factors'));
     }
 
     public function readNotification($notification = null)
