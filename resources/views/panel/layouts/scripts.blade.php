@@ -19,7 +19,7 @@
 
 <!-- Vamp -->
 <script src="/vendors/vmap/jquery.vmap.min.js"></script>
-<script src="/vendors/vmap/maps/jquery.vmap.usa.js"></script>
+<script src="/vendors/vmap/maps/jquery.vmap.iran.js"></script>
 <script src="/assets/js/examples/vmap.js"></script>
 
 <!-- CKEditor -->
