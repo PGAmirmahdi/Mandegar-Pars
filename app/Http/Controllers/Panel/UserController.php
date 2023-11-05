@@ -65,12 +65,20 @@ class UserController extends Controller
     {
         $this->authorize('users-edit');
 
+        if (auth()->user()->isAdmin()){
+            if ($user->sign_image){
+                unlink(public_path($user->sign_image));
+            }
+            $sign_image = upload_file($request->file('sign_image'),'Signs');
+        }
+
         $user->update([
             'name' => $request->name,
             'family' => $request->family,
             'phone' => $request->phone,
             'role_id' => $request->role ?? $user->role_id,
             'password' => $request->password ? bcrypt($request->password) : $user->password,
+            'sign_image' => $sign_image ?? $user->sign_image
         ]);
 
         if (Gate::allows('edit-profile',$user->id)){

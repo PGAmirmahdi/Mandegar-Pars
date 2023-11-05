@@ -40,6 +40,21 @@
         .guide_box{
             text-align: center;
         }
+
+        #seller_sign_sec{
+            position: relative;
+        }
+
+        #seller_sign_sec small{
+            position: absolute;
+        }
+
+        #seller_sign_sec img{
+            position: absolute;
+            top: -15px;
+            left: 35%;
+            width: 8rem;
+        }
     </style>
 
 @endsection
@@ -270,7 +285,10 @@
                                         <td colspan="10">لطفا مبلغ فاکتور را به شماره شبا IR55 0110 0000 0010 3967 1380 01 نزد بانک صنعت و معدن شعبه مرکزی واریز فرمایید.</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6"><small>مهر و امضای فروشنده</small></td>
+                                        <td colspan="6" id="seller_sign_sec">
+                                            <img src="{{ $invoice->user->sign_image ?? '' }}">
+                                            <small>مهر و امضای فروشنده</small>
+                                        </td>
                                         <td colspan="6"><small>مهر و امضای خریدار</small></td>
                                     </tr>
                                 </tbody>

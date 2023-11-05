@@ -6,7 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ویرایش کاربر</h6>
             </div>
-            <form action="{{ route('users.update', $user->id) }}" method="post">
+            <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
                 <div class="form-row">
@@ -52,6 +52,13 @@
                                 @enderror
                             </div>
                         @endif
+                        <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                            <label for="sign_image">تصویر امضاء (PNG)</label>
+                            <input type="file" class="form-control" name="sign_image" id="sign_image" accept="image/png">
+                            @error('sign_image')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
                     @endcan
                 </div>
                 <button class="btn btn-primary" type="submit">ثبت فرم</button>
