@@ -103,7 +103,6 @@ class InvoiceController extends Controller
         $this->storeInvoiceProducts($invoice, $request);
 
         $invoice->update([
-            'user_id' => auth()->id(),
             'customer_id' => $request->buyer_name,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
@@ -299,7 +298,7 @@ class InvoiceController extends Controller
         }
 
         $invoice->other_products()->delete();
-        
+
         if ($request->other_products){
             foreach ($request->other_products as $key => $product){
                 $invoice->other_products()->create([
