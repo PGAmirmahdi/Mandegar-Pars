@@ -49,11 +49,18 @@
             position: absolute;
         }
 
-        #seller_sign_sec img{
+        #seller_sign_sec .sign{
             position: absolute;
             top: -60px;
             left: 34%;
             width: 10rem;
+        }
+
+        #seller_sign_sec .stamp{
+            position: absolute;
+            top: -41px;
+            left: 31%;
+            width: 13rem;
         }
     </style>
 
@@ -286,7 +293,8 @@
                                     </tr>
                                     <tr>
                                         <td colspan="6" id="seller_sign_sec">
-                                            <img src="{{ $invoice->user->sign_image ?? '' }}">
+                                            <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign">
+                                            <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp">
                                             <small>مهر و امضای فروشنده</small>
                                         </td>
                                         <td colspan="6"><small>مهر و امضای خریدار</small></td>
