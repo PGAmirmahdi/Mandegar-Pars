@@ -25,8 +25,8 @@ class PanelController extends Controller
                 ->get();
 
             // invoices - invoiced status
-            $invoices2 = Invoice::whereHas('products', function ($query) {
-                $query->select('products.id', 'other_products.invoice_net');
+            $invoices2 = Invoice::whereHas('other_products', function ($query) {
+                $query->select('other_products.invoice_net');
             })->where('status','!=','invoiced')
                 ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
                 ->groupBy('province')
@@ -59,8 +59,8 @@ class PanelController extends Controller
                 ->get(['province','amount']);
 
             // factors - not invoiced status
-            $factors2 = Invoice::whereHas('products', function ($query) {
-                $query->select('products.id', 'other_products.invoice_net');
+            $factors2 = Invoice::whereHas('other_products', function ($query) {
+                $query->select('other_products.invoice_net');
             })->where('status','invoiced')
                 ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
                 ->groupBy('province')
