@@ -106,7 +106,7 @@
         <div class="card-body" id="printable_sec">
             <div class="card-title">
                 <div class="row">
-                    <div class="col-5">
+                    <div class="col-4">
                         <img src="/assets/media/image/header-logo.png" style="width: 15rem;">
                     </div>
                     <div class="col-2 text-right">
