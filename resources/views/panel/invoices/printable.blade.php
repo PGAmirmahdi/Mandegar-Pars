@@ -84,7 +84,10 @@
         <div class="card-body" id="printable_sec">
             <div class="card-title">
                 <div class="row">
-                    <div class="col-7 text-right">
+                    <div class="col-5">
+                        <img src="/assets/media/image/header-logo.png" style="width: 15rem;">
+                    </div>
+                    <div class="col-2 text-right">
                         @if(request()->type == 'pishfactor')
                             <h3>پیش فاکتور</h3>
                         @else
