@@ -37,7 +37,6 @@
                     <tr>
                         <th>#</th>
                         <th>خریدار</th>
-                        <th>شماره اقتصادی</th>
                         <th>استان</th>
                         <th>شهر</th>
                         <th>شماره تماس</th>
@@ -57,7 +56,6 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $invoice->customer->name }}</td>
-                            <td>{{ $invoice->economical_number }}</td>
                             <td>{{ $invoice->province }}</td>
                             <td>{{ $invoice->city }}</td>
                             <td>{{ $invoice->phone }}</td>

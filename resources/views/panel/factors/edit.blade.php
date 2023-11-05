@@ -46,7 +46,7 @@
                 <h6>ویرایش فاکتور</h6>
                 <a href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'factor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
             </div>
-            <form action="{{ route('factors.update', $factor->id) }}" method="post">
+            <form action="{{ route('factors.update', $factor->id) }}" method="post" id="invoice_form">
                 @csrf
                 @method('PATCH')
                 <div class="form-row">
@@ -372,6 +372,13 @@
         var products = [];
         var colors = [];
         var invoice_id = "{{ $factor->invoice->id }}";
+
+        var form = document.getElementById('invoice_form');
+        form.addEventListener('keypress', function(e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+            }
+        })
 
         @foreach(\App\Models\Product::all(['id','title']) as $product)
         products.push({

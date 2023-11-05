@@ -17,7 +17,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ایجاد پیش فاکتور</h6>
             </div>
-            <form action="{{ route('invoices.store') }}" method="post">
+            <form action="{{ route('invoices.store') }}" method="post" id="invoice_form">
                 @csrf
                 <div class="form-row">
                     <div class="col-12 mb-4 text-center">
@@ -268,6 +268,13 @@
     <script>
         var products = [];
         var colors = [];
+
+        var form = document.getElementById('invoice_form');
+        form.addEventListener('keypress', function(e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+            }
+        })
 
         @foreach(\App\Models\Product::all(['id','title']) as $product)
             products.push({
