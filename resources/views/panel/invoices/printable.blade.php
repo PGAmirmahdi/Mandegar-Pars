@@ -51,9 +51,9 @@
 
         #seller_sign_sec img{
             position: absolute;
-            top: -15px;
-            left: 35%;
-            width: 8rem;
+            top: -60px;
+            left: 34%;
+            width: 10rem;
         }
     </style>
 

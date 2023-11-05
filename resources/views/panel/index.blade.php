@@ -172,6 +172,11 @@
                             }
                         }],
                         yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'ریال',
+                                fontSize: 18
+                            },
                             ticks: {
                                 min: 0,
                                 fontSize: 15,
@@ -179,7 +184,7 @@
                                 callback: function(value, index, values) {
                                     const options = { style: 'decimal', useGrouping: true };
                                     const formattedNumber = value.toLocaleString('en-US', options);
-                                    return formattedNumber + ' ریال ';
+                                    return formattedNumber;
                                 }
                             },
                             gridLines: {
@@ -234,6 +239,11 @@
                             }
                         }],
                         yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'ریال',
+                                fontSize: 18
+                            },
                             ticks: {
                                 min: 0,
                                 fontSize: 15,
@@ -241,7 +251,7 @@
                                 callback: function(value, index, values) {
                                     const options = { style: 'decimal', useGrouping: true };
                                     const formattedNumber = value.toLocaleString('en-US', options);
-                                    return formattedNumber + ' ریال ';
+                                    return formattedNumber;
                                 }
 
                             },
