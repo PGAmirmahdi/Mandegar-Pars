@@ -101,6 +101,7 @@
 @endsection
 @section('scripts')
     <script>
+        @can('admin')
         // sales chart
         var invoices_provinces = {!! json_encode($invoices->pluck('province')) !!};
         var invoices_amounts = {!! json_encode($invoices->pluck('amount')) !!};
@@ -233,6 +234,7 @@
         }
         //end factors
         // end sales chart
+        @endcan
     </script>
 @endsection
 

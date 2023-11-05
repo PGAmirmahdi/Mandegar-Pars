@@ -13,23 +13,80 @@ class PanelController extends Controller
 {
     public function index()
     {
-        $invoices = Invoice::whereHas('products', function ($query) {
-            $query->select('products.id', 'invoice_product.invoice_net');
-        })->where('status','!=','invoiced')
-            ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
-            ->groupBy('province')
-            ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
-            ->get(['province','amount']);
+        if (\auth()->user()->isAdmin()){
 
-        $factors = Invoice::whereHas('products', function ($query) {
-            $query->select('products.id', 'invoice_product.invoice_net');
-        })->where('status','invoiced')
-            ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
-            ->groupBy('province')
-            ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
-            ->get(['province','amount']);
+            // invoices - not invoiced status
+            $invoices1 = Invoice::whereHas('products', function ($query) {
+                $query->select('products.id', 'invoice_product.invoice_net');
+            })->where('status','!=','invoiced')
+                ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
+                ->groupBy('province')
+                ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
+                ->get();
 
-        return view('panel.index', compact('invoices','factors'));
+            // invoices - invoiced status
+            $invoices2 = Invoice::whereHas('products', function ($query) {
+                $query->select('products.id', 'other_products.invoice_net');
+            })->where('status','!=','invoiced')
+                ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
+                ->groupBy('province')
+                ->select('province', DB::raw('SUM(other_products.invoice_net) as amount'))
+                ->get();
+
+            // merge same province invoices and sum it amounts
+            $invoices = collect();
+            $invoices = $invoices->merge($invoices1);
+
+            $invoices2->each(function ($item) use ($invoices) {
+                $existingInvoice = $invoices->firstWhere('province', $item->province);
+
+                if ($existingInvoice) {
+                    $existingInvoice->amount += $item->amount;
+                } else {
+                    $invoices->push($item);
+                }
+            });
+            // end merge same province invoices and sum it amounts
+
+
+            // factors - invoiced status
+            $factors1 = Invoice::whereHas('products', function ($query) {
+                $query->select('products.id', 'invoice_product.invoice_net');
+            })->where('status','invoiced')
+                ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
+                ->groupBy('province')
+                ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
+                ->get(['province','amount']);
+
+            // factors - not invoiced status
+            $factors2 = Invoice::whereHas('products', function ($query) {
+                $query->select('products.id', 'other_products.invoice_net');
+            })->where('status','invoiced')
+                ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
+                ->groupBy('province')
+                ->select('province', DB::raw('SUM(other_products.invoice_net) as amount'))
+                ->get();
+
+            // merge same province factors and sum it amounts
+            $factors = collect();
+            $factors = $factors->merge($factors1);
+
+            $factors2->each(function ($item) use ($factors) {
+                $existingInvoice = $factors->firstWhere('province', $item->province);
+
+                if ($existingInvoice) {
+                    $existingInvoice->amount += $item->amount;
+                } else {
+                    $factors->push($item);
+                }
+            });
+            // end merge same province factors and sum it amounts
+
+            return view('panel.index', compact('invoices','factors'));
+
+        }
+
+        return view('panel.index');
     }
 
     public function readNotification($notification = null)
