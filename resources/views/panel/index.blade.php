@@ -36,6 +36,21 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-3">
                                     <div>
+                                        <div class="icon-block icon-block-sm bg-secondary icon-block-floating mr-2">
+                                            <i class="fa fa-users"></i>
+                                        </div>
+                                    </div>
+                                    <span class="font-size-13">مشتریان</span>
+                                    <h2 class="mb-0 ml-auto font-weight-bold text-secondary primary-font line-height-30">{{ \App\Models\Customer::count() }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card border mb-0">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div>
                                         <div class="icon-block icon-block-sm bg-info icon-block-floating mr-2">
                                             <i class="fa fa-product-hunt"></i>
                                         </div>
@@ -56,7 +71,22 @@
                                         </div>
                                     </div>
                                     <span class="font-size-13">پیش فاکتور</span>
-                                    <h2 class="mb-0 ml-auto font-weight-bold text-primary primary-font line-height-30">{{ \App\Models\Invoice::count() }}</h2>
+                                    <h2 class="mb-0 ml-auto font-weight-bold text-primary primary-font line-height-30">{{ \App\Models\Invoice::where('status','!=','invoiced')->count() }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card border mb-0">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div>
+                                        <div class="icon-block icon-block-sm bg-primary icon-block-floating mr-2">
+                                            <i class="fa fa-shopping-cart"></i>
+                                        </div>
+                                    </div>
+                                    <span class="font-size-13">فاکتور</span>
+                                    <h2 class="mb-0 ml-auto font-weight-bold text-primary primary-font line-height-30">{{ \App\Models\Invoice::where('status','invoiced')->count() }}</h2>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +110,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                 <div class="card">
                     <div class="card-body">
                         <h6 class="card-title m-b-20">گزارشات پیش فاکتور</h6>
@@ -88,7 +118,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                 <div class="card">
                     <div class="card-body">
                         <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
