@@ -283,12 +283,14 @@
                                             </td>
                                             <td>
                                                 <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ $product->price }}" required>
+                                                <span class="price_with_grouping text-primary"></span>
                                             </td>
                                             <td>
                                                 <input type="number" name="other_total_prices[]" class="form-control" min="0" value="{{ $product->total_price }}" readonly>
                                             </td>
                                             <td>
                                                 <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="{{ $product->discount_amount }}" required>
+                                                <span class="price_with_grouping text-primary"></span>
                                             </td>
                                             <td>
                                                 <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="{{ $product->extra_amount }}" readonly>
@@ -434,12 +436,14 @@
                 </td>
                 <td>
                     <input type="number" name="other_prices[]" class="form-control" min="0" value="0" required>
+                    <span class="price_with_grouping text-primary"></span>
                 </td>
                 <td>
                     <input type="number" name="other_total_prices[]" class="form-control" min="0" value="0" readonly>
                 </td>
                 <td>
                     <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="0" required>
+                    <span class="price_with_grouping text-primary"></span>
                 </td>
                 <td>
                     <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0" readonly>
@@ -599,6 +603,10 @@
             let count =  $('#other_products_table input[name="other_counts[]"]')[index].value;
             let price = $('#other_products_table input[name="other_prices[]"]')[index].value;
             let discount_amount = $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
+
+            // thousands grouping
+            $($('#other_products_table input[name="other_prices[]"]')[index]).siblings()[0].innerText = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $($('#other_products_table input[name="other_discount_amounts[]"]')[index]).siblings()[0].innerText = discount_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
             $.ajax({
                 url: "{{ route('calcOtherProductsInvoice') }}",
