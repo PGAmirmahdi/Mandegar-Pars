@@ -11,6 +11,7 @@ use App\Http\Controllers\Panel\PacketController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
 use App\Http\Controllers\Panel\RoleController;
+use App\Http\Controllers\Panel\ScrapController;
 use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\PanelController;
@@ -111,6 +112,8 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Factors
     Route::resource('factors', FactorController::class)->except(['show','create','store']);
 
+    // Web Scrap
+    Route::get('scrap', [ScrapController::class, 'index']);
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
