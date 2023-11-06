@@ -134,55 +134,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>
-                                        <select class="form-control" name="products[]" required>
-                                            <option value="" disabled selected>انتخاب کنید...</option>
-                                            @foreach(\App\Models\Product::all(['id','title']) as $product)
-                                                <option value="{{ $product->id }}">{{ $product->title }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-control" name="colors[]">
-                                            @foreach(\App\Models\Product::COLORS as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="counts[]" class="form-control" min="1" value="1" required>
-                                    </td>
-                                    <td>
-                                        <select class="form-control" name="units[]">
-                                            <option value="number">عدد</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="prices[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="total_prices[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="discount_amounts[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="extra_amounts[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="taxes[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="invoice_nets[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                                    </td>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -213,52 +164,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" name="other_products[]" class="form-control" placeholder="عنوان کالا" required>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="other_colors[]" class="form-control" placeholder="نام رنگ" required>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="other_counts[]" class="form-control" min="1" value="1" required>
-                                    </td>
-                                    <td>
-                                        <select class="form-control" name="other_units[]">
-                                            <option value="number">عدد</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="other_prices[]" class="form-control" min="0" value="0" required>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="other_total_prices[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="0" required>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="other_taxes[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                                    </td>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
             </form>
         </div>
     </div>
@@ -355,7 +266,7 @@
             // end add artin property
 
             // add other property
-            $('#btn_other_add').on('click', function () {
+                $('#btn_other_add').on('click', function () {
                 $('#other_products_table tbody').append(`
                 <tr>
                 <td>
@@ -410,18 +321,23 @@
 
             // calc the product invoice
             $(document).on('change', '#products_table select[name="products[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this)
             })
-            $(document).on('change', '#products_table input[name="counts[]"]', function () {
+            $(document).on('keyup change', '#products_table input[name="counts[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this)
             })
-            $(document).on('change', '#other_products_table input[name="other_counts[]"]', function () {
+            $(document).on('keyup change', '#other_products_table input[name="other_counts[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcOtherProductInvoice(this)
             })
-            $(document).on('change', '#other_products_table input[name="other_prices[]"]', function () {
+            $(document).on('keyup change', '#other_products_table input[name="other_prices[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcOtherProductInvoice(this)
             })
-            $(document).on('change', '#other_products_table input[name="other_discount_amounts[]"]', function () {
+            $(document).on('keyup change', '#other_products_table input[name="other_discount_amounts[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcOtherProductInvoice(this)
             })
             // end calc the product invoice
@@ -467,6 +383,11 @@
                     $('#products_table input[name="total_prices_with_off[]"]')[index].value = res.data.total_price_with_off;
                     $('#products_table input[name="taxes[]"]')[index].value = res.data.tax;
                     $('#products_table input[name="invoice_nets[]"]')[index].value = res.data.invoice_net;
+
+                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                },
+                error: function (request, status, error) {
+                    //
                 }
             })
         }
@@ -493,6 +414,11 @@
                     $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = res.data.total_price_with_off;
                     $('#other_products_table input[name="other_taxes[]"]')[index].value = res.data.tax;
                     $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = res.data.invoice_net;
+
+                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                },
+                error: function (request, status, error) {
+                    //
                 }
             })
         }
