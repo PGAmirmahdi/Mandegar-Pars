@@ -19,7 +19,15 @@
     <!-- App styles -->
     <link rel="stylesheet" href="assets/css/app.css" type="text/css">
 </head>
-
+<style>
+    #captcha_sec img{
+        cursor: pointer;
+    }
+    #captcha_sec input{
+        text-align: center !important;
+        letter-spacing: 1rem;
+    }
+</style>
 <body class="form-membership">
 
 <!-- begin::page loader-->
@@ -47,7 +55,7 @@
         <div class="form-group">
             <input type="password" name="password" class="form-control text-left" placeholder="رمز عبور" dir="ltr" required>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="captcha_sec">
             {!! captcha_img() !!}
             <input type="text" name="captcha_code" class="form-control text-left mt-2 mb-0" placeholder="کد امنیتی" dir="ltr" required autofocus>
             @error('captcha_code')
@@ -72,6 +80,21 @@
 
 <!-- App scripts -->
 <script src="assets/js/app.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '#captcha_sec img', function (){
+            $.ajax({
+                type: 'get',
+                url: '/captcha/api',
+                success: function (res){
+                    $('#captcha_sec img').attr('src',res.img)
+                    // console.log($(this))
+                }
+            })
+        })
+    })
+</script>
 </body>
 
 </html>
