@@ -25,6 +25,9 @@ class Kernel extends ConsoleKernel
         // cron set every day at 00:00 for this job
         $schedule->job(InvoiceDeadlineJob::class);
 
+        // backup database
+        $schedule->command('backup:run --only-db');
+
         // test cron job
         // $schedule->call(function(){
         //     Notification::send(User::find(1), new SendMessage('test', 'test'));
