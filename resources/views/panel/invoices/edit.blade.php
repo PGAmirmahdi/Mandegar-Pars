@@ -85,6 +85,13 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="need_no">شماره نیاز</label>
+                        <input type="text" name="need_no" class="form-control" id="need_no" value="{{ $invoice->need_no }}">
+                        @error('need_no')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="postal_code">کد پستی<span class="text-danger">*</span></label>
                         <input type="text" name="postal_code" class="form-control" id="postal_code" value="{{ $invoice->postal_code }}">
                         @error('postal_code')

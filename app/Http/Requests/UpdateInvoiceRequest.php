@@ -27,6 +27,7 @@ class UpdateInvoiceRequest extends FormRequest
             'buyer_name' => 'required',
             'economical_number' => (auth()->user()->isSystemUser() ? 'required|numeric' : 'nullable|numeric'),
             'national_number' => 'required|numeric',
+            'need_no' => 'nullable|numeric',
             'postal_code' => 'required|numeric',
             'phone' => 'required',
             'province' => 'required',

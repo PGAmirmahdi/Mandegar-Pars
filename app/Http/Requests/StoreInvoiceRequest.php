@@ -28,6 +28,7 @@ class StoreInvoiceRequest extends FormRequest
             'national_number' => 'required|numeric',
             'postal_code' => 'required|numeric',
             'economical_number' => (auth()->user()->isSystemUser() ? 'required|numeric' : 'nullable|numeric'),
+            'need_no' => 'nullable|numeric',
             'phone' => 'required',
             'province' => 'required',
             'city' => 'required',
