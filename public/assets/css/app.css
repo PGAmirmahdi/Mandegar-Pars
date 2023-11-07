@@ -9465,7 +9465,6 @@ body.form-membership .form-wrapper hr {
 	justify-content: space-between;
 	padding: 10px 0;
 	overflow: hidden;
-    overflow-y: auto;
 }
 
 .navigation .navigation-icon-menu ul:first-child {

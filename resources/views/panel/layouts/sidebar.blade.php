@@ -1,6 +1,6 @@
 <!-- begin::navigation -->
 <div class="navigation">
-    <div class="navigation-icon-menu">
+    <div class="navigation-icon-menu" style="overflow-y: auto">
         <ul>
             <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit','leaves','leaves/create','leaves/{leave}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
                 <a href="#navigationDashboards" title="داشبوردها">
