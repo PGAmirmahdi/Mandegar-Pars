@@ -393,7 +393,7 @@
                 }
             })
         }
-
+        var timeout;
         function CalcOtherProductInvoice(changeable) {
             var index = $(changeable).parent().parent().index()
             let count =  $('#other_products_table input[name="other_counts[]"]')[index].value;
@@ -404,30 +404,34 @@
             $($('#other_products_table input[name="other_prices[]"]')[index]).siblings()[0].innerText = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $($('#other_products_table input[name="other_discount_amounts[]"]')[index]).siblings()[0].innerText = discount_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-            $.ajax({
-                url: "{{ route('calcOtherProductsInvoice') }}",
-                type: 'post',
-                async: false,
-                data: {
-                    'price': price,
-                    'count': count,
-                    'discount_amount': discount_amount,
-                },
-                success: function (res) {
-                    $('#other_products_table input[name="other_prices[]"]')[index].value = res.data.price;
-                    $('#other_products_table input[name="other_total_prices[]"]')[index].value = res.data.total_price;
-                    $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = res.data.discount_amount;
-                    $('#other_products_table input[name="other_extra_amounts[]"]')[index].value = res.data.extra_amount;
-                    $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = res.data.total_price_with_off;
-                    $('#other_products_table input[name="other_taxes[]"]')[index].value = res.data.tax;
-                    $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = res.data.invoice_net;
+            clearTimeout(timeout);
+            timeout = setTimeout(function (){
+                $.ajax({
+                    url: "{{ route('calcOtherProductsInvoice') }}",
+                    type: 'post',
+                    async: false,
+                    data: {
+                        'price': price,
+                        'count': count,
+                        'discount_amount': discount_amount,
+                    },
+                    success: function (res) {
+                        $('#other_products_table input[name="other_prices[]"]')[index].value = res.data.price;
+                        $('#other_products_table input[name="other_total_prices[]"]')[index].value = res.data.total_price;
+                        $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = res.data.discount_amount;
+                        $('#other_products_table input[name="other_extra_amounts[]"]')[index].value = res.data.extra_amount;
+                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = res.data.total_price_with_off;
+                        $('#other_products_table input[name="other_taxes[]"]')[index].value = res.data.tax;
+                        $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = res.data.invoice_net;
 
-                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
-                },
-                error: function (request, status, error) {
-                    //
-                }
-            })
+                        $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                    },
+                    error: function (request, status, error) {
+                        //
+                    }
+                })
+
+            }, 3000)
         }
 
     </script>
