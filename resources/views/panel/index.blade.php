@@ -109,29 +109,28 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title m-b-20">گزارشات پیش فاکتور</h6>
-                        <canvas id="chart_sale1" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
-                        <canvas id="chart_sale2" style="width: auto"></canvas>
-                    </div>
+    @endcan
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title m-b-20">گزارشات پیش فاکتور</h6>
+                    <canvas id="chart_sale1" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
-    @endcan
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
+                    <canvas id="chart_sale2" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scripts')
     <script>
-        @can('admin')
         // sales chart
         var invoices_provinces = {!! json_encode($invoices->pluck('province')) !!};
         var invoices_amounts = {!! json_encode($invoices->pluck('amount')) !!};
@@ -274,7 +273,6 @@
         }
         //end factors
         // end sales chart
-        @endcan
     </script>
 @endsection
 
