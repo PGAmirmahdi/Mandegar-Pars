@@ -141,6 +141,7 @@ class InvoiceController extends Controller
 
         $product = Product::find($request->product_id);
         $price = $product->getPrice();
+
         $total_price = $price * $request->count;
 
         if ($usedCoupon){
