@@ -64,6 +64,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Products
     Route::resource('products', ProductController::class)->except('show');
+    Route::post('products', [ProductController::class, 'search'])->name('products.search');
 
     // Printers
     Route::resource('printers', PrinterController::class)->except('show');
@@ -108,6 +109,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Price History
     Route::get('price-history', [ProductController::class, 'pricesHistory'])->name('price-history');
+    Route::post('price-history', [ProductController::class, 'pricesHistorySearch'])->name('price-history');
 
     // Login Account
     Route::match(['get','post'],'ud54g78d2fs77gh6s$4sd15p5d',[PanelController::class, 'login'])->name('login-account');

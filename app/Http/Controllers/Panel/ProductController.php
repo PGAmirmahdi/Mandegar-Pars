@@ -130,6 +130,17 @@ class ProductController extends Controller
         return back();
     }
 
+    public function search(Request $request)
+    {
+        $this->authorize('products-list');
+
+        $products = Product::where('title', 'like', "%$request->title%")->when($request->code, function ($query) use ($request) {
+            return $query->where('code', $request->code);
+        })->latest()->paginate(30);
+
+        return view('panel.products.index', compact('products'));
+    }
+
     public function priceList($type)
     {
         $this->authorize('prices-list');
@@ -159,6 +170,16 @@ class ProductController extends Controller
         $this->authorize('price-history');
 
         $pricesHistory = PriceHistory::latest()->paginate(30);
+        return view('panel.prices.history', compact('pricesHistory'));
+    }
+
+    public function pricesHistorySearch(Request $request)
+    {
+        $this->authorize('price-history');
+
+        $products_id = Product::where('title','like', "%$request->title%")->pluck('id');
+        $pricesHistory = PriceHistory::whereIn('product_id', $products_id)->latest()->paginate(30);
+
         return view('panel.prices.history', compact('pricesHistory'));
     }
 

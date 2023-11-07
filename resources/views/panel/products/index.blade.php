@@ -12,6 +12,20 @@
                     </a>
                 @endcan
             </div>
+            <form action="" method="post" id="search_form">
+                @csrf
+            </form>
+            <div class="row mb-3">
+                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                    <input type="text" name="code" class="form-control" placeholder="کد محصول" value="{{ request()->code ?? null }}" form="search_form">
+                </div>
+                <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
+                    <input type="text" name="title" class="form-control" placeholder="عنوان محصول" value="{{ request()->title ?? null }}" form="search_form">
+                </div>
+                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
@@ -68,7 +82,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="d-flex justify-content-center">{{ $products->links() }}</div>
+            <div class="d-flex justify-content-center">{{ $products->appends(request()->all())->links() }}</div>
         </div>
     </div>
 @endsection
