@@ -407,7 +407,6 @@
             $.ajax({
                 url: "{{ route('calcOtherProductsInvoice') }}",
                 type: 'post',
-                async: false,
                 data: {
                     'price': price,
                     'count': count,

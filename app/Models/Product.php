@@ -57,7 +57,7 @@ class Product extends Model
             return $this->system_price;
         }elseif (auth()->user()->hasPermission('partner-other-user')){
             return $this->partner_price_other;
-        }elseif (auth()->user()->hasPermission('partner_price_tehran')){
+        }elseif (auth()->user()->hasPermission('partner-tehran-user')){
             return $this->partner_price_tehran;
         }else{
             return $this->single_price;
