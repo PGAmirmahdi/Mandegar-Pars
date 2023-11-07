@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Coupon;
+use App\Models\Customer;
 use App\Models\Factor;
 use App\Models\Invoice;
 use App\Models\Product;
+use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -26,7 +28,9 @@ class InvoiceController extends Controller
             $invoices = Invoice::where('created_in', 'automation')->where('user_id', auth()->id())->where('status','!=','invoiced')->latest()->paginate(30);
         }
 
-        return view('panel.invoices.index', compact('invoices'));
+        $customers = auth()->user()->isAdmin() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+
+        return view('panel.invoices.index', compact('invoices','customers'));
     }
 
     public function create()
@@ -196,10 +200,28 @@ class InvoiceController extends Controller
     public function search(Request $request)
     {
         $this->authorize('invoices-list');
-        $status = $request->status == 'all' ? array_keys(Invoice::STATUS) : [$request->status];
+        $customers = auth()->user()->isAdmin() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
-        $invoices = Invoice::whereIn('status', $status)->latest()->paginate(30);
-        return view('panel.invoices.index', compact('invoices'));
+        $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
+        $status = $request->status == 'all' ? ['pending','return'] : [$request->status];
+        $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
+
+        if (auth()->user()->isAdmin()){
+            $invoices = Invoice::where('created_in', 'automation')
+                ->whereIn('customer_id', $customers_id)
+                ->whereIn('status', $status)
+                ->whereIn('province', $province)
+                ->latest()->paginate(30);
+        }else{
+            $invoices = Invoice::where('created_in', 'automation')
+                ->whereIn('customer_id', $customers_id)
+                ->whereIn('status', $status)
+                ->whereIn('province', $province)
+                ->where('user_id', auth()->id())
+                ->latest()->paginate(30);
+        }
+
+        return view('panel.invoices.index', compact('invoices','customers'));
     }
 
     public function applyDiscount(Request $request)
