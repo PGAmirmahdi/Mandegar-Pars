@@ -51,6 +51,11 @@ class Product extends Model
         ]);
     }
 
+    public function histories()
+    {
+        return $this->hasMany(PriceHistory::class);
+    }
+
     public function getPrice()
     {
         if (auth()->user()->hasPermission('system-user')){

@@ -8,7 +8,7 @@
                 </a>
             </li>
             @canany(['categories-list','products-list','printers-list','prices-list'])
-                <li class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="محصولات">
+                <li class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history']) ? 'active' : '' }}" data-toggle="tooltip" title="محصولات">
                     <a href="#navigationProducts" title="محصولات">
                         <i class="icon ti-view-list"></i>
                     </a>
@@ -85,7 +85,7 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationProducts" class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list']) ? 'navigation-active' : '' }}">
+        <ul id="navigationProducts" class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">محصولات</li>
 {{--            @can('categories-list')--}}
 {{--                <li>--}}
@@ -100,6 +100,11 @@
             @can('prices-list')
                 <li>
                     <a class="{{ active_sidebar(['prices-list']) ? 'active' : '' }}" href="{{ route('prices-list') }}">لیست قیمت ها</a>
+                </li>
+            @endcan
+            @can('price-history')
+                <li>
+                    <a class="{{ active_sidebar(['price-history']) ? 'active' : '' }}" href="{{ route('price-history') }}">تاریخچه قیمت ها</a>
                 </li>
             @endcan
             @can('printers-list')

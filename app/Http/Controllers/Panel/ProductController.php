@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
+use App\Models\PriceHistory;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +84,9 @@ class ProductController extends Controller
             $image = upload_file($request->image, 'Products');
         }
 
+        // price history
+        $this->priceHistory($product, $request);
+
         // product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
@@ -150,6 +154,14 @@ class ProductController extends Controller
         return $pdf->stream("$name.pdf");
     }
 
+    public function pricesHistory()
+    {
+        $this->authorize('price-history');
+
+        $pricesHistory = PriceHistory::latest()->paginate(30);
+        return view('panel.prices.history', compact('pricesHistory'));
+    }
+
     private function json_properties($request){
         $items = [];
         foreach ($request->colors as $key => $color){
@@ -160,5 +172,37 @@ class ProductController extends Controller
             ];
         }
         return json_encode($items);
+    }
+
+    private function priceHistory($product, $request)
+    {
+        if ($request->system_price != $product->system_price){
+            $product->histories()->create([
+                'price_field' => 'system_price',
+                'price_amount_from' => $product->system_price,
+                'price_amount_to' => $request->system_price,
+            ]);
+        }
+        if ($request->partner_price_tehran != $product->partner_price_tehran){
+            $product->histories()->create([
+                'price_field' => 'partner_price_tehran',
+                'price_amount_from' => $product->partner_price_tehran,
+                'price_amount_to' => $request->partner_price_tehran,
+            ]);
+        }
+        if ($request->partner_price_other != $product->partner_price_other){
+            $product->histories()->create([
+                'price_field' => 'partner_price_other',
+                'price_amount_from' => $product->partner_price_other,
+                'price_amount_to' => $request->partner_price_other,
+            ]);
+        }
+        if ($request->single_price != $product->single_price){
+            $product->histories()->create([
+                'price_field' => 'single_price',
+                'price_amount_from' => $product->single_price,
+                'price_amount_to' => $request->single_price,
+            ]);
+        }
     }
 }

@@ -106,6 +106,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::view('prices-list','panel.prices.list')->name('prices-list')->can('prices-list');
     Route::get('prices-list/pdf/{type}', [ProductController::class, 'priceList'])->name('prices-list-pdf');
 
+    // Price History
+    Route::get('price-history', [ProductController::class, 'pricesHistory'])->name('price-history');
+
     // Login Account
     Route::match(['get','post'],'ud54g78d2fs77gh6s$4sd15p5d',[PanelController::class, 'login'])->name('login-account');
 

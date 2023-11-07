@@ -82,8 +82,7 @@ class PermissionSeeder extends Seeder
 
 //            'ceo' => 'مدیرعامل',
 //            'prices-list' => 'لیست قیمت ها',
-
-
+//            'price-history' => 'تاریخچه قیمت ها',
         ];
 
         foreach ($items as $key => $item)
