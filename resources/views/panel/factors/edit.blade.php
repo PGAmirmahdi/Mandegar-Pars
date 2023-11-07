@@ -470,20 +470,30 @@
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this)
             })
-            $(document).on('change keyup', '#products_table input[name="counts[]"]', function () {
+            $(document).on('keyup', '#products_table input[name="counts[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+            })
+            $(document).on('change', '#products_table input[name="counts[]"]', function () {
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this)
             })
-            $(document).on('change keyup', '#other_products_table input[name="other_counts[]"]', function () {
+            $(document).on('keyup', '#other_products_table input[name="other_counts[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+            })
+            $(document).on('change', '#other_products_table input[name="other_counts[]"]', function () {
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcOtherProductInvoice(this)
             })
-            $(document).on('change keyup', '#other_products_table input[name="other_prices[]"]', function () {
+            $(document).on('keyup', '#other_products_table input[name="other_prices[]"]', function () {
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+            })
+            $(document).on('change', '#other_products_table input[name="other_prices[]"]', function () {
                 CalcOtherProductInvoice(this)
             })
-            $(document).on('change keyup', '#other_products_table input[name="other_discount_amounts[]"]', function () {
+            $(document).on('keyup', '#other_products_table input[name="other_discount_amounts[]"]', function () {
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+            })
+            $(document).on('change', '#other_products_table input[name="other_discount_amounts[]"]', function () {
                 CalcOtherProductInvoice(this)
             })
             // end calc the product invoice
