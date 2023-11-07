@@ -33,6 +33,11 @@
             <!-- begin::navbar main body -->
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
+                    <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fa fa-power-off"></i>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
                     <a href="#" class="nav-link {{ auth()->user()->unreadNotifications->count() ? 'nav-link-notify' : '' }}" data-toggle="dropdown">
                         <i class="ti-bell"></i>
                     </a>
