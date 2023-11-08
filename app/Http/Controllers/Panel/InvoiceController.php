@@ -210,15 +210,18 @@ class InvoiceController extends Controller
 
         if (auth()->user()->isAdmin()){
             $invoices = Invoice::where('created_in', 'automation')
-                ->where('need_no', $request->need_no)
+                ->when($request->need_no, function ($q) use($request){
+                    return $q->where('need_no', $request->need_no);
+                })
                 ->whereIn('customer_id', $customers_id)
                 ->whereIn('status', $status)
                 ->whereIn('province', $province)
                 ->latest()->paginate(30);
         }else{
             $invoices = Invoice::where('created_in', 'automation')
-                ->where('need_no', $request->need_no)
-                ->whereIn('customer_id', $customers_id)
+                ->when($request->need_no, function ($q) use($request){
+                    return $q->where('need_no', $request->need_no);
+                })                ->whereIn('customer_id', $customers_id)
                 ->whereIn('status', $status)
                 ->whereIn('province', $province)
                 ->where('user_id', auth()->id())
