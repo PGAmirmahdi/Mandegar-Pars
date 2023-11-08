@@ -121,7 +121,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::match(['get', 'post'],'search/factors', [FactorController::class, 'search'])->name('factors.search');
 
     // Web Scrap
-    Route::get('scrap', [ScrapController::class, 'index']);
+    Route::get('scrap/{website}', [ScrapController::class, 'index']);
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);

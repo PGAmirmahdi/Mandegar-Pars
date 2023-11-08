@@ -19,7 +19,8 @@
         "laravel/ui": "^3.4",
         "mews/captcha": "^3.3",
         "spatie/laravel-backup": "^7.8",
-        "uxweb/sweet-alert": "^2.0"
+        "uxweb/sweet-alert": "^2.0",
+      "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
