@@ -59,7 +59,7 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="send_tracking_code">کد رهگیری ارسالی <span class="text-danger">*</span></label>
+                        <label for="send_tracking_code">کد رهگیری ارسالی</label>
                         <input type="text" name="send_tracking_code" class="form-control" id="send_tracking_code" value="{{ $packet->send_tracking_code }}">
                         @error('send_tracking_code')
                         <div class="invalid-feedback d-block">{{ $message }}</div>

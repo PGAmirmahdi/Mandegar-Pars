@@ -28,7 +28,7 @@ class UpdatePacketRequest extends FormRequest
             'receiver' => 'required',
             'address' => 'required',
             'sent_type' => 'required',
-            'send_tracking_code' => 'required|numeric|unique:packets,send_tracking_code,'.$this->packet->id,
+            'send_tracking_code' => 'nullable|numeric|unique:packets,send_tracking_code,'.$this->packet->id,
             'receive_tracking_code' => 'nullable|numeric',
             'packet_status' => 'required',
             'invoice_status' => 'required',

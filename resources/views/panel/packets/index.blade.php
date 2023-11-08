@@ -53,7 +53,6 @@
                         <th>آدرس</th>
                         <th>شماره پیش فاکتور</th>
                         <th>نوع ارسال</th>
-                        <th>کد رهگیری ارسالی شرکت</th>
                         <th>وضعیت بسته</th>
                         <th>وضعیت فاکتور</th>
                         <th>زمان ارسال</th>
@@ -76,7 +75,6 @@
                                 <strong><u><a href="{{ route('invoices.show', [$packet->invoice_id, 'type' => 'pishfactor']) }}" class="text-primary" target="_blank">{{ $packet->invoice_id }}</a></u></strong>
                             </td>
                             <td>{{ \App\Models\Packet::SENT_TYPE[$packet->sent_type] }}</td>
-                            <td>{{ $packet->send_tracking_code }}</td>
                             <td>
                                 @if($packet->packet_status == 'delivered')
                                     <span class="badge badge-success">{{ \App\Models\Packet::PACKET_STATUS[$packet->packet_status] }}</span>
