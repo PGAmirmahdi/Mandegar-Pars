@@ -24,6 +24,7 @@ class Packet extends Model
     const SENT_TYPE = [
         'post' => 'پست',
         'tipax' => 'تیپاکس',
+        'delivery' => 'پیک',
     ];
 
     public function invoice()
