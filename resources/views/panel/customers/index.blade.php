@@ -12,6 +12,33 @@
                     </a>
                 @endcan
             </div>
+            <form action="{{ route('customers.search') }}" method="post" id="search_form">
+                @csrf
+            </form>
+            <div class="row mb-3">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری" value="{{ request()->name ?? null }}">
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                        <option value="all">استان (همه)</option>
+                        @foreach(\App\Models\Province::all() as $province)
+                            <option value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="customer_type" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
+                        <option value="all">مشتری (همه)</option>
+                        @foreach(\App\Models\Customer::CUSTOMER_TYPE as $key => $value)
+                            <option value="{{ $key }}" {{ request()->customer_type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
@@ -20,6 +47,7 @@
                         <th>نام حقیقی/حقوقی</th>
                         <th>نوع</th>
                         <th>مشتری</th>
+                        <th>استان</th>
                         <th>شماره تماس 1</th>
                         <th>تعداد فاکتور</th>
                         <th>تاریخ ایجاد</th>
@@ -38,6 +66,7 @@
                             <td>{{ $customer->name }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
                             <td>{{ \App\Models\Customer::CUSTOMER_TYPE[$customer->customer_type] }}</td>
+                            <td>{{ $customer->province }}</td>
                             <td>{{ $customer->phone1 }}</td>
                             <td>{{ $customer->invoices()->count() }}</td>
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>

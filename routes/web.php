@@ -86,6 +86,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Customers
     Route::resource('customers', CustomerController::class)->except('show');
     Route::post('get-customer-info/{customer}', [CustomerController::class, 'getCustomerInfo'])->name('getCustomerInfo');
+    Route::match(['get', 'post'],'search/customers', [CustomerController::class, 'search'])->name('customers.search');
 
     // Notifications
     Route::get('read-notifications/{notification?}',[PanelController::class,'readNotification'])->name('notifications.read');

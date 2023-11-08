@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
+use App\Models\Province;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -99,6 +100,33 @@ class CustomerController extends Controller
 
         $customer->delete();
         return back();
+    }
+
+    public function search(Request $request)
+    {
+        $this->authorize('customers-list');
+
+        $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
+        $customer_type = $request->customer_type == 'all' ? array_keys(Customer::CUSTOMER_TYPE) : [$request->customer_type];
+
+        if (auth()->user()->isAdmin()){
+            $customers = Customer::when($request->name, function ($q) use($request){
+                $q->where('name', $request->name);
+            })
+                ->whereIn('province', $province)
+                ->whereIn('customer_type', $customer_type)
+                ->latest()->paginate(30);
+        }else{
+            $customers = Customer::where('user_id', auth()->id())
+                ->when($request->name, function ($q) use($request){
+                    $q->where('name', $request->name);
+                })
+                ->whereIn('province', $province)
+                ->whereIn('customer_type', $customer_type)
+                ->latest()->paginate(30);
+        }
+
+        return view('panel.customers.index', compact('customers'));
     }
 
     public function getCustomerInfo(Customer $customer)
