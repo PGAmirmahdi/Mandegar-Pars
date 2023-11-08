@@ -16,7 +16,7 @@ class PanelController extends Controller
         // invoices - not invoiced status
         $invoices1 = Invoice::whereHas('products', function ($query) {
             $query->select('products.id', 'invoice_product.invoice_net');
-        })->where('status','!=','invoiced')
+        })->where('status','pending')
             ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
             ->groupBy('province')
             ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
@@ -25,7 +25,7 @@ class PanelController extends Controller
         // invoices - invoiced status
         $invoices2 = Invoice::whereHas('other_products', function ($query) {
             $query->select('other_products.invoice_net');
-        })->where('status','!=','invoiced')
+        })->where('status','pending')
             ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
             ->groupBy('province')
             ->select('province', DB::raw('SUM(other_products.invoice_net) as amount'))
