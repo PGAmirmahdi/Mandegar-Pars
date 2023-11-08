@@ -19,11 +19,13 @@ class PacketController extends Controller
 
         if (auth()->user()->isAdmin()){
             $packets = Packet::latest()->paginate(30);
+            $invoices = Invoice::with('customer')->latest()->get(['id','customer_id']);
         }else{
             $packets = Packet::where('user_id', auth()->id())->latest()->paginate(30);
+            $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get(['id','customer_id']);
         }
 
-        return view('panel.packets.index', compact('packets'));
+        return view('panel.packets.index', compact('packets', 'invoices'));
     }
 
     public function create()
@@ -111,5 +113,36 @@ class PacketController extends Controller
 
         $packet->delete();
         return back();
+    }
+
+    public function search(Request $request)
+    {
+        $this->authorize('packets-list');
+
+
+
+        if (auth()->user()->isAdmin()){
+            $invoices = Invoice::with('customer')->latest()->get(['id','customer_id']);
+            $invoice_id = $request->invoice_id == 'all' ? $invoices->pluck('id') : [$request->invoice_id];
+            $packet_status = $request->packet_status == 'all' ? array_keys(Packet::PACKET_STATUS) : [$request->packet_status];
+            $invoice_status = $request->invoice_status == 'all' ? array_keys(Packet::INVOICE_STATUS) : [$request->invoice_status];
+
+            $packets = Packet::whereIn('invoice_id', $invoice_id)
+                ->whereIn('packet_status', $packet_status)
+                ->whereIn('invoice_status', $invoice_status)
+                ->latest()->paginate(30);
+        }else{
+            $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get(['id','customer_id']);
+            $invoice_id = $request->invoice_id == 'all' ? $invoices->pluck('id') : [$request->invoice_id];
+            $packet_status = $request->packet_status == 'all' ? array_keys(Packet::PACKET_STATUS) : [$request->packet_status];
+            $invoice_status = $request->invoice_status == 'all' ? array_keys(Packet::INVOICE_STATUS) : [$request->invoice_status];
+
+            $packets = Packet::where('user_id', auth()->id())
+                ->whereIn('invoice_id', $invoice_id)
+                ->whereIn('packet_status', $packet_status)
+                ->whereIn('invoice_status', $invoice_status)->latest()->paginate(30);
+        }
+
+        return view('panel.packets.index', compact('packets', 'invoices'));
     }
 }

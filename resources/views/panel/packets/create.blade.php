@@ -10,7 +10,7 @@
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="invoice">فاکتور<span class="text-danger">*</span></label>
+                        <label for="invoice">پیش فاکتور<span class="text-danger">*</span></label>
                         <select class="form-control" name="invoice" id="invoice">
                             @if($invoices->count())
                                 @foreach($invoices as $invoiceId => $customerName)

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Factor;
 use App\Models\Invoice;
 use App\Models\Product;
+use App\Models\Province;
 use Illuminate\Http\Request;
 
 class FactorController extends Controller
@@ -22,7 +24,9 @@ class FactorController extends Controller
             })->latest()->paginate(30);
         }
 
-        return view('panel.factors.index', compact('factors'));
+        $customers = auth()->user()->isAdmin() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+
+        return view('panel.factors.index', compact('factors', 'customers'));
     }
 
     public function create()
@@ -86,6 +90,39 @@ class FactorController extends Controller
     {
         $this->authorize('invoices-delete');
 
+    }
+
+    public function search(Request $request)
+    {
+        $this->authorize('invoices-list');
+        $customers = auth()->user()->isAdmin() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+
+        $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
+        $status = $request->status == 'all' ? ['invoiced','paid'] : [$request->status];
+        $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
+
+        if (auth()->user()->isAdmin()){
+            $factors = Factor::whereIn('status', $status)
+                ->whereHas('invoice', function ($q) use($request, $customers_id, $status, $province){
+                $q->when($request->need_no, function ($q) use($request){
+                        return $q->where('need_no', $request->need_no);
+                    })
+                    ->whereIn('customer_id', $customers_id)
+                    ->whereIn('province', $province);
+            })->latest()->paginate(30);
+        }else{
+            $factors = Factor::whereIn('status', $status)
+                ->whereHas('invoice', function ($q) use($request, $customers_id, $status, $province){
+                $q->where('user_id', auth()->id())->when($request->need_no, function ($q) use($request){
+                        return $q->where('need_no', $request->need_no);
+                    })
+                        ->whereIn('customer_id', $customers_id)
+                        ->whereIn('province', $province);
+            })->latest()->paginate(30);
+        }
+
+
+        return view('panel.factors.index', compact('factors', 'customers'));
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)

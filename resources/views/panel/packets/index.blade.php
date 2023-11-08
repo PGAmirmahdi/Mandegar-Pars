@@ -12,6 +12,38 @@
                     </a>
                 @endcan
             </div>
+            <form action="{{ route('packets.search') }}" method="post" id="search_form">
+                @csrf
+            </form>
+            <div class="row mb-3">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="invoice_id" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                        <option value="all">پیش فاکتور (همه)</option>
+                        @foreach($invoices as $invoice)
+                            <option value="{{ $invoice->id }}" {{ request()->invoice_id == $invoice->id ? 'selected' : '' }}>{{ $invoice->id.' - '.$invoice->customer->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="packet_status" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
+                        <option value="all">وضعیت بسته (همه)</option>
+                        @foreach(\App\Models\Packet::PACKET_STATUS as $key => $value)
+                            <option value="{{ $key }}" {{ request()->packet_status == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="invoice_status" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">
+                        <option value="all">وضعیت فاکتور (همه)</option>
+                        @foreach(\App\Models\Packet::INVOICE_STATUS as $key => $value)
+                            <option value="{{ $key }}" {{ request()->invoice_status == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
@@ -19,7 +51,7 @@
                         <th>#</th>
                         <th>گیرنده</th>
                         <th>آدرس</th>
-                        <th>شماره فاکتور</th>
+                        <th>شماره پیش فاکتور</th>
                         <th>نوع ارسال</th>
                         <th>کد رهگیری ارسالی شرکت</th>
                         <th>وضعیت بسته</th>
@@ -41,7 +73,7 @@
                             <td>{{ $packet->receiver }}</td>
                             <td>{{ $packet->address }}</td>
                             <td>
-                                <strong><u><a href="{{ route('invoices.show', $packet->invoice_id) }}" class="text-primary" target="_blank">{{ $packet->invoice_id }}</a></u></strong>
+                                <strong><u><a href="{{ route('invoices.show', [$packet->invoice_id, 'type' => 'pishfactor']) }}" class="text-primary" target="_blank">{{ $packet->invoice_id }}</a></u></strong>
                             </td>
                             <td>{{ \App\Models\Packet::SENT_TYPE[$packet->sent_type] }}</td>
                             <td>{{ $packet->send_tracking_code }}</td>

@@ -81,6 +81,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Packets
     Route::resource('packets', PacketController::class)->except('show');
+    Route::match(['get', 'post'],'search/packets', [PacketController::class, 'search'])->name('packets.search');
 
     // Customers
     Route::resource('customers', CustomerController::class)->except('show');
@@ -116,6 +117,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Factors
     Route::resource('factors', FactorController::class)->except(['show','create','store']);
+    Route::match(['get', 'post'],'search/factors', [FactorController::class, 'search'])->name('factors.search');
 
     // Web Scrap
     Route::get('scrap', [ScrapController::class, 'index']);
