@@ -119,8 +119,6 @@ class PacketController extends Controller
     {
         $this->authorize('packets-list');
 
-
-
         if (auth()->user()->isAdmin()){
             $invoices = Invoice::with('customer')->latest()->get(['id','customer_id']);
             $invoice_id = $request->invoice_id == 'all' ? $invoices->pluck('id') : [$request->invoice_id];
