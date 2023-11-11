@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\FactorController;
+use App\Http\Controllers\Panel\InventoryController;
 use App\Http\Controllers\Panel\InvoiceController;
 use App\Http\Controllers\Panel\LeaveController;
 use App\Http\Controllers\Panel\NoteController;
@@ -128,6 +129,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::get('off-site-product-create/{website}',[OffSiteProductController::class, 'create'])->name('off-site-products.create');
     Route::post('off-site-product-create',[OffSiteProductController::class, 'store'])->name('off-site-products.store');
     Route::resource('off-site-products', OffSiteProductController::class)->except('index','show','create');
+
+    // Inventory
+    Route::resource('inventory', InventoryController::class)->except('show');
+    Route::match(['get', 'post'],'search/inventory', [InventoryController::class, 'search'])->name('inventory.search');
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);

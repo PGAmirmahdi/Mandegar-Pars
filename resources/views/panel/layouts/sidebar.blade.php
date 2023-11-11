@@ -42,6 +42,13 @@
                     </a>
                 </li>
             @endcanany
+            @canany(['inventory'])
+                <li class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'active' : '' }}" data-toggle="tooltip" title="انبار">
+                    <a href="#navigationInventory" title="انبار">
+                        <i class="icon ti-check-box"></i>
+                    </a>
+                </li>
+            @endcanany
         </ul>
         <ul>
             <li data-toggle="tooltip" title="ویرایش پروفایل">
@@ -160,6 +167,18 @@
                     <span class="ml-2">ترب</span>
                 </a>
             </li>
+        </ul>
+        <ul id="navigationInventory" class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'navigation-active' : '' }}">
+            <li class="navigation-divider">انبار</li>
+            <li>
+                <a class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'active' : '' }}" href="{{ route('inventory.index') }}">کالا ها</a>
+            </li>
+{{--            <li>--}}
+{{--                <a class="{{ active_sidebar(['inventory']) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">ورود</a>--}}
+{{--            </li>--}}
+{{--            <li>--}}
+{{--                <a class="{{ active_sidebar(['inventory']) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">خروج</a>--}}
+{{--            </li>--}}
         </ul>
     </div>
 </div>
