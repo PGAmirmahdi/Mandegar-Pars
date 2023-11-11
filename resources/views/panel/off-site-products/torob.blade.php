@@ -20,7 +20,7 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td><a href="{{ $item->url }}" class="btn-link" target="_blank">{{ $item->name }}</a></td>
-                            <td>{{ number_format($item->price) }} تومان</td>
+                            <td>{{ number_format($item->price * 0.1) }} تومان</td>
                         </tr>
                     @endforeach
                     </tbody>
