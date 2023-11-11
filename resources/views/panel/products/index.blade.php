@@ -12,7 +12,7 @@
                     </a>
                 @endcan
             </div>
-            <form action="" method="post" id="search_form">
+            <form action="{{ route('products.search') }}" method="post" id="search_form">
                 @csrf
             </form>
             <div class="row mb-3">
