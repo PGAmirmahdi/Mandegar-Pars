@@ -66,7 +66,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Products
     Route::resource('products', ProductController::class)->except('show');
-    Route::post('products', [ProductController::class, 'search'])->name('products.search');
+    Route::match(['get','post'],'search/products', [ProductController::class, 'search'])->name('products.search');
 
     // Printers
     Route::resource('printers', PrinterController::class)->except('show');
@@ -127,7 +127,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::get('off-site-product/{off_site_product}',[OffSiteProductController::class, 'show'])->name('off-site-products.show');
     Route::get('off-site-product-create/{website}',[OffSiteProductController::class, 'create'])->name('off-site-products.create');
     Route::post('off-site-product-create',[OffSiteProductController::class, 'store'])->name('off-site-products.store');
-    Route::resource('off-site-products', OffSiteProductController::class)->except('index','show','create','store');
+    Route::resource('off-site-products', OffSiteProductController::class)->except('index','show','create');
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
