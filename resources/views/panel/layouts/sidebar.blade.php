@@ -153,9 +153,12 @@
             @endcan
         </ul>
         <ul id="navigationShops" class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}']) ? 'navigation-active' : '' }}">
-            <li class="navigation-divider">فروشگا ها</li>
+            <li class="navigation-divider">فروشگاه ها</li>
             <li>
-                <a class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}']) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">ترب</a>
+                <a class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}']) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">
+                    <img src="https://torob.com/static/images/torob_logo.svg" style="width: 1.5rem">
+                    <span class="ml-2">ترب</span>
+                </a>
             </li>
         </ul>
     </div>
