@@ -7,11 +7,13 @@ use App\Http\Controllers\Panel\FactorController;
 use App\Http\Controllers\Panel\InvoiceController;
 use App\Http\Controllers\Panel\LeaveController;
 use App\Http\Controllers\Panel\NoteController;
+use App\Http\Controllers\Panel\OffSiteProductController;
 use App\Http\Controllers\Panel\PacketController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\ScrapController;
+use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\PanelController;
@@ -120,8 +122,12 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('factors', FactorController::class)->except(['show','create','store']);
     Route::match(['get', 'post'],'search/factors', [FactorController::class, 'search'])->name('factors.search');
 
-    // Web Scrap
-    Route::get('scrap/{website}', [ScrapController::class, 'index']);
+    // Off-site Products
+    Route::get('off-site-products/{website}',[OffSiteProductController::class, 'index'])->name('off-site-products.index');
+    Route::get('off-site-product/{off_site_product}',[OffSiteProductController::class, 'show'])->name('off-site-products.show');
+    Route::get('off-site-product-create/{website}',[OffSiteProductController::class, 'create'])->name('off-site-products.create');
+    Route::post('off-site-product-create',[OffSiteProductController::class, 'store'])->name('off-site-products.store');
+    Route::resource('off-site-products', OffSiteProductController::class)->except('index','show','create','store');
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);

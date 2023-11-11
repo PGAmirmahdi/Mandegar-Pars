@@ -35,6 +35,13 @@
                     </a>
                 </li>
             @endcanany
+            @canany(['shops'])
+                <li class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}']) ? 'active' : '' }}" data-toggle="tooltip" title="فروشگاه ها">
+                    <a href="#navigationShops" title="فروشگاه ها">
+                        <i class="icon ti-new-window"></i>
+                    </a>
+                </li>
+            @endcanany
         </ul>
         <ul>
             <li data-toggle="tooltip" title="ویرایش پروفایل">
@@ -144,6 +151,12 @@
                     <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}" href="{{ route('customers.index') }}">مشتریان</a>
                 </li>
             @endcan
+        </ul>
+        <ul id="navigationShops" class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}']) ? 'navigation-active' : '' }}">
+            <li class="navigation-divider">فروشگا ها</li>
+            <li>
+                <a class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}']) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">ترب</a>
+            </li>
         </ul>
     </div>
 </div>
