@@ -16,4 +16,9 @@ class Inventory extends Model
         'cartridge_box' => 'جعبه کارتریج',
         'cartridge' => 'کارتریج',
     ];
+
+    public function reports()
+    {
+        return $this->hasMany(InventoryReport::class);
+    }
 }

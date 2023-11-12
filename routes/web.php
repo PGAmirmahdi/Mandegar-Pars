@@ -4,7 +4,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\FactorController;
+use App\Http\Controllers\Panel\InputController;
 use App\Http\Controllers\Panel\InventoryController;
+use App\Http\Controllers\Panel\InventoryReportController;
 use App\Http\Controllers\Panel\InvoiceController;
 use App\Http\Controllers\Panel\LeaveController;
 use App\Http\Controllers\Panel\NoteController;
@@ -133,6 +135,8 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Inventory
     Route::resource('inventory', InventoryController::class)->except('show');
     Route::match(['get', 'post'],'search/inventory', [InventoryController::class, 'search'])->name('inventory.search');
+    Route::resource('inventory-reports', InventoryReportController::class)->except('show');
+
 });
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);

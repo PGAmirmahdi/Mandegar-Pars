@@ -43,7 +43,7 @@
                 </li>
             @endcanany
             @canany(['inventory'])
-                <li class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'active' : '' }}" data-toggle="tooltip" title="انبار">
+                <li class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="انبار">
                     <a href="#navigationInventory" title="انبار">
                         <i class="icon ti-check-box"></i>
                     </a>
@@ -168,14 +168,14 @@
                 </a>
             </li>
         </ul>
-        <ul id="navigationInventory" class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'navigation-active' : '' }}">
+        <ul id="navigationInventory" class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">انبار</li>
             <li>
                 <a class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'active' : '' }}" href="{{ route('inventory.index') }}">کالا ها</a>
             </li>
-{{--            <li>--}}
-{{--                <a class="{{ active_sidebar(['inventory']) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">ورود</a>--}}
-{{--            </li>--}}
+            <li>
+                <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'input']) }}">ورود</a>
+            </li>
 {{--            <li>--}}
 {{--                <a class="{{ active_sidebar(['inventory']) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">خروج</a>--}}
 {{--            </li>--}}
