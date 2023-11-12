@@ -15,7 +15,7 @@ class InventoryReportController extends Controller
 
         $type = \request()->type;
         $reports = InventoryReport::where('type',$type)->latest()->paginate(30);
-        return view('panel.inventory_reports.index', compact('reports'));
+        return view('panel.inputs.index', compact('reports'));
     }
 
     public function create()
@@ -23,7 +23,7 @@ class InventoryReportController extends Controller
         $this->authorize('inventory');
         $type = \request()->type;
 
-        return view('panel.inventory_reports.create', compact('type'));
+        return view('panel.inputs.create', compact('type'));
     }
 
     public function store(Request $request)
@@ -63,7 +63,7 @@ class InventoryReportController extends Controller
         $this->authorize('inventory');
         $type = \request()->type;
 
-        return view('panel.inventory_reports.edit', compact('type','inventoryReport'));
+        return view('panel.inputs.edit', compact('type','inventoryReport'));
     }
 
     public function update(Request $request, InventoryReport $inventoryReport)
