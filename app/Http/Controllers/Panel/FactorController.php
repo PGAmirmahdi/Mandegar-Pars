@@ -90,6 +90,11 @@ class FactorController extends Controller
     {
         $this->authorize('invoices-delete');
 
+        $invoice = Invoice::find($factor->invoice_id);
+        $factor->delete();
+        $invoice->update(['status' => 'pending']);
+
+        return back();
     }
 
     public function search(Request $request)
