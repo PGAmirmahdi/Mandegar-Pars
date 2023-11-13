@@ -135,7 +135,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Inventory
     Route::resource('inventory', InventoryController::class)->except('show');
     Route::match(['get', 'post'],'search/inventory', [InventoryController::class, 'search'])->name('inventory.search');
-    Route::resource('inventory-reports', InventoryReportController::class)->except('show');
+    Route::resource('inventory-reports', InventoryReportController::class);
 
 });
 

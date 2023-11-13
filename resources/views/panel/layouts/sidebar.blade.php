@@ -174,11 +174,11 @@
                 <a class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'active' : '' }}" href="{{ route('inventory.index') }}">کالا ها</a>
             </li>
             <li>
-                <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'input']) }}">ورود</a>
+                <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) && request()->type == 'input' ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'input']) }}">ورود</a>
             </li>
-{{--            <li>--}}
-{{--                <a class="{{ active_sidebar(['inventory']) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">خروج</a>--}}
-{{--            </li>--}}
+            <li>
+                <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) && request()->type == 'output' ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'output']) }}">خروج</a>
+            </li>
         </ul>
     </div>
 </div>

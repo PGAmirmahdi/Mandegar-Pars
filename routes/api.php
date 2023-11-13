@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('invoice-create', [ApiController::class, 'createInvoice']);
+Route::post('get-invoice-products', [ApiController::class, 'getInvoiceProducts']);

@@ -20,4 +20,9 @@ class InventoryReport extends Model
     {
         return $this->hasMany(InOut::class);
     }
+
+    public function factor()
+    {
+        return $this->belongsTo(Factor::class);
+    }
 }
