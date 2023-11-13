@@ -85,7 +85,6 @@ class PermissionSeeder extends Seeder
 //            'price-history' => 'تاریخچه قیمت ها',
 //            'shops' => 'فروشگاه ها',
 //            'inventory' => 'انبار',
-
         ];
 
         foreach ($items as $key => $item)

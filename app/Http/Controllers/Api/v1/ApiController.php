@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Factor;
+use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -78,5 +80,30 @@ class ApiController extends Controller
 
             $invoice->factor()->updateOrCreate(['status' => 'paid']);
         }
+    }
+
+    public function getInvoiceProducts(Request $request)
+    {
+        $factor = Factor::find($request->factor_id);
+
+        $invoice_other_products = $factor->invoice->other_products;
+        $invoice_products_code = $factor->invoice->products->pluck('code')->toArray();
+        $inventory_products_code = Inventory::pluck('code')->toArray();
+        $missed = false;
+        $miss_products = [];
+
+        if (array_intersect($invoice_products_code, $inventory_products_code) != $invoice_products_code) {
+            $missed = true;
+            $miss_products = array_diff($invoice_products_code, $inventory_products_code);
+            $miss_products = implode(', ',$miss_products);
+        }
+
+        return response()->json([
+            'data' => $factor->invoice->products,
+            'missed' => $missed,
+            'miss_products' => $miss_products,
+            'other_products' => $invoice_other_products,
+            'invoice_id' => $factor->invoice_id
+        ]);
     }
 }
