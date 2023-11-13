@@ -114,7 +114,10 @@
         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title m-b-20">گزارشات پیش فاکتور</h6>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">گزارشات پیش فاکتور</h6>
+                        <h6 class="card-title m-b-20">مجموع: {{ number_format($invoices->sum('amount')) }}</h6>
+                    </div>
                     <canvas id="chart_sale1" style="width: auto"></canvas>
                 </div>
             </div>
@@ -122,7 +125,10 @@
         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
+                        <h6 class="card-title m-b-20">مجموع: {{ number_format($factors->sum('amount')) }}</h6>
+                    </div>
                     <canvas id="chart_sale2" style="width: auto"></canvas>
                 </div>
             </div>
