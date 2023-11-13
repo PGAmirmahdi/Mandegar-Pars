@@ -10,6 +10,8 @@
     $sum_total_price_with_off = 0;
     $sum_tax = 0;
     $sum_invoice_net = 0;
+
+    $i = 1;
 @endphp
 @section('styles')
     <style>
@@ -215,7 +217,7 @@
                                             }
                                         @endphp
                                         <tr>
-                                            <td>{{ ++$key }}</td>
+                                            <td>{{ $i++ }}</td>
                                             <td>{{ \App\Models\Product::find($item->pivot->product_id)->title }}</td>
                                             <td>{{ \App\Models\Product::COLORS[$item->pivot->color] }}</td>
                                             <td>{{ $item->pivot->count }}</td>
@@ -242,7 +244,7 @@
                                     {{-- other products --}}
                                     @foreach($invoice->other_products as $key => $item)
                                         <tr>
-                                            <td>{{ ++$key }}</td>
+                                            <td>{{ $i++ }}</td>
                                             <td>{{ $item->title }}</td>
                                             <td>{{ $item->color }}</td>
                                             <td>{{ $item->count }}</td>
