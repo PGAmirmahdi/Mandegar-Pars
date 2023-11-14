@@ -51,9 +51,9 @@
                         <th>شماره تماس</th>
                         <th>وضعیت</th>
                         <th>تاریخ ایجاد</th>
+                        <th>فاکتور</th>
+                        <th>پیش فاکتور</th>
                         @can('invoices-edit')
-                            <th>فاکتور</th>
-                            <th>پیش فاکتور</th>
                             <th>ویرایش</th>
                         @endcan
                         @can('invoices-edit')
@@ -77,17 +77,17 @@
                                 @endif
                             </td>
                             <td>{{ verta($factor->created_at)->format('H:i - Y/m/d') }}</td>
+                            <td>
+                                <a class="btn btn-info btn-floating" href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'factor']) }}">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-info btn-floating {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}" href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'pishfactor']) }}">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </td>
                             @can('invoices-edit')
-                                <td>
-                                    <a class="btn btn-info btn-floating" href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'factor']) }}">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-info btn-floating {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}" href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'pishfactor']) }}">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                </td>
                                 <td>
                                     <a class="btn btn-warning btn-floating {{ $factor->invoice->created_in == 'website' || $factor->inventory_report != null ? 'disabled' : '' }}" href="{{ route('factors.edit', $factor->id) }}">
                                         <i class="fa fa-edit"></i>

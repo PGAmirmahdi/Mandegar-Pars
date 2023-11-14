@@ -17,6 +17,8 @@ class Inventory extends Model
         'cartridge' => 'کارتریج',
         'wide_tape' => 'چسب پهن',
         'hot_glue' => 'چسب حرارتی',
+        'ribbon' => 'ریبون',
+        'label' => 'لیبل',
     ];
 
     public function reports()

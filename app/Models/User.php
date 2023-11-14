@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->role->name == 'admin';
     }
 
+    public function isWareHouseKeeper()
+    {
+        return $this->role->permissions->pluck('name')->contains('inventory');
+    }
+
     public function hasPermission(string $permission)
     {
         return $this->role->permissions->pluck('name')->contains($permission);

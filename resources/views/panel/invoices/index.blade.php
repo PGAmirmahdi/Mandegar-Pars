@@ -57,8 +57,8 @@
                         <th>شماره تماس</th>
                         <th>وضعیت</th>
                         <th>تاریخ ایجاد</th>
+                        <th>پیش فاکتور</th>
                         @can('invoices-edit')
-                            <th>پیش فاکتور</th>
                             <th>ویرایش</th>
                         @endcan
                         @can('invoices-delete')
@@ -82,12 +82,12 @@
                                 @endif
                             </td>
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
+                            <td>
+                                <a class="btn btn-info btn-floating" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </td>
                             @can('invoices-edit')
-                                <td>
-                                    <a class="btn btn-info btn-floating" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                </td>
                                 <td>
                                     <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
                                         <i class="fa fa-edit"></i>
