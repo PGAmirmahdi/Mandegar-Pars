@@ -15,6 +15,8 @@ class ApiController extends Controller
     public function createInvoice(Request $request)
     {
         $data = $request->all();
+//
+//        Log::info($data);
 
         // users where has single-price-user permission
         $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
@@ -62,7 +64,7 @@ class ApiController extends Controller
 //            $product = Product::first();
             // end for test
 
-            $product = Product::where('title', $item['name'])->first();
+            $product = Product::where('code', $item['acc_code'])->first();
 
             $price = ($item['total'] / $item['quantity']) .'0';
             $total = $item['total'].'0';
