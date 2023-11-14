@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateFactorRequest;
 use App\Models\Customer;
 use App\Models\Factor;
 use App\Models\Invoice;
@@ -55,7 +56,7 @@ class FactorController extends Controller
         return view('panel.factors.edit', compact('factor'));
     }
 
-    public function update(Request $request, Factor $factor)
+    public function update(UpdateFactorRequest $request, Factor $factor)
     {
         // access to invoices-edit permission
         $this->authorize('invoices-edit');
@@ -70,6 +71,12 @@ class FactorController extends Controller
         // create products for invoice
         $this->storeInvoiceProducts($invoice, $request);
 
+        if ($factor->deposit_doc){
+            unlink(public_path($factor->deposit_doc));
+        }
+        $deposit_doc = $request->file('deposit_doc') ? upload_file($request->file('deposit_doc'),'DepositDocs') : null;
+
+
         $invoice->update([
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
@@ -80,7 +87,10 @@ class FactorController extends Controller
             'address' => $request->address,
         ]);
 
-        $factor->update(['status' => $request->status]);
+        $factor->update([
+            'status' => $request->status,
+            'deposit_doc' => $deposit_doc
+        ]);
 
         alert()->success('فاکتور مورد نظر با موفقیت ویرایش شد','ویرایش فاکتور');
         return redirect()->route('factors.index');

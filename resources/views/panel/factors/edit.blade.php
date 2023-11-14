@@ -46,7 +46,7 @@
                 <h6>ویرایش فاکتور</h6>
                 <a href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'factor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
             </div>
-            <form action="{{ route('factors.update', $factor->id) }}" method="post" id="invoice_form">
+            <form action="{{ route('factors.update', $factor->id) }}" method="post" enctype="multipart/form-data" id="invoice_form">
                 @csrf
                 @method('PATCH')
                 <div class="form-row">
@@ -124,6 +124,13 @@
                             <option value="paid" {{ $factor->status == 'paid' ? 'selected' : '' }}>{{ \App\Models\Factor::STATUS['paid'] }}</option>
                         </select>
                         @error('status')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="deposit_doc">رسید واریز</label>
+                        <input type="file" name="deposit_doc" class="form-control" id="deposit_doc" accept="application/pdf,image/png,image/jpg,image/jpeg">
+                        @error('deposit_doc')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
