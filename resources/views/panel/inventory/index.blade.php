@@ -74,7 +74,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="d-flex justify-content-center">{{ $data->links() }}</div>
+            <div class="d-flex justify-content-center">{{ $data->appends(request()->all())->links() }}</div>
         </div>
     </div>
 @endsection
