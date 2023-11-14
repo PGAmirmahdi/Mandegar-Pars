@@ -34,9 +34,9 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <select class="form-control" name="inventory_id[]">
-                                            @foreach(\App\Models\Inventory::all(['id','title']) as $item)
-                                                <option value="{{ $item->id }}">{{ $item->title }}</option>
+                                        <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
+                                            @foreach(\App\Models\Inventory::all(['id','title','type']) as $item)
+                                                <option value="{{ $item->id }}">{{ \App\Models\Inventory::TYPE[$item->type].' - '.$item->title }}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -71,15 +71,16 @@
 
         var options_html;
 
-        @foreach(\App\Models\Inventory::all('id','title') as $item)
+        @foreach(\App\Models\Inventory::all('id','title','type') as $item)
             inventory.push({
                 "id": "{{ $item->id }}",
                 "title": "{{ $item->title }}",
+                "type": "{{ \App\Models\Inventory::TYPE[$item->type] }}",
             })
         @endforeach
 
         $.each(inventory, function (i, item) {
-            options_html += `<option value="${item.id}">${item.title}</option>`
+            options_html += `<option value="${item.id}">${item.type} - ${item.title}</option>`
         })
 
         $(document).ready(function () {
@@ -88,12 +89,14 @@
                 $('#properties_table tbody').append(`
                 <tr>
                     <td>
-                        <select class="form-control" name="inventory_id[]">${options_html}</select>
+                        <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">${options_html}</select>
                     </td>
                     <td><input type="number" name="counts[]" class="form-control" min="1" value="1" required></td>
                     <td><button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button></td>
                 </tr>
             `);
+
+                $('.js-example-basic-single').select2()
             })
             // end add property
 
