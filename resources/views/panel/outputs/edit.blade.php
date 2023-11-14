@@ -55,7 +55,7 @@
                                     @foreach($inventoryReport->in_outs as $item)
                                         <tr>
                                             <td>
-                                                <select class="form-control" name="inventory_id[]">
+                                                <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
                                                     @foreach(\App\Models\Inventory::all(['id','title','type']) as $inventory)
                                                         <option value="{{ $inventory->id }}" {{ $inventory->id == $item->inventory_id ? 'selected' : '' }}>{{ \App\Models\Inventory::TYPE[$inventory->type].' - '.$inventory->title }}</option>
                                                     @endforeach
@@ -137,12 +137,14 @@
                 $('#properties_table tbody').append(`
                 <tr>
                     <td>
-                        <select class="form-control" name="inventory_id[]">${options_html}</select>
+                        <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">${options_html}</select>
                     </td>
                     <td><input type="number" name="counts[]" class="form-control" min="1" value="1" required></td>
                     <td><button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button></td>
                 </tr>
             `);
+
+            $('.js-example-basic-single').select2()
             })
             // end add property
 

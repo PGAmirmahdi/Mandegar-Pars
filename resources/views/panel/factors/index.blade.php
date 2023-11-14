@@ -89,14 +89,14 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="btn btn-warning btn-floating {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}" href="{{ route('factors.edit', $factor->id) }}">
+                                    <a class="btn btn-warning btn-floating {{ $factor->invoice->created_in == 'website' || $factor->inventory_report != null ? 'disabled' : '' }}" href="{{ route('factors.edit', $factor->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                             @endcan
                             @can('invoices-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('factors.destroy',$factor->id) }}" data-id="{{ $factor->id }}">
+                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('factors.destroy',$factor->id) }}" data-id="{{ $factor->id }}" {{ $factor->invoice->created_in == 'website' || $factor->inventory_report != null ? 'disabled' : '' }}>
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
