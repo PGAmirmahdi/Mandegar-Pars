@@ -130,6 +130,12 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="deposit_doc">رسید واریز</label>
                         <input type="file" name="deposit_doc" class="form-control" id="deposit_doc" accept="application/pdf,image/png,image/jpg,image/jpeg">
+                        @if($factor->deposit_doc)
+                            <a href="{{ $factor->deposit_doc }}" target="_blank" class="btn-link">
+                                <i class="fa fa-eye"></i>
+                                مشاهده رسید واریز
+                            </a>
+                        @endif
                         @error('deposit_doc')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
