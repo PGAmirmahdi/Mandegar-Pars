@@ -1,11 +1,24 @@
 @extends('panel.layouts.master')
-@section('title', 'محصولات ترب')
+@switch(request()->website)
+    @case('torob')
+            @php
+                $title = 'محصولات ترب';
+            @endphp
+        @break
+    @case('digikala')
+            @php
+                $title = 'محصولات دیجیکالا';
+            @endphp
+        @break
+@endswitch
+
+@section('title', $title)
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>محصولات ترب</h6>
-                <a href="{{ route('off-site-products.create', 'torob') }}" class="btn btn-primary">
+                <h6>{{ $title }}</h6>
+                <a href="{{ route('off-site-products.create', request()->website) }}" class="btn btn-primary">
                     <i class="fa fa-plus mr-2"></i>
                     ایجاد محصول
                 </a>

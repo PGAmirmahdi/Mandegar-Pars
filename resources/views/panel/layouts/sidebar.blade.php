@@ -162,9 +162,15 @@
         <ul id="navigationShops" class="{{ active_sidebar(['off-site-products/{website}','off-site-product-create/{website}','off-site-products/{off_site_product}/edit','off-site-product/{off_site_product}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">فروشگاه ها</li>
             <li>
-                <a class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}','off-site-product-create/{website}','off-site-products/{off_site_product}/edit',]) ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">
+                <a class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}','off-site-product-create/{website}','off-site-products/{off_site_product}/edit']) && request()->website == 'torob' ? 'active' : '' }}" href="{{ route('off-site-products.index', 'torob') }}">
                     <img src="https://torob.com/static/images/torob_logo.svg" style="width: 1.5rem">
                     <span class="ml-2">ترب</span>
+                </a>
+            </li>
+            <li>
+                <a class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}','off-site-product-create/{website}','off-site-products/{off_site_product}/edit']) && request()->website == 'digikala' ? 'active' : '' }}" href="{{ route('off-site-products.index', 'digikala') }}">
+                    <img src="https://www.digikala.com/statics/img/png/footerlogo2.png" style="width: 1.5rem">
+                    <span class="ml-2">دیجی کالا</span>
                 </a>
             </li>
         </ul>

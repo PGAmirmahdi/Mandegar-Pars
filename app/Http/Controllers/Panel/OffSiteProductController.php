@@ -27,16 +27,17 @@ class OffSiteProductController extends Controller
     {
         $this->authorize('shops');
 
-        $request->validate([
-            'title' => 'required',
-            'url' => 'required',
-        ]);
-
-        OffSiteProduct::create([
-            'title' => $request->title,
-            'url' => $request->url,
-            'website' => $request->website,
-        ]);
+        switch ($request->website)
+        {
+            case 'torob':
+                $this->torobStore($request);
+                break;
+            case 'digikala':
+                $this->digikalaStore($request);
+                break;
+            default:
+                return back();
+        }
 
         alert()->success('محصول مورد نظر با موفقیت ایجاد شد','ایجاد محصول');
         return redirect()->route('off-site-products.index', $request->website);
@@ -50,6 +51,8 @@ class OffSiteProductController extends Controller
         {
             case 'torob':
                 return $this->torob($offSiteProduct->url);
+            case 'digikala':
+                return $this->digikala($offSiteProduct->url);
             default:
                 return '';
         }
@@ -66,18 +69,20 @@ class OffSiteProductController extends Controller
     {
         $this->authorize('shops');
 
-        $request->validate([
-            'title' => 'required',
-            'url' => 'required',
-        ]);
-
-        $offSiteProduct->update([
-            'title' => $request->title,
-            'url' => $request->url,
-        ]);
+        switch ($offSiteProduct->website)
+        {
+            case 'torob':
+                $this->torobUpdate($offSiteProduct ,$request);
+                break;
+            case 'digikala':
+                $this->digikalaUpdate($offSiteProduct ,$request);
+                break;
+            default:
+                return back();
+        }
 
         alert()->success('محصول مورد نظر با موفقیت ویرایش شد','ویرایش محصول');
-        return redirect()->route('off-site-products.index', $request->website);
+        return redirect()->route('off-site-products.index', $offSiteProduct->website);
     }
 
     public function destroy(OffSiteProduct $offSiteProduct)
@@ -108,5 +113,75 @@ class OffSiteProductController extends Controller
         $data = $res->offers->offers;
 
         return view('panel.off-site-products.torob', compact('data'));
+    }
+
+    private function digikala($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $res = json_decode($response);
+        $data = $res->data->product;
+
+        return view('panel.off-site-products.digikala', compact('data'));
+    }
+
+    private function torobStore($request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'url' => 'required',
+        ]);
+
+        OffSiteProduct::create([
+            'title' => $request->title,
+            'url' => $request->url,
+            'website' => $request->website,
+        ]);
+    }
+
+    private function torobUpdate(OffSiteProduct $offSiteProduct, $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'url' => 'required',
+        ]);
+
+        $offSiteProduct->update([
+            'title' => $request->title,
+            'url' => $request->url,
+        ]);
+    }
+
+    private function digikalaStore($request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'code' => 'required|numeric',
+        ]);
+
+        OffSiteProduct::create([
+            'title' => $request->title,
+            'url' => "https://api.digikala.com/v1/product/$request->code/",
+            'website' => $request->website,
+        ]);
+    }
+
+    private function digikalaUpdate(OffSiteProduct $offSiteProduct, $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'code' => 'required',
+        ]);
+
+        $offSiteProduct->update([
+            'title' => $request->title,
+            'url' => "https://api.digikala.com/v1/product/$request->code/",
+        ]);
     }
 }
