@@ -39,6 +39,37 @@
             }
         }
 
+        body{
+            padding: 0;
+        }
+
+        main{
+            padding: 0 !important;
+        }
+
+        table th, td{
+            padding: 4px !important;
+            border: 2px solid #000 !important;
+            font-size: 16px !important;
+        }
+
+        table th{
+            font-weight: bold !important;
+        }
+
+        table tr{
+            padding: 0 !important;
+            border: 2px solid #000 !important;
+        }
+
+        #printable_sec{
+            padding: 0;
+        }
+
+        .card{
+            margin: 0;
+        }
+
         .guide_box{
             text-align: center;
         }
@@ -63,6 +94,10 @@
             top: -41px;
             left: 31%;
             width: 13rem;
+        }
+
+        html, body, main, .card{
+            height: 100% !important;
         }
     </style>
 
@@ -179,8 +214,8 @@
                         </tbody>
                     </table>
                     <div class="col-12 mb-3">
-                        <div class="overflow-auto">
-                            <table class="table table-bordered text-center">
+                        <div class="overflow-x-auto">
+                            <table class="table text-center" border="2">
                                 <thead>
                                 <tr>
                                    <th class="p-0 title-sec" colspan="12">مشخصات کالا یا خدمات مورد معامله</th>
@@ -313,10 +348,10 @@
             <button class="btn btn-info" id="btn_print"><i class="fa fa-print mr-2"></i>چاپ</button>
         </div>
     </div>
-    <div class="alert alert-info">
-        <i class="fa fa-info-circle font-size-20"></i>
-        برای اشتراک گذاری پیش فاکتور/فاکتور ابتدا با استفاده از دکمه <a href="javascript:void(0)">چاپ</a> آن را چاپ کرده یا از <a href="#screenshotModal" data-toggle="modal">اسکرین شات مرورگر</a> استفاده کنید
-    </div>
+{{--    <div class="alert alert-info">--}}
+{{--        <i class="fa fa-info-circle font-size-20"></i>--}}
+{{--        برای اشتراک گذاری پیش فاکتور/فاکتور ابتدا با استفاده از دکمه <a href="javascript:void(0)">چاپ</a> آن را چاپ کرده یا از <a href="#screenshotModal" data-toggle="modal">اسکرین شات مرورگر</a> استفاده کنید--}}
+{{--    </div>--}}
 @endsection
 @section('scripts')
     <script>
