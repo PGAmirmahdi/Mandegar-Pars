@@ -52,7 +52,12 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
+
+//    foreach (\App\Models\Inventory::all() as $item)
+//    {
+//        $item->update(['current_count' => $item->initial_count]);
+//    }
 });
 
 Route::middleware('auth')->prefix('/panel')->group(function (){

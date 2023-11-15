@@ -119,13 +119,13 @@ class InventoryReportController extends Controller
         if ($inventoryReport->type == 'input'){
             $inventoryReport->in_outs()->each(function ($item){
                 $inventory = Inventory::find($item->inventory_id);
-                $inventory->count -= $item->count;
+                $inventory->current_count -= $item->count;
                 $inventory->save();
             });
         }else{
             $inventoryReport->in_outs()->each(function ($item){
                 $inventory = Inventory::find($item->inventory_id);
-                $inventory->count += $item->count;
+                $inventory->current_count += $item->count;
                 $inventory->save();
             });
         }
@@ -140,7 +140,7 @@ class InventoryReportController extends Controller
             // create in-outs
             foreach ($request->inventory_id as $key => $inventory_id){
                 $inventory = Inventory::find($inventory_id);
-                $inventory->count += $request->counts[$key];
+                $inventory->current_count += $request->counts[$key];
                 $inventory->save();
 
                 $report->in_outs()->create([
@@ -152,7 +152,7 @@ class InventoryReportController extends Controller
             // create in-outs
             foreach ($request->inventory_id as $key => $inventory_id){
                 $inventory = Inventory::find($inventory_id);
-                $inventory->count -= $request->counts[$key];
+                $inventory->current_count -= $request->counts[$key];
                 $inventory->save();
 
                 $report->in_outs()->create([
@@ -169,7 +169,7 @@ class InventoryReportController extends Controller
             // delete in-outs
             foreach ($report->in_outs as $item){
                 $inventory = Inventory::find($item->inventory_id);
-                $inventory->count -= $item->count;
+                $inventory->current_count -= $item->count;
                 $inventory->save();
             }
 
@@ -178,7 +178,7 @@ class InventoryReportController extends Controller
             // delete in-outs
             foreach ($report->in_outs as $item){
                 $inventory = Inventory::find($item->inventory_id);
-                $inventory->count += $item->count;
+                $inventory->current_count += $item->count;
                 $inventory->save();
             }
 

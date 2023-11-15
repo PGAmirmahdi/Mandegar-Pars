@@ -40,7 +40,10 @@
                         <th>عنوان کالا</th>
                         <th>کد کالا</th>
                         <th>نوع</th>
-                        <th>موجودی</th>
+                        <th>موجودی اولیه</th>
+                        <th>موجودی فعلی</th>
+                        <th>تعداد ورود</th>
+                        <th>تعداد خروج</th>
                         <th>تاریخ ایجاد</th>
                         <th>ویرایش</th>
                         <th>حذف</th>
@@ -53,7 +56,10 @@
                             <td>{{ $item->title }}</td>
                             <td>{{ $item->code }}</td>
                             <td>{{ \App\Models\Inventory::TYPE[$item->type] }}</td>
-                            <td>{{ $item->count }}</td>
+                            <td>{{ number_format($item->initial_count) }}</td>
+                            <td>{{ number_format($item->current_count) }}</td>
+                            <td>{{ number_format($item->getInputCount()) }}</td>
+                            <td>{{ number_format($item->getOutputCount()) }}</td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
                                 <a class="btn btn-warning btn-floating" href="{{ route('inventory.edit', $item->id) }}">

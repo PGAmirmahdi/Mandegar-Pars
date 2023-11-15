@@ -18,7 +18,8 @@ class CreateInventoriesTable extends Migration
             $table->string('title');
             $table->string('code')->nullable();
             $table->string('type');
-            $table->unsignedBigInteger('count');
+            $table->unsignedBigInteger('initial_count');
+            $table->unsignedBigInteger('current_count');
             $table->timestamps();
         });
     }

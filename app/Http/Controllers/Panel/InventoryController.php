@@ -32,7 +32,8 @@ class InventoryController extends Controller
             'title' => $request->title,
             'code' => $request->code,
             'type' => $request->type,
-            'count' => $request->count,
+            'initial_count' => $request->count,
+            'current_count' => $request->count,
         ]);
 
         alert()->success('کالا مورد نظر با موفقیت ایجاد شد','ایجاد کالا');
@@ -54,11 +55,16 @@ class InventoryController extends Controller
     {
         $this->authorize('inventory');
 
+        if ($request->count < $inventory->current_count){
+            alert()->error('موجودی اولیه نمی تواند کمتر از موجودی اولیه باشد','عدم تطابق موجودی فعلی و اولیه');
+            return back();
+        }
+
         $inventory->update([
             'title' => $request->title,
             'code' => $request->code,
             'type' => $request->type,
-            'count' => $request->count,
+            'initial_count' => $request->count,
         ]);
 
         alert()->success('کالا مورد نظر با موفقیت ویرایش شد','ویرایش کالا');
