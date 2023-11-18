@@ -173,6 +173,12 @@
                     <span class="ml-2">دیجی کالا</span>
                 </a>
             </li>
+            <li>
+                <a class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}','off-site-product-create/{website}','off-site-products/{off_site_product}/edit']) && request()->website == 'emalls' ? 'active' : '' }}" href="{{ route('off-site-products.index', 'emalls') }}">
+                    <img src="https://emalls.ir/src/Emalls180.png" style="width: 1.5rem">
+                    <span class="ml-2">ایمالز</span>
+                </a>
+            </li>
         </ul>
         <ul id="navigationInventory" class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">انبار</li>

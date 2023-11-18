@@ -17,9 +17,9 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    @if(request()->website == 'torob')
+                    @if(request()->website == 'torob' || request()->website == 'emalls')
                         <div class="col-xl-4 col-lg-4 col-md-4 mb-3">
-                            <label for="url">لینک ترب (URL)<span class="text-danger">*</span></label>
+                            <label for="url">لینک صفحه (URL)<span class="text-danger">*</span></label>
                             <input type="url" name="url" class="form-control" id="url" value="{{ old('url') }}">
                             @error('url')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>

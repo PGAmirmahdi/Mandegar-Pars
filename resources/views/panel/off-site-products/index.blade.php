@@ -10,6 +10,11 @@
                 $title = 'محصولات دیجیکالا';
             @endphp
         @break
+    @case('emalls')
+        @php
+            $title = 'محصولات ایمالز';
+        @endphp
+    @break
 @endswitch
 
 @section('title', $title)

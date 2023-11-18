@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\OffSiteProduct;
 use Illuminate\Http\Request;
+use Mpdf\Tag\P;
 
 class OffSiteProductController extends Controller
 {
@@ -29,8 +30,8 @@ class OffSiteProductController extends Controller
 
         switch ($request->website)
         {
-            case 'torob':
-                $this->torobStore($request);
+            case 'torob' || 'emalls':
+                $this->publicStore($request);
                 break;
             case 'digikala':
                 $this->digikalaStore($request);
@@ -51,6 +52,8 @@ class OffSiteProductController extends Controller
         {
             case 'torob':
                 return $this->torob($offSiteProduct->url);
+            case 'emalls':
+                return $this->emalls($offSiteProduct->url);
             case 'digikala':
                 return $this->digikala($offSiteProduct->url);
             default:
@@ -71,8 +74,8 @@ class OffSiteProductController extends Controller
 
         switch ($offSiteProduct->website)
         {
-            case 'torob':
-                $this->torobUpdate($offSiteProduct ,$request);
+            case 'torob' || 'emalls':
+                $this->publicUpdate($offSiteProduct ,$request);
                 break;
             case 'digikala':
                 $this->digikalaUpdate($offSiteProduct ,$request);
@@ -131,7 +134,38 @@ class OffSiteProductController extends Controller
         return view('panel.off-site-products.digikala', compact('data'));
     }
 
-    private function torobStore($request)
+    private function emalls($url)
+    {
+        $ch = curl_init();
+
+        $id = explode('~',$url)[2];
+        $params = [
+            'id' => $id,
+            'startfrom' => 0
+        ];
+
+        curl_setopt($ch, CURLOPT_URL, 'https://emalls.ir/swservice/webshopproduct.ashx');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+
+        $headers = [];
+        $headers[] = "Referer: $url";
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        $data = collect(json_decode($response));
+        $data = $data->where('ismojood', true);
+
+        return view('panel.off-site-products.emalls', compact('data'));
+    }
+
+    private function publicStore($request)
     {
         $request->validate([
             'title' => 'required',
@@ -145,7 +179,7 @@ class OffSiteProductController extends Controller
         ]);
     }
 
-    private function torobUpdate(OffSiteProduct $offSiteProduct, $request)
+    private function publicUpdate(OffSiteProduct $offSiteProduct, $request)
     {
         $request->validate([
             'title' => 'required',
