@@ -40,8 +40,6 @@ class InventoryReportController extends Controller
     {
         $this->authorize('inventory');
 
-        $request->validate(['person' => 'required'],['person.required' => 'فیلد طرف حساب الزامی است']);
-
         // alert if inventory is null
         if (!$request->inventory_id){
             alert()->error('لطفا کالاهای مربوطه جهت ورود را انتخاب کنید','عدم ثبت کالا');
@@ -49,6 +47,18 @@ class InventoryReportController extends Controller
         }
 
         $type = $request->type;
+
+        if ($type == 'input'){
+            $request->validate(['person' => 'required'],['person.required' => 'فیلد تحویل دهنده الزامی است']);
+        }else{
+            $request->validate([
+                'factor_id' => 'required',
+                'person' => 'required'
+                ], [
+                    'factor_id.required' => 'انتخاب فاکتور الزامی است',
+                    'person.required' => 'فیلد تحویل گیرنده الزامی است'
+                ]);
+        }
 
         // create input report
         $report = InventoryReport::create([
@@ -87,8 +97,6 @@ class InventoryReportController extends Controller
     {
         $this->authorize('inventory');
 
-        $request->validate(['person' => 'required'],['person.required' => 'فیلد طرف حساب الزامی است']);
-
         // alert if inventory is null
         if (!$request->inventory_id){
             alert()->error('لطفا کالاهای مربوطه جهت ورود را انتخاب کنید','عدم ثبت کالا');
@@ -96,6 +104,18 @@ class InventoryReportController extends Controller
         }
 
         $type = $request->type;
+
+        if ($type == 'input'){
+            $request->validate(['person' => 'required'],['person.required' => 'فیلد تحویل دهنده الزامی است']);
+        }else{
+            $request->validate([
+                'factor_id' => 'required',
+                'person' => 'required'
+            ], [
+                'factor_id.required' => 'انتخاب فاکتور الزامی است',
+                'person.required' => 'فیلد تحویل گیرنده الزامی است'
+            ]);
+        }
 
         // create input report
         $inventoryReport->update([

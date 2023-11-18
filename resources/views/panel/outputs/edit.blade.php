@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <div class="form-group">
-                            <label for="person"> طرف حساب <span class="text-danger">*</span></label>
+                            <label for="person"> تحویل گیرنده <span class="text-danger">*</span></label>
                             <input type="text" name="person" class="form-control" id="person" value="{{ $inventoryReport->person }}">
                             @error('person')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -180,9 +180,10 @@
                             if (res.other_products.length){
                                 $('#alert_section').removeClass('d-none')
                                 $('#alert_section #other_products').removeClass('d-none')
+                                $('#alert_section #other_products #items').html('')
 
                                 $.each(res.other_products, function (i, product) {
-                                    $('#alert_section #other_products #items').html(`<li>${product.title}</li>`)
+                                    $('#alert_section #other_products #items').append(`<li>${product.title}</li>`)
                                 })
                             } else{
                                 $('#alert_section').addClass('d-none')

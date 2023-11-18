@@ -13,7 +13,7 @@
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <div class="form-group">
-                            <label for="person"> طرف حساب <span class="text-danger">*</span></label>
+                            <label for="person"> تحویل دهنده <span class="text-danger">*</span></label>
                             <input type="text" name="person" class="form-control" id="person" value="{{ old('person') }}">
                             @error('person')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -32,21 +32,41 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>
-                                        <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                            @foreach(\App\Models\Inventory::all(['id','title','type']) as $item)
-                                                <option value="{{ $item->id }}">{{ \App\Models\Inventory::TYPE[$item->type].' - '.$item->title }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="counts[]" class="form-control" min="1" value="1" required>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                                    </td>
-                                </tr>
+                                    @if($errors->any())
+                                        @foreach(old('inventory_id') as $key => $inventory_id)
+                                            <tr>
+                                                <td>
+                                                    <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
+                                                        @foreach(\App\Models\Inventory::all(['id','title','type']) as $item)
+                                                            <option value="{{ $item->id }}" {{ $inventory_id == $item->id ? 'selected' : '' }}>{{ \App\Models\Inventory::TYPE[$item->type].' - '.$item->title }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="counts[]" class="form-control" min="1" value="{{ old('counts')[$key] }}" required>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td>
+                                                <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
+                                                    @foreach(\App\Models\Inventory::all(['id','title','type']) as $item)
+                                                        <option value="{{ $item->id }}">{{ \App\Models\Inventory::TYPE[$item->type].' - '.$item->title }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="counts[]" class="form-control" min="1" value="1" required>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
