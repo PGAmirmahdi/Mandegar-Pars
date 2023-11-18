@@ -52,6 +52,7 @@
                                 </thead>
                                 <tbody>
                                     @if($errors->any())
+{{--                                        @dd($errors->all())--}}
                                         @foreach(old('inventory_id') as $key => $inventory_id)
                                             <tr>
                                                 <td>
@@ -219,13 +220,15 @@
                                 $('#properties_table tbody').append(`
                                     <tr>
                                         <td>
-                                            <select class="form-control" name="inventory_id[]">${options_html2}</select>
+                                            <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">${options_html2}</select>
                                         </td>
                                         <td><input type="number" name="counts[]" class="form-control" min="1" value="${product.pivot.count}" required></td>
                                         <td><button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button></td>
                                     </tr>
                                 `)
                             })
+
+                            $('.js-example-basic-single').select2()
                         }
                     })
                 }

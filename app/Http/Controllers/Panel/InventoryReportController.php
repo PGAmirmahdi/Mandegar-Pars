@@ -57,7 +57,7 @@ class InventoryReportController extends Controller
                 ], [
                     'factor_id.required' => 'انتخاب فاکتور الزامی است',
                     'person.required' => 'فیلد تحویل گیرنده الزامی است'
-                ]);
+            ]);
         }
 
         // create input report
