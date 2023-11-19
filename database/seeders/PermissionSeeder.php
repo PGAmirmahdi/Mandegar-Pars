@@ -85,6 +85,11 @@ class PermissionSeeder extends Seeder
 //            'price-history' => 'تاریخچه قیمت ها',
 //            'shops' => 'فروشگاه ها',
 //            'inventory' => 'انبار',
+
+//            'sale-reports-list' => 'لیست گزارشات فروش',
+//            'sale-reports-create' => 'ایجاد گزارش فروش',
+//            'sale-reports-edit' => 'ویرایش گزارش فروش ',
+//            'sale-reports-delete' => 'حذف گزارش فروش',
         ];
 
         foreach ($items as $key => $item)

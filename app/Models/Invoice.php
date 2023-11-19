@@ -66,4 +66,9 @@ class Invoice extends Model
     {
         return $this->hasMany(OtherProduct::class);
     }
+
+    public function sale_reports()
+    {
+        return $this->hasMany(SaleReport::class);
+    }
 }

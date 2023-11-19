@@ -15,6 +15,7 @@ use App\Http\Controllers\Panel\PacketController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
 use App\Http\Controllers\Panel\RoleController;
+use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
 use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\TaskController;
@@ -141,6 +142,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('inventory', InventoryController::class)->except('show');
     Route::match(['get', 'post'],'search/inventory', [InventoryController::class, 'search'])->name('inventory.search');
     Route::resource('inventory-reports', InventoryReportController::class);
+
+    // Sale Reports
+    Route::resource('sale-reports', SaleReportController::class)->except('show');
 
 });
 
