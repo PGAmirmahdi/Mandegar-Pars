@@ -37,6 +37,37 @@
             }
         }
 
+        body{
+            padding: 0;
+        }
+
+        main{
+            padding: 0 !important;
+        }
+
+        table th, td{
+            padding: 4px !important;
+            border: 2px solid #000 !important;
+            font-size: 16px !important;
+        }
+
+        table th{
+            font-weight: bold !important;
+        }
+
+        table tr{
+            padding: 0 !important;
+            border: 2px solid #000 !important;
+        }
+
+        #printable_sec{
+            padding: 0;
+        }
+
+        .card{
+            margin: 0;
+        }
+
         .guide_box{
             text-align: center;
         }
@@ -62,6 +93,13 @@
             left: 31%;
             width: 13rem;
         }
+
+        #person_sec small{
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        
     </style>
 
 @endsection
@@ -109,7 +147,7 @@
                     <div class="col-4">
                         <img src="/assets/media/image/header-logo.png" style="width: 15rem;">
                     </div>
-                    <div class="col-3 text-right text-center">
+                    <div class="col-3 text-right text-center" id="person_sec">
                         <h3>شرکت صنایع ماشین های اداری ماندگار پارس</h3>
                         <small>مجوز خروج انبار (فروش)</small>
                         <br>
@@ -128,7 +166,7 @@
                 <div class="form-row">
                     <div class="col-12 mb-3">
                         <div class="overflow-auto">
-                            <table class="table table-bordered text-center">
+                            <table class="table text-center" border="2">
                                 <thead>
                                 <tr>
                                     <th>ردیف</th>
