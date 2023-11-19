@@ -49,8 +49,10 @@ class InventoryReportController extends Controller
         $type = $request->type;
 
         if ($type == 'input'){
+            $type_lbl = 'ورودی';
             $request->validate(['person' => 'required'],['person.required' => 'فیلد تحویل دهنده الزامی است']);
         }else{
+            $type_lbl = 'خروجی';
             $request->validate([
                 'factor_id' => 'required',
                 'person' => 'required'
@@ -59,6 +61,9 @@ class InventoryReportController extends Controller
                     'person.required' => 'فیلد تحویل گیرنده الزامی است'
             ]);
         }
+
+        // check inventory count is enough
+        $this->checkInventoryCount($request);
 
         // create input report
         $report = InventoryReport::create([
@@ -70,7 +75,7 @@ class InventoryReportController extends Controller
 
         $this->createInOut($report, $request, $type);
 
-        alert()->success('ورودی مورد نظر با موفقیت ثبت شد','ثبت ورودی');
+        alert()->success("$type_lbl مورد نظر با موفقیت ثبت شد","ثبت $type_lbl");
         return redirect()->route('inventory-reports.index', ['type' => $type]);
     }
 
@@ -116,6 +121,9 @@ class InventoryReportController extends Controller
                 'person.required' => 'فیلد تحویل گیرنده الزامی است'
             ]);
         }
+
+        // check inventory count is enough
+        $this->checkInventoryCount($request);
 
         // create input report
         $inventoryReport->update([
@@ -203,6 +211,33 @@ class InventoryReportController extends Controller
             }
 
             $report->in_outs()->delete();
+        }
+    }
+
+    private function checkInventoryCount($request)
+    {
+        $data = [];
+
+        foreach ($request->inventory_id as $key => $inventory_id){
+            if (isset($data[$inventory_id])){
+                $data[$inventory_id] += $request->counts[$key];
+            }else{
+                $data[$inventory_id] = (int) $request->counts[$key];
+            }
+        }
+
+        $error_data = [];
+        $inventory = Inventory::whereIn('id', array_keys($data))->get();
+
+        foreach ($inventory as $item){
+            if ($item->current_count < $data[$item->id]) {
+                $error_data[] = $item->title;
+            }
+        }
+
+        if (count($error_data)){
+            session()->flash('error_data', $error_data);
+            $request->validate(['inventory_count' => 'required']);
         }
     }
 }

@@ -96,6 +96,16 @@
                                 </div>
 
                             </div>
+                            @error('inventory_count')
+                            <div class="alert alert-danger">
+                                <p><strong>توجه!</strong> موجودی کالا در انبار جهت خروج کافی نمی باشد: </p>
+                                <ul>
+                                    @foreach(session('error_data') as $item)
+                                        <li>{{ $item }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-12"></div>
