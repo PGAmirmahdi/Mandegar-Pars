@@ -60,10 +60,10 @@ class InventoryReportController extends Controller
                     'factor_id.required' => 'انتخاب فاکتور الزامی است',
                     'person.required' => 'فیلد تحویل گیرنده الزامی است'
             ]);
-        }
 
-        // check inventory count is enough
-        $this->checkInventoryCount($request);
+            // check inventory count is enough
+            $this->storeCheckInventoryCount($request);
+        }
 
         // create input report
         $report = InventoryReport::create([
@@ -111,8 +111,10 @@ class InventoryReportController extends Controller
         $type = $request->type;
 
         if ($type == 'input'){
+            $type_lbl = 'ورودی';
             $request->validate(['person' => 'required'],['person.required' => 'فیلد تحویل دهنده الزامی است']);
         }else{
+            $type_lbl = 'خروجی';
             $request->validate([
                 'factor_id' => 'required',
                 'person' => 'required'
@@ -120,10 +122,10 @@ class InventoryReportController extends Controller
                 'factor_id.required' => 'انتخاب فاکتور الزامی است',
                 'person.required' => 'فیلد تحویل گیرنده الزامی است'
             ]);
-        }
 
-        // check inventory count is enough
-        $this->checkInventoryCount($request);
+            // check inventory count is enough
+            $this->updateCheckInventoryCount($inventoryReport ,$request);
+        }
 
         // create input report
         $inventoryReport->update([
@@ -136,7 +138,7 @@ class InventoryReportController extends Controller
         $this->deleteInOut($inventoryReport, $type);
         $this->createInOut($inventoryReport, $request, $type);
 
-        alert()->success('ورودی مورد نظر با موفقیت ویرایش شد','ویرایش ورودی');
+        alert()->success("$type_lbl مورد نظر با موفقیت ویرایش شد","ویرایش $type_lbl");
         return redirect()->route('inventory-reports.index', ['type' => $type]);
     }
 
@@ -214,7 +216,7 @@ class InventoryReportController extends Controller
         }
     }
 
-    private function checkInventoryCount($request)
+    private function storeCheckInventoryCount($request)
     {
         $data = [];
 
@@ -231,6 +233,34 @@ class InventoryReportController extends Controller
 
         foreach ($inventory as $item){
             if ($item->current_count < $data[$item->id]) {
+                $error_data[] = $item->title;
+            }
+        }
+
+        if (count($error_data)){
+            session()->flash('error_data', $error_data);
+            $request->validate(['inventory_count' => 'required']);
+        }
+    }
+
+    private function updateCheckInventoryCount(InventoryReport $inventoryReport,$request)
+    {
+        $data = [];
+
+        foreach ($request->inventory_id as $key => $inventory_id){
+            if (isset($data[$inventory_id])){
+                $data[$inventory_id] += $request->counts[$key];
+            }else{
+                $data[$inventory_id] = (int) $request->counts[$key];
+            }
+        }
+
+        $error_data = [];
+        $inventory = Inventory::whereIn('id', array_keys($data))->get();
+
+        foreach ($inventory as $item){
+            $temp_current_count = $inventoryReport->in_outs()->where('inventory_id', $item->id)->sum('count');
+            if (($item->current_count + $temp_current_count) < $data[$item->id]) {
                 $error_data[] = $item->title;
             }
         }
