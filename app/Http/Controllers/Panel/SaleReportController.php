@@ -28,7 +28,12 @@ class SaleReportController extends Controller
     {
         $this->authorize('sale-reports-create');
 
-        $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
+        if (auth()->user()->isAdmin()){
+            $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
+        }else{
+            $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
+        }
+
         return view('panel.sale-reports.create', compact('invoices'));
     }
 
@@ -58,7 +63,12 @@ class SaleReportController extends Controller
     {
         $this->authorize('sale-reports-edit');
 
-        $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
+        if (auth()->user()->isAdmin()){
+            $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
+        }else{
+            $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
+        }
+
         return view('panel.sale-reports.edit', compact('saleReport','invoices'));
     }
 
