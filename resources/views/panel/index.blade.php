@@ -157,6 +157,17 @@
                 </div>
             </div>
         </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">گزارشات ماهیانه (فاکتور)</h6>
+{{--                        <h6 class="card-title m-b-20">مجموع: {{ number_format($factors->sum('amount')) }}</h6>--}}
+                    </div>
+                    <canvas id="chart_sale3" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('scripts')
@@ -167,6 +178,9 @@
 
         var factors_provinces = {!! json_encode($factors->pluck('province')) !!};
         var factors_amounts = {!! json_encode($factors->pluck('amount')) !!};
+
+        var factors_monthly_month = {!! json_encode($factors_monthly->keys()) !!};
+        var factors_monthly_amounts = {!! json_encode($factors_monthly->values()) !!};
 
         // invoices
         if ($('#chart_sale1').length) {
@@ -302,6 +316,74 @@
             })
         }
         //end factors
+
+        // factors - monthly
+        if ($('#chart_sale3').length) {
+            var element3 = document.getElementById("chart_sale3");
+            element3.height = 146;
+            new Chart(element3, {
+                type: 'bar',
+                data: {
+                    labels: factors_monthly_month,
+                    datasets: [
+                        {
+                            label: "مجموع فروش",
+                            backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            data: factors_monthly_amounts,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'ریال',
+                                fontSize: 18
+                            },
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function(value, index, values) {
+                                    const options = { style: 'decimal', useGrouping: true };
+                                    const formattedNumber = value.toLocaleString('en-US', options);
+                                    return formattedNumber;
+                                }
+
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return formattedValue + ' ریال ';
+                            }
+                        }
+                    }
+                },
+            })
+        }
+        //end factors - monthly
         // end sales chart
     </script>
 @endsection

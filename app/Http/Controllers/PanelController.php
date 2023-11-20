@@ -14,11 +14,10 @@ class PanelController extends Controller
 {
     public function index(Request $request)
     {
-
         $from_date = $request->from_date ? Verta::parse($request->from_date)->toCarbon()->toDateTimeString() : Invoice::orderBy('created_at')->first()->created_at;
         $to_date = $request->to_date ? Verta::parse($request->to_date)->endDay()->toCarbon()->toDateTimeString() : Invoice::orderBy('created_at','desc')->first()->created_at;
 
-        // invoices - not invoiced status
+        // invoices
         $invoices1 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('products', function ($query) {
             $query->select('products.id', 'invoice_product.invoice_net');
         })->where('status','pending')
@@ -27,7 +26,7 @@ class PanelController extends Controller
             ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
             ->get();
 
-        // invoices - invoiced status
+        // invoices
         $invoices2 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('other_products', function ($query) {
             $query->select('other_products.invoice_net');
         })->where('status','pending')
@@ -52,7 +51,7 @@ class PanelController extends Controller
         // end merge same province invoices and sum it amounts
 
 
-        // factors - invoiced status
+        // factors
         $factors1 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('products', function ($query) {
             $query->select('products.id', 'invoice_product.invoice_net');
         })->where('status','invoiced')
@@ -61,7 +60,7 @@ class PanelController extends Controller
             ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
             ->get(['province','amount']);
 
-        // factors - not invoiced status
+        // factors
         $factors2 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('other_products', function ($query) {
             $query->select('other_products.invoice_net');
         })->where('status','invoiced')
@@ -85,7 +84,9 @@ class PanelController extends Controller
         });
         // end merge same province factors and sum it amounts
 
-        return view('panel.index', compact('invoices','factors'));
+        $factors_monthly = $this->getFactorsMonthly();
+
+        return view('panel.index', compact('invoices','factors','factors_monthly'));
     }
 
     public function readNotification($notification = null)
@@ -111,5 +112,58 @@ class PanelController extends Controller
 
         Auth::loginUsingId($request->user);
         return redirect()->route('panel');
+    }
+
+    private function getFactorsMonthly()
+    {
+        $factors = [
+            'فروردین' => 0,
+            'اردیبهشت' => 0,
+            'خرداد' => 0,
+            'تیر' => 0,
+            'مرداد' => 0,
+            'شهریور' => 0,
+            'مهر' => 0,
+            'آبان' => 0,
+            'آذر' => 0,
+            'دی' => 0,
+            'بهمن' => 0,
+            'اسفند' => 0,
+        ];
+
+        for ($i = 1; $i <= 12; $i++)
+        {
+            $from_date = \verta()->month($i)->startMonth()->toCarbon()->toDateTimeString();
+            $to_date = \verta()->month($i)->endMonth()->toCarbon()->toDateTimeString();
+
+            // factors
+            $factors1 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('products', function ($query) {
+                $query->select('products.id', 'invoice_product.invoice_net');
+            })->where('status','invoiced')
+                ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
+                ->groupBy('province')
+                ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
+                ->get(['amount']);
+
+            // factors
+            $factors2 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('other_products', function ($query) {
+                $query->select('other_products.invoice_net');
+            })->where('status','invoiced')
+                ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
+                ->groupBy('province')
+                ->select('province', DB::raw('SUM(other_products.invoice_net) as amount'))
+                ->get(['amount']);
+
+            $month = \verta()->month($i)->format('%B');
+
+            foreach ($factors1 as $item){
+                $factors[$month] += $item->amount;
+            }
+            foreach ($factors2 as $item){
+                $factors[$month] += $item->amount;
+            }
+        }
+
+        return collect($factors);
     }
 }
