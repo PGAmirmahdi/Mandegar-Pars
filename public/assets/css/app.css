@@ -3445,7 +3445,7 @@
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
-	border-color: #7685fb;
+	border-color: #5d4a9c;
 }
 
 .form-control,
@@ -3471,7 +3471,7 @@ textarea {
 }
 
 .custom-file-input:focus~.custom-file-label {
-	border-color: #7685fb;
+	border-color: #5d4a9c;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
@@ -8907,7 +8907,7 @@ body.error-page .display-1 {
 }
 
 .bootstrap-tagsinput.focus {
-	border-color: #7685fb;
+	border-color: #5d4a9c;
 }
 
 .bootstrap-tagsinput .tag {
