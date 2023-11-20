@@ -5,16 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\Role;
 use App\Models\User;
+use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PanelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+
+        $from_date = $request->from_date ? Verta::parse($request->from_date)->toCarbon()->toDateTimeString() : Invoice::orderBy('created_at')->first()->created_at;
+        $to_date = $request->to_date ? Verta::parse($request->to_date)->endDay()->toCarbon()->toDateTimeString() : Invoice::orderBy('created_at','desc')->first()->created_at;
+
         // invoices - not invoiced status
-        $invoices1 = Invoice::whereHas('products', function ($query) {
+        $invoices1 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('products', function ($query) {
             $query->select('products.id', 'invoice_product.invoice_net');
         })->where('status','pending')
             ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
@@ -23,7 +28,7 @@ class PanelController extends Controller
             ->get();
 
         // invoices - invoiced status
-        $invoices2 = Invoice::whereHas('other_products', function ($query) {
+        $invoices2 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('other_products', function ($query) {
             $query->select('other_products.invoice_net');
         })->where('status','pending')
             ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
@@ -48,7 +53,7 @@ class PanelController extends Controller
 
 
         // factors - invoiced status
-        $factors1 = Invoice::whereHas('products', function ($query) {
+        $factors1 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('products', function ($query) {
             $query->select('products.id', 'invoice_product.invoice_net');
         })->where('status','invoiced')
             ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
@@ -57,7 +62,7 @@ class PanelController extends Controller
             ->get(['province','amount']);
 
         // factors - not invoiced status
-        $factors2 = Invoice::whereHas('other_products', function ($query) {
+        $factors2 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('other_products', function ($query) {
             $query->select('other_products.invoice_net');
         })->where('status','invoiced')
             ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')

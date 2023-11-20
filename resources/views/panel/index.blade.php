@@ -109,6 +109,32 @@
             </div>
 </div>
     <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">فیلتر گزارشات</h6>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
+                            <label for="from_date">از تاریخ</label>
+                            <input type="text" name="from_date" class="form-control date-picker-shamsi-list" id="from_date" value="{{ request()->from_date }}" form="search_form">
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
+                            <label for="to_date">تا تاریخ</label>
+                            <input type="text" name="to_date" class="form-control date-picker-shamsi-list" id="to_date" value="{{ request()->to_date }}" form="search_form">
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
+                            <div style="height: 36px"></div>
+                            <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                        </div>
+                        <form action="{{ route('panel') }}" method="post" id="search_form">
+                            @csrf
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
