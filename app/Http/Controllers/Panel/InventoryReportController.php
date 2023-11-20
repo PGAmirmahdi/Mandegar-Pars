@@ -12,33 +12,37 @@ class InventoryReportController extends Controller
 {
     public function index()
     {
-        $this->authorize('inventory');
-
         $type = \request()->type;
         $reports = InventoryReport::where('type',$type)->latest()->paginate(30);
 
         if ($type == 'input'){
+            $this->authorize('input-reports-list');
+
             return view('panel.inputs.index', compact('reports'));
         }else{
+            $this->authorize('output-reports-list');
+
             return view('panel.outputs.index', compact('reports'));
         }
     }
 
     public function create()
     {
-        $this->authorize('inventory');
         $type = \request()->type;
 
         if ($type == 'input'){
+            $this->authorize('input-reports-create');
+
             return view('panel.inputs.create', compact('type'));
         }else{
+            $this->authorize('output-reports-create');
+
             return view('panel.outputs.create', compact('type'));
         }
     }
 
     public function store(Request $request)
     {
-        $this->authorize('inventory');
 
         // alert if inventory is null
         if (!$request->inventory_id){
@@ -49,9 +53,14 @@ class InventoryReportController extends Controller
         $type = $request->type;
 
         if ($type == 'input'){
+            $this->authorize('input-reports-create');
+
+
             $type_lbl = 'ورودی';
             $request->validate(['person' => 'required'],['person.required' => 'فیلد تحویل دهنده الزامی است']);
         }else{
+            $this->authorize('output-reports-create');
+
             $type_lbl = 'خروجی';
             $request->validate([
                 'factor_id' => 'required',
@@ -81,27 +90,28 @@ class InventoryReportController extends Controller
 
     public function show(InventoryReport $inventoryReport)
     {
-        $this->authorize('inventory');
+        $this->authorize('output-reports-edit');
 
         return view('panel.outputs.printable', compact('inventoryReport'));
     }
 
     public function edit(InventoryReport $inventoryReport)
     {
-        $this->authorize('inventory');
         $type = \request()->type;
 
         if ($type == 'input'){
+            $this->authorize('input-reports-edit');
+
             return view('panel.inputs.edit', compact('type','inventoryReport'));
         }else{
+            $this->authorize('output-reports-edit');
+
             return view('panel.outputs.edit', compact('type','inventoryReport'));
         }
     }
 
     public function update(Request $request, InventoryReport $inventoryReport)
     {
-        $this->authorize('inventory');
-
         // alert if inventory is null
         if (!$request->inventory_id){
             alert()->error('لطفا کالاهای مربوطه جهت ورود را انتخاب کنید','عدم ثبت کالا');
@@ -111,9 +121,13 @@ class InventoryReportController extends Controller
         $type = $request->type;
 
         if ($type == 'input'){
+            $this->authorize('input-reports-edit');
+
             $type_lbl = 'ورودی';
             $request->validate(['person' => 'required'],['person.required' => 'فیلد تحویل دهنده الزامی است']);
         }else{
+            $this->authorize('output-reports-edit');
+
             $type_lbl = 'خروجی';
             $request->validate([
                 'factor_id' => 'required',
@@ -144,15 +158,17 @@ class InventoryReportController extends Controller
 
     public function destroy(InventoryReport $inventoryReport)
     {
-        $this->authorize('inventory');
-
         if ($inventoryReport->type == 'input'){
+            $this->authorize('input-reports-delete');
+
             $inventoryReport->in_outs()->each(function ($item){
                 $inventory = Inventory::find($item->inventory_id);
                 $inventory->current_count -= $item->count;
                 $inventory->save();
             });
         }else{
+            $this->authorize('output-reports-delete');
+
             $inventoryReport->in_outs()->each(function ($item){
                 $inventory = Inventory::find($item->inventory_id);
                 $inventory->current_count += $item->count;

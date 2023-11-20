@@ -42,7 +42,7 @@
                     </a>
                 </li>
             @endcanany
-            @canany(['inventory'])
+            @canany(['inventory-list','input-reports-list','output-reports-list'])
                 <li class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="انبار">
                     <a href="#navigationInventory" title="انبار">
                         <i class="icon ti-check-box"></i>
@@ -187,15 +187,21 @@
         </ul>
         <ul id="navigationInventory" class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">انبار</li>
-            <li>
-                <a class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'active' : '' }}" href="{{ route('inventory.index') }}">کالا ها</a>
-            </li>
-            <li>
-                <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) && request()->type == 'input' ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'input']) }}">ورود</a>
-            </li>
-            <li>
-                <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) && request()->type == 'output' ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'output']) }}">خروج</a>
-            </li>
+            @can('inventory-list')
+                <li>
+                    <a class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory']) ? 'active' : '' }}" href="{{ route('inventory.index') }}">کالا ها</a>
+                </li>
+            @endcan
+            @can('input-reports-list')
+                <li>
+                    <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) && request()->type == 'input' ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'input']) }}">ورود</a>
+                </li>
+            @endcan
+            @can('output-reports-list')
+                <li>
+                    <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) && request()->type == 'output' ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'output']) }}">خروج</a>
+                </li>
+            @endcan
         </ul>
     </div>
 </div>

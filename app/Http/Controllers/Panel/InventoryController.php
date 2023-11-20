@@ -12,7 +12,7 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $this->authorize('inventory');
+        $this->authorize('inventory-list');
 
         $data = Inventory::latest()->paginate(30);
         return view('panel.inventory.index', compact('data'));
@@ -20,13 +20,13 @@ class InventoryController extends Controller
 
     public function create()
     {
-        $this->authorize('inventory');
+        $this->authorize('inventory-create');
         return view('panel.inventory.create');
     }
 
     public function store(StoreInventoryRequest $request)
     {
-        $this->authorize('inventory');
+        $this->authorize('inventory-create');
 
         Inventory::create([
             'title' => $request->title,
@@ -47,13 +47,13 @@ class InventoryController extends Controller
 
     public function edit(Inventory $inventory)
     {
-        $this->authorize('inventory');
+        $this->authorize('inventory-edit');
         return view('panel.inventory.edit', compact('inventory'));
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
-        $this->authorize('inventory');
+        $this->authorize('inventory-edit');
 
         if ($request->count < $inventory->current_count){
             alert()->error('موجودی اولیه نمی تواند کمتر از موجودی اولیه باشد','عدم تطابق موجودی فعلی و اولیه');
@@ -73,7 +73,7 @@ class InventoryController extends Controller
 
     public function destroy(Inventory $inventory)
     {
-        $this->authorize('inventory');
+        $this->authorize('inventory-delete');
 
         $inventory->delete();
         return back();
@@ -81,7 +81,7 @@ class InventoryController extends Controller
 
     public function search(Request $request)
     {
-        $this->authorize('inventory');
+        $this->authorize('inventory-list');
 
         $type = $request->type == 'all' ? array_keys(Inventory::TYPE) : [$request->type];
 
