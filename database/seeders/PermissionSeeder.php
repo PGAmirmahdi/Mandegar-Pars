@@ -85,6 +85,7 @@ class PermissionSeeder extends Seeder
 //            'price-history' => 'تاریخچه قیمت ها',
 //            'shops' => 'فروشگاه ها',
 //            'inventory' => 'انبار',
+//            'accountant' => 'حسابدار',
 
 //            'sale-reports-list' => 'لیست گزارشات فروش',
 //            'sale-reports-create' => 'ایجاد گزارش فروش',

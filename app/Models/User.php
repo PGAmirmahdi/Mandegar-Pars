@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->role->permissions->pluck('name')->contains('inventory');
     }
 
+    public function isAccountant()
+    {
+        return $this->role->permissions->pluck('name')->contains('accountant');
+    }
+
     public function hasPermission(string $permission)
     {
         return $this->role->permissions->pluck('name')->contains($permission);
