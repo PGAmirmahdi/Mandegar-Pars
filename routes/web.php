@@ -145,6 +145,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Sale Reports
     Route::resource('sale-reports', SaleReportController::class)->except('show');
+    Route::match(['get', 'post'],'search/sale-reports', [SaleReportController::class, 'search'])->name('sale-reports.search');
 
 });
 

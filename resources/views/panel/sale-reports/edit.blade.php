@@ -34,13 +34,9 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="invoice">پیش فاکتور</label>
                         <select class="js-example-basic-single select2-hidden-accessible" name="invoice" id="invoice">
-                            @if($invoices->count())
-                                @foreach($invoices as $invoiceId => $customerName)
-                                    <option value="{{ $invoiceId }}" {{ $saleReport->invoice_id == $invoiceId ? 'selected' : '' }}> {{ $invoiceId }} - {{ $customerName }}</option>
-                                @endforeach
-                            @else
-                                <option value="" disabled selected>فاکتوری موجود نیست!</option>
-                            @endif
+                            @foreach($invoices as $invoiceId => $customerName)
+                                <option value="{{ $invoiceId }}" {{ $saleReport->invoice_id == $invoiceId ? 'selected' : '' }}> {{ $invoiceId }} - {{ $customerName }}</option>
+                            @endforeach
                         </select>
                         @error('invoice')
                         <div class="invalid-feedback d-block">{{ $message }}</div>

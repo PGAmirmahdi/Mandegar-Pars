@@ -12,38 +12,31 @@
                     </a>
                 @endcan
             </div>
-{{--            <form action="{{ route('sale-reports.search') }}" method="post" id="search_form">--}}
-{{--                @csrf--}}
-{{--            </form>--}}
-{{--            <div class="row mb-3">--}}
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <select name="invoice_id" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">--}}
-{{--                        <option value="all">پیش فاکتور (همه)</option>--}}
-{{--                        @foreach($invoices as $invoice)--}}
-{{--                            <option value="{{ $invoice->id }}" {{ request()->invoice_id == $invoice->id ? 'selected' : '' }}>{{ $invoice->id.' - '.$invoice->customer->name }}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <select name="packet_status" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">--}}
-{{--                        <option value="all">وضعیت بسته (همه)</option>--}}
-{{--                        @foreach(\App\Models\Packet::PACKET_STATUS as $key => $value)--}}
-{{--                            <option value="{{ $key }}" {{ request()->packet_status == $key ? 'selected' : '' }}>{{ $value }}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <select name="invoice_status" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">--}}
-{{--                        <option value="all">وضعیت فاکتور (همه)</option>--}}
-{{--                        @foreach(\App\Models\Packet::INVOICE_STATUS as $key => $value)--}}
-{{--                            <option value="{{ $key }}" {{ request()->invoice_status == $key ? 'selected' : '' }}>{{ $value }}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>--}}
-{{--                </div>--}}
-{{--            </div>--}}
+            <form action="{{ route('sale-reports.search') }}" method="post" id="search_form">
+                @csrf
+            </form>
+            <div class="row mb-3">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="invoice_id" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                        <option value="all">پیش فاکتور (همه)</option>
+                        @foreach($invoices as $invoice_id => $customer_name)
+                            <option value="{{ $invoice_id }}" {{ request()->invoice_id == $invoice_id ? 'selected' : '' }}>{{ $invoice_id.' - '.$customer_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                    <input type="text" name="person_name" class="form-control" placeholder="نام شخص" value="{{ request()->person_name ?? null }}" form="search_form">
+                </div>
+                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                    <input type="text" name="organ_name" class="form-control" placeholder="نام سازمان" value="{{ request()->organ_name ?? null }}" form="search_form">
+                </div>
+                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                    <input type="text" name="national_code" class="form-control" placeholder="کد/شناسه ملی" value="{{ request()->national_code ?? null }}" form="search_form">
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
@@ -102,7 +95,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="d-flex justify-content-center">{{ $sale_reports->links() }}</div>
+            <div class="d-flex justify-content-center">{{ $sale_reports->appends(request()->all())->links() }}</div>
         </div>
     </div>
 @endsection

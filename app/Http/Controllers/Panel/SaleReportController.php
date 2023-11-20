@@ -21,7 +21,13 @@ class SaleReportController extends Controller
             $sale_reports = SaleReport::where('user_id', auth()->id())->latest()->paginate(30);
         }
 
-        return view('panel.sale-reports.index', compact('sale_reports'));
+        if (auth()->user()->isAdmin()){
+            $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
+        }else{
+            $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
+        }
+
+        return view('panel.sale-reports.index', compact('sale_reports','invoices'));
     }
 
     public function create()
@@ -94,5 +100,50 @@ class SaleReportController extends Controller
         $saleReport->delete();
 
         return back();
+    }
+
+    public function search(Request $request)
+    {
+        $this->authorize('sale-reports-list');
+
+        if (auth()->user()->isAdmin()){
+            $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
+        }else{
+            $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
+        }
+
+        $invoice_id = $request->invoice_id == 'all' ? $invoices->keys() : [$request->invoice_id];
+
+        if (auth()->user()->isAdmin()){
+            $sale_reports = SaleReport::where(function ($q) use($invoice_id, $request){
+                if ($request->invoice_id == 'all'){
+                    $q->whereIn('invoice_id', $invoice_id)->orWhereNull('invoice_id');
+                }else{
+                    $q->whereIn('invoice_id', $invoice_id);
+                }
+            })
+                ->where('person_name', 'like', "%$request->person_name%")
+                ->where('organ_name', 'like', "%$request->organ_name%")
+                ->when($request->national_code, function ($q) use($request){
+                    $q->where('national_code', $request->national_code);
+                })
+                ->latest()->paginate(30);
+        }else{
+            $sale_reports = SaleReport::where(function ($q) use($invoice_id, $request){
+                if ($request->invoice_id == 'all'){
+                    $q->whereIn('invoice_id', $invoice_id)->orWhereNull('invoice_id');
+                }else{
+                    $q->whereIn('invoice_id', $invoice_id);
+                }
+            })
+                ->where('person_name', 'like', "%$request->person_name%")
+                ->where('organ_name', 'like', "%$request->organ_name%")
+                ->when($request->national_code, function ($q) use($request){
+                    $q->where('national_code', $request->national_code);
+                })
+                ->where('user_id', auth()->id())
+                ->latest()->paginate(30);
+        }
+        return view('panel.sale-reports.index', compact('sale_reports','invoices'));
     }
 }
