@@ -5,10 +5,12 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>انبار</h6>
-                <a href="{{ route('inventory.create') }}" class="btn btn-primary">
-                    <i class="fa fa-plus mr-2"></i>
-                    افزودن کالا
-                </a>
+                @can('inventory-create')
+                    <a href="{{ route('inventory.create') }}" class="btn btn-primary">
+                        <i class="fa fa-plus mr-2"></i>
+                        افزودن کالا
+                    </a>
+                @endcan
             </div>
             <form action="{{ route('inventory.search') }}" method="post" id="search_form">
                 @csrf
@@ -45,8 +47,12 @@
                         <th>تعداد ورود</th>
                         <th>تعداد خروج</th>
                         <th>تاریخ ایجاد</th>
-                        <th>ویرایش</th>
-                        <th>حذف</th>
+                        @can('inventory-edit')
+                            <th>ویرایش</th>
+                        @endcan
+                        @can('inventory-delete')
+                            <th>حذف</th>
+                        @endcan
                     </tr>
                     </thead>
                     <tbody>
@@ -61,16 +67,20 @@
                             <td>{{ number_format($item->getInputCount()) }}</td>
                             <td>{{ number_format($item->getOutputCount()) }}</td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
-                            <td>
-                                <a class="btn btn-warning btn-floating" href="{{ route('inventory.edit', $item->id) }}">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('inventory.destroy',$item->id) }}" data-id="{{ $item->id }}">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
+                            @can('inventory-edit')
+                                <td>
+                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory.edit', $item->id) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            @endcan
+                            @can('inventory-delete')
+                                <td>
+                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('inventory.destroy',$item->id) }}" data-id="{{ $item->id }}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                     </tbody>

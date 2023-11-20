@@ -5,10 +5,12 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>خروج</h6>
-                <a href="{{ route('inventory-reports.create', ['type' => 'output']) }}" class="btn btn-primary">
-                    <i class="fa fa-plus mr-2"></i>
-                    ثبت خروجی
-                </a>
+                @can('output-reports-create')
+                    <a href="{{ route('inventory-reports.create', ['type' => 'output']) }}" class="btn btn-primary">
+                        <i class="fa fa-plus mr-2"></i>
+                        ثبت خروجی
+                    </a>
+                @endcan
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
@@ -19,8 +21,12 @@
                         <th>فاکتور</th>
                         <th>تاریخ ثبت</th>
                         <th>رسید انبار</th>
-                        <th>ویرایش</th>
-                        <th>حذف</th>
+                        @can('output-reports-edit')
+                            <th>ویرایش</th>
+                        @endcan
+                        @can('output-reports-delete')
+                            <th>حذف</th>
+                        @endcan
                     </tr>
                     </thead>
                     <tbody>
@@ -37,16 +43,20 @@
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </td>
-                            <td>
-                                <a class="btn btn-warning btn-floating" href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'output']) }}">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('inventory-reports.destroy',$item->id) }}" data-id="{{ $item->id }}">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
+                            @can('output-reports-edit')
+                                <td>
+                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'output']) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            @endcan
+                            @can('output-reports-delete')
+                                <td>
+                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('inventory-reports.destroy',$item->id) }}" data-id="{{ $item->id }}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                     </tbody>
