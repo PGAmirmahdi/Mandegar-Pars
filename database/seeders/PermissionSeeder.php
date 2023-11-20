@@ -92,6 +92,8 @@ class PermissionSeeder extends Seeder
 //            'sale-reports-delete' => 'حذف گزارش فروش',
 
         // inventory
+//           'warehouse-keeper' => 'انباردار',
+
 //           'inventory-list' => 'انبار - لیست کالاها',
 //           'inventory-create' => 'انبار - ثبت کالا',
 //           'inventory-edit' => 'انبار - ویرایش کالا',

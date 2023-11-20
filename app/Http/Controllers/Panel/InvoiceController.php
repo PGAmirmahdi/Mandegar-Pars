@@ -13,6 +13,7 @@ use App\Models\Product;
 use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class InvoiceController extends Controller
 {
@@ -22,7 +23,7 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-list');
 
-        if (auth()->user()->isAdmin() || auth()->user()->isAccountant()){
+        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant()){
             $invoices = Invoice::where('created_in', 'automation')->where('status','!=','invoiced')->latest()->paginate(30);
         }else{
             $invoices = Invoice::where('created_in', 'automation')->where('user_id', auth()->id())->where('status','!=','invoiced')->latest()->paginate(30);
@@ -69,11 +70,13 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         // edit own invoice OR is admin
-        $this->authorize('edit-invoice', $invoice);
+        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper()){
+            $factor = \request()->type == 'factor' ? $invoice->factor : null;
 
-        $factor = \request()->type == 'factor' ? $invoice->factor : null;
-
-        return view('panel.invoices.printable', compact('invoice','factor'));
+            return view('panel.invoices.printable', compact('invoice','factor'));
+        }else{
+            abort(403);
+        }
     }
 
     public function edit(Invoice $invoice)
@@ -199,13 +202,13 @@ class InvoiceController extends Controller
     public function search(Request $request)
     {
         $this->authorize('invoices-list');
-        $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+        $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
         $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
         $status = $request->status == 'all' ? ['pending','return'] : [$request->status];
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
 
-        if (auth()->user()->isAdmin() || auth()->user()->isAccountant()){
+        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant()){
             $invoices = Invoice::where('created_in', 'automation')
                 ->when($request->need_no, function ($q) use($request){
                     return $q->where('need_no', $request->need_no);
