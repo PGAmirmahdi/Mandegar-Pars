@@ -35,7 +35,6 @@
                         <th>عنوان محصول</th>
                         <th>کد محصول</th>
                         <th>دسته بندی</th>
-                        <th>موجودی</th>
                         <th>تاریخ ایجاد</th>
                         @can('products-edit')
                             <th>ویرایش</th>
@@ -57,7 +56,6 @@
                             <td>{{ $product->title }}</td>
                             <td>{{ $product->code }}</td>
                             <td>{{ $product->category->name }}</td>
-                            <td>{{ $product->total_count }}</td>
                             <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('products-edit')
                                 <td>
