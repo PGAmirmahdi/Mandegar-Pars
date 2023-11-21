@@ -14,6 +14,7 @@ use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvoiceController extends Controller
 {
@@ -290,6 +291,11 @@ class InvoiceController extends Controller
         ];
 
         return response()->json(['error' => 0, 'message' => 'کد تخفیف اعمال شد', 'data' => $data]);
+    }
+
+    public function excel()
+    {
+        return Excel::download(new \App\Exports\InvoicesExport, 'invoices.xlsx');
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)

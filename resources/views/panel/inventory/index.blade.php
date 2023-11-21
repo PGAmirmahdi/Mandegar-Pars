@@ -5,12 +5,22 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>انبار</h6>
-                @can('inventory-create')
-                    <a href="{{ route('inventory.create') }}" class="btn btn-primary">
-                        <i class="fa fa-plus mr-2"></i>
-                        افزودن کالا
-                    </a>
-                @endcan
+                <div>
+                    <form action="{{ route('inventory.excel') }}" method="post" id="excel_form">
+                        @csrf
+                    </form>
+
+                    <button class="btn btn-success" form="excel_form">
+                        <i class="fa fa-file-excel-o mr-2"></i>
+                        دریافت اکسل
+                    </button>
+                    @can('inventory-create')
+                        <a href="{{ route('inventory.create') }}" class="btn btn-primary">
+                            <i class="fa fa-plus mr-2"></i>
+                            افزودن کالا
+                        </a>
+                    @endcan
+                </div>
             </div>
             <form action="{{ route('inventory.search') }}" method="post" id="search_form">
                 @csrf

@@ -10,6 +10,7 @@ use App\Models\PriceHistory;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class ProductController extends Controller
@@ -181,6 +182,11 @@ class ProductController extends Controller
         $pricesHistory = PriceHistory::whereIn('product_id', $products_id)->latest()->paginate(30);
 
         return view('panel.prices.history', compact('pricesHistory'));
+    }
+
+    public function excel()
+    {
+        return Excel::download(new \App\Exports\ProductsExport, 'products.xlsx');
     }
 
     private function json_properties($request){

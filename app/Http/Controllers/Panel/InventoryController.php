@@ -7,6 +7,7 @@ use App\Http\Requests\StoreInventoryRequest;
 use App\Http\Requests\UpdateInventoryRequest;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InventoryController extends Controller
 {
@@ -93,5 +94,10 @@ class InventoryController extends Controller
             ->latest()->paginate(30);
 
         return view('panel.inventory.index', compact('data'));
+    }
+
+    public function excel()
+    {
+        return Excel::download(new \App\Exports\InventoryExport, 'inventory.xlsx');
     }
 }

@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF as PDF;
 
 
@@ -53,7 +54,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\Inventory::all() as $item)
 //    {
@@ -76,6 +77,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Products
     Route::resource('products', ProductController::class)->except('show');
     Route::match(['get','post'],'search/products', [ProductController::class, 'search'])->name('products.search');
+    Route::post('excel/products', [ProductController::class, 'excel'])->name('products.excel');
 
     // Printers
     Route::resource('printers', PrinterController::class)->except('show');
@@ -86,6 +88,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('calcProductsInvoice', [InvoiceController::class, 'calcProductsInvoice'])->name('calcProductsInvoice');
     Route::post('calcOtherProductsInvoice', [InvoiceController::class, 'calcOtherProductsInvoice'])->name('calcOtherProductsInvoice');
     Route::post('applyDiscount', [InvoiceController::class, 'applyDiscount'])->name('invoices.applyDiscount');
+    Route::post('excel/invoices', [InvoiceController::class, 'excel'])->name('invoices.excel');
 
     // Coupons
     Route::resource('coupons', CouponController::class)->except('show');
@@ -142,6 +145,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('inventory', InventoryController::class)->except('show');
     Route::match(['get', 'post'],'search/inventory', [InventoryController::class, 'search'])->name('inventory.search');
     Route::resource('inventory-reports', InventoryReportController::class);
+    Route::post('excel/inventory', [InventoryController::class, 'excel'])->name('inventory.excel');
 
     // Sale Reports
     Route::resource('sale-reports', SaleReportController::class)->except('show');

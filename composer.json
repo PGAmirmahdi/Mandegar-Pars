@@ -5,9 +5,10 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.0|^8.0",
         "ext-curl": "*",
         "ext-dom": "*",
+        "ext-json": "*",
         "ext-libxml": "*",
         "carlos-meneses/laravel-mpdf": "^2.1",
         "fruitcake/laravel-cors": "^2.0",
@@ -17,10 +18,10 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "maatwebsite/excel": "^3.1",
         "mews/captcha": "^3.3",
         "spatie/laravel-backup": "^7.8",
-        "uxweb/sweet-alert": "^2.0",
-      "ext-json": "*"
+        "uxweb/sweet-alert": "^2.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
