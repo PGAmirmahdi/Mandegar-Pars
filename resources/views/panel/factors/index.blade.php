@@ -89,7 +89,7 @@
                             </td>
                             @can('invoices-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating {{ $factor->invoice->created_in == 'website' || $factor->inventory_report != null ? 'disabled' : '' }}" href="{{ route('factors.edit', $factor->id) }}">
+                                    <a class="btn btn-warning btn-floating {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}" href="{{ route('factors.edit', $factor->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>

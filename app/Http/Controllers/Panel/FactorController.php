@@ -54,11 +54,6 @@ class FactorController extends Controller
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $factor->invoice);
 
-        // if this factor has output from inventory redirect it
-        if ($factor->inventory_report){
-            return back();
-        }
-
         return view('panel.factors.edit', compact('factor'));
     }
 
@@ -69,11 +64,6 @@ class FactorController extends Controller
 
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $factor->invoice);
-
-        // if this factor has output from inventory redirect it
-        if ($factor->inventory_report){
-            return back();
-        }
 
         $invoice = $factor->invoice;
 

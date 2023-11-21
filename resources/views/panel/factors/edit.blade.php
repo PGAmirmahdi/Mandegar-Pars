@@ -9,6 +9,17 @@
         #other_products_table input, #other_products_table select{
             width: auto;
         }
+
+        @if($factor->inventory_report)
+            table input, table select, table button{
+                pointer-events: none !important;
+            }
+        @endif
+
+        @php
+            $readOnly = $factor->inventory_report ? 'readonly' : '';
+            $disabled = $factor->inventory_report ? 'disabled' : '';
+        @endphp
     </style>
 @endsection
 @section('content')
@@ -148,9 +159,11 @@
                         <h5>محصولات آرتین</h5>
                     </div>
                     <div class="col-12 mb-3">
-                        <div class="d-flex justify-content-between mb-3">
-                            <button class="btn btn-outline-success" type="button" id="btn_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
-                        </div>
+                        @if(!$factor->inventory_report)
+                            <div class="d-flex justify-content-between mb-3">
+                                <button class="btn btn-outline-success" type="button" id="btn_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
+                            </div>
+                        @endif
                         <div class="overflow-auto">
                             <table class="table table-bordered table-striped text-center" id="products_table">
                                 <thead>
@@ -188,7 +201,7 @@
                                         @endphp
                                         <tr>
                                             <td>
-                                                <select class="form-control" name="products[]" required>
+                                                <select class="form-control" name="products[]" required {{ $readOnly }}>
                                                     <option value="" disabled selected>انتخاب کنید...</option>
                                                     @foreach(\App\Models\Product::all(['id','title']) as $product)
                                                         <option value="{{ $product->id }}" {{ $item->pivot->product_id == $product->id ? 'selected' : '' }}>{{ $product->title }}</option>
@@ -196,17 +209,17 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select class="form-control" name="colors[]">
+                                                <select class="form-control" name="colors[]" {{ $readOnly }}>
                                                     @foreach(\App\Models\Product::COLORS as $key => $value)
                                                         <option value="{{ $key }}" {{ $item->pivot->color == $key ? 'selected' : '' }}>{{ $value }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="number" name="counts[]" class="form-control" min="1" value="{{ $item->pivot->count }}" required>
+                                                <input type="number" name="counts[]" class="form-control" min="1" value="{{ $item->pivot->count }}" {{ $readOnly }} required>
                                             </td>
                                             <td>
-                                                <select class="form-control" name="units[]">
+                                                <select class="form-control" name="units[]" {{ $readOnly }}>
                                                     <option value="{{ $item->pivot->unit }}">{{ \App\Models\Product::UNITS[$item->pivot->unit] }}</option>
                                                 </select>
                                             </td>
@@ -232,10 +245,10 @@
                                                 <input type="number" name="invoice_nets[]" class="form-control" min="0" value="{{ $item->pivot->invoice_net }}" readonly>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-primary btn-floating btn_discount" data-toggle="modal" data-target="#discountModal"><i class="fa fa-percent"></i></button>
+                                                <button type="button" class="btn btn-primary btn-floating btn_discount" data-toggle="modal" data-target="#discountModal" {{ $disabled }}><i class="fa fa-percent"></i></button>
                                             </td>
                                             <td>
-                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                                <button class="btn btn-danger btn-floating btn_remove" type="button" {{ $disabled }}><i class="fa fa-trash"></i></button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -248,9 +261,11 @@
                         <h5>محصولات دیگر</h5>
                     </div>
                     <div class="col-12 mb-3">
-                        <div class="d-flex justify-content-between mb-3">
-                            <button class="btn btn-outline-success" type="button" id="btn_other_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
-                        </div>
+                        @if(!$factor->inventory_report)
+                            <div class="d-flex justify-content-between mb-3">
+                                <button class="btn btn-outline-success" type="button" id="btn_other_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
+                            </div>
+                        @endif
                         <div class="overflow-auto">
                             <table class="table table-bordered table-striped text-center" id="other_products_table">
                                 <thead>
@@ -274,28 +289,28 @@
                                     @foreach($factor->invoice->other_products as $product)
                                         <tr>
                                             <td>
-                                                <input type="text" name="other_products[]" class="form-control" value="{{ $product->title }}" placeholder="عنوان کالا" required>
+                                                <input type="text" name="other_products[]" class="form-control" value="{{ $product->title }}" {{ $readOnly }} placeholder="عنوان کالا" required>
                                             </td>
                                             <td>
-                                                <input type="text" name="other_colors[]" class="form-control" value="{{ $product->color }}" placeholder="نام رنگ" required>
+                                                <input type="text" name="other_colors[]" class="form-control" value="{{ $product->color }}" {{ $readOnly }} placeholder="نام رنگ" required>
                                             </td>
                                             <td>
-                                                <input type="number" name="other_counts[]" class="form-control" min="1" value="{{ $product->count }}" required>
+                                                <input type="number" name="other_counts[]" class="form-control" min="1" value="{{ $product->count }}" {{ $readOnly }} required>
                                             </td>
                                             <td>
-                                                <select class="form-control" name="other_units[]">
+                                                <select class="form-control" name="other_units[]" {{ $readOnly }}>
                                                     <option value="number">عدد</option>
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ $product->price }}" required>
+                                                <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ $product->price }}" {{ $readOnly }} required>
                                                 <span class="price_with_grouping text-primary"></span>
                                             </td>
                                             <td>
-                                                <input type="number" name="other_total_prices[]" class="form-control" min="0" value="{{ $product->total_price }}" readonly>
+                                                <input type="number" name="other_total_prices[]" class="form-control" min="0" value="{{ $product->total_price }}" {{ $readOnly }} readonly>
                                             </td>
                                             <td>
-                                                <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="{{ $product->discount_amount }}" required>
+                                                <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="{{ $product->discount_amount }}" {{ $readOnly }} required>
                                                 <span class="price_with_grouping text-primary"></span>
                                             </td>
                                             <td>
@@ -311,7 +326,7 @@
                                                 <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="{{ $product->invoice_net }}" readonly>
                                             </td>
                                             <td>
-                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                                <button class="btn btn-danger btn-floating btn_remove" type="button" {{ $disabled }}><i class="fa fa-trash"></i></button>
                                             </td>
                                         </tr>
                                     @endforeach
