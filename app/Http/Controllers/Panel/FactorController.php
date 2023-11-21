@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use function Symfony\Component\String\b;
 
 class FactorController extends Controller
@@ -144,6 +145,11 @@ class FactorController extends Controller
 
 
         return view('panel.factors.index', compact('factors', 'customers'));
+    }
+
+    public function excel()
+    {
+        return Excel::download(new \App\Exports\FactorsExport, 'factors.xlsx');
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)

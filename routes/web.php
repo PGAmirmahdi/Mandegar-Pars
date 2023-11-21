@@ -133,6 +133,8 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Factors
     Route::resource('factors', FactorController::class)->except(['show','create','store']);
     Route::match(['get', 'post'],'search/factors', [FactorController::class, 'search'])->name('factors.search');
+    Route::post('excel/factors', [FactorController::class, 'excel'])->name('factors.excel');
+
 
     // Off-site Products
     Route::get('off-site-products/{website}',[OffSiteProductController::class, 'index'])->name('off-site-products.index');

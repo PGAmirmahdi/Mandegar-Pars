@@ -5,6 +5,16 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>فاکتور ها</h6>
+                <div>
+                    <form action="{{ route('factors.excel') }}" method="post" id="excel_form">
+                        @csrf
+                    </form>
+
+                    <button class="btn btn-success" form="excel_form">
+                        <i class="fa fa-file-excel-o mr-2"></i>
+                        دریافت اکسل
+                    </button>
+                </div>
             </div>
             <form action="{{ route('factors.search') }}" method="post" id="search_form">
                 @csrf
