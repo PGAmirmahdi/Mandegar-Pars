@@ -30,7 +30,10 @@ class OffSiteProductController extends Controller
 
         switch ($request->website)
         {
-            case 'torob' || 'emalls':
+            case 'emalls':
+                $this->publicStore($request);
+                break;
+            case 'torob':
                 $this->publicStore($request);
                 break;
             case 'digikala':
@@ -74,7 +77,10 @@ class OffSiteProductController extends Controller
 
         switch ($offSiteProduct->website)
         {
-            case 'torob' || 'emalls':
+            case 'emalls':
+                $this->publicUpdate($offSiteProduct ,$request);
+                break;
+            case 'torob':
                 $this->publicUpdate($offSiteProduct ,$request);
                 break;
             case 'digikala':
@@ -198,6 +204,7 @@ class OffSiteProductController extends Controller
             'title' => 'required',
             'code' => 'required|numeric',
         ]);
+
 
         OffSiteProduct::create([
             'title' => $request->title,
