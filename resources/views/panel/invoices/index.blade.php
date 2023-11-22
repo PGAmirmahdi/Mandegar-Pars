@@ -95,8 +95,8 @@
                             </td>
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
-                                <a class="btn btn-info btn-floating" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
-                                    <i class="fa fa-eye"></i>
+                                <a class="text-primary" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
+                                    <u><strong>{{ $invoice->id }}</strong></u>
                                 </a>
                             </td>
                             @can('invoices-edit')
