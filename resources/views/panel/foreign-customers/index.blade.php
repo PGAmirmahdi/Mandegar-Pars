@@ -6,14 +6,14 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>مشتریان خارجی</h6>
                 <div>
-{{--                    <form action="{{ route('customers.excel') }}" method="post" id="excel_form">--}}
-{{--                        @csrf--}}
-{{--                    </form>--}}
+                    <form action="{{ route('foreign-customers.excel') }}" method="post" id="excel_form">
+                        @csrf
+                    </form>
 
-{{--                    <button class="btn btn-success" form="excel_form">--}}
-{{--                        <i class="fa fa-file-excel-o mr-2"></i>--}}
-{{--                        دریافت اکسل--}}
-{{--                    </button>--}}
+                    <button class="btn btn-success" form="excel_form">
+                        <i class="fa fa-file-excel-o mr-2"></i>
+                        دریافت اکسل
+                    </button>
 
                     @can('foreign-customers-create')
                         <a href="{{ route('foreign-customers.create') }}" class="btn btn-primary">
@@ -23,33 +23,30 @@
                     @endcan
                 </div>
             </div>
-{{--            <form action="{{ route('foreign-customers.search') }}" method="post" id="search_form">--}}
-{{--                @csrf--}}
-{{--            </form>--}}
-{{--            <div class="row mb-3">--}}
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری" value="{{ request()->name ?? null }}">--}}
-{{--                </div>--}}
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">--}}
-{{--                        <option value="all">استان (همه)</option>--}}
-{{--                        @foreach(\App\Models\Province::all() as $province)--}}
-{{--                            <option value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <select name="customer_type" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">--}}
-{{--                        <option value="all">مشتری (همه)</option>--}}
-{{--                        @foreach(\App\Models\Customer::CUSTOMER_TYPE as $key => $value)--}}
-{{--                            <option value="{{ $key }}" {{ request()->customer_type == $key ? 'selected' : '' }}>{{ $value }}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>--}}
-{{--                </div>--}}
-{{--            </div>--}}
+            <form action="{{ route('foreign-customers.search') }}" method="post" id="search_form">
+                @csrf
+            </form>
+            <div class="row mb-3">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="country" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                        <option value="all">کشور (همه)</option>
+                        @foreach(\App\Models\Country::pluck('fa_name') as $country)
+                            <option value="{{ $country }}" {{ request()->country == $country ? 'selected' : '' }}>{{ $country }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="status" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
+                        <option value="all">وضعیت (همه)</option>
+                        @foreach(\App\Models\ForeignCustomer::STATUS as $key => $value)
+                            <option value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
@@ -60,6 +57,7 @@
                         <th>ایمیل</th>
                         <th>کشور</th>
                         <th>وضعیت</th>
+                        <th>پیوست</th>
                         <th>تاریخ ایجاد</th>
                         @can('foreign-customers-edit')
                             <th>ویرایش</th>
@@ -97,6 +95,13 @@
                             <td>{{ $customer->country ?? '---' }}</td>
                             <td>
                                 <span class="badge badge-{{ \App\Models\ForeignCustomer::STATUS_COLOR[$customer->status] }}">{{ \App\Models\ForeignCustomer::STATUS[$customer->status] }}</span>
+                            </td>
+                            <td>
+                                @if($customer->docs)
+                                    <span class="badge badge-success">دارد</span>
+                                @else
+                                    <span class="badge badge-warning">ندارد</span>
+                                @endif
                             </td>
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('foreign-customers-edit')

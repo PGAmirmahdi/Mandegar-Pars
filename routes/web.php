@@ -158,6 +158,8 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Customers
     Route::resource('foreign-customers', ForeignCustomerController::class)->except('show');
+    Route::match(['get', 'post'],'search/foreign-customers', [ForeignCustomerController::class, 'search'])->name('foreign-customers.search');
+    Route::post('excel/foreign-customers', [ForeignCustomerController::class, 'excel'])->name('foreign-customers.excel');
 
 });
 
