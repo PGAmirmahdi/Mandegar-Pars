@@ -5,12 +5,23 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>مشتریان</h6>
-                @can('customers-create')
-                    <a href="{{ route('customers.create') }}" class="btn btn-primary">
-                        <i class="fa fa-plus mr-2"></i>
-                        ایجاد مشتری
-                    </a>
-                @endcan
+                <div>
+                    <form action="{{ route('customers.excel') }}" method="post" id="excel_form">
+                        @csrf
+                    </form>
+
+                    <button class="btn btn-success" form="excel_form">
+                        <i class="fa fa-file-excel-o mr-2"></i>
+                        دریافت اکسل
+                    </button>
+
+                    @can('customers-create')
+                        <a href="{{ route('customers.create') }}" class="btn btn-primary">
+                            <i class="fa fa-plus mr-2"></i>
+                            ایجاد مشتری
+                        </a>
+                    @endcan
+                </div>
             </div>
             <form action="{{ route('customers.search') }}" method="post" id="search_form">
                 @csrf

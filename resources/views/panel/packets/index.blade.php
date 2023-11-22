@@ -5,12 +5,24 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>بسته های ارسالی</h6>
-                @can('packets-create')
-                    <a href="{{ route('packets.create') }}" class="btn btn-primary">
-                        <i class="fa fa-plus mr-2"></i>
-                        ایجاد بسته ارسالی
-                    </a>
-                @endcan
+
+                <div>
+                    <form action="{{ route('packets.excel') }}" method="post" id="excel_form">
+                        @csrf
+                    </form>
+
+                    <button class="btn btn-success" form="excel_form">
+                        <i class="fa fa-file-excel-o mr-2"></i>
+                        دریافت اکسل
+                    </button>
+
+                    @can('packets-create')
+                        <a href="{{ route('packets.create') }}" class="btn btn-primary">
+                            <i class="fa fa-plus mr-2"></i>
+                            ایجاد بسته ارسالی
+                        </a>
+                    @endcan
+                </div>
             </div>
             <form action="{{ route('packets.search') }}" method="post" id="search_form">
                 @csrf

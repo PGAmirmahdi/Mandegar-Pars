@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -132,5 +133,10 @@ class CustomerController extends Controller
     public function getCustomerInfo(Customer $customer)
     {
         return response()->json(['data' => $customer]);
+    }
+
+    public function excel()
+    {
+        return Excel::download(new \App\Exports\CustomersExport, 'customers.xlsx');
     }
 }

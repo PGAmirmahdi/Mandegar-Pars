@@ -10,6 +10,7 @@ use App\Models\Packet;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PacketController extends Controller
 {
@@ -142,5 +143,10 @@ class PacketController extends Controller
         }
 
         return view('panel.packets.index', compact('packets', 'invoices'));
+    }
+
+    public function excel()
+    {
+        return Excel::download(new \App\Exports\PacketsExport, 'packets.xlsx');
     }
 }
