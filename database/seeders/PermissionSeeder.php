@@ -110,6 +110,10 @@ class PermissionSeeder extends Seeder
 //            'output-reports-delete' => 'انبار - حذف خروجی',
         // end inventory
 
+//            'foreign-customers-list' => 'لیست مشتریان خارجی',
+//            'foreign-customers-create' => 'ثبت مشتری خارجی',
+//            'foreign-customers-edit' => 'ویرایش مشتری خارجی',
+//            'foreign-customers-delete' => 'حذف مشتری خارجی',
         ];
 
         foreach ($items as $key => $item)

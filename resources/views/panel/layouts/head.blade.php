@@ -43,7 +43,6 @@
     <link rel="stylesheet" href="/vendors/datepicker-jalali/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="/vendors/datepicker/daterangepicker.css">
 
-
     @yield('styles')
 </head>
 <body>

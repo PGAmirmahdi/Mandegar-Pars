@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\FactorController;
+use App\Http\Controllers\Panel\ForeignCustomerController;
 use App\Http\Controllers\Panel\InputController;
 use App\Http\Controllers\Panel\InventoryController;
 use App\Http\Controllers\Panel\InventoryReportController;
@@ -154,6 +155,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Sale Reports
     Route::resource('sale-reports', SaleReportController::class)->except('show');
     Route::match(['get', 'post'],'search/sale-reports', [SaleReportController::class, 'search'])->name('sale-reports.search');
+
+    // Customers
+    Route::resource('foreign-customers', ForeignCustomerController::class)->except('show');
 
 });
 
