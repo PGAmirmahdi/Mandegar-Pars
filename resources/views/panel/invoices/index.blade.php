@@ -3,6 +3,9 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            <div class="alert alert-info">
+                <strong>نکته!</strong> امکان <u>ویرایش</u> و <u>حذف</u> پیش فاکتور هایی که وضعیت آنها فاکتور شده است وجود ندارد.
+            </div>
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>پیش فاکتور ها</h6>
                 <div>
@@ -47,8 +50,9 @@
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="status" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">
                         <option value="all">وضعیت (همه)</option>
-                        <option value="return" {{ request()->status == 'return' ? 'selected' : '' }}>عودت داده شده</option>
-                        <option value="pending" {{ request()->status == 'pending' ? 'selected' : '' }}>در دست اقدام</option>
+                        @foreach(\App\Models\Invoice::STATUS as $key => $value)
+                            <option value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
@@ -101,14 +105,14 @@
                             </td>
                             @can('invoices-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
+                                    <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                             @endcan
                             @can('invoices-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('invoices.destroy',$invoice->id) }}" data-id="{{ $invoice->id }}">
+                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('invoices.destroy',$invoice->id) }}" data-id="{{ $invoice->id }}" {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}>
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>

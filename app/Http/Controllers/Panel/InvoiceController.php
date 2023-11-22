@@ -25,9 +25,9 @@ class InvoiceController extends Controller
         $this->authorize('invoices-list');
 
         if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant()){
-            $invoices = Invoice::where('created_in', 'automation')->where('status','!=','invoiced')->latest()->paginate(30);
+            $invoices = Invoice::where('created_in', 'automation')->latest()->paginate(30);
         }else{
-            $invoices = Invoice::where('created_in', 'automation')->where('user_id', auth()->id())->where('status','!=','invoiced')->latest()->paginate(30);
+            $invoices = Invoice::where('created_in', 'automation')->where('user_id', auth()->id())->latest()->paginate(30);
         }
 
         $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
