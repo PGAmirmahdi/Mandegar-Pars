@@ -47,7 +47,7 @@
 
 .bootstrap-tagsinput .tag {
 	margin-left: 2px;
-	color: white;
+	color: #000000;
 }
 
 .bootstrap-tagsinput .tag [data-role="remove"] {
