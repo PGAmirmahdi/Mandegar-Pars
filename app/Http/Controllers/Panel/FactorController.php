@@ -19,7 +19,7 @@ class FactorController extends Controller
     {
         $this->authorize('invoices-list');
 
-        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant()){
+        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
             $factors = Factor::latest()->paginate(30);
         }else{
             $factors = Factor::whereHas('invoice', function ($q){
@@ -27,7 +27,7 @@ class FactorController extends Controller
             })->latest()->paginate(30);
         }
 
-        $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+        $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
         return view('panel.factors.index', compact('factors', 'customers'));
     }
@@ -117,13 +117,13 @@ class FactorController extends Controller
     public function search(Request $request)
     {
         $this->authorize('invoices-list');
-        $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+        $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
         $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
         $status = $request->status == 'all' ? ['invoiced','paid'] : [$request->status];
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
 
-        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant()){
+        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
             $factors = Factor::whereIn('status', $status)
                 ->whereHas('invoice', function ($q) use($request, $customers_id, $status, $province){
                 $q->when($request->need_no, function ($q) use($request){
