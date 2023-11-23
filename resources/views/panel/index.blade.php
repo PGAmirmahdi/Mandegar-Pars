@@ -69,7 +69,7 @@
                                             <i class="fa fa-shopping-cart"></i>
                                         </div>
                                     </div>
-                                    <span class="font-size-13">پیش فاکتور</span>
+                                    <span class="font-size-13">سفارش مشتری</span>
                                     <h2 class="mb-0 ml-auto font-weight-bold text-primary primary-font line-height-30">{{ \App\Models\Invoice::where('status','!=','invoiced')->count() }}</h2>
                                 </div>
                             </div>
