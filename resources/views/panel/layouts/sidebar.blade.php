@@ -28,7 +28,7 @@
                     </a>
                 </li>
             @endcanany
-            @canany(['customers-list'])
+            @canany(['customers-list','foreign-customers-list'])
                 <li class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers']) ? 'active' : '' }}" data-toggle="tooltip" title="مشتریان">
                     <a href="#navigationCustomers" title="مشتریان">
                         <i class="icon ti-user"></i>
