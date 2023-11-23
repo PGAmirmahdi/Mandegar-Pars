@@ -114,6 +114,11 @@ class PermissionSeeder extends Seeder
 //            'foreign-customers-create' => 'ثبت مشتری خارجی',
 //            'foreign-customers-edit' => 'ویرایش مشتری خارجی',
 //            'foreign-customers-delete' => 'حذف مشتری خارجی',
+
+//            'factors-list' => 'لیست فاکتور ها',
+//            'factors-create' => 'ایجاد فاکتور',
+//            'factors-edit' => 'ویرایش فاکتور',
+//            'factors-delete' => 'حذف فاکتور',
         ];
 
         foreach ($items as $key => $item)

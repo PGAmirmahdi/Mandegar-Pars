@@ -144,6 +144,8 @@
                         @endcan
                     </a>
                 </li>
+            @endcan
+            @can('factors-list')
                 <li>
                     <a class="{{ active_sidebar(['factors','factors/create','factors/{factor}/edit','search/factors']) ? 'active' : '' }}" href="{{ route('factors.index') }}">فاکتور</a>
                 </li>

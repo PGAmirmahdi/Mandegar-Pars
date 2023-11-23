@@ -54,6 +54,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->id == $invoice->user_id || $user->isAdmin() || $user->isAccountant() || $user->isCEO();
         });
 
+        Gate::define('edit-factor', function ($user, Invoice $invoice){
+            return $user->id == $invoice->user_id || $user->isAdmin() || $user->isAccountant() || $user->isCEO();
+        });
+
         Gate::define('edit-task', function ($user, Task $task){
             return $user->id == $task->creator_id;
         });

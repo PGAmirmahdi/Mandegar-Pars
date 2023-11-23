@@ -17,7 +17,7 @@ class FactorController extends Controller
 {
     public function index()
     {
-        $this->authorize('invoices-list');
+        $this->authorize('factors-list');
 
         if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
             $factors = Factor::latest()->paginate(30);
@@ -50,10 +50,10 @@ class FactorController extends Controller
     public function edit(Factor $factor)
     {
         // access to invoices-edit permission
-        $this->authorize('invoices-edit');
+        $this->authorize('factors-edit');
 
         // edit own invoice OR is admin
-        $this->authorize('edit-invoice', $factor->invoice);
+        $this->authorize('edit-factor', $factor->invoice);
 
         return view('panel.factors.edit', compact('factor'));
     }
@@ -61,10 +61,10 @@ class FactorController extends Controller
     public function update(UpdateFactorRequest $request, Factor $factor)
     {
         // access to invoices-edit permission
-        $this->authorize('invoices-edit');
+        $this->authorize('factors-edit');
 
         // edit own invoice OR is admin
-        $this->authorize('edit-invoice', $factor->invoice);
+        $this->authorize('edit-factor', $factor->invoice);
 
         $invoice = $factor->invoice;
 
@@ -100,7 +100,7 @@ class FactorController extends Controller
 
     public function destroy(Factor $factor)
     {
-        $this->authorize('invoices-delete');
+        $this->authorize('factors-delete');
 
         // if this factor has output from inventory redirect it
         if ($factor->inventory_report){
@@ -116,7 +116,8 @@ class FactorController extends Controller
 
     public function search(Request $request)
     {
-        $this->authorize('invoices-list');
+        $this->authorize('factors-list');
+
         $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
         $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
