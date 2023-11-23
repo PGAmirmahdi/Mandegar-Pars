@@ -139,10 +139,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">گزارشات پیش فاکتور</h6>
+                        <h6 class="card-title m-b-20">گزارشات سفارش مشتری</h6>
                         <h6 class="card-title m-b-20">مجموع: {{ number_format($invoices->sum('amount')) }}</h6>
                     </div>
-                    <canvas id="chart_sale1" style="width: auto"></canvas>
+                    <canvas id="bar_chart_sale1" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
@@ -153,7 +153,7 @@
                         <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
                         <h6 class="card-title m-b-20">مجموع: {{ number_format($factors->sum('amount')) }}</h6>
                     </div>
-                    <canvas id="chart_sale2" style="width: auto"></canvas>
+                    <canvas id="bar_chart_sale2" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
@@ -162,9 +162,17 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title m-b-20">گزارشات ماهیانه (فاکتور)</h6>
-{{--                        <h6 class="card-title m-b-20">مجموع: {{ number_format($factors->sum('amount')) }}</h6>--}}
+                        <select class="form-control mr-4" style="width: 140px" id="change_line_chart3">
+                            <option value="line">نمودار خطی</option>
+                            <option value="bar">نمودار ستونی</option>
+                        </select>
                     </div>
-                    <canvas id="chart_sale3" style="width: auto"></canvas>
+                    <div id="bar_chart_sale3_sec" class="d-none">
+                        <canvas id="bar_chart_sale3" style="width: auto"></canvas>
+                    </div>
+                    <div id="line_chart_sale3_sec" class="d-block">
+                        <canvas id="line_chart_sale3" style="width: auto"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,7 +180,7 @@
 @endsection
 @section('scripts')
     <script>
-        // sales chart
+        // sales bar chart
         var invoices_provinces = {!! json_encode($invoices->pluck('province')) !!};
         var invoices_amounts = {!! json_encode($invoices->pluck('amount')) !!};
 
@@ -182,9 +190,10 @@
         var factors_monthly_month = {!! json_encode($factors_monthly->keys()) !!};
         var factors_monthly_amounts = {!! json_encode($factors_monthly->values()) !!};
 
+        // bar chart
         // invoices
-        if ($('#chart_sale1').length) {
-            var element1 = document.getElementById("chart_sale1");
+        if ($('#bar_chart_sale1').length) {
+            var element1 = document.getElementById("bar_chart_sale1");
             element1.height = 146;
             new Chart(element1, {
                 type: 'bar',
@@ -250,8 +259,8 @@
         // end invoices
 
         // factors
-        if ($('#chart_sale2').length) {
-            var element2 = document.getElementById("chart_sale2");
+        if ($('#bar_chart_sale2').length) {
+            var element2 = document.getElementById("bar_chart_sale2");
             element2.height = 146;
             new Chart(element2, {
                 type: 'bar',
@@ -318,8 +327,8 @@
         //end factors
 
         // factors - monthly
-        if ($('#chart_sale3').length) {
-            var element3 = document.getElementById("chart_sale3");
+        if ($('#bar_chart_sale3').length) {
+            var element3 = document.getElementById("bar_chart_sale3");
             element3.height = 146;
             new Chart(element3, {
                 type: 'bar',
@@ -329,6 +338,7 @@
                         {
                             label: "مجموع فروش",
                             backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            fill: false,
                             data: factors_monthly_amounts,
                         }
                     ]
@@ -384,7 +394,230 @@
             })
         }
         //end factors - monthly
-        // end sales chart
+        // end sales bar chart
+
+        // sales line chart
+        if ($('#line_chart_sale1').length) {
+            var element4 = document.getElementById("line_chart_sale1");
+            element4.height = 146;
+            new Chart(element4, {
+                type: 'line',
+                data: {
+                    labels: invoices_provinces,
+                    datasets: [
+                        {
+                            label: "مجموع فروش",
+                            backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            data: invoices_amounts,
+                            borderColor: '#5d4a9c',
+                            fill: false,
+                            cubicInterpolationMode: 'monotone',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'ریال',
+                                fontSize: 18
+                            },
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function(value, index, values) {
+                                    const options = { style: 'decimal', useGrouping: true };
+                                    const formattedNumber = value.toLocaleString('en-US', options);
+                                    return formattedNumber;
+                                }
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return formattedValue + ' ریال ';
+                            }
+                        }
+                    }
+                },
+            })
+        }
+        if ($('#line_chart_sale2').length) {
+            var element5 = document.getElementById("line_chart_sale2");
+            element5.height = 146;
+            new Chart(element5, {
+                type: 'line',
+                data: {
+                    labels: factors_provinces,
+                    datasets: [
+                        {
+                            label: "مجموع فروش",
+                            backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            data: factors_amounts,
+                            borderColor: '#5d4a9c',
+                            fill: false,
+                            cubicInterpolationMode: 'monotone',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'ریال',
+                                fontSize: 18
+                            },
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function(value, index, values) {
+                                    const options = { style: 'decimal', useGrouping: true };
+                                    const formattedNumber = value.toLocaleString('en-US', options);
+                                    return formattedNumber;
+                                }
+
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return formattedValue + ' ریال ';
+                            }
+                        }
+                    }
+                },
+            })
+        }
+        if ($('#line_chart_sale3').length) {
+            var element6 = document.getElementById("line_chart_sale3");
+            element6.height = 146;
+            new Chart(element6, {
+                type: 'line',
+                data: {
+                    labels: factors_monthly_month,
+                    datasets: [
+                        {
+                            label: "مجموع فروش",
+                            backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            data: factors_monthly_amounts,
+                            borderColor: '#5d4a9c',
+                            fill: false,
+                            cubicInterpolationMode: 'monotone',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'ریال',
+                                fontSize: 18
+                            },
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function(value, index, values) {
+                                    const options = { style: 'decimal', useGrouping: true };
+                                    const formattedNumber = value.toLocaleString('en-US', options);
+                                    return formattedNumber;
+                                }
+
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return formattedValue + ' ریال ';
+                            }
+                        }
+                    }
+                },
+            })
+        }
+        // end sales line chart
+
+        // setTimeout(function () {
+        //     $('#line_chart_sale1').removeClass('d-none')
+        //     // console.log($('#line_chart_sale1'))
+        // },2000)
+        $(document).on('change', '#change_line_chart3', function () {
+            if(this.value == 'bar'){
+                $('#line_chart_sale3_sec').removeClass('d-block').addClass('d-none')
+                $('#bar_chart_sale3_sec').removeClass('d-none')
+            }else{
+                $('#bar_chart_sale3_sec').addClass('d-none')
+                $('#line_chart_sale3_sec').removeClass('d-none')
+            }
+        })
     </script>
 @endsection
 
