@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\FactorController;
@@ -160,6 +161,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('foreign-customers', ForeignCustomerController::class)->except('show');
     Route::match(['get', 'post'],'search/foreign-customers', [ForeignCustomerController::class, 'search'])->name('foreign-customers.search');
     Route::post('excel/foreign-customers', [ForeignCustomerController::class, 'excel'])->name('foreign-customers.excel');
+
+    // Chats
+    Route::get('chat',[ChatController::class,'index']);
 
 });
 

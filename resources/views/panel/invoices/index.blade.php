@@ -1,13 +1,27 @@
 @extends('panel.layouts.master')
-@section('title', 'پیش فاکتور ها')
+@can('accountant')
+    @section('title', 'پیش فاکتور ها')
+@else
+    @section('title', 'سفارشات')
+@endcan
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="alert alert-info">
-                <strong>نکته!</strong> امکان <u>ویرایش</u> و <u>حذف</u> پیش فاکتور هایی که وضعیت آنها فاکتور شده است وجود ندارد.
+                <strong>نکته!</strong> امکان <u>ویرایش</u> و <u>حذف</u>
+                @can('accountant')
+                    پیش فاکتور
+                @else
+                    سفارش
+                @endcan
+                هایی که وضعیت آنها فاکتور شده است وجود ندارد.
             </div>
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>پیش فاکتور ها</h6>
+                @can('accountant')
+                    <h6>پیش فاکتور ها</h6>
+                @else
+                    <h6>سفارشات</h6>
+                @endcan
                 <div>
                     <form action="{{ route('invoices.excel') }}" method="post" id="excel_form">
                         @csrf
@@ -21,7 +35,12 @@
                     @can('invoices-create')
                         <a href="{{ route('invoices.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            ایجاد پیش فاکتور
+                            ایجاد
+                            @can('accountant')
+                                پیش فاکتور
+                            @else
+                                سفارش
+                            @endcan
                         </a>
                     @endcan
                 </div>
@@ -73,7 +92,9 @@
                         <th>شماره تماس</th>
                         <th>وضعیت</th>
                         <th>تاریخ ایجاد</th>
-                        <th>پیش فاکتور</th>
+                        @can('accountant')
+                            <th>پیش فاکتور</th>
+                        @endcan
                         @can('invoices-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -98,11 +119,13 @@
                                 @endif
                             </td>
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
-                            <td>
-                                <a class="text-primary" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
-                                    <u><strong>{{ $invoice->id }}</strong></u>
-                                </a>
-                            </td>
+                            @can('accountant')
+                                <td>
+                                    <a class="text-primary" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
+                                        <u><strong>{{ $invoice->id }}</strong></u>
+                                    </a>
+                                </td>
+                            @endcan
                             @can('invoices-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">

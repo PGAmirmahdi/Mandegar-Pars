@@ -1,5 +1,9 @@
 @extends('panel.layouts.master')
-@section('title', 'ایجاد پیش فاکتور')
+@can('accountant')
+    @section('title', 'ایجاد پیش فاکتور')
+@else
+    @section('title', 'ایجاد سفارش')
+@endcan
 @section('styles')
     <style>
         #products_table input, #products_table select{
@@ -15,7 +19,11 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>ایجاد پیش فاکتور</h6>
+                @can('accountant')
+                    <h6>ایجاد پیش فاکتور</h6>
+                @else
+                    <h6>ایجاد سفارش</h6>
+                @endcan
             </div>
             <form action="{{ route('invoices.store') }}" method="post" id="invoice_form">
                 @csrf
