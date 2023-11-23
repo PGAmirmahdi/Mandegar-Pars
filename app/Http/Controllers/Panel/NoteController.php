@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreNoteRequest;
+use App\Http\Requests\UpdateNoteRequest;
 use App\Models\Note;
 use Illuminate\Http\Request;
 
@@ -23,7 +25,7 @@ class NoteController extends Controller
         return view('panel.notes.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreNoteRequest $request)
     {
         $this->authorize('notes-create');
 
@@ -52,7 +54,7 @@ class NoteController extends Controller
         return view('panel.notes.edit', compact('note'));
     }
 
-    public function update(Request $request, Note $note)
+    public function update(UpdateNoteRequest $request, Note $note)
     {
         $this->authorize('notes-edit');
         $this->authorize('edit-note', $note);

@@ -199,6 +199,7 @@ return [
         'captcha_code' => 'کد امنیتی',
         'deposit_doc' => 'سند واریز',
         'person_name' => 'نام شخص',
+        'text' => 'متن',
     ],
 
 ];
