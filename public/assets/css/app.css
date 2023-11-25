@@ -7904,6 +7904,7 @@ figure.avatar.avatar-state-dark:before {
 	position: absolute;
 	bottom: -25px;
 	right: 10px;
+    width: max-content;
 }
 
 .chat-app-wrapper .chat-app .chat-body .chat-body-messages .message-items .message-item.message-item-error:before {

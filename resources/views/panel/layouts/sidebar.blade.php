@@ -35,6 +35,13 @@
                     </a>
                 </li>
             @endcanany
+            @canany(['tickets-list'])
+                <li class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets']) ? 'active' : '' }}" data-toggle="tooltip" title="پشتیبانی و تیکت">
+                    <a href="#navigationTickets" title="پشتیبانی و تیکت">
+                        <i class="icon ti-comment-alt"></i>
+                    </a>
+                </li>
+            @endcanany
             @canany(['shops'])
                 <li class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}','off-site-product-create/{website}','off-site-products/{off_site_product}/edit',]) ? 'active' : '' }}" data-toggle="tooltip" title="فروشگاه ها">
                     <a href="#navigationShops" title="فروشگاه ها">
@@ -174,6 +181,14 @@
             @can('foreign-customers-list')
                 <li>
                     <a class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers']) ? 'active' : '' }}" href="{{ route('foreign-customers.index') }}">مشتریان خارجی</a>
+                </li>
+            @endcan
+        </ul>
+        <ul id="navigationTickets" class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets']) ? 'navigation-active' : '' }}">
+            <li class="navigation-divider">پشتیبانی و تیکت</li>
+            @can('tickets-list')
+                <li>
+                    <a class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets']) ? 'active' : '' }}" href="{{ route('tickets.index') }}">تیکت ها</a>
                 </li>
             @endcan
         </ul>
