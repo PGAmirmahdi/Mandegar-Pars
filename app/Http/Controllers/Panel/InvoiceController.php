@@ -11,9 +11,13 @@ use App\Models\Factor;
 use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Province;
+use App\Models\Role;
+use App\Models\User;
+use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
 
 class InvoiceController extends Controller
@@ -61,6 +65,8 @@ class InvoiceController extends Controller
 //            'status' => $request->status,
         ]);
 
+        $this->send_notif_to_accountants($invoice);
+
         // create products for invoice
         $this->storeInvoiceProducts($invoice, $request);
 
@@ -107,6 +113,15 @@ class InvoiceController extends Controller
 
         // create products for invoice
         $this->storeInvoiceProducts($invoice, $request);
+
+//        send notif to creator of the invoice
+        if ($request->status != $invoice->status){
+            $status = Invoice::STATUS[$request->status];
+            $url = route('invoices.index');
+            $message = "وضعیت پیش فاکتور شماره {$invoice->id} به '{$status}' تغییر یافت";
+
+            Notification::send($invoice->user, new SendMessage($message, $url));
+        }
 
         $invoice->update([
             'customer_id' => $request->buyer_name,
@@ -351,5 +366,16 @@ class InvoiceController extends Controller
                 ]);
             }
         }
+    }
+
+    private function send_notif_to_accountants(Invoice $invoice)
+    {
+        $roles_id = Role::where('name', 'accountant')->pluck('id');
+        $accountants = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id)->get();
+
+        $url = route('invoices.edit', $invoice->id);
+        $message = "پیش فاکتوری با شماره $invoice->id ثبت شد";
+
+        Notification::send($accountants, new SendMessage($message, $url));
     }
 }
