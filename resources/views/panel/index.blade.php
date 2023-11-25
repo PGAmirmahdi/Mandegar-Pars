@@ -109,6 +109,7 @@
                             </div>
                         </div>
                 </div>
+        </div>
     </div>
     @can('accountant')
         <div class="row">
