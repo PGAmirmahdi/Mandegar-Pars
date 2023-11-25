@@ -119,6 +119,10 @@ class PermissionSeeder extends Seeder
 //            'factors-create' => 'ایجاد فاکتور',
 //            'factors-edit' => 'ویرایش فاکتور',
 //            'factors-delete' => 'حذف فاکتور',
+
+//            'tickets-list' => 'لیست تیکت ها',
+//            'tickets-create' => 'ثبت تیکت',
+//            'tickets-delete' => 'حذف تیکت',
         ];
 
         foreach ($items as $key => $item)

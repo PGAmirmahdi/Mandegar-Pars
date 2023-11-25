@@ -21,6 +21,7 @@ use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
 use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\TaskController;
+use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\PanelController;
 use App\Models\Invoice;
@@ -172,8 +173,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::match(['get', 'post'],'search/foreign-customers', [ForeignCustomerController::class, 'search'])->name('foreign-customers.search');
     Route::post('excel/foreign-customers', [ForeignCustomerController::class, 'excel'])->name('foreign-customers.excel');
 
-    // Chats
-    Route::get('chat',[ChatController::class,'index']);
+    // Tickets
+    Route::resource('tickets',TicketController::class)->except('show');
+    Route::get('change-status-ticket/{ticket}',[TicketController::class, 'changeStatus'])->name('ticket.changeStatus');
 
 });
 
