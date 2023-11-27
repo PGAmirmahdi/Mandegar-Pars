@@ -93,11 +93,19 @@
                             <td>{{ $factor->invoice->city }}</td>
                             <td>{{ $factor->invoice->phone }}</td>
                             <td>
-                                @if($factor->status == 'paid')
-                                    <span class="badge badge-success">{{ \App\Models\Factor::STATUS[$factor->status] }}</span>
+                                @can('accountant')
+                                    @if($factor->status == 'paid')
+                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-success {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
+                                    @else
+                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-warning {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
+                                    @endif
                                 @else
-                                    <span class="badge badge-warning">{{ \App\Models\Factor::STATUS[$factor->status] }}</span>
-                                @endif
+                                    @if($factor->status == 'paid')
+                                        <span class="badge badge-success">{{ \App\Models\Factor::STATUS[$factor->status] }}</span>
+                                    @else
+                                        <span class="badge badge-warning">{{ \App\Models\Factor::STATUS[$factor->status] }}</span>
+                                    @endif
+                                @endcan
                             </td>
                             @can('accountant')
                                 <td>{{ $factor->invoice->user->fullName() }}</td>
