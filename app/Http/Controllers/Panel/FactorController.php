@@ -7,8 +7,11 @@ use App\Http\Requests\UpdateFactorRequest;
 use App\Models\Customer;
 use App\Models\Factor;
 use App\Models\Invoice;
+use App\Models\Permission;
 use App\Models\Product;
 use App\Models\Province;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use function Symfony\Component\String\b;
@@ -27,9 +30,14 @@ class FactorController extends Controller
             })->latest()->paginate(30);
         }
 
+        $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
+        $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+            $q->whereIn('permission_id', $permissionsId);
+        })->pluck('id');
+
         $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
-        return view('panel.factors.index', compact('factors', 'customers'));
+        return view('panel.factors.index', compact('factors', 'customers', 'roles_id'));
     }
 
     public function create()
@@ -120,16 +128,23 @@ class FactorController extends Controller
 
         $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
+        $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
+        $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+            $q->whereIn('permission_id', $permissionsId);
+        })->pluck('id');
+
         $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
         $status = $request->status == 'all' ? ['invoiced','paid'] : [$request->status];
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
+        $user_id = $request->user == 'all' || $request->user == null ? User::whereIn('role_id', $roles_id)->pluck('id') : [$request->user];
 
         if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
             $factors = Factor::whereIn('status', $status)
-                ->whereHas('invoice', function ($q) use($request, $customers_id, $status, $province){
-                $q->when($request->need_no, function ($q) use($request){
+                ->whereHas('invoice', function ($q) use($request, $customers_id, $status, $province, $user_id){
+                $q->when($request->need_no, function ($q) use($request, $user_id){
                         return $q->where('need_no', $request->need_no);
                     })
+                    ->whereIn('user_id', $user_id)
                     ->whereIn('customer_id', $customers_id)
                     ->whereIn('province', $province);
             })->latest()->paginate(30);
@@ -145,7 +160,7 @@ class FactorController extends Controller
         }
 
 
-        return view('panel.factors.index', compact('factors', 'customers'));
+        return view('panel.factors.index', compact('factors', 'customers','roles_id'));
     }
 
     public function excel()

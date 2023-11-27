@@ -9,6 +9,7 @@ use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\Factor;
 use App\Models\Invoice;
+use App\Models\Permission;
 use App\Models\Product;
 use App\Models\Province;
 use App\Models\Role;
@@ -34,9 +35,14 @@ class InvoiceController extends Controller
             $invoices = Invoice::where('created_in', 'automation')->where('user_id', auth()->id())->latest()->paginate(30);
         }
 
+        $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
+        $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+            $q->whereIn('permission_id', $permissionsId);
+        })->pluck('id');
+
         $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
-        return view('panel.invoices.index', compact('invoices','customers'));
+        return view('panel.invoices.index', compact('invoices','customers','roles_id'));
     }
 
     public function create()
@@ -220,15 +226,23 @@ class InvoiceController extends Controller
         $this->authorize('invoices-list');
         $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
-        $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
-        $status = $request->status == 'all' ? ['pending','return'] : [$request->status];
-        $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
+        $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
+        $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+            $q->whereIn('permission_id', $permissionsId);
+        })->pluck('id');
 
+        $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
+        $status = $request->status == 'all' ? ['pending','return','invoiced'] : [$request->status];
+        $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
+        $user_id = $request->user == 'all' || $request->user == null ? User::whereIn('role_id', $roles_id)->pluck('id') : [$request->user];
+
+//        dd($user_id);
         if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
             $invoices = Invoice::where('created_in', 'automation')
                 ->when($request->need_no, function ($q) use($request){
                     return $q->where('need_no', $request->need_no);
                 })
+                ->whereIn('user_id', $user_id)
                 ->whereIn('customer_id', $customers_id)
                 ->whereIn('status', $status)
                 ->whereIn('province', $province)
@@ -244,7 +258,7 @@ class InvoiceController extends Controller
                 ->latest()->paginate(30);
         }
 
-        return view('panel.invoices.index', compact('invoices','customers'));
+        return view('panel.invoices.index', compact('invoices','customers','roles_id'));
     }
 
     public function applyDiscount(Request $request)
