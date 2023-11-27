@@ -43,6 +43,16 @@
                         <option value="paid" {{ request()->status == 'paid' ? 'selected' : '' }}>تسویه شده</option>
                     </select>
                 </div>
+                @can('accountant')
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <select name="user" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="4">
+                            <option value="all">همکار (همه)</option>
+                            @foreach(\App\Models\User::whereIn('role_id', $roles_id)->get() as $user)
+                                <option value="{{ $user->id }}" {{ request()->user == $user->id ? 'selected' : '' }}>{{ $user->fullName() }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endcan
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <input type="text" form="search_form" name="need_no" class="form-control" value="{{ request()->need_no ?? null }}" placeholder="شماره نیاز">
                 </div>
@@ -60,6 +70,9 @@
                         <th>شهر</th>
                         <th>شماره تماس</th>
                         <th>وضعیت</th>
+                        @can('accountant')
+                            <th>همکار</th>
+                        @endcan
                         <th>تاریخ ایجاد</th>
                         <th>فاکتور</th>
                         <th>پیش فاکتور</th>
@@ -86,6 +99,9 @@
                                     <span class="badge badge-warning">{{ \App\Models\Factor::STATUS[$factor->status] }}</span>
                                 @endif
                             </td>
+                            @can('accountant')
+                                <td>{{ $factor->invoice->user->fullName() }}</td>
+                            @endcan
                             <td>{{ verta($factor->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
                                 <a class="text-primary" href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'factor']) }}">
