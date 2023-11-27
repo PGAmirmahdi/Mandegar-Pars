@@ -327,6 +327,30 @@ class InvoiceController extends Controller
         return Excel::download(new \App\Exports\InvoicesExport, 'invoices.xlsx');
     }
 
+    public function changeStatus(Invoice $invoice)
+    {
+        $this->authorize('accountant');
+
+        if ($invoice->created_in == 'website' || $invoice->factor){
+            return back();
+        }
+
+        if ($invoice->status == 'pending'){
+            $invoice->update(['status' => 'invoiced']);
+            $invoice->factor()->updateOrCreate(['status' => 'invoiced']);
+
+            $status = Invoice::STATUS[$invoice->status];
+            $url = route('invoices.index');
+            $message = "وضعیت پیش فاکتور شماره {$invoice->id} به '{$status}' تغییر یافت";
+
+            Notification::send($invoice->user, new SendMessage($message, $url));
+        }else{
+            $invoice->update(['status' => 'pending']);
+        }
+
+        return back();
+    }
+
     private function storeInvoiceProducts(Invoice $invoice, $request)
     {
         if ($request->products) {

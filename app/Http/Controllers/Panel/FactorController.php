@@ -12,7 +12,9 @@ use App\Models\Product;
 use App\Models\Province;
 use App\Models\Role;
 use App\Models\User;
+use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
 use function Symfony\Component\String\b;
 
@@ -166,6 +168,23 @@ class FactorController extends Controller
     public function excel()
     {
         return Excel::download(new \App\Exports\FactorsExport, 'factors.xlsx');
+    }
+
+    public function changeStatus(Factor $factor)
+    {
+        $this->authorize('accountant');
+
+        if ($factor->created_in == 'website'){
+            return back();
+        }
+
+        if ($factor->status == 'invoiced'){
+            $factor->update(['status' => 'paid']);
+        }else{
+            $factor->update(['status' => 'invoiced']);
+        }
+
+        return back();
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)

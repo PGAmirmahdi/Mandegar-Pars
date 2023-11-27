@@ -102,6 +102,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('calcOtherProductsInvoice', [InvoiceController::class, 'calcOtherProductsInvoice'])->name('calcOtherProductsInvoice');
     Route::post('applyDiscount', [InvoiceController::class, 'applyDiscount'])->name('invoices.applyDiscount');
     Route::post('excel/invoices', [InvoiceController::class, 'excel'])->name('invoices.excel');
+    Route::get('change-status-invoice/{invoice}', [InvoiceController::class, 'changeStatus'])->name('invoices.changeStatus');
 
     // Coupons
     Route::resource('coupons', CouponController::class)->except('show');
@@ -149,6 +150,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('factors', FactorController::class)->except(['show','create','store']);
     Route::match(['get', 'post'],'search/factors', [FactorController::class, 'search'])->name('factors.search');
     Route::post('excel/factors', [FactorController::class, 'excel'])->name('factors.excel');
+    Route::get('change-status-factor/{factor}', [FactorController::class, 'changeStatus'])->name('factors.changeStatus');
 
 
     // Off-site Products

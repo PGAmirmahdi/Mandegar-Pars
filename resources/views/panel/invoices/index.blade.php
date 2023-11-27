@@ -127,11 +127,19 @@
                             <td>{{ $invoice->city }}</td>
                             <td>{{ $invoice->phone }}</td>
                             <td>
-                                @if($invoice->status == 'paid')
-                                    <span class="badge badge-success">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
+                                @can('accountant')
+                                    @if($invoice->status == 'paid')
+                                        <a href="{{ route('invoices.changeStatus', $invoice->id) }}" class="btn btn-success {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</a>
+                                    @else
+                                        <a href="{{ route('invoices.changeStatus', $invoice->id) }}" class="btn btn-warning {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</a>
+                                    @endif
                                 @else
-                                    <span class="badge badge-warning">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
-                                @endif
+                                    @if($invoice->status == 'paid')
+                                        <span class="badge badge-success">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
+                                    @else
+                                        <span class="badge badge-warning">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
+                                    @endif
+                                @endcan
                             </td>
                             @can('accountant')
                                 <td>{{ $invoice->user->fullName() }}</td>
