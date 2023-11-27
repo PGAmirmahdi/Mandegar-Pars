@@ -102,7 +102,7 @@
                         _method: 'delete'
                     },
                     success: function(res) {
-                        $('.table').html($(res).find('.table').html());
+                        $('tbody').html($(res).find('tbody').html());
                         Swal.fire({
                             title: 'با موفقیت حذف شد',
                             icon: 'success',
