@@ -57,4 +57,17 @@ $(document).ready(function () {
 		}
     });
 
+    $('.dataTable').DataTable({
+        "scrollY": "500px",
+        "scrollCollapse": true,
+        "paging": false,
+        "searching": false,
+        "ordering":  true,
+        "language": {
+            "sInfo": '',
+            "sInfoEmpty": "",
+            "sEmptyTable": "هیچ داده ای در جدول وجود ندارد",
+        },
+    });
+
 });

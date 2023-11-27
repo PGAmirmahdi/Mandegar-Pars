@@ -65,6 +65,12 @@
 <!-- fontawesome -->
 <script src="/assets/js/fontawesome.min.js"></script>
 
+<!-- DataTable -->
+<script src="/vendors/dataTable/jquery.dataTables.min.js"></script>
+<script src="/vendors/dataTable/dataTables.bootstrap4.min.js"></script>
+<script src="/vendors/dataTable/dataTables.responsive.min.js"></script>
+<script src="/assets/js/examples/datatable.js"></script>
+
 @yield('scripts')
 
 <script>

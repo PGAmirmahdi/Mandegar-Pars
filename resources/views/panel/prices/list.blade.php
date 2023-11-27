@@ -6,7 +6,7 @@
         <div class="card-body">
             <h3 class="text-center mb-4">لیست قیمت ها - (ریال)</h3>
             <div class="table-responsive">
-                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                <table class="table table-striped table-bordered dtr-inline text-center">
                     <thead>
                     <tr>
                         <th class="bg-primary"></th>

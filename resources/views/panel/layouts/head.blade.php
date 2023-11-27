@@ -43,6 +43,15 @@
     <link rel="stylesheet" href="/vendors/datepicker-jalali/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="/vendors/datepicker/daterangepicker.css">
 
+    <!-- DataTable -->
+    <link rel="stylesheet" href="/vendors/dataTable/responsive.bootstrap.min.css" type="text/css">
+
+    <style>
+        .dataTable th{
+            cursor: pointer !important;
+        }
+    </style>
+
     @yield('styles')
 </head>
 <body>
