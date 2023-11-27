@@ -53,7 +53,7 @@
                                         <div>
                                             <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
 												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-													<i class="fa fa-bell-o font-size-20"></i>
+													<i class="fa fa-bell font-size-20"></i>
 												</span>
                                             </figure>
                                         </div>
