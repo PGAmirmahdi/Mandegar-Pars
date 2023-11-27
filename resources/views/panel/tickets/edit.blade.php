@@ -64,6 +64,7 @@
                                     @includeWhen($message->file, 'panel.partials.file-message')
                                     <small class="message-item-date text-muted">
                                         {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                                        <i class="fa fa-check"></i>
                                     </small>
                                 </div>
                             @else
@@ -72,6 +73,7 @@
                                     @includeWhen($message->file, 'panel.partials.file-message')
                                     <small class="message-item-date text-muted">
                                         {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                                        <i class="fa-solid fa-check"></i>
                                     </small>
                                 </div>
                             @endif
@@ -87,6 +89,7 @@
                                         @includeWhen($message->file, 'panel.partials.file-message')
                                         <small class="message-item-date text-muted">
                                             {{ verta($message->created_at)->format('H:i') }}
+                                            <i class="fa fa-check"></i>
                                         </small>
                                     </div>
                                 @else

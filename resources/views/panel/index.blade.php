@@ -51,7 +51,7 @@
                                     <div class="d-flex align-items-center mb-3">
                                         <div>
                                             <div class="icon-block icon-block-sm bg-info icon-block-floating mr-2">
-                                                <i class="fa fa-product-hunt"></i>
+                                                <i class="fa fa-p"></i>
                                             </div>
                                         </div>
                                         <span class="font-size-13">محصولات</span>

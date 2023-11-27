@@ -93,10 +93,10 @@
                         <input type="text" name="phone1" class="form-control" id="phone1" value="{{ $customer->phone1 }}">
                         <div class="social_sec">
                             <a href="https://t.me/+98{{ $customer->phone1 }}" target="_blank">
-                                <i class="fa fa-telegram text-info"></i>
+                                <i class="fa-brands fa-telegram text-info"></i>
                             </a>
                             <a href="https://wa.me/+98{{ $customer->phone1 }}" target="_blank">
-                                <i class="fa fa-whatsapp text-success"></i>
+                                <i class="fa-brands fa-whatsapp text-success"></i>
                             </a>
                             <a href="tel:{{ $customer->phone1 }}">
                                 <i class="fa fa-phone-square text-success"></i>
@@ -112,10 +112,10 @@
                         @if($customer->phone2)
                             <div class="social_sec">
                                 <a href="https://t.me/+98{{ $customer->phone2 }}" target="_blank">
-                                    <i class="fa fa-telegram text-info"></i>
+                                    <i class="fa-brands fa-telegram text-info"></i>
                                 </a>
                                 <a href="https://wa.me/+98{{ $customer->phone2 }}" target="_blank">
-                                    <i class="fa fa-whatsapp text-success"></i>
+                                    <i class="fa-brands fa-whatsapp text-success"></i>
                                 </a>
                                 <a href="tel:{{ $customer->phone2 }}">
                                     <i class="fa fa-phone-square text-success"></i>
@@ -132,10 +132,10 @@
                         @if($customer->phone3)
                             <div class="social_sec">
                                 <a href="https://t.me/+98{{ $customer->phone3 }}" target="_blank">
-                                    <i class="fa fa-telegram text-info"></i>
+                                    <i class="fa-brands fa-telegram text-info"></i>
                                 </a>
                                 <a href="https://wa.me/+98{{ $customer->phone3 }}" target="_blank">
-                                    <i class="fa fa-whatsapp text-success"></i>
+                                    <i class="fa-brands fa-whatsapp text-success"></i>
                                 </a>
                                 <a href="tel:{{ $customer->phone3 }}">
                                     <i class="fa fa-phone-square text-success"></i>

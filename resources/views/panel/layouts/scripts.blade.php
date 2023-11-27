@@ -62,6 +62,9 @@
 <script src="/vendors/clockpicker/bootstrap-clockpicker.min.js"></script>
 <script src="/assets/js/examples/clockpicker.js"></script>
 
+<!-- fontawesome -->
+<script src="/assets/js/fontawesome.min.js"></script>
+
 @yield('scripts')
 
 <script>

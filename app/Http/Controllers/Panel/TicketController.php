@@ -58,7 +58,7 @@ class TicketController extends Controller
         $ticket->messages()->create([
             'user_id' => auth()->id(),
             'text' => $request->text,
-            'file' => $file ? json_encode($file_info) : null,
+            'file' => isset($file) ? json_encode($file_info) : null,
         ]);
 
         $message = 'تیکتی با عنوان "'.$ticket->title.'" به شما ارسال شده است';
@@ -113,7 +113,7 @@ class TicketController extends Controller
         $ticket->messages()->create([
             'user_id' => auth()->id(),
             'text' => $request->text,
-            'file' => $file ? json_encode($file_info) : null,
+            'file' => isset($file) ? json_encode($file_info) : null,
         ]);
 
         return back();
@@ -141,6 +141,14 @@ class TicketController extends Controller
             }else{
                 $ticket->update(['status' => 'closed']);
             }
+
+            // send notif
+            $status = Ticket::STATUS[$ticket->status];
+            $message = "وضعیت تیکت '$ticket->title' به '$status' تغییر یافت";
+            $url = route('tickets.index');
+            $receiver = auth()->id() == $ticket->sender_id ? $ticket->receiver : $ticket->sender;
+            Notification::send($receiver, new SendMessage($message, $url));
+            // end send notif
 
             alert()->success('وضعیت تیکت با موفقیت تغییر یافت','تغییر وضعیت');
             return back();

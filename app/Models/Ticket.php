@@ -11,6 +11,11 @@ class Ticket extends Model
 
     protected $guarded = [];
 
+    const STATUS = [
+        'pending' => 'درحال بررسی',
+        'closed' => 'بسته شده',
+    ];
+
     public function sender()
     {
         return $this->belongsTo(User::class);

@@ -11,7 +11,7 @@
                     </form>
 
                     <button class="btn btn-success" form="excel_form">
-                        <i class="fa fa-file-excel-o mr-2"></i>
+                        <i class="fa fa-file-excel mr-2"></i>
                         دریافت اکسل
                     </button>
                     @can('inventory-create')
