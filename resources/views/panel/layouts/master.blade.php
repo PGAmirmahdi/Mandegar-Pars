@@ -3,6 +3,7 @@
 {{--@include('panel.layouts.loader')--}}
 @includeWhen(!isset($sidebar), 'panel.layouts.sidebar')
 @includeWhen(!isset($header), 'panel.layouts.header')
+@includeWhen(!isset($loader), 'panel.layouts.loader')
 
 <!-- begin::main content -->
 <main class="main-content">
