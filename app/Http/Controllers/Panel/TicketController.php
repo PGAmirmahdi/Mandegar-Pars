@@ -78,6 +78,8 @@ class TicketController extends Controller
     {
         $this->authorize('tickets-create');
 
+        $ticket->messages()->whereNull('read_at')->where('user_id','!=',auth()->id())->update(['read_at' => now()]);
+
         return view('panel.tickets.edit', compact('ticket'));
     }
 
@@ -90,7 +92,8 @@ class TicketController extends Controller
         $ticket->update(['status' => 'pending']);
 
         // prevent from send sequence notification
-        if ($ticket->messages()->orderBy('created_at', 'desc')->first()->user_id != auth()->id()){
+        $first_message = $ticket->messages()->orderBy('created_at', 'desc')->first();
+        if ($first_message != null && $first_message->user_id != auth()->id()){
             $message = 'پاسخی برای تیکت "'.$ticket->title.'" ثبت شده است';
             $url = route('tickets.edit', $ticket->id);
             $receiver = auth()->id() == $ticket->sender_id ? $ticket->receiver : $ticket->sender;

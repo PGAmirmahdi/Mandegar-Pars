@@ -3,6 +3,12 @@
 @section('styles')
     <!-- lightbox -->
     <link rel="stylesheet" href="/vendors/lightbox/magnific-popup.css" type="text/css">
+
+    <style>
+        .fa-check-double, .fa-check{
+            color: green !important;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="card chat-app-wrapper">
@@ -64,7 +70,11 @@
                                     @includeWhen($message->file, 'panel.partials.file-message')
                                     <small class="message-item-date text-muted">
                                         {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                        <i class="fa fa-check"></i>
+                                        @if($message->read_at)
+                                            <i class="fa fa-check-double"></i>
+                                        @else
+                                            <i class="fa fa-check"></i>
+                                        @endif
                                     </small>
                                 </div>
                             @else
@@ -73,7 +83,6 @@
                                     @includeWhen($message->file, 'panel.partials.file-message')
                                     <small class="message-item-date text-muted">
                                         {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                        <i class="fa-solid fa-check"></i>
                                     </small>
                                 </div>
                             @endif
@@ -89,7 +98,11 @@
                                         @includeWhen($message->file, 'panel.partials.file-message')
                                         <small class="message-item-date text-muted">
                                             {{ verta($message->created_at)->format('H:i') }}
-                                            <i class="fa fa-check"></i>
+                                            @if($message->read_at)
+                                                <i class="fa fa-check-double"></i>
+                                            @else
+                                                <i class="fa fa-check"></i>
+                                            @endif
                                         </small>
                                     </div>
                                 @else
@@ -112,7 +125,7 @@
                         <input type="text" name="text" class="form-control" placeholder="پیام ..." required>
                         <div class="d-flex">
                             <button type="submit" class="ml-3 btn btn-primary btn-floating">
-                                <i class="fa fa-send"></i>
+                                <i class="fa fa-paper-plane"></i>
                             </button>
                             <div class="dropup">
                                 <button type="button" data-toggle="dropdown" class="ml-3 btn btn-success btn-floating">
