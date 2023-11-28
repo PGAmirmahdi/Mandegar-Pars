@@ -50,6 +50,22 @@
         .dataTable th{
             cursor: pointer !important;
         }
+
+        .zoom-in-out {
+            animation: zoom-in-zoom-out 1s ease infinite;
+        }
+
+        @keyframes zoom-in-zoom-out {
+            0% {
+                transform: scale(1, 1);
+            }
+            50% {
+                transform: scale(1.5, 1.5);
+            }
+            100% {
+                transform: scale(1, 1);
+            }
+        }
     </style>
 
     @yield('styles')

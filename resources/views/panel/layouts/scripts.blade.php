@@ -142,4 +142,22 @@
         })
     })
     {{-- end delete tables row --}}
+
+    //  network status
+    window.addEventListener("offline", (event) => {
+        $('#network_sec').html(`
+                <span data-toggle="tooltip" data-placement="bottom" data-original-title="connecting">
+                    <i class="fa fa-wifi text-danger zoom-in-out"></i>
+                </span>`)
+        $('#network_sec span').tooltip();
+    });
+
+    window.addEventListener("online", (event) => {
+        $('#network_sec').html(`
+                <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
+                    <i class="fa fa-wifi text-success"></i>
+                </span>`)
+        $('#network_sec span').tooltip();
+    });
+    // end network status
 </script>

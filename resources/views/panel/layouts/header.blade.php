@@ -33,13 +33,20 @@
             <!-- begin::navbar main body -->
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                     <div style="font-size: larger" id="network_sec">
+                        <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
+                            <i class="fa fa-wifi text-success"></i>
+                        </span>
+                     </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" data-toggle="tooltip" data-placement="bottom" data-original-title="خروج">
                         <i class="fa fa-power-off"></i>
                     </a>
                 </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link {{ auth()->user()->unreadNotifications->count() ? 'nav-link-notify' : '' }}" data-toggle="dropdown">
-                        <i class="ti-bell"></i>
+                        <i class="ti-bell" data-toggle="tooltip" data-placement="bottom" data-original-title="اعلانات"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-big">
                         <div class="p-4 text-center" data-backround-image="/assets/media/image/image1.png">
