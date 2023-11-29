@@ -104,8 +104,10 @@ class PanelController extends Controller
     public function login(Request $request)
     {
         if ($request->method() == 'GET'){
-            $adminRoleId = Role::where('name', 'admin')->first()->id;
-            $users = User::where('id', '!=', auth()->id())->where('role_id','!=',$adminRoleId)->get(['id','name','family']);
+            $rolesId = Role::whereHas('permissions' ,function ($permission){
+                $permission->whereIn('name',['ceo','accountant']);
+            })->pluck('id');
+            $users = User::where('id', '!=', auth()->id())->whereNotIn('role_id', $rolesId)->get(['id','name','family']);
 
             return view('panel.login', compact('users'));
         }
