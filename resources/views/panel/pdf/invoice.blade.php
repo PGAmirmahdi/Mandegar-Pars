@@ -282,6 +282,19 @@
                             </tr>
                             </tbody>
                         </table>
+                        <table>
+                            <tr>
+                                <td>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                </td>
+                                <td>
+                                    <img src="{{ $invoice->user->sign_image ? public_path($invoice->user->sign_image) : '' }}" style="width: 10rem">
+                                    <img src="{{ public_path('assets/media/image/stamp.png') }}" style="width: 13rem">
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
