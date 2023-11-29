@@ -187,23 +187,41 @@
                         text
                     },
                     success: function (res) {
-                        Swal.fire({
-                            title: 'با موفقیت ارسال شد',
-                            icon: 'success',
-                            showConfirmButton: false,
-                            toast: true,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            position: 'top-start',
-                            customClass: {
-                                popup: 'my-toast',
-                                icon: 'icon-center',
-                                title: 'left-gap',
-                                content: 'left-gap',
-                            }
-                        })
+                        if(res != 11){
+                            Swal.fire({
+                                title: 'با موفقیت ارسال شد',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                toast: true,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                position: 'top-start',
+                                customClass: {
+                                    popup: 'my-toast',
+                                    icon: 'icon-center',
+                                    title: 'left-gap',
+                                    content: 'left-gap',
+                                }
+                            })
 
-                        $('#smsModal').modal('hide')
+                            $('#smsModal').modal('hide')
+                        }else{
+                            Swal.fire({
+                                title: 'خطایی رخ داد',
+                                icon: 'error',
+                                showConfirmButton: false,
+                                toast: true,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                position: 'top-start',
+                                customClass: {
+                                    popup: 'my-toast',
+                                    icon: 'icon-center',
+                                    title: 'left-gap',
+                                    content: 'left-gap',
+                                }
+                            })
+                        }
                     }
                 })
             }
