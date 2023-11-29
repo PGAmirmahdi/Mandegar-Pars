@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
+use PDF as PDF;
 
 class InvoiceController extends Controller
 {
@@ -349,6 +350,23 @@ class InvoiceController extends Controller
         }
 
         return back();
+    }
+
+    public function downloadPDF(Request $request)
+    {
+        $type = $request->type;
+        $invoice = Invoice::find($request->invoice_id);
+
+        $pdf = PDF::loadView('panel.pdf.invoice',['invoice' => $invoice, 'type' => $type],[], [
+            'format' => 'A3',
+            'orientation' => 'L',
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 0,
+        ]);
+
+        return $pdf->stream("invoice.pdf");
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)

@@ -3,18 +3,18 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-                        <div class="card-title d-flex justify-content-between align-items-center">
-                            <h6>آمار</h6>
-                            <div class="slick-single-arrows">
-                                <a class="btn btn-outline-light btn-sm">
-                                    <i class="ti-angle-right"></i>
-                                </a>
-                                <a class="btn btn-outline-light btn-sm">
-                                    <i class="ti-angle-left"></i>
-                                </a>
-                            </div>
-                        </div>
-                    <div class="row slick-single-item">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <h6>آمار</h6>
+                    <div class="slick-single-arrows">
+                        <a class="btn btn-outline-light btn-sm">
+                            <i class="ti-angle-right"></i>
+                        </a>
+                        <a class="btn btn-outline-light btn-sm">
+                            <i class="ti-angle-left"></i>
+                        </a>
+                    </div>
+                </div>
+            <div class="row slick-single-item">
                         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
                             <div class="card border mb-0">
                                 <div class="card-body">

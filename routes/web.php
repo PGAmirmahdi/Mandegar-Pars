@@ -57,7 +57,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\Inventory::all() as $item)
 //    {
@@ -103,6 +103,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('applyDiscount', [InvoiceController::class, 'applyDiscount'])->name('invoices.applyDiscount');
     Route::post('excel/invoices', [InvoiceController::class, 'excel'])->name('invoices.excel');
     Route::get('change-status-invoice/{invoice}', [InvoiceController::class, 'changeStatus'])->name('invoices.changeStatus');
+    Route::post('downloadPDF', [InvoiceController::class, 'downloadPDF'])->name('invoices.download');
 
     // Coupons
     Route::resource('coupons', CouponController::class)->except('show');
@@ -151,7 +152,6 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::match(['get', 'post'],'search/factors', [FactorController::class, 'search'])->name('factors.search');
     Route::post('excel/factors', [FactorController::class, 'excel'])->name('factors.excel');
     Route::get('change-status-factor/{factor}', [FactorController::class, 'changeStatus'])->name('factors.changeStatus');
-
 
     // Off-site Products
     Route::get('off-site-products/{website}',[OffSiteProductController::class, 'index'])->name('off-site-products.index');

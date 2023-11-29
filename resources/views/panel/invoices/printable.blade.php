@@ -346,6 +346,12 @@
         <div class="pb-2 d-flex justify-content-between px-3" id="print_sec">
             <a href="{{ url()->previous() }}" class="btn btn-primary"><i class="fa fa-chevron-right mr-2"></i>برگشت</a>
             <button class="btn btn-info" id="btn_print"><i class="fa fa-print mr-2"></i>چاپ</button>
+            <form action="{{ route('invoices.download') }}" method="post">
+                @csrf
+                <input type="hidden" name="type" value="{{ request()->type }}">
+                <input type="hidden" name="invoice_id" value="{{ request()->type == 'pishfactor' ? $invoice->id : $factor->invoice->id }}">
+                <button class="btn btn-danger"><i class="fa fa-file-pdf mr-2"></i>دانلود</button>
+            </form>
         </div>
     </div>
 {{--    <div class="alert alert-info">--}}
