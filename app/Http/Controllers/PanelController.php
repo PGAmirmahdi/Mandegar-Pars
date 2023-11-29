@@ -114,6 +114,12 @@ class PanelController extends Controller
         return redirect()->route('panel');
     }
 
+    public function sendSMS(Request $request)
+    {
+        $result = sendSMS($request->phone, $request->text);
+        return $result;
+    }
+
     private function getFactorsMonthly()
     {
         $factors = [

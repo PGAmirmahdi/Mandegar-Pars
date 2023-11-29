@@ -1,6 +1,38 @@
 @extends('panel.layouts.master')
 @section('title', 'ایجاد بسته ارسالی')
 @section('content')
+    {{--  Send SMS Modal  --}}
+    <div class="modal fade" id="smsModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smsModalLabel">ارسال پیامک</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="phone">شماره موبایل<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="phone" maxlength="11" minlength="11">
+                        <div class="invalid-feedback d-block" id="phone_error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="text">متن پیامک<span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="text" rows="5"></textarea>
+                        <div class="invalid-feedback d-block" id="text_error"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btn_send_sms">
+                        <i class="fa fa-paper-plane mr-2"></i>
+                        ارسال
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{--  End Send SMS Modal  --}}
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -11,7 +43,7 @@
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="invoice">پیش فاکتور<span class="text-danger">*</span></label>
-                        <select class="form-control" name="invoice" id="invoice">
+                        <select class="js-example-basic-single select2-hidden-accessible" name="invoice" id="invoice">
                             @if($invoices->count())
                                 @foreach($invoices as $invoiceId => $customerName)
                                     <option value="{{ $invoiceId }}" {{ old('invoice') == $invoiceId ? 'selected' : '' }}> {{ $invoiceId }} - {{ $customerName }}</option>
@@ -100,9 +132,81 @@
                         @enderror
                     </div>
                 </div>
-                <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                    <button class="btn btn-github" type="button" data-toggle="modal" data-target="#smsModal" id="btn_sms">ارسال پیامک</button>
+                </div>
             </form>
         </div>
     </div>
 @endsection
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            $('#btn_sms').on('click', function (){
+                let code = $('#send_tracking_code').val();
+                $('#text').html(`کد پیگیری مرسوله شما: ${code}&#013;شرکت صنایع ماشین های اداری ماندگار پارس`)
+            })
 
+            // btn send sms
+            $('#btn_send_sms').on('click', function () {
+                let phone_error = false;
+                let text_error = false;
+                let phone = $('#phone').val().trim();
+                let text = $('#text').val().trim();
+
+                if(phone === ''){
+                    $('#phone_error').text('شماره موبایل را وارد نمایید')
+                    phone_error = true;
+                }else{
+                    if(phone.length !== 11){
+                        $('#phone_error').text('شماره موبایل باید 11 رقم باشد')
+                        phone_error = true;
+                    }else{
+                        $('#phone_error').text('')
+                        phone_error = false;
+                    }
+                }
+
+                if(text === ''){
+                    $('#text_error').text('متن پیامک را وارد نمایید')
+                    text_error = true;
+                }else{
+                    $('#text_error').text('')
+                    text_error = false;
+                }
+
+                if(!phone_error && !text_error){
+                    $.ajax({
+                        url: "{{ route('sendSMS') }}",
+                        type: 'post',
+                        data: {
+                            phone,
+                            text
+                        },
+                        success: function (res) {
+                            Swal.fire({
+                                title: 'با موفقیت ارسال شد',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                toast: true,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                position: 'top-start',
+                                customClass: {
+                                    popup: 'my-toast',
+                                    icon: 'icon-center',
+                                    title: 'left-gap',
+                                    content: 'left-gap',
+                                }
+                            })
+
+                            $('#smsModal').modal('hide')
+                        }
+                    })
+                }
+            })
+            // end btn send sms
+        })
+    </script>
+@endsection

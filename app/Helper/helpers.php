@@ -55,5 +55,26 @@ if (!function_exists('formatBytes')) {
 
         return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
     }
+}
 
+if (!function_exists('sendSMS')) {
+    function sendSMS(string $to, string $text)
+    {
+        try{
+            $sms = Melipayamak\Laravel\Facade::sms();
+            $from = '50004000425053';
+            $response = $sms->send($to,$from,$text);
+            $json = json_decode($response);
+
+            \App\Models\SmsHistory::create([
+                'user_id' => auth()->id(),
+                'phone' => $to,
+                'text' => $text,
+            ]);
+
+            return $json->Value; //RecId or Error Number
+        }catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
 }

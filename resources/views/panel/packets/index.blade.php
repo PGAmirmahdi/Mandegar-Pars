@@ -126,7 +126,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="d-flex justify-content-center">{{ $packets->links() }}</div>
+            <div class="d-flex justify-content-center">{{ $packets->appends(request()->all())->links() }}</div>
         </div>
     </div>
 @endsection

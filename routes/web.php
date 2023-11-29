@@ -77,6 +77,7 @@ Route::get('test/{id?}',function ($id = null){
 
 Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::match(['get','post'],'/', [PanelController::class, 'index'])->name('panel');
+    Route::post('send-sms', [PanelController::class, 'sendSMS'])->name('sendSMS');
 
     // Users
     Route::resource('users',UserController::class)->except('show');
