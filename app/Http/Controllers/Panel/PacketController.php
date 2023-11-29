@@ -33,7 +33,7 @@ class PacketController extends Controller
     {
         $this->authorize('packets-create');
 
-        $invoices = Invoice::with('customer')->doesntHave('packet')->latest()->get()->pluck('customer.name','id');
+        $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
         return view('panel.packets.create', compact('invoices'));
     }
 
@@ -75,7 +75,7 @@ class PacketController extends Controller
         // edit own packet OR is admin
         $this->authorize('edit-packet', $packet);
 
-        $invoices = Invoice::with('customer')->doesntHave('packet')->latest()->get()->pluck('customer.name','id');
+        $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
 
         return view('panel.packets.edit', compact('invoices', 'packet'));
     }
