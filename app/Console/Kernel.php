@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(InvoiceDeadlineJob::class);
 
         // backup database
-        $schedule->command('backup:run --only-db');
+//        $schedule->command('backup:run --only-db');
 
         // test cron job
         // $schedule->call(function(){
