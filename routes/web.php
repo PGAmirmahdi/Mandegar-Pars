@@ -20,6 +20,7 @@ use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
 use App\Http\Controllers\Panel\ShopController;
+use App\Http\Controllers\Panel\SmsHistoryController;
 use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\UserController;
@@ -179,6 +180,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Tickets
     Route::resource('tickets',TicketController::class)->except('show');
     Route::get('change-status-ticket/{ticket}',[TicketController::class, 'changeStatus'])->name('ticket.changeStatus');
+
+    // SMS Histories
+    Route::get('sms-histories', [SmsHistoryController::class, 'index'])->name('sms-histories.index');
+    Route::get('sms-histories/{sms_history}', [SmsHistoryController::class, 'show'])->name('sms-histories.show');
 
 });
 
