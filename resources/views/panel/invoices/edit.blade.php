@@ -145,7 +145,7 @@
                             <select name="status" id="status" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5" tabindex="-2" aria-hidden="true">
                                 <option value="pending" {{ $invoice->status == 'pending' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['pending'] }}</option>
                                 <option value="invoiced" {{ $invoice->status == 'invoiced' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['invoiced'] }}</option>
-                                <option value="return" {{ $invoice->status == 'return' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['return'] }}</option>
+{{--                                <option value="return" {{ $invoice->status == 'return' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['return'] }}</option>--}}
                             </select>
                             @error('status')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>

@@ -14,7 +14,7 @@ class Invoice extends Model
     const STATUS = [
         'pending' => 'در دست اقدام',
         'invoiced' => 'فاکتور شده',
-        'return' => 'عودت داده شده',
+//        'return' => 'عودت داده شده',
     ];
 
     const CREATED_IN = [

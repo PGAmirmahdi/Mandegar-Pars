@@ -18,7 +18,7 @@ class PacketController extends Controller
     {
         $this->authorize('packets-list');
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO() || auth()->user()->isAccountant()){
             $packets = Packet::latest()->paginate(30);
             $invoices = Invoice::with('customer')->latest()->get(['id','customer_id']);
         }else{
@@ -120,7 +120,7 @@ class PacketController extends Controller
     {
         $this->authorize('packets-list');
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO() || auth()->user()->isAccountant()){
             $invoices = Invoice::with('customer')->latest()->get(['id','customer_id']);
             $invoice_id = $request->invoice_id == 'all' ? $invoices->pluck('id') : [$request->invoice_id];
             $packet_status = $request->packet_status == 'all' ? array_keys(Packet::PACKET_STATUS) : [$request->packet_status];
