@@ -70,6 +70,7 @@ if (!function_exists('sendSMS')) {
                 'user_id' => auth()->id(),
                 'phone' => $to,
                 'text' => $text,
+                'status' => $json->Value != 11 ? 'sent' : 'failed',
             ]);
 
             return $json->Value; //RecId or Error Number

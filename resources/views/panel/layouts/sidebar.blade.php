@@ -35,8 +35,8 @@
                     </a>
                 </li>
             @endcanany
-            @canany(['tickets-list'])
-                <li class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets']) ? 'active' : '' }}" data-toggle="tooltip" title="پشتیبانی و تیکت">
+            @canany(['tickets-list','sms-histories'])
+                <li class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}']) ? 'active' : '' }}" data-toggle="tooltip" title="پشتیبانی و تیکت">
                     <a href="#navigationTickets" title="پشتیبانی و تیکت">
                         <i class="icon ti-comment-alt"></i>
                     </a>
@@ -184,11 +184,16 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationTickets" class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets']) ? 'navigation-active' : '' }}">
+        <ul id="navigationTickets" class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">پشتیبانی و تیکت</li>
             @can('tickets-list')
                 <li>
                     <a class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets']) ? 'active' : '' }}" href="{{ route('tickets.index') }}">تیکت ها</a>
+                </li>
+            @endcan
+            @can('sms-histories')
+                <li>
+                    <a class="{{ active_sidebar(['sms-histories','sms-histories/{sms_history}']) ? 'active' : '' }}" href="{{ route('sms-histories.index') }}">پیام های ارسال شده</a>
                 </li>
             @endcan
         </ul>

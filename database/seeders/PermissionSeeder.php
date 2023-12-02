@@ -123,6 +123,8 @@ class PermissionSeeder extends Seeder
 //            'tickets-list' => 'لیست تیکت ها',
 //            'tickets-create' => 'ثبت تیکت',
 //            'tickets-delete' => 'حذف تیکت',
+
+//            'sms-histories' => 'پیام های ارسال شده',
         ];
 
         foreach ($items as $key => $item)
