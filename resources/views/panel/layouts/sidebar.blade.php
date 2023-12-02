@@ -235,6 +235,9 @@
                     <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) && request()->type == 'output' ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'output']) }}">خروج</a>
                 </li>
             @endcan
+{{--            <li>--}}
+{{--                <a class="" href="{{ route('inventory-reports.index') }}">درب خروج</a>--}}
+{{--            </li>--}}
         </ul>
     </div>
 </div>
