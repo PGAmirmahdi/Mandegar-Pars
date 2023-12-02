@@ -11,7 +11,9 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>فرستنده</th>
+                        @canany(['admin','ceo'])
+                            <th>فرستنده</th>
+                        @endcanany
                         <th>شماره موبایل</th>
                         <th>متن پیام</th>
                         <th>وضعیت</th>
@@ -23,7 +25,9 @@
                     @foreach($sms_histories as $key => $sms_history)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $sms_history->user->fullName() }}</td>
+                            @canany(['admin','ceo'])
+                                <td>{{ $sms_history->user->fullName() }}</td>
+                            @endcanany
                             <td>{{ $sms_history->phone }}</td>
                             <td>{{ \Illuminate\Support\Str::limit($sms_history->text,40) }}</td>
                             <td>
