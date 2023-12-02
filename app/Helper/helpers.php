@@ -58,7 +58,7 @@ if (!function_exists('formatBytes')) {
 }
 
 if (!function_exists('sendSMS')) {
-    function sendSMS(int $bodyId, string $to, array $args, array $data = [])
+    function sendSMS(int $bodyId, string $to, array $args, array $options = [])
     {
         $url = 'https://console.melipayamak.com/api/send/shared/9ac659ce20e74c2288f0b58cb9c4e710';
         $data = array('bodyId' => $bodyId, 'to' => $to, 'args' => $args);
@@ -81,7 +81,7 @@ if (!function_exists('sendSMS')) {
         \App\Models\SmsHistory::create([
             'user_id' => auth()->id(),
             'phone' => $to,
-            'text' => $data['text'] ?? '',
+            'text' => $options['text'] ?? '',
             'status' => isset($result->recId) ? $result->recId != 11 ? 'sent' : 'failed' : 'failed',
         ]);
 
