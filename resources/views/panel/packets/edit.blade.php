@@ -19,14 +19,14 @@
                     </div>
                     <div class="form-group">
                         <label for="text">متن پیامک<span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="text" rows="5"></textarea>
+                        <textarea class="form-control" id="text" rows="5" readonly></textarea>
                         <div class="invalid-feedback d-block" id="text_error"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="btn_send_sms">
                         <i class="fa fa-paper-plane mr-2"></i>
-                        ارسال
+                        <span>ارسال</span>
                     </button>
                 </div>
             </div>
@@ -145,17 +145,22 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+        var code;
         $('#btn_sms').on('click', function (){
-            let code = $('#send_tracking_code').val();
-            $('#text').html(`کد پیگیری مرسوله شما: ${code}&#013;شرکت صنایع ماشین های اداری ماندگار پارس`)
+            code = $('#send_tracking_code').val().trim();
+            $('#text').html(`کد پیگیری مرسوله شما: ${code}&#013;شرکت صنایع ماشین های اداری ماندگار پارس&#013Artintoner.com`)
         })
 
         // btn send sms
         $('#btn_send_sms').on('click', function () {
+            $('#btn_send_sms').attr('disabled','disabled')
+            $('#btn_send_sms span').text('درحال ارسال...')
+
+            let bodyId = 177554;
             let phone_error = false;
             let text_error = false;
             let phone = $('#phone').val().trim();
-            let text = $('#text').val().trim();
+            let text = $('#text').val()
 
             if(phone === ''){
                 $('#phone_error').text('شماره موبایل را وارد نمایید')
@@ -170,12 +175,9 @@
                 }
             }
 
-            if(text === ''){
-                $('#text_error').text('متن پیامک را وارد نمایید')
+            if(code == ''){
+                $('#text_error').text('ابتدا فیلد کد رهگیری را وارد نمایید')
                 text_error = true;
-            }else{
-                $('#text_error').text('')
-                text_error = false;
             }
 
             if(!phone_error && !text_error){
@@ -183,11 +185,31 @@
                     url: "{{ route('sendSMS') }}",
                     type: 'post',
                     data: {
+                        bodyId,
                         phone,
-                        text
+                        code,
+                        text,
                     },
                     success: function (res) {
-                        if(res != 11){
+                        console.log(res)
+                        if(res.recId == undefined || res.recId == 11){
+                            Swal.fire({
+                                title: 'خطایی رخ داد',
+                                text: res.status,
+                                icon: 'error',
+                                showConfirmButton: false,
+                                toast: true,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                position: 'top-start',
+                                customClass: {
+                                    popup: 'my-toast',
+                                    icon: 'icon-center',
+                                    title: 'left-gap',
+                                    content: 'left-gap',
+                                }
+                            })
+                        }else{
                             Swal.fire({
                                 title: 'با موفقیت ارسال شد',
                                 icon: 'success',
@@ -205,23 +227,9 @@
                             })
 
                             $('#smsModal').modal('hide')
-                        }else{
-                            Swal.fire({
-                                title: 'خطایی رخ داد',
-                                icon: 'error',
-                                showConfirmButton: false,
-                                toast: true,
-                                timer: 2000,
-                                timerProgressBar: true,
-                                position: 'top-start',
-                                customClass: {
-                                    popup: 'my-toast',
-                                    icon: 'icon-center',
-                                    title: 'left-gap',
-                                    content: 'left-gap',
-                                }
-                            })
                         }
+                        $('#btn_send_sms').removeAttr('disabled')
+                        $('#btn_send_sms span').text('ارسال')
                     }
                 })
             }
