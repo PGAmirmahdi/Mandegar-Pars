@@ -57,7 +57,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-//    return \auth()->loginUsingId($id);
+    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\Inventory::all() as $item)
 //    {
