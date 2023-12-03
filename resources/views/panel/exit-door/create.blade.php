@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <label for="inventory_report_id">فاکتور<span class="text-danger">*</span></label>
-                        <select class="form-control" name="inventory_report_id" id="inventory_report_id">
+                        <select class="js-example-basic-single select2-hidden-accessible" name="inventory_report_id" id="inventory_report_id">
                             <option value="">انتخاب کنید...</option>
                             @if($inventory_reports->count())
                                 @foreach($inventory_reports as $inventory_report)
