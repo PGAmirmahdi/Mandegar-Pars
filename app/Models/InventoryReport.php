@@ -25,4 +25,9 @@ class InventoryReport extends Model
     {
         return $this->belongsTo(Factor::class);
     }
+
+    public function exit_door()
+    {
+        return $this->hasOne(ExitDoor::class);
+    }
 }

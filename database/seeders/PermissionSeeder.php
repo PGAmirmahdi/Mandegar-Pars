@@ -125,6 +125,7 @@ class PermissionSeeder extends Seeder
 //            'tickets-delete' => 'حذف تیکت',
 
 //            'sms-histories' => 'پیام های ارسال شده',
+//            'exit-door' => 'درب خروج'
         ];
 
         foreach ($items as $key => $item)

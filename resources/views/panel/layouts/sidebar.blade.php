@@ -52,10 +52,17 @@
             @canany(['inventory-list','input-reports-list','output-reports-list'])
                 <li class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="انبار">
                     <a href="#navigationInventory" title="انبار">
-                        <i class="icon ti-check-box"></i>
+                        <i class="icon ti-package "></i>
                     </a>
                 </li>
             @endcanany
+            @can('exit-door')
+                <li class="{{ active_sidebar(['exit-door','exit-door/create','exit-door/{exit_door}/edit','search/exit-door']) ? 'active' : '' }}" data-toggle="tooltip" title="درب خروج">
+                    <a href="#navigationExitDoor" title="درب خروج">
+                        <i class="icon ti-check-box"></i>
+                    </a>
+                </li>
+            @endcan
         </ul>
         <ul>
             <li data-toggle="tooltip" title="ویرایش پروفایل">
@@ -235,9 +242,14 @@
                     <a class="{{ active_sidebar(['inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit']) && request()->type == 'output' ? 'active' : '' }}" href="{{ route('inventory-reports.index', ['type' => 'output']) }}">خروج</a>
                 </li>
             @endcan
-{{--            <li>--}}
-{{--                <a class="" href="{{ route('inventory-reports.index') }}">درب خروج</a>--}}
-{{--            </li>--}}
+        </ul>
+        <ul id="navigationExitDoor" class="{{ active_sidebar(['exit-door','exit-door/create','exit-door/{exit_door}/edit','search/exit-door']) ? 'navigation-active' : '' }}">
+            <li class="navigation-divider">درب خروج</li>
+            @can('exit-door')
+                <li>
+                    <a class="{{ active_sidebar(['exit-door','exit-door/create','exit-door/{exit_door}/edit','search/exit-door']) ? 'active' : '' }}" href="{{ route('exit-door.index') }}">ثبت خروج</a>
+                </li>
+            @endcan
         </ul>
     </div>
 </div>

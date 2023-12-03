@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <label for="factor_id">فاکتور<span class="text-danger">*</span></label>
-                        <select class="form-control" name="factor_id" id="factor_id">
+                        <select class="form-control" name="factor_id" id="factor_id" readonly style="pointer-events: none">
                             <option value="">انتخاب کنید...</option>
                             @if(\App\Models\Factor::count())
                                 @foreach(\App\Models\Factor::all() as $factor)

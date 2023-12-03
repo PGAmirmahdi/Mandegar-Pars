@@ -13,10 +13,10 @@
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <label for="factor_id">فاکتور<span class="text-danger">*</span></label>
-                        <select class="form-control" name="factor_id" id="factor_id">
+                        <select class="js-example-basic-single select2-hidden-accessible" name="factor_id" id="factor_id">
                             <option value="">انتخاب کنید...</option>
-                            @if(\App\Models\Factor::count())
-                                @foreach(\App\Models\Factor::all() as $factor)
+                            @if(\App\Models\Factor::doesntHave('inventory_report')->count())
+                                @foreach(\App\Models\Factor::doesntHave('inventory_report')->get() as $factor)
                                     <option value="{{ $factor->id }}" {{ old('factor_id') == $factor->id ? 'selected' : '' }}> {{ $factor->id }} - {{ $factor->invoice->customer->name }}</option>
                                 @endforeach
                             @else
