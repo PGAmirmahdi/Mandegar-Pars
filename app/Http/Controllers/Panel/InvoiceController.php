@@ -84,7 +84,7 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         // edit own invoice OR is admin
-        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper()){
+        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper() || auth()->user()->isExitDoor()){
             $factor = \request()->type == 'factor' ? $invoice->factor : null;
 
             return view('panel.invoices.printable', compact('invoice','factor'));
