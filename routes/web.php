@@ -115,6 +115,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('packets', PacketController::class)->except('show');
     Route::match(['get', 'post'],'search/packets', [PacketController::class, 'search'])->name('packets.search');
     Route::post('excel/packets', [PacketController::class, 'excel'])->name('packets.excel');
+    Route::post('get-post-status', [PacketController::class, 'getPostStatus'])->name('get-post-status');
 
     // Customers
     Route::resource('customers', CustomerController::class)->except('show');

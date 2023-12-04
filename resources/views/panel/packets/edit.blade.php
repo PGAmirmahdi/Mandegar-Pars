@@ -136,7 +136,12 @@
                 </div>
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-primary" type="submit">ثبت فرم</button>
-                    <button class="btn btn-github" type="button" data-toggle="modal" data-target="#smsModal" id="btn_sms">ارسال پیامک</button>
+                    <div>
+                        <button class="btn btn-github" type="button" data-toggle="modal" data-target="#smsModal" id="btn_sms">
+                            <i class="fa fa-message mr-2"></i>
+                            ارسال پیامک
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -191,7 +196,6 @@
                         text,
                     },
                     success: function (res) {
-                        console.log(res)
                         if(res.recId == undefined || res.recId == 11){
                             Swal.fire({
                                 title: 'خطایی رخ داد',
