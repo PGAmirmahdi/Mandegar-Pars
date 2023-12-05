@@ -9408,6 +9408,7 @@ body.form-membership .form-wrapper hr {
 	border-radius: 50%;
 	top: -3px;
 	background: #e04b4b;
+    -webkit-animation: notify-pulse 1s infinite;
 }
 
 .header .header-body ul.navbar-nav li.nav-item a.nav-link:hover,
@@ -11543,4 +11544,24 @@ body.dark .ui-datepicker select {
     background-color: #222538;
     color: inherit;
     border-color: #404356;
+}
+
+@-webkit-keyframes notify-pulse {
+    0% {
+        box-shadow: 0 0 0 0px rgba(255, 0, 0, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+}
+
+@keyframes notify-pulse {
+    0% {
+        box-shadow: 0 0 0 0px rgba(255, 0, 0, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
 }
