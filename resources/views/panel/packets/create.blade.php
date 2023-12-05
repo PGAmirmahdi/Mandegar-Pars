@@ -18,6 +18,13 @@
                         <div class="invalid-feedback d-block" id="phone_error"></div>
                     </div>
                     <div class="form-group">
+                        <label for="bodyId">پیامک<span class="text-danger">*</span></label>
+                        <select class="form-control" id="bodyId">
+                            <option value="177554">کد رهگیری مرسوله</option>
+                            <option value="178278">عودت فاکتور</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="text">متن پیامک<span class="text-danger">*</span></label>
                         <textarea class="form-control" id="text" rows="5" readonly></textarea>
                         <div class="invalid-feedback d-block" id="text_error"></div>
@@ -134,7 +141,10 @@
                 </div>
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-primary" type="submit">ثبت فرم</button>
-                    <button class="btn btn-github" type="button" data-toggle="modal" data-target="#smsModal" id="btn_sms">ارسال پیامک</button>
+                    <button class="btn btn-github" type="button" data-toggle="modal" data-target="#smsModal" id="btn_sms">
+                        <i class="fa fa-message mr-2"></i>
+                        ارسال پیامک
+                    </button>
                 </div>
             </form>
         </div>
@@ -144,19 +154,27 @@
     <script>
         $(document).ready(function () {
             var code;
+            var bodyId;
+            var receiver;
+            var args;
+            var text_error;
+
             $('#btn_sms').on('click', function (){
                 code = $('#send_tracking_code').val().trim();
-                $('#text').html(`کد پیگیری مرسوله شما: ${code}&#013;شرکت صنایع ماشین های اداری ماندگار پارس&#013Artintoner.com`)
+                receiver = $('#receiver').val();
+                bodyId = $('#bodyId').val();
+                changeBody(bodyId);
+            })
+
+            $('#bodyId').on('change', function () {
+                bodyId = $(this).val();
+                changeBody(bodyId);
             })
 
             // btn send sms
             $('#btn_send_sms').on('click', function () {
-                $('#btn_send_sms').attr('disabled','disabled')
-                $('#btn_send_sms span').text('درحال ارسال...')
-
-                let bodyId = 177554;
+                let bodyId = $('#bodyId').val();
                 let phone_error = false;
-                let text_error = false;
                 let phone = $('#phone').val().trim();
                 let text = $('#text').val()
 
@@ -173,23 +191,20 @@
                     }
                 }
 
-                if(code == ''){
-                    $('#text_error').text('ابتدا فیلد کد رهگیری را وارد نمایید')
-                    text_error = true;
-                }
-
                 if(!phone_error && !text_error){
+                    $('#btn_send_sms').attr('disabled','disabled')
+                    $('#btn_send_sms span').text('درحال ارسال...')
+
                     $.ajax({
                         url: "{{ route('sendSMS') }}",
                         type: 'post',
                         data: {
                             bodyId,
                             phone,
-                            code,
                             text,
+                            args
                         },
                         success: function (res) {
-                            console.log(res)
                             if(res.recId == undefined || res.recId == 11){
                                 Swal.fire({
                                     title: 'خطایی رخ داد',
@@ -224,7 +239,7 @@
                                     }
                                 })
 
-                                $('#smsModal').modal('hide')
+                                // $('#smsModal').modal('hide')
                             }
                             $('#btn_send_sms').removeAttr('disabled')
                             $('#btn_send_sms span').text('ارسال')
@@ -233,6 +248,41 @@
                 }
             })
             // end btn send sms
+
+            function changeBody(bodyId) {
+                if (bodyId == 177554){
+                    if(code == ''){
+                        $('#text_error').text('ابتدا فیلد کد رهگیری را وارد نمایید')
+                        text_error = true;
+                    }else{
+                        $('#text_error').text('')
+                        text_error = false;
+                    }
+
+                    args = [code];
+
+                    $('#text').html(`کد پیگیری مرسوله شما: ${code} \n\n` +
+                        `شرکت صنایع ماشین های اداری ماندگار پارس\n` +
+                        `Artintoner.com\n`)
+                }else{
+                    if(receiver == ''){
+                        $('#text_error').text('ابتدا فیلد گیرنده را وارد نمایید')
+                        text_error = true;
+                    }else {
+                        text_error = false;
+                        $('#text_error').text('')
+                    }
+
+                    $('#text').html(`مشتری گرامی ${receiver} \n` +
+                        `لطفا پس از دریافت مرسوله خود، دو نسخه از فاکتورها را مهر و امضا و به آدرس زیر ارسال کنید. با تشکر \n` +
+                        `آدرس: تهران، شهرستان ملارد، شهرک صنعتی صفادشت، بلوار خرداد، بین خیابان پنجم و ششم غربی، پلاک 228\n` +
+                        `کد پستی: 3164114855 \n` +
+                        `شرکت صنایع ماشین های اداری ماندگار پارس \n` +
+                        `Artintoner.com`)
+
+                    args = [receiver];
+                }
+            }
         })
     </script>
 @endsection

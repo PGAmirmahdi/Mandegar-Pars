@@ -118,8 +118,7 @@ class PanelController extends Controller
 
     public function sendSMS(Request $request)
     {
-        $args = [$request->code];
-        $result = sendSMS($request->bodyId, $request->phone, $args, ['text' => $request->text]);
+        $result = sendSMS($request->bodyId, $request->phone, $request->args, ['text' => $request->text]);
         return $result;
     }
 
