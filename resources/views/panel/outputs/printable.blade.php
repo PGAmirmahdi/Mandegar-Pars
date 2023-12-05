@@ -174,7 +174,6 @@
                                     <th>عنوان کالا</th>
                                     <th>مقدار اصلی</th>
                                     <th>واحد اصلی</th>
-                                    <th>توضیحات</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -185,9 +184,12 @@
                                             <td>{{ $item->inventory->title }}</td>
                                             <td>{{ $item->count }}</td>
                                             <td>عدد</td>
-                                            <td>{{ $inventoryReport->description }}</td>
                                         </tr>
                                     @endforeach
+                                    <tr style="line-height: 1">
+                                        <th>توضیحات</th>
+                                        <td colspan="4">{{ $inventoryReport->description }}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
