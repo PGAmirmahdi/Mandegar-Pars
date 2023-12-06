@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BotController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\CouponController;
