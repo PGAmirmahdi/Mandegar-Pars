@@ -118,7 +118,7 @@ class OffSiteProductController extends Controller
         $dom->loadHTML($response);
         libxml_clear_errors();
 
-        $res = json_decode($dom->getElementsByTagName('script')->item(0)->nodeValue);
+        $res = json_decode($dom->getElementsByTagName('script')->item(1)->nodeValue);
         $data = $res->offers->offers;
 
         return view('panel.off-site-products.torob', compact('data'));
