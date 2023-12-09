@@ -48,20 +48,6 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3" id="compatible_printers_sec">
-                        <label for="compatible_printers">پرینترهای سازگار </label>
-                        <select name="compatible_printers[]" id="compatible_printers" class="js-example-basic-single select2-hidden-accessible" multiple="" data-select2-id="4" tabindex="-1" aria-hidden="true">
-                            @foreach(\App\Models\Printer::all() as $printer)
-                                <option value="{{ $printer->id }}" {{ old('compatible_printers') ? (in_array($printer->id, old('compatible_printers')) ? 'selected' : '') : '' }}>{{ $printer->printer_name.' '.$printer->printer_model }}</option>
-                            @endforeach
-                        </select>
-                        @error('compatible_printers')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-12">
-                        <hr>
-                    </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="system_price" class="form-control" id="system_price" value="{{ old('system_price') }}">

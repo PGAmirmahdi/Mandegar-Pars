@@ -41,7 +41,7 @@ class ProductController extends Controller
         $total_count = array_sum($request->counts);
 
         // create product
-        $product = Product::create([
+        Product::create([
             'title' => $request->title,
 //            'slug' => make_slug($request->slug),
             'code' => $request->code,
@@ -56,10 +56,6 @@ class ProductController extends Controller
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
         ]);
-
-        if ($request->compatible_printers){
-            $product->printers()->sync($request->compatible_printers);
-        }
 
         alert()->success('محصول مورد نظر با موفقیت ایجاد شد','ایجاد محصول');
         return redirect()->route('products.index');
@@ -108,12 +104,6 @@ class ProductController extends Controller
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
         ]);
-
-        if ($request->compatible_printers){
-            $product->printers()->sync($request->compatible_printers);
-        }else{
-            $product->printers()->detach();
-        }
 
         alert()->success('محصول مورد نظر با موفقیت ویرایش شد','ویرایش محصول');
         return redirect()->route('products.index');
