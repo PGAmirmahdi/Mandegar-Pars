@@ -126,6 +126,8 @@ class ApiController extends Controller
 
     public function getCartridges($printer_id)
     {
-        return Printer::whereId($printer_id)->pluck('cartridges');
+        $cartridges = Printer::whereId($printer_id)->pluck('cartridges');
+        $cartridges = explode(',',$cartridges);
+        return $cartridges;
     }
 }
