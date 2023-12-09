@@ -126,6 +126,8 @@ class PermissionSeeder extends Seeder
 
 //            'sms-histories' => 'پیام های ارسال شده',
 //            'exit-door' => 'درب خروج'
+
+//            'bot-manager' => 'مدیریت ربات تلگرام'
         ];
 
         foreach ($items as $key => $item)

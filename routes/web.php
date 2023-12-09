@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\BotController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
@@ -192,6 +192,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('exit-door', ExitDoorController::class)->except(['edit','update']);
     Route::get('exit-door-desc/{exit_door}', [ExitDoorController::class, 'getDescription'])->name('exit-door.get-desc');
     Route::get('get-in-outs/{inventory_report}', [ExitDoorController::class, 'getInOuts'])->name('get-in-outs');
+
+    // Bot
+    Route::get('bot-profile', [BotController::class, 'profile'])->name('bot.profile');
+    Route::post('bot-profile', [BotController::class, 'editProfile'])->name('bot.profile');
 
 });
 
