@@ -24,8 +24,9 @@ class StorePrinterRequest extends FormRequest
     public function rules()
     {
         return [
-            'printer_name' => 'required',
-            'printer_model' => 'required',
+            'name' => 'required',
+            'brand' => 'required',
+            'cartridges' => 'required',
         ];
     }
 }

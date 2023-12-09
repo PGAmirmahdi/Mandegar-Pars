@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Factor;
 use App\Models\Inventory;
+use App\Models\Printer;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -107,5 +108,24 @@ class ApiController extends Controller
             'other_products' => $invoice_other_products,
             'invoice_id' => $factor->invoice_id
         ]);
+    }
+
+    public function getPrinterBrands()
+    {
+        return Printer::BRANDS;
+    }
+
+    public function getPrinters(string $brand = null)
+    {
+        if ($brand){
+            return Printer::whereBrand($brand)->pluck('id','name');
+        }
+
+        return Printer::pluck('id','name');
+    }
+
+    public function getCartridges($printer_id)
+    {
+        return Printer::whereId($printer_id)->pluck('cartridges');
     }
 }

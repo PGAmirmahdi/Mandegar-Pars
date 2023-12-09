@@ -18,7 +18,7 @@
                     <tr>
                         <th>#</th>
                         <th>نام پرینتر</th>
-                        <th> مدل پرینتر</th>
+                        <th>برند</th>
                         <th>تاریخ ایجاد</th>
                         @can('printers-edit')
                             <th>ویرایش</th>
@@ -32,8 +32,8 @@
                     @foreach($printers as $key => $printer)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $printer->printer_name }}</td>
-                            <td>{{ $printer->printer_model }}</td>
+                            <td>{{ $printer->name }}</td>
+                            <td>{{ $printer->brand }}</td>
                             <td>{{ verta($printer->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('printers-edit')
                                 <td>
@@ -58,7 +58,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="d-flex justify-content-center">{{ $printers->links() }}</div>
+            <div class="d-flex justify-content-center">{{ $printers->appends(request()->all())->links() }}</div>
         </div>
     </div>
 @endsection

@@ -28,9 +28,11 @@ class PrinterController extends Controller
     public function store(StorePrinterRequest $request)
     {
         $this->authorize('printers-create');
+
         Printer::create([
-            'printer_name' => $request->printer_name,
-            'printer_model' => $request->printer_model,
+            'name' => $request->name,
+            'brand' => $request->brand,
+            'cartridges' => $request->cartridges,
         ]);
 
         alert()->success('پرینتر مورد نظر با موفقیت ایجاد شد','ایجاد پرینتر');
@@ -53,8 +55,9 @@ class PrinterController extends Controller
     {
         $this->authorize('printers-edit');
         $printer->update([
-            'printer_name' => $request->printer_name,
-            'printer_model' => $request->printer_model,
+            'name' => $request->name,
+            'brand' => $request->brand,
+            'cartridges' => $request->cartridges,
         ]);
 
         alert()->success('پرینتر مورد نظر با موفقیت ویرایش شد','ویرایش پرینتر');

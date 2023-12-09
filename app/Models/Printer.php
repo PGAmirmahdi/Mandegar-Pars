@@ -11,6 +11,11 @@ class Printer extends Model
 
     protected $guarded = [];
 
+    const BRANDS = [
+        'HP',
+        'Cannon',
+    ];
+
     public function products()
     {
         return $this->belongsToMany(Product::class);

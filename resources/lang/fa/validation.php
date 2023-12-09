@@ -200,6 +200,8 @@ return [
         'deposit_doc' => 'سند واریز',
         'person_name' => 'نام شخص',
         'text' => 'متن',
+        'brand' => 'برند',
+        'cartridges' => 'کارتریج ها',
     ],
 
 ];
