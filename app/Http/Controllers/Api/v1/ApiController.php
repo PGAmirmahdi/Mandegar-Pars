@@ -118,10 +118,10 @@ class ApiController extends Controller
     public function getPrinters(string $brand = null)
     {
         if ($brand){
-            return Printer::whereBrand($brand)->pluck('id','name');
+            return Printer::whereBrand($brand)->pluck('name','id');
         }
 
-        return Printer::pluck('id','name');
+        return Printer::pluck('name','id');
     }
 
     public function getCartridges($printer_id)
