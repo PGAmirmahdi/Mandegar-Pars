@@ -261,7 +261,7 @@
         <ul id="navigationBot" class="{{ active_sidebar(['bot-profile']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">ربات تلگرام</li>
             <li>
-                <a class="{{ active_sidebar(['bot-profile']) ? 'active' : '' }}" href="">مشخصات ربات</a>
+                <a class="{{ active_sidebar(['bot-profile']) ? 'active' : '' }}" href="{{ route('bot.profile') }}">مشخصات ربات</a>
             </li>
         </ul>
     </div>
