@@ -25,7 +25,7 @@
                             @endif
                         </select>
                         <span id="factor_link">
-                            <a href="/panel/invoices/{{ $inventoryReport->factor->invoice_id }}?type=factor" class="btn-link" target="_blank">نمایش فاکتور</a>
+                            <a href="/panel/invoices/{{ $inventoryReport->factor ? $inventoryReport->factor->invoice_id : '' }}?type=factor" class="btn-link" target="_blank">نمایش فاکتور</a>
                         </span>
                         @error('factor_id')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
