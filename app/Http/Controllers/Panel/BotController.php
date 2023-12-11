@@ -13,6 +13,8 @@ class BotController extends Controller
     {
         $this->authorize('bot-manager');
 
+        $this->getMyName();
+
         $name = $this->getMyName()['result']['name'];
         $description = $this->getMyDescription()['result']['description'];
         $shortDescription = $this->getMyShortDescription()['result']['short_description'];
@@ -36,9 +38,12 @@ class BotController extends Controller
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         $result = curl_exec($ch);
         curl_close($ch);
 
+        dd(curl_error($ch));
         return json_decode($result, true);
     }
 
