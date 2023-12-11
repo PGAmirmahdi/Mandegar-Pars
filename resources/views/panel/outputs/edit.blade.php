@@ -56,7 +56,7 @@
                                         <tr>
                                             <td>
                                                 <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                    @foreach(\App\Models\Inventory::all(['id','title','type']) as $inventory)
+                                                    @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id','title','type']) as $inventory)
                                                         <option value="{{ $inventory->id }}" {{ $inventory->id == $item->inventory_id ? 'selected' : '' }}>{{ \App\Models\Inventory::TYPE[$inventory->type].' - '.$inventory->title }}</option>
                                                     @endforeach
                                                 </select>
@@ -128,7 +128,7 @@
 
         var options_html;
 
-        @foreach(\App\Models\Inventory::all('id','title','code','type') as $item)
+        @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id','title','code','type']) as $item)
         inventory.push({
             "id": "{{ $item->id }}",
             "code": "{{ $item->code }}",

@@ -100,7 +100,7 @@ class InventoryReportController extends Controller
     public function edit(InventoryReport $inventoryReport)
     {
         $type = \request()->type;
-        $warehouse_id = \request()->warehouse_id;
+        $warehouse_id = $inventoryReport->warehouse_id;
 
         if ($type == 'input'){
             $this->authorize('input-reports-edit');
