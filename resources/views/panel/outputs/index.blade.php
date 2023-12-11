@@ -49,7 +49,7 @@
                             </td>
                             @can('output-reports-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'output']) }}">
+                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'output', 'warehouse_id' => $warehouse_id]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
