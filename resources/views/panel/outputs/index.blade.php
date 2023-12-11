@@ -6,7 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>خروج</h6>
                 @can('output-reports-create')
-                    <a href="{{ route('inventory-reports.create', ['type' => 'output']) }}" class="btn btn-primary">
+                    <a href="{{ route('inventory-reports.create', ['type' => 'output', 'warehouse_id' => $warehouse_id]) }}" class="btn btn-primary">
                         <i class="fa fa-plus mr-2"></i>
                         ثبت خروجی
                     </a>
@@ -17,7 +17,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>طرف حساب</th>
+                        <th>تحویل گیرنده</th>
                         <th>فاکتور</th>
                         <th>تاریخ ثبت</th>
                         <th>رسید انبار</th>
@@ -35,7 +35,11 @@
                             <td>{{ ++$key }}</td>
                             <td><strong>{{ $item->person }}</strong></td>
                             <td>
-                                <strong><u><a href="{{ route('invoices.show', [$item->factor->invoice->id, 'type' => 'factor']) }}" class="text-primary" target="_blank">{{ $item->factor->invoice_id }}</a></u></strong>
+                                @if($item->factor)
+                                    <strong><u><a href="{{ route('invoices.show', [$item->factor->invoice->id, 'type' => 'factor']) }}" class="text-primary" target="_blank">{{ $item->factor->invoice_id }}</a></u></strong>
+                                @else
+                                    ---
+                                @endif
                             </td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>

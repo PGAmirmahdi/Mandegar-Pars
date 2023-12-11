@@ -125,7 +125,7 @@
                             icon: 'error',
                             showConfirmButton: false,
                             toast: true,
-                            timer: 2000,
+                            timer: 4000,
                             timerProgressBar: true,
                             position: 'top-start',
                             customClass: {

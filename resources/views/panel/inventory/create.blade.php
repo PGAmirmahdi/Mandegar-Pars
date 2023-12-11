@@ -8,6 +8,7 @@
             </div>
             <form action="{{ route('inventory.store') }}" method="post">
                 @csrf
+                <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="title">عنوان کالا <span class="text-danger">*</span></label>

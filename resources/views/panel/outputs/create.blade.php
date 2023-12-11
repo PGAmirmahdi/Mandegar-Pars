@@ -9,10 +9,11 @@
             </div>
             <form action="{{ route('inventory-reports.store') }}" method="post">
                 @csrf
+                <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
                 <input type="hidden" name="type" value="{{ request()->type }}">
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
-                        <label for="factor_id">فاکتور<span class="text-danger">*</span></label>
+                        <label for="factor_id">فاکتور</label>
                         <select class="js-example-basic-single select2-hidden-accessible" name="factor_id" id="factor_id">
                             <option value="">انتخاب کنید...</option>
                             @if(\App\Models\Factor::doesntHave('inventory_report')->count())
@@ -57,7 +58,7 @@
                                             <tr>
                                                 <td>
                                                     <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                        @foreach(\App\Models\Inventory::all(['id','title','type']) as $item)
+                                                        @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id','title','type']) as $item)
                                                             <option value="{{ $item->id }}" {{ $inventory_id == $item->id ? 'selected' : '' }}>{{ \App\Models\Inventory::TYPE[$item->type].' - '.$item->title }}</option>
                                                         @endforeach
                                                     </select>
@@ -74,7 +75,7 @@
                                         <tr>
                                             <td>
                                                 <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                    @foreach(\App\Models\Inventory::all(['id','title','type']) as $item)
+                                                    @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id','title','type']) as $item)
                                                         <option value="{{ $item->id }}">{{ \App\Models\Inventory::TYPE[$item->type].' - '.$item->title }}</option>
                                                     @endforeach
                                                 </select>
@@ -145,7 +146,7 @@
 
         var options_html;
 
-        @foreach(\App\Models\Inventory::all('id','title','code','type') as $item)
+        @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id','title','code','type']) as $item)
             inventory.push({
                 "id": "{{ $item->id }}",
                 "code": "{{ $item->code }}",

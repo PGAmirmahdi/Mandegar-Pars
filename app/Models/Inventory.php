@@ -21,6 +21,11 @@ class Inventory extends Model
         'label' => 'لیبل',
     ];
 
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
+
     public function in_outs()
     {
         return $this->hasMany(InOut::class);

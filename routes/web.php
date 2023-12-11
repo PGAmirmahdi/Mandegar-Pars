@@ -26,6 +26,7 @@ use App\Http\Controllers\Panel\SmsHistoryController;
 use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\UserController;
+use App\Http\Controllers\Panel\WarehouseController;
 use App\Http\Controllers\PanelController;
 use App\Models\Invoice;
 use App\Models\Packet;
@@ -196,6 +197,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Bot
     Route::get('bot-profile', [BotController::class, 'profile'])->name('bot.profile');
     Route::post('bot-profile', [BotController::class, 'editProfile'])->name('bot.profile');
+
+    // Warehouses
+    Route::resource('warehouses', WarehouseController::class);
 
 });
 

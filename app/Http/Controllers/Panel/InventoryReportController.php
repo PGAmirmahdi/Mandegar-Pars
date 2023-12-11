@@ -13,31 +13,34 @@ class InventoryReportController extends Controller
     public function index()
     {
         $type = \request()->type;
-        $reports = InventoryReport::where('type',$type)->latest()->paginate(30);
+        $warehouse_id = \request()->warehouse_id;
+
+        $reports = InventoryReport::where(['warehouse_id' => $warehouse_id, 'type' => $type])->latest()->paginate(30);
 
         if ($type == 'input'){
             $this->authorize('input-reports-list');
 
-            return view('panel.inputs.index', compact('reports'));
+            return view('panel.inputs.index', compact('reports', 'warehouse_id'));
         }else{
             $this->authorize('output-reports-list');
 
-            return view('panel.outputs.index', compact('reports'));
+            return view('panel.outputs.index', compact('reports','warehouse_id'));
         }
     }
 
     public function create()
     {
         $type = \request()->type;
+        $warehouse_id = request()->warehouse_id;
 
         if ($type == 'input'){
             $this->authorize('input-reports-create');
 
-            return view('panel.inputs.create', compact('type'));
+            return view('panel.inputs.create', compact('type', 'warehouse_id'));
         }else{
             $this->authorize('output-reports-create');
 
-            return view('panel.outputs.create', compact('type'));
+            return view('panel.outputs.create', compact('type','warehouse_id'));
         }
     }
 
@@ -63,10 +66,8 @@ class InventoryReportController extends Controller
 
             $type_lbl = 'خروجی';
             $request->validate([
-                'factor_id' => 'required',
                 'person' => 'required'
                 ], [
-                    'factor_id.required' => 'انتخاب فاکتور الزامی است',
                     'person.required' => 'فیلد تحویل گیرنده الزامی است'
             ]);
 
@@ -76,6 +77,7 @@ class InventoryReportController extends Controller
 
         // create input report
         $report = InventoryReport::create([
+            'warehouse_id' => $request->warehouse_id,
             'factor_id' => $request->factor_id,
             'type' => $request->type,
             'person' => $request->person,
@@ -85,7 +87,7 @@ class InventoryReportController extends Controller
         $this->createInOut($report, $request, $type);
 
         alert()->success("$type_lbl مورد نظر با موفقیت ثبت شد","ثبت $type_lbl");
-        return redirect()->route('inventory-reports.index', ['type' => $type]);
+        return redirect()->route('inventory-reports.index', ['type' => $type, 'warehouse_id' => $request->warehouse_id]);
     }
 
     public function show(InventoryReport $inventoryReport)
@@ -98,15 +100,16 @@ class InventoryReportController extends Controller
     public function edit(InventoryReport $inventoryReport)
     {
         $type = \request()->type;
+        $warehouse_id = \request()->warehouse_id;
 
         if ($type == 'input'){
             $this->authorize('input-reports-edit');
 
-            return view('panel.inputs.edit', compact('type','inventoryReport'));
+            return view('panel.inputs.edit', compact('type','inventoryReport', 'warehouse_id'));
         }else{
             $this->authorize('output-reports-edit');
 
-            return view('panel.outputs.edit', compact('type','inventoryReport'));
+            return view('panel.outputs.edit', compact('type','inventoryReport', 'warehouse_id'));
         }
     }
 
@@ -143,6 +146,7 @@ class InventoryReportController extends Controller
 
         // create input report
         $inventoryReport->update([
+            'warehouse_id' => $request->warehouse_id,
             'factor_id' => $request->factor_id,
             'type' => $request->type,
             'person' => $request->person,
@@ -153,7 +157,7 @@ class InventoryReportController extends Controller
         $this->createInOut($inventoryReport, $request, $type);
 
         alert()->success("$type_lbl مورد نظر با موفقیت ویرایش شد","ویرایش $type_lbl");
-        return redirect()->route('inventory-reports.index', ['type' => $type]);
+        return redirect()->route('inventory-reports.index', ['type' => $type, 'warehouse_id' => $request->warehouse_id]);
     }
 
     public function destroy(InventoryReport $inventoryReport)
