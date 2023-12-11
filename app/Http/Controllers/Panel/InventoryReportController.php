@@ -75,7 +75,7 @@ class InventoryReportController extends Controller
             $this->storeCheckInventoryCount($request);
         }
 
-        // create input report
+        // create report
         $report = InventoryReport::create([
             'warehouse_id' => $request->warehouse_id,
             'factor_id' => $request->factor_id,

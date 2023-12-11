@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInventoryRequest;
 use App\Http\Requests\UpdateInventoryRequest;
 use App\Models\Inventory;
+use App\Models\InventoryReport;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -127,5 +129,74 @@ class InventoryController extends Controller
         $warehouse_id = \request()->warehouse_id;
 
         return Excel::download(new \App\Exports\InventoryExport($warehouse_id), 'inventory.xlsx');
+    }
+
+    public function move(Request $request)
+    {
+        $this->authorize('inventory-edit');
+
+        $warehouse_id = $request->warehouse_id;
+        $new_warehouse_id = $request->new_warehouse_id;
+        $inventory_id = $request->inventory_id;
+        $count = $request->count;
+
+        $warehouse_name = Warehouse::find($warehouse_id)->name;
+        $new_warehouse_name = Warehouse::find($new_warehouse_id)->name;
+        $warehouseInventory = Inventory::find($inventory_id);
+
+        // create output report
+
+        if ($warehouseInventory->current_count < $count) {
+            alert()->error('موجودی انبار کافی نیست','عدم موجودی');
+            return back();
+        }
+
+        $report = InventoryReport::create([
+            'warehouse_id' => $warehouse_id,
+            'type' => 'output',
+            'person' => auth()->user()->fullName(),
+            'description' => "انتقال یافته به $new_warehouse_name",
+        ]);
+
+        $warehouseInventory->current_count -= $count;
+        $warehouseInventory->save();
+
+        $report->in_outs()->create([
+            'inventory_id' => $warehouseInventory->id,
+            'count' => $count,
+        ]);
+
+        // end create output report
+
+        // create input report
+        $report = InventoryReport::create([
+            'warehouse_id' => $new_warehouse_id,
+            'type' => 'input',
+            'person' => auth()->user()->fullName(),
+            'description' => "انتقال یافته از $new_warehouse_name",
+        ]);
+
+        $newWarehouseInventory = Inventory::where(['warehouse_id' => $new_warehouse_id, 'code' => $warehouseInventory->code])->firstOrCreate([
+            'code' => $warehouseInventory->code,
+        ],[
+            'warehouse_id' => $new_warehouse_id,
+            'title' => $warehouseInventory->title,
+            'code' => $warehouseInventory->code,
+            'type' => $warehouseInventory->type,
+            'initial_count' => 0,
+            'current_count' => 0,
+        ]);
+
+        $newWarehouseInventory->current_count += $count;
+        $newWarehouseInventory->save();
+
+        $report->in_outs()->create([
+            'inventory_id' => $newWarehouseInventory->id,
+            'count' => $count,
+        ]);
+        // end create input report
+
+        alert()->success('کالا با موفقیت به انبار مورد نظر انتقال یافت','انتقال کالا');
+        return back();
     }
 }

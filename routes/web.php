@@ -171,6 +171,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::match(['get', 'post'],'search/inventory', [InventoryController::class, 'search'])->name('inventory.search');
     Route::resource('inventory-reports', InventoryReportController::class);
     Route::post('excel/inventory', [InventoryController::class, 'excel'])->name('inventory.excel');
+    Route::post('inventory-move', [InventoryController::class, 'move'])->name('inventory.move');
 
     // Sale Reports
     Route::resource('sale-reports', SaleReportController::class)->except('show');

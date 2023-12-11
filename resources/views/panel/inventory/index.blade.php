@@ -1,6 +1,42 @@
 @extends('panel.layouts.master')
 @section('title', 'انبار')
 @section('content')
+    {{--  Move Modal  --}}
+    <div class="modal fade" id="moveModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="moveModalLabel">جابجایی کالا</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="new_warehouse_id">انتقال به انبار<span class="text-danger">*</span></label>
+                        <select class="form-control" name="new_warehouse_id" id="new_warehouse_id" required form="move_form">
+                            @foreach(\App\Models\Warehouse::where('id','!=',$warehouse_id)->get() as $warehouse)
+                                <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="count">تعداد<span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="count" id="count" min="1" value="1" required form="move_form">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="move_form">انتقال</button>
+                    <form action="{{ route('inventory.move') }}" method="post" id="move_form">
+                        @csrf
+                        <input type="hidden" name="inventory_id" value="" id="inventory_id">
+                        <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{--  End Move Modal  --}}
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -60,6 +96,7 @@
                         <th>تعداد خروج</th>
                         <th>تاریخ ایجاد</th>
                         @can('inventory-edit')
+                            <th>جابجایی</th>
                             <th>ویرایش</th>
                         @endcan
                         @can('inventory-delete')
@@ -80,6 +117,11 @@
                             <td>{{ number_format($item->getOutputCount()) }}</td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('inventory-edit')
+                                <td>
+                                    <a class="btn btn-primary btn-floating btn_move" href="#moveModal" data-toggle="modal" data-id="{{ $item->id }}">
+                                        <i class="fa fa-arrow-right-arrow-left"></i>
+                                    </a>
+                                </td>
                                 <td>
                                     <a class="btn btn-warning btn-floating" href="{{ route('inventory.edit', $item->id) }}">
                                         <i class="fa fa-edit"></i>
@@ -106,5 +148,13 @@
         </div>
     </div>
 @endsection
-
-
+@section('scripts')
+    <script>
+        $(document).ready(function (){
+            $('.btn_move').on('click', function () {
+                var inventory_id = $(this).data('id');
+                $('#inventory_id').val(inventory_id)
+            })
+        })
+    </script>
+@endsection
