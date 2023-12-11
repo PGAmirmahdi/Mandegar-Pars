@@ -13,6 +13,7 @@
             <form action="{{ route('foreign-customers.update', $foreignCustomer->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="page" value="{{ $page }}">
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="website">وبسایت</label>

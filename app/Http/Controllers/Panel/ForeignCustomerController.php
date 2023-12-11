@@ -63,7 +63,9 @@ class ForeignCustomerController extends Controller
     {
         $this->authorize('foreign-customers-edit');
 
-        return view('panel.foreign-customers.edit', compact('foreignCustomer'));
+        $page = \request()->page;
+
+        return view('panel.foreign-customers.edit', compact('foreignCustomer','page'));
     }
 
     public function update(Request $request, ForeignCustomer $foreignCustomer)
@@ -97,7 +99,7 @@ class ForeignCustomerController extends Controller
         ]);
 
         alert()->success('مشتری مورد نظر با موفقیت ویرایش شد','ویرایش مشتری');
-        return redirect()->route('foreign-customers.index');
+        return redirect()->route('foreign-customers.index', ['page' => $request->page]);
     }
 
     public function destroy(ForeignCustomer $foreignCustomer)

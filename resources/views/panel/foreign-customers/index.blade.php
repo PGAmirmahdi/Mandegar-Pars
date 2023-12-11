@@ -106,7 +106,7 @@
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('foreign-customers-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('foreign-customers.edit', $customer->id) }}">
+                                    <a class="btn btn-warning btn-floating" href="{{ route('foreign-customers.edit', ['foreign_customer' => $customer->id, 'page' => request()->page]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
