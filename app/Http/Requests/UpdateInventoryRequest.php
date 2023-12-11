@@ -25,7 +25,7 @@ class UpdateInventoryRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'code' => 'required|numeric|unique:inventories,code,'.$this->inventory->id,
+            'code' => 'required|numeric',
             'type' => 'required',
             'count' => 'required',
         ];
