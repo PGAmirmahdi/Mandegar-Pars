@@ -25,7 +25,7 @@ class StoreInventoryRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'code' => 'required|numeric|unique:inventories',
+            'code' => 'required|numeric',
             'type' => 'required',
             'count' => 'required',
         ];

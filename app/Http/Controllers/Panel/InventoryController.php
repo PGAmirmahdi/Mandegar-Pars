@@ -33,7 +33,12 @@ class InventoryController extends Controller
     {
         $this->authorize('inventory-create');
 
+        $code = $request->code;
         $warehouse_id = $request->warehouse_id;
+
+        if (Inventory::where(['warehouse_id' => $warehouse_id, 'code' => $code])->exists()){
+            return back()->withErrors(['code' => 'این کد در انبار موجود است'])->withInput();
+        }
 
         Inventory::create([
             'warehouse_id' => $warehouse_id,
@@ -69,7 +74,14 @@ class InventoryController extends Controller
             return back();
         }
 
+        $code = $request->code;
         $warehouse_id = $inventory->warehouse_id;
+
+        if ($exist = Inventory::where(['warehouse_id' => $warehouse_id, 'code' => $code])->first()){
+            if ($exist->id != $inventory->id){
+                return back()->withErrors(['code' => 'این کد در انبار موجود است'])->withInput();
+            }
+        }
 
         $inventory->update([
             'warehouse_id' => $warehouse_id,
