@@ -15,12 +15,14 @@ class CreateInventoryReportsTable extends Migration
     {
         Schema::create('inventory_reports', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('warehouse_id');
             $table->enum('type', ['input','output']);
             $table->string('person')->comment('طرف حساب');
             $table->unsignedBigInteger('factor_id')->nullable();
             $table->longText('description')->nullable();
             $table->timestamps();
 
+            $table->foreign('warehouse_id')->references('id')->on('warehouses');
             $table->foreign('factor_id')->references('id')->on('factors');
         });
     }

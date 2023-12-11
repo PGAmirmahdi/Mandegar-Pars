@@ -94,6 +94,11 @@ class PermissionSeeder extends Seeder
         // inventory
 //           'warehouse-keeper' => 'انباردار',
 
+//           'warehouses-list' => 'لیست انبارها',
+//           'warehouses-create' => 'ایجاد انبار',
+//           'warehouses-edit' => 'ویرایش انبار',
+//           'warehouses-delete' => 'حذف انبار',
+
 //           'inventory-list' => 'انبار - لیست کالاها',
 //           'inventory-create' => 'انبار - ثبت کالا',
 //           'inventory-edit' => 'انبار - ویرایش کالا',

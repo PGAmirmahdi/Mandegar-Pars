@@ -15,21 +15,28 @@ class InventoryController extends Controller
     {
         $this->authorize('inventory-list');
 
-        $data = Inventory::latest()->paginate(30);
-        return view('panel.inventory.index', compact('data'));
+        $warehouse_id = \request()->warehouse_id;
+
+        $data = Inventory::where('warehouse_id',$warehouse_id)->latest()->paginate(30);
+        return view('panel.inventory.index', compact('data', 'warehouse_id'));
     }
 
     public function create()
     {
         $this->authorize('inventory-create');
-        return view('panel.inventory.create');
+
+        $warehouse_id = \request()->warehouse_id;
+        return view('panel.inventory.create', compact('warehouse_id'));
     }
 
     public function store(StoreInventoryRequest $request)
     {
         $this->authorize('inventory-create');
 
+        $warehouse_id = $request->warehouse_id;
+
         Inventory::create([
+            'warehouse_id' => $warehouse_id,
             'title' => $request->title,
             'code' => $request->code,
             'type' => $request->type,
@@ -38,7 +45,7 @@ class InventoryController extends Controller
         ]);
 
         alert()->success('کالا مورد نظر با موفقیت ایجاد شد','ایجاد کالا');
-        return redirect()->route('inventory.index');
+        return redirect()->route('inventory.index', ['warehouse_id' => $warehouse_id]);
     }
 
     public function show(Inventory $inventory)
@@ -49,6 +56,7 @@ class InventoryController extends Controller
     public function edit(Inventory $inventory)
     {
         $this->authorize('inventory-edit');
+
         return view('panel.inventory.edit', compact('inventory'));
     }
 
@@ -61,7 +69,10 @@ class InventoryController extends Controller
             return back();
         }
 
+        $warehouse_id = $inventory->warehouse_id;
+
         $inventory->update([
+            'warehouse_id' => $warehouse_id,
             'title' => $request->title,
             'code' => $request->code,
             'type' => $request->type,
@@ -69,7 +80,7 @@ class InventoryController extends Controller
         ]);
 
         alert()->success('کالا مورد نظر با موفقیت ویرایش شد','ویرایش کالا');
-        return redirect()->route('inventory.index');
+        return redirect()->route('inventory.index', ['warehouse_id' => $warehouse_id]);
     }
 
     public function destroy(Inventory $inventory)
@@ -86,18 +97,23 @@ class InventoryController extends Controller
 
         $type = $request->type == 'all' ? array_keys(Inventory::TYPE) : [$request->type];
 
-        $data = Inventory::whereIn('type', $type)
+        $warehouse_id = $request->warehouse_id;
+
+        $data = Inventory::where('warehouse_id', $warehouse_id)
+            ->whereIn('type', $type)
             ->when($request->code, function ($q) use($request){
                 $q->where('code', $request->code);
             })
             ->where('title', 'like',"%$request->title%")
             ->latest()->paginate(30);
 
-        return view('panel.inventory.index', compact('data'));
+        return view('panel.inventory.index', compact('data', 'warehouse_id'));
     }
 
     public function excel()
     {
-        return Excel::download(new \App\Exports\InventoryExport, 'inventory.xlsx');
+        $warehouse_id = \request()->warehouse_id;
+
+        return Excel::download(new \App\Exports\InventoryExport($warehouse_id), 'inventory.xlsx');
     }
 }

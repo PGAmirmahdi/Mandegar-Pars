@@ -7,6 +7,7 @@
                 <h6>انبار</h6>
                 <div>
                     <form action="{{ route('inventory.excel') }}" method="post" id="excel_form">
+                        <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
                         @csrf
                     </form>
 
@@ -15,7 +16,7 @@
                         دریافت اکسل
                     </button>
                     @can('inventory-create')
-                        <a href="{{ route('inventory.create') }}" class="btn btn-primary">
+                        <a href="{{ route('inventory.create', ['warehouse_id' => $warehouse_id]) }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
                             افزودن کالا
                         </a>
@@ -24,6 +25,7 @@
             </div>
             <form action="{{ route('inventory.search') }}" method="post" id="search_form">
                 @csrf
+                <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
             </form>
             <div class="row mb-3">
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">

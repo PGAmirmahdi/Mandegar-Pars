@@ -6,7 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ورود</h6>
                 @can('input-reports-create')
-                    <a href="{{ route('inventory-reports.create', ['type' => 'input']) }}" class="btn btn-primary">
+                    <a href="{{ route('inventory-reports.create', ['type' => 'input', 'warehouse_id' => request()->warehouse_id]) }}" class="btn btn-primary">
                         <i class="fa fa-plus mr-2"></i>
                         ثبت ورودی
                     </a>
@@ -35,7 +35,7 @@
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('input-reports-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'input']) }}">
+                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'input', 'warehouse_id' => request()->warehouse_id]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>

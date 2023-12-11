@@ -10,6 +10,7 @@
             <form action="{{ route('inventory-reports.update', $inventoryReport->id) }}" method="post">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
                 <input type="hidden" name="type" value="{{ request()->type }}">
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
@@ -37,7 +38,7 @@
                                         <tr>
                                             <td>
                                                 <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                    @foreach(\App\Models\Inventory::all(['id','title','type']) as $inventory)
+                                                    @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get(['id','title','type']) as $inventory)
                                                         <option value="{{ $inventory->id }}" {{ $item->inventory_id == $inventory->id ? 'selected' : '' }}>{{ \App\Models\Inventory::TYPE[$inventory->type].' - '.$inventory->title }}</option>
                                                     @endforeach
                                                 </select>
@@ -74,7 +75,7 @@
 
         var options_html;
 
-        @foreach(\App\Models\Inventory::all('id','title','type') as $item)
+        @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get(['id','title','type']) as $item)
         inventory.push({
             "id": "{{ $item->id }}",
             "title": "{{ $item->title }}",
