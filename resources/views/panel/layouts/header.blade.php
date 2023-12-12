@@ -53,7 +53,7 @@
                             <h6 class="m-b-0">اعلان ها</h6>
                             <small class="font-size-13 opacity-7">{{ auth()->user()->unreadNotifications->count() }} اعلان خوانده نشده</small>
                         </div>
-                        <div class="p-3" style="overflow-y: auto; height: 400px;">
+                        <div class="p-3" style="overflow-y: auto; max-height: 400px;">
                             <div class="timeline">
                                 @foreach(auth()->user()->unreadNotifications as $notification)
                                     <div class="timeline-item">

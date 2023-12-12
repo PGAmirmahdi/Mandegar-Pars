@@ -20,7 +20,7 @@
                         <th>تحویل گیرنده</th>
                         <th>فاکتور</th>
                         <th>تاریخ ثبت</th>
-                        <th>رسید انبار</th>
+                        <th>خروج انبار</th>
                         @can('output-reports-edit')
                             <th>ویرایش</th>
                         @endcan
