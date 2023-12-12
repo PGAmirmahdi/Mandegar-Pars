@@ -61,12 +61,12 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-//    return \auth()->loginUsingId($id);
+    return \auth()->loginUsingId($id);
 
-    foreach (\App\Models\InventoryReport::all() as $item)
-    {
-        $item->update(['date' => $item->created_at]);
-    }
+//    foreach (\App\Models\InventoryReport::all() as $item)
+//    {
+//        $item->update(['date' => $item->created_at]);
+//    }
 });
 
 // import excel
