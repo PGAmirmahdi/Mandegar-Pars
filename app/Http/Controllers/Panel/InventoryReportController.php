@@ -208,6 +208,27 @@ class InventoryReportController extends Controller
         return back();
     }
 
+    public function search(Request $request)
+    {
+        $type = $request->type;
+        $warehouse_id = $request->warehouse_id;
+        $inventory_id = $request->inventory_id == 'all' ? Inventory::where('warehouse_id',$warehouse_id)->pluck('id') : [$request->inventory_id];
+
+        $reports = InventoryReport::where(['warehouse_id' => $warehouse_id, 'type' => $type])->whereHas('in_outs', function ($q) use($inventory_id){
+            $q->whereIn('inventory_id', $inventory_id);
+        })->latest()->paginate(30);
+
+        if ($type == 'input'){
+            $this->authorize('input-reports-list');
+
+            return view('panel.inputs.index', compact('reports', 'warehouse_id'));
+        }else{
+            $this->authorize('output-reports-list');
+
+            return view('panel.outputs.index', compact('reports','warehouse_id'));
+        }
+    }
+
     private function createInOut($report, $request, $type)
     {
         if ($type == 'input'){

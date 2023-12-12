@@ -170,6 +170,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('inventory', InventoryController::class)->except('show');
     Route::match(['get', 'post'],'search/inventory', [InventoryController::class, 'search'])->name('inventory.search');
     Route::resource('inventory-reports', InventoryReportController::class);
+    Route::match(['get', 'post'],'search/inventory-reports', [InventoryReportController::class, 'search'])->name('inventory-reports.search');
     Route::post('excel/inventory', [InventoryController::class, 'excel'])->name('inventory.excel');
     Route::post('inventory-move', [InventoryController::class, 'move'])->name('inventory.move');
 

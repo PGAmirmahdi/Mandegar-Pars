@@ -12,6 +12,24 @@
                     </a>
                 @endcan
             </div>
+            <form action="{{ route('inventory-reports.search') }}" method="post" id="search_form">
+                @csrf
+                <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
+                <input type="hidden" name="type" value="{{ request()->type }}">
+            </form>
+            <div class="row mb-3">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="inventory_id" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                        <option value="all">فیلتر بر اساس کالا (همه)</option>
+                        @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->pluck('title','id') as $id => $title)
+                            <option value="{{ $id }}" {{ request()->inventory_id == $id ? 'selected' : '' }}>{{ $title }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
@@ -58,7 +76,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="d-flex justify-content-center">{{ $reports->links() }}</div>
+            <div class="d-flex justify-content-center">{{ $reports->appends(request()->all())->links() }}</div>
         </div>
     </div>
 @endsection
