@@ -18,6 +18,7 @@
                     <tr>
                         <th>#</th>
                         <th>تحویل دهنده</th>
+                        <th>تاریخ ورود</th>
                         <th>تاریخ ثبت</th>
                         @can('input-reports-edit')
                             <th>ویرایش</th>
@@ -32,6 +33,7 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td><strong>{{ $item->person }}</strong></td>
+                            <td>{{ verta($item->date)->format('Y/m/d') }}</td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('input-reports-edit')
                                 <td>

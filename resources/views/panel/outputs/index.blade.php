@@ -19,6 +19,7 @@
                         <th>#</th>
                         <th>تحویل گیرنده</th>
                         <th>فاکتور</th>
+                        <th>تاریخ خروج</th>
                         <th>تاریخ ثبت</th>
                         <th>خروج انبار</th>
                         @can('output-reports-edit')
@@ -41,6 +42,7 @@
                                     ---
                                 @endif
                             </td>
+                            <td>{{ verta($item->date)->format('Y/m/d') }}</td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
                                 <a class="btn btn-info btn-floating" href="{{ route('inventory-reports.show', $item) }}">

@@ -31,11 +31,21 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="col-8"></div>
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <div class="form-group">
                             <label for="person"> تحویل گیرنده <span class="text-danger">*</span></label>
                             <input type="text" name="person" class="form-control" id="person" value="{{ $inventoryReport->person }}">
                             @error('person')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
+                        <div class="form-group">
+                            <label for="output_date"> تاریخ خروج <span class="text-danger">*</span></label>
+                            <input type="text" name="output_date" class="form-control date-picker-shamsi-list" id="output_date" value="{{ old('output_date') ?? verta()->format('Y/m/d') }}">
+                            @error('output_date')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>

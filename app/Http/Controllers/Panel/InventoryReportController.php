@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Factor;
 use App\Models\Inventory;
 use App\Models\InventoryReport;
+use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 
 class InventoryReportController extends Controller
@@ -58,18 +59,30 @@ class InventoryReportController extends Controller
         if ($type == 'input'){
             $this->authorize('input-reports-create');
 
-
             $type_lbl = 'ورودی';
-            $request->validate(['person' => 'required'],['person.required' => 'فیلد تحویل دهنده الزامی است']);
+            $request->validate([
+                'person' => 'required',
+                'input_date' => 'required',
+            ], [
+                'person.required' => 'فیلد تحویل دهنده الزامی است',
+                'input_date.required' => 'فیلد تاریخ ورود الزامی است'
+            ]);
+
+            $date = Verta::parseFormat('Y/m/d', $request->input_date)->toCarbon()->toDateTimeString();
+
         }else{
             $this->authorize('output-reports-create');
 
             $type_lbl = 'خروجی';
             $request->validate([
-                'person' => 'required'
-                ], [
-                    'person.required' => 'فیلد تحویل گیرنده الزامی است'
+                'person' => 'required',
+                'output_date' => 'required'
+            ], [
+                'person.required' => 'فیلد تحویل گیرنده الزامی است',
+                'output_date.required' => 'فیلد تاریخ خروج الزامی است'
             ]);
+
+            $date = Verta::parseFormat('Y/m/d', $request->output_date)->toCarbon()->toDateTimeString();
 
             // check inventory count is enough
             $this->storeCheckInventoryCount($request);
@@ -82,6 +95,7 @@ class InventoryReportController extends Controller
             'type' => $request->type,
             'person' => $request->person,
             'description' => $request->description,
+            'date' => $date,
         ]);
 
         $this->createInOut($report, $request, $type);
@@ -127,16 +141,28 @@ class InventoryReportController extends Controller
             $this->authorize('input-reports-edit');
 
             $type_lbl = 'ورودی';
-            $request->validate(['person' => 'required'],['person.required' => 'فیلد تحویل دهنده الزامی است']);
+            $request->validate([
+                'person' => 'required',
+                'input_date' => 'required',
+            ], [
+                'person.required' => 'فیلد تحویل دهنده الزامی است',
+                'input_date.required' => 'فیلد تاریخ ورود الزامی است'
+            ]);
+
+            $date = Verta::parseFormat('Y/m/d', $request->input_date)->toCarbon()->toDateTimeString();
         }else{
             $this->authorize('output-reports-edit');
 
             $type_lbl = 'خروجی';
             $request->validate([
-                'person' => 'required'
+                'person' => 'required',
+                'output_date' => 'required'
             ], [
-                'person.required' => 'فیلد تحویل گیرنده الزامی است'
+                'person.required' => 'فیلد تحویل گیرنده الزامی است',
+                'output_date.required' => 'فیلد تاریخ خروج الزامی است'
             ]);
+
+            $date = Verta::parseFormat('Y/m/d', $request->output_date)->toCarbon()->toDateTimeString();
 
             // check inventory count is enough
             $this->updateCheckInventoryCount($inventoryReport ,$request);
@@ -148,6 +174,7 @@ class InventoryReportController extends Controller
             'type' => $request->type,
             'person' => $request->person,
             'description' => $request->description,
+            'date' => $date,
         ]);
 
         $this->deleteInOut($inventoryReport, $type);

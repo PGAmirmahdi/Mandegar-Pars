@@ -21,6 +21,15 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
+                        <div class="form-group">
+                            <label for="input_date"> تاریخ ورود <span class="text-danger">*</span></label>
+                            <input type="text" name="input_date" class="form-control date-picker-shamsi-list" id="input_date" value="{{ old('input_date') ?? verta()->format('Y/m/d') }}">
+                            @error('input_date')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
                     <div class="col-4"></div>
                     <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                         <div class="table-responsive">
