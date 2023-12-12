@@ -21,7 +21,7 @@ class ExitDoorController extends Controller
     {
         $this->authorize('exit-door');
 
-        $inventory_reports = InventoryReport::whereType('output')->doesntHave('exit_door')->get();
+        $inventory_reports = InventoryReport::whereType('output')->has('factor')->doesntHave('exit_door')->get();
         return view('panel.exit-door.create', compact('inventory_reports'));
     }
 
