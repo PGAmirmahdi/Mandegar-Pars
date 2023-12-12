@@ -41,6 +41,7 @@
                         <option value="all">وضعیت (همه)</option>
                         <option value="invoiced" {{ request()->status == 'invoiced' ? 'selected' : '' }}>فاکتور شده</option>
                         <option value="paid" {{ request()->status == 'paid' ? 'selected' : '' }}>تسویه شده</option>
+                        <option value="canceled" {{ request()->status == 'canceled' ? 'selected' : '' }}>ابطال شده</option>
                     </select>
                 </div>
                 @can('accountant')
@@ -96,6 +97,8 @@
                                 @can('accountant')
                                     @if($factor->status == 'paid')
                                         <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-success {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
+                                    @elseif($factor->status == 'canceled')
+                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-danger disabled">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
                                     @else
                                         <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-warning {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
                                     @endif

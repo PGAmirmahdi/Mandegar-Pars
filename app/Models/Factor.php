@@ -14,6 +14,7 @@ class Factor extends Model
     const STATUS = [
         'invoiced' => 'فاکتور شده',
         'paid' => 'تسویه شده',
+        'canceled' => 'ابطال شده',
     ];
 
     public function invoice()
