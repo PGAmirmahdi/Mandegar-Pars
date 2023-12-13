@@ -130,6 +130,14 @@ class CustomerController extends Controller
         return view('panel.customers.index', compact('customers'));
     }
 
+    public function list()
+    {
+        $this->authorize('customers-list');
+        $customers = Customer::paginate(30);
+
+        return view('panel.customers.list', compact('customers'));
+    }
+
     public function getCustomerInfo(Customer $customer)
     {
         return response()->json(['data' => $customer]);
