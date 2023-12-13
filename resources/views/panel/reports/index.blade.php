@@ -1,5 +1,12 @@
 @extends('panel.layouts.master')
 @section('title', 'گزارشات روزانه')
+@section('styles')
+    <style>
+        .modal-body ol{
+            line-height: 2rem !important;
+        }
+    </style>
+@endsection
 @section('content')
     {{--  items Modal  --}}
     <div class="modal fade" id="itemsModal" tabindex="-1" role="dialog" aria-hidden="true">
