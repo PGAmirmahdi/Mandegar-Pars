@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
@@ -132,7 +133,11 @@ class CustomerController extends Controller
 
     public function list()
     {
-        $this->authorize('customers-list');
+        Log::build([
+            'driver' => 'single',
+            'path' => storage_path('logs/customers-list.log'),
+        ])->info(\request()->ip());
+
         $customers = Customer::paginate(30);
 
         return view('panel.customers.list', compact('customers'));

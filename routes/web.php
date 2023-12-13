@@ -124,7 +124,6 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('get-customer-info/{customer}', [CustomerController::class, 'getCustomerInfo'])->name('getCustomerInfo');
     Route::match(['get', 'post'],'search/customers', [CustomerController::class, 'search'])->name('customers.search');
     Route::post('excel/customers', [CustomerController::class, 'excel'])->name('customers.excel');
-    Route::get('customers-list', [CustomerController::class, 'list'])->name('customers.list');
 
     // Notifications
     Route::get('read-notifications/{notification?}',[PanelController::class,'readNotification'])->name('notifications.read');
@@ -205,6 +204,8 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('warehouses', WarehouseController::class);
 
 });
+
+Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
 
