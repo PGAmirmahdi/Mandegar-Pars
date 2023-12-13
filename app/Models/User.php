@@ -118,6 +118,11 @@ class User extends Authenticatable
         return $leave_info->count;
     }
 
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
+
     private function leavesUpdate()
     {
         $leave_info = DB::table('leave_info')->where('user_id', $this->id);

@@ -133,6 +133,11 @@ class PermissionSeeder extends Seeder
 //            'exit-door' => 'درب خروج'
 
 //            'bot-manager' => 'مدیریت ربات تلگرام'
+
+//            'reports-list' => 'لیست گزارشات روزانه',
+//            'reports-create' => 'ثبت گزارش',
+//            'reports-edit' => 'ویرایش گزارش',
+//            'reports-delete' => 'حذف گزارش',
         ];
 
         foreach ($items as $key => $item)
@@ -144,6 +149,9 @@ class PermissionSeeder extends Seeder
 
             $role = Role::whereName('admin')->first();
             $role->permissions()->attach($permission->id);
+
+//            $role = Role::all();
+//            $role->permissions()->attach($permission->id);
         }
     }
 }

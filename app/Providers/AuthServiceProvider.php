@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\Note;
 use App\Models\Packet;
 use App\Models\Permission;
+use App\Models\Report;
 use App\Models\SmsHistory;
 use App\Models\Task;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -73,6 +74,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('show-sms-history', function ($user, SmsHistory $smsHistory){
             return $user->id == $smsHistory->user_id || $user->isAdmin() || $user->isCEO();
+        });
+
+        Gate::define('edit-report', function ($user, Report $report){
+            return $user->id == $report->user_id || $user->isAdmin() || $user->isCEO();
         });
     }
 }

@@ -2,7 +2,7 @@
 <div class="navigation">
     <div class="navigation-icon-menu" style="overflow-y: auto">
         <ul>
-            <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit','leaves','leaves/create','leaves/{leave}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
+            <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit','leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
                 <a href="#navigationDashboards" title="داشبوردها">
                     <i class="icon ti-dashboard"></i>
                 </a>
@@ -89,7 +89,7 @@
         </ul>
     </div>
     <div class="navigation-menu-body">
-        <ul id="navigationDashboards" class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit', 'leaves','leaves/create','leaves/{leave}/edit']) ? 'navigation-active' : '' }}">
+        <ul id="navigationDashboards" class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit', 'leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">داشبورد</li>
             <li>
                 <a class="{{ active_sidebar(['panel']) ? 'active' : '' }}" href="{{ route('panel') }}">پنل</a>
@@ -117,6 +117,11 @@
             @can('leaves-list')
                 <li>
                     <a class="{{ active_sidebar(['leaves','leaves/create','leaves/{leave}/edit']) ? 'active' : '' }}" href="{{ route('leaves.index') }}">درخواست مرخصی</a>
+                </li>
+            @endcan
+            @can('reports-list')
+                <li>
+                    <a class="{{ active_sidebar(['reports','reports/create','reports/{report}/edit']) ? 'active' : '' }}" href="{{ route('reports.index') }}">گزارشات روزانه</a>
                 </li>
             @endcan
         </ul>

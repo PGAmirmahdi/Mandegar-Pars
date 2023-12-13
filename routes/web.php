@@ -18,6 +18,7 @@ use App\Http\Controllers\Panel\OffSiteProductController;
 use App\Http\Controllers\Panel\PacketController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
+use App\Http\Controllers\Panel\ReportController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
@@ -202,6 +203,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Warehouses
     Route::resource('warehouses', WarehouseController::class);
+
+    // Reports
+    Route::resource('reports', ReportController::class);
+    Route::get('get-report-items/{report}', [ReportController::class, 'getItems'])->name('report.get-items');
 
 });
 
