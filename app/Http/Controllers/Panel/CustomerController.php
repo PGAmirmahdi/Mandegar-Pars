@@ -113,7 +113,7 @@ class CustomerController extends Controller
 
         if (auth()->user()->isAdmin()){
             $customers = Customer::when($request->name, function ($q) use($request){
-                $q->where('name', $request->name);
+                $q->where('name','like', "%$request->name%");
             })
                 ->whereIn('province', $province)
                 ->whereIn('customer_type', $customer_type)
@@ -121,7 +121,7 @@ class CustomerController extends Controller
         }else{
             $customers = Customer::where('user_id', auth()->id())
                 ->when($request->name, function ($q) use($request){
-                    $q->where('name', $request->name);
+                    $q->where('name','like', "%$request->name%");
                 })
                 ->whereIn('province', $province)
                 ->whereIn('customer_type', $customer_type)
