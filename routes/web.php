@@ -71,14 +71,14 @@ Route::get('test/{id?}',function ($id = null){
 });
 
 // import excel
-Route::match(['get','post'],'import-excel', function (Request $request){
-    if ($request->method() == 'POST'){
-        Excel::import(new \App\Imports\PublicImport, $request->file);
-        return back();
-    }else{
-        return view('panel.public-import');
-    }
-})->name('import-excel');
+//Route::match(['get','post'],'import-excel', function (Request $request){
+//    if ($request->method() == 'POST'){
+//        Excel::import(new \App\Imports\PublicImport, $request->file);
+//        return back();
+//    }else{
+//        return view('panel.public-import');
+//    }
+//})->name('import-excel');
 
 Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::match(['get','post'],'/', [PanelController::class, 'index'])->name('panel');
