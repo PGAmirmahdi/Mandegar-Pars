@@ -36,6 +36,7 @@
                         <th>عنوان محصول</th>
                         <th>تاریخ ایجاد</th>
                         <th>مشاهده قیمت</th>
+                        <th>تاریخچه قیمت</th>
                         <th>ویرایش</th>
                         <th>حذف</th>
                     </tr>
@@ -50,6 +51,11 @@
                                 <a class="btn btn-info btn-floating" href="{{ route('off-site-products.show', $item->id) }}">
                                     <i class="fa fa-eye"></i>
                                 </a>
+                            </td>
+                            <td>
+                                <button class="btn btn-info btn-floating btn_price_history" data-id="{{ $item->id }}">
+                                    <i class="fa fa-eye"></i>
+                                </button>
                             </td>
                             <td>
                                 <a class="btn btn-warning btn-floating" href="{{ route('off-site-products.edit', $item->id) }}">
@@ -73,4 +79,23 @@
             <div class="d-flex justify-content-center">{{ $data->appends(request()->all())->links() }}</div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        var website = '{{ request()->website }}';
+
+        $(document).ready(function () {
+            $('.btn_price_history').on('click', function () {
+                let id = $(this).data('id');
+                $.ajax({
+                    url: `/panel/off-site-product-history/${website}/${id}`,
+                    type: 'get',
+                    success: function (res) {
+                        console.log(res)
+                    }
+                })
+            })
+        })
+    </script>
 @endsection

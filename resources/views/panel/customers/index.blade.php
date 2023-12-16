@@ -104,7 +104,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="d-flex justify-content-center">{{ $customers->links() }}</div>
+            <div class="d-flex justify-content-center">{{ $customers->appends(request()->all())->links() }}</div>
         </div>
     </div>
 @endsection

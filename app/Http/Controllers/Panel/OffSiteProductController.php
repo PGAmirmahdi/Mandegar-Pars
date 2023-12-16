@@ -102,6 +102,15 @@ class OffSiteProductController extends Controller
         return back();
     }
 
+    public function priceHistory($website, OffSiteProduct $offSiteProduct)
+    {
+        switch ($website)
+        {
+            case 'torob':
+                $this->torobHistory($offSiteProduct);
+        }
+    }
+
     private function torob($url)
     {
         $ch = curl_init();
@@ -224,5 +233,13 @@ class OffSiteProductController extends Controller
             'title' => $request->title,
             'url' => "https://api.digikala.com/v1/product/$request->code/",
         ]);
+    }
+
+    private function torobHistory(OffSiteProduct $offSiteProduct)
+    {
+        $url = "https://torob.com/p/2f3ba3d6-d9f9-4603-941a-99b85bbbd73a/%DA%A9%D8%A7%D8%B1%D8%AA%D8%B1%DB%8C%D8%AC-%D9%85%D8%B4%DA%A9%DB%8C-%D9%84%DB%8C%D8%B2%D8%B1%DB%8C-%D8%A7%DA%86-%D9%BE%DB%8C-%D9%85%D8%AF%D9%84-ce740a-307a/";
+
+        dd(strpos($url,'/'));
+        dd(substr(str_replace('https://torob.com/p/','',$url),0,10));
     }
 }

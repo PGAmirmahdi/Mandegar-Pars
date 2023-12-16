@@ -71,14 +71,14 @@ Route::get('test/{id?}',function ($id = null){
 });
 
 // import excel
-//Route::match(['get','post'],'import-excel', function (Request $request){
-//    if ($request->method() == 'POST'){
-//        Excel::import(new \App\Imports\PublicImport, $request->file);
-//        return back();
-//    }else{
-//        return view('panel.public-import');
-//    }
-//})->name('import-excel');
+Route::match(['get','post'],'import-excel', function (Request $request){
+    if ($request->method() == 'POST'){
+        Excel::import(new \App\Imports\PublicImport, $request->file);
+        return back();
+    }else{
+        return view('panel.public-import');
+    }
+})->name('import-excel');
 
 Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::match(['get','post'],'/', [PanelController::class, 'index'])->name('panel');
@@ -166,6 +166,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::get('off-site-product-create/{website}',[OffSiteProductController::class, 'create'])->name('off-site-products.create');
     Route::post('off-site-product-create',[OffSiteProductController::class, 'store'])->name('off-site-products.store');
     Route::resource('off-site-products', OffSiteProductController::class)->except('index','show','create');
+    Route::get('off-site-product-history/{website}/{off_site_product}', [OffSiteProductController::class, 'priceHistory']);
 
     // Inventory
     Route::resource('inventory', InventoryController::class)->except('show');
