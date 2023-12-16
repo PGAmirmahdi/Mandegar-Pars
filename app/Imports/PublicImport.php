@@ -12,18 +12,28 @@ class PublicImport implements ToModel
     public function model(array $row)
     {
         // customers
-        return new Customer([
-            'user_id' => 4,
-            'type' => 'private',
-            'customer_type' => 'tehran',
-            'economical_number' => 0,
-            'national_number' => 0,
-            'province' => 'تهران',
-            'city' => 'تهران',
-            'address1' => 'تهران',
-            'postal_code' => 0,
-            'name' => trim($row[0]),
-            'phone1' => trim(str_replace('-','',$row[1])),
-        ]);
+        $phone = trim(str_replace('-','',$row[1]));
+        $customer = Customer::wherePhone1($phone)->first();
+
+        if ($customer){
+            $customer->province = $row[2];
+            $customer->city = $row[2];
+            $customer->address1 = $row[2];
+            $customer->save();
+        }else{
+            return new Customer([
+                'user_id' => 4,
+                'type' => 'private',
+                'customer_type' => 'tehran',
+                'economical_number' => 0,
+                'national_number' => 0,
+                'province' => 'تهران',
+                'city' => 'تهران',
+                'address1' => 'تهران',
+                'postal_code' => 0,
+                'name' => trim($row[0]),
+                'phone1' => trim(str_replace('-','',$row[1])),
+            ]);
+        }
     }
 }
