@@ -2,12 +2,14 @@
 
 namespace App\Notifications;
 
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SendMessage extends Notification
+class SendMessage extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -31,6 +33,11 @@ class SendMessage extends Notification
         $this->url = $url;
     }
 
+    public function broadcastOn()
+    {
+        return new PresenceChannel('test');
+    }
+
     /**
      * Get the notification's delivery channels.
      *
@@ -39,7 +46,7 @@ class SendMessage extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database','broadcast'];
     }
 
     /**

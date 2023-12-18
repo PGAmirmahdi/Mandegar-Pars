@@ -623,7 +623,6 @@
                 $('#line_chart_sale3_sec').removeClass('d-none')
             }
         })
-
     </script>
 @endsection
 

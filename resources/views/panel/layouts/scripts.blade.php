@@ -73,6 +73,7 @@
 
 @yield('scripts')
 
+<script src="{{ asset('/js/app.js') }}"></script>
 <script>
     {{-- ajax setup --}}
         $.ajaxSetup({
@@ -160,4 +161,28 @@
         $('#network_sec span').tooltip();
     });
     // end network status
+
+    // realtime
+    //     Echo.join(`test`)
+    //         .here((users) => {
+    //             // console.log(users)
+    //         })
+    //         .joining((user) => {
+    //             console.log(user.name);
+    //         })
+    //         .leaving((user) => {
+    //             console.log(user.name);
+    //         })
+    //         .error((error) => {
+    //             console.error(error);
+    //         })
+    //         .listen('SendMessage', (e) => {
+    //             console.log(e)
+    //         });
+
+    Echo.channel('presence-test')
+        .notification((notification) => {
+            console.log(notification);
+    });
+    // end realtime
 </script>
