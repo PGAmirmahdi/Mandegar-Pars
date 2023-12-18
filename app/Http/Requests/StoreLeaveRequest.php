@@ -27,6 +27,7 @@ class StoreLeaveRequest extends FormRequest
             'title' => 'required',
             'type' => 'required',
             'from_date' => 'required',
+            'to_date' => 'required',
         ];
     }
 }
