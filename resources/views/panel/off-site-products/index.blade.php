@@ -19,6 +19,27 @@
 
 @section('title', $title)
 @section('content')
+    @if(request()->website != 'emalls')
+        {{--  price history Modal  --}}
+        <div class="modal fade" id="priceHistoryModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="priceHistoryModalLabel">تاریخچه قیمت</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                            <i class="ti-close"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{--  end price history Modal  --}}
+    @endif
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -53,7 +74,7 @@
                                 </a>
                             </td>
                             <td>
-                                <button class="btn btn-info btn-floating btn_price_history" data-id="{{ $item->id }}">
+                                <button class="btn btn-info btn-floating btn_price_history" data-toggle="modal" data-target="#priceHistoryModal" data-id="{{ $item->id }}">
                                     <i class="fa fa-eye"></i>
                                 </button>
                             </td>
@@ -84,18 +105,212 @@
 @section('scripts')
     <script>
         var website = '{{ request()->website }}';
+        var data1;
+        var data2;
+
+        var labels;
+        var id;
 
         $(document).ready(function () {
             $('.btn_price_history').on('click', function () {
-                let id = $(this).data('id');
+                id = $(this).data('id');
+
+                $('#priceHistoryModal .modal-body').html(`<div class="spinner-grow text-primary"></div>`)
+
+                switch(website)
+                {
+                    case 'torob':
+                        torobChart();
+                        break;
+                    case 'digikala':
+                        digikalaChart()
+                        break;
+                    case 'emalls':
+                        emallsChart();
+                        break;
+                }
+            })
+
+            function torobChart() {
                 $.ajax({
                     url: `/panel/off-site-product-history/${website}/${id}`,
                     type: 'get',
                     success: function (res) {
-                        console.log(res)
+                        $('#priceHistoryModal .modal-body').html(`<canvas id="line_chart" style="width: auto"></canvas>`)
+                        data1 = res.data.dataSets[0].entries.map(d => d['val']);
+                        data2 = res.data.dataSets[1].entries.map(d => d['val']);
+                        labels = res.data.labels;
+
+                        // price history chart
+                        var element1 = document.getElementById("line_chart");
+                        element1.height = 146;
+                        new Chart(element1, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: "میانگین قیمت",
+                                        backgroundColor: '#00c852',
+                                        data: data1,
+                                        borderColor: '#00c852',
+                                        fill: false,
+                                        cubicInterpolationMode: 'monotone',
+                                        tension: 0.4
+                                    }, {
+                                        label: "کمترین قیمت",
+                                        backgroundColor: '#0091ea',
+                                        data: data2,
+                                        borderColor: '#0091ea',
+                                        fill: false,
+                                        cubicInterpolationMode: 'monotone',
+                                        tension: 0.4
+                                    }
+                                ]
+                            },
+
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    xAxes: [{
+                                        display: false
+                                    }],
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'تومان',
+                                            fontSize: 18
+                                        },
+                                        ticks: {
+                                            min: 0,
+                                            fontSize: 15,
+                                            fontColor: '#999',
+                                            callback: function(value, index, values) {
+                                                const options = { style: 'decimal', useGrouping: true };
+                                                const formattedNumber = value.toLocaleString('en-US', options);
+                                                return formattedNumber;
+                                            }
+                                        },
+                                        gridLines: {
+                                            color: '#e8e8e8',
+                                        }
+                                    }],
+                                },
+                                tooltips: {
+                                    callbacks: {
+                                        label: function(tooltipItem, data) {
+                                            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                            var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                            return formattedValue + ' تومان ';
+                                        }
+                                    }
+                                },
+                                interaction: {
+                                    intersect: false,
+                                },
+                                elements: {
+                                    point:{
+                                        radius: 1
+                                    }
+                                }
+                            },
+                        })
+                        // end price history chart
                     }
                 })
-            })
+            }
+
+            function digikalaChart() {
+                $.ajax({
+                    url: `/panel/off-site-product-history/${website}/${id}`,
+                    type: 'get',
+                    success: function (res) {
+                        $('#priceHistoryModal .modal-body').html(`<canvas id="line_chart" style="width: auto"></canvas>`)
+                        data1 = res.data.data.price_chart[0].history.map(d => d['selling_price']);
+                        labels = res.data.data.price_chart[0].history.map(d => d['day']);
+
+                        // price history chart
+                        var element1 = document.getElementById("line_chart");
+                        element1.height = 146;
+                        new Chart(element1, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                        label: "کمترین قیمت",
+                                        backgroundColor: '#0091ea',
+                                        data: data1,
+                                        borderColor: '#0091ea',
+                                        fill: false,
+                                        cubicInterpolationMode: 'monotone',
+                                        tension: 0.4
+                                    }
+                                ]
+                            },
+
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        display: false
+                                    }],
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'تومان',
+                                            fontSize: 18
+                                        },
+                                        ticks: {
+                                            min: 0,
+                                            fontSize: 15,
+                                            fontColor: '#999',
+                                            callback: function(value, index, values) {
+                                                const options = { style: 'decimal', useGrouping: true };
+                                                const formattedNumber = (value * 0.1).toLocaleString('en-US', options);
+                                                return formattedNumber;
+                                            }
+                                        },
+                                        gridLines: {
+                                            color: '#e8e8e8',
+                                        }
+                                    }],
+                                },
+                                tooltips: {
+                                    callbacks: {
+                                        label: function(tooltipItem, data) {
+                                            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                            var formattedValue = (value * 0.1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                            return formattedValue + ' تومان ';
+                                        }
+                                    }
+                                },
+                                interaction: {
+                                    intersect: false,
+                                },
+                                elements: {
+                                    point:{
+                                        radius: 1
+                                    }
+                                }
+                            },
+                        })
+                        // end price history chart
+                    }
+                })
+            }
+
+            function emallsChart() {
+                $.ajax({
+                    url: `/panel/off-site-product-history/${website}/${id}`,
+                    type: 'get',
+                    success: function (res) {
+                        window.open(`https://emalls.ir/chartshow.aspx?id=${res.data}`);
+                    }
+                })
+            }
         })
     </script>
 @endsection

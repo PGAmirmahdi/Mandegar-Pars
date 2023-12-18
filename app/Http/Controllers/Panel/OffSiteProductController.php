@@ -107,7 +107,11 @@ class OffSiteProductController extends Controller
         switch ($website)
         {
             case 'torob':
-                $this->torobHistory($offSiteProduct);
+                return $this->torobHistory($offSiteProduct);
+            case 'digikala':
+                return $this->digikalaHistory($offSiteProduct);
+            case 'emalls':
+                return $this->emallsHistory($offSiteProduct);
         }
     }
 
@@ -237,9 +241,49 @@ class OffSiteProductController extends Controller
 
     private function torobHistory(OffSiteProduct $offSiteProduct)
     {
-        $url = "https://torob.com/p/2f3ba3d6-d9f9-4603-941a-99b85bbbd73a/%DA%A9%D8%A7%D8%B1%D8%AA%D8%B1%DB%8C%D8%AC-%D9%85%D8%B4%DA%A9%DB%8C-%D9%84%DB%8C%D8%B2%D8%B1%DB%8C-%D8%A7%DA%86-%D9%BE%DB%8C-%D9%85%D8%AF%D9%84-ce740a-307a/";
+        $url = str_replace('https://torob.com/p/','',$offSiteProduct->url);
+        $offset = strpos($url,'/');
 
-        dd(strpos($url,'/'));
-        dd(substr(str_replace('https://torob.com/p/','',$url),0,10));
+        $product_id = substr($url,0,$offset);
+
+        $endpoint = "https://api.torob.com/v4/base-product/price-chart/?prk=$product_id";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $endpoint);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $res = json_decode($response);
+
+        return response()->json(['data' => $res]);
+    }
+
+    private function digikalaHistory(OffSiteProduct $offSiteProduct)
+    {
+        $product_id = str_replace(['https://api.digikala.com/v1/product/','/'],'',$offSiteProduct->url);
+
+        $endpoint = "https://api.digikala.com/v1/product/$product_id/price-chart/";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $endpoint);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $res = json_decode($response);
+
+        return response()->json(['data' => $res]);
+    }
+
+    private function emallsHistory(OffSiteProduct $offSiteProduct)
+    {
+        $product_id = preg_replace("/[^0-9]/", "", substr($offSiteProduct->url, strpos($offSiteProduct->url, '~')));
+
+        return response()->json(['data' => $product_id]);
     }
 }
