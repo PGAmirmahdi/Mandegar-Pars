@@ -15,13 +15,13 @@ class SaleReportController extends Controller
     {
         $this->authorize('sale-reports-list');
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
             $sale_reports = SaleReport::latest()->paginate(30);
         }else{
             $sale_reports = SaleReport::where('user_id', auth()->id())->latest()->paginate(30);
         }
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
             $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
         }else{
             $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
@@ -34,7 +34,7 @@ class SaleReportController extends Controller
     {
         $this->authorize('sale-reports-create');
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
             $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
         }else{
             $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
@@ -69,7 +69,7 @@ class SaleReportController extends Controller
     {
         $this->authorize('sale-reports-edit');
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
             $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
         }else{
             $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
@@ -106,7 +106,7 @@ class SaleReportController extends Controller
     {
         $this->authorize('sale-reports-list');
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
             $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
         }else{
             $invoices = Invoice::with('customer')->where('user_id', auth()->id())->latest()->get()->pluck('customer.name','id');
@@ -114,7 +114,7 @@ class SaleReportController extends Controller
 
         $invoice_id = $request->invoice_id == 'all' ? $invoices->keys() : [$request->invoice_id];
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
             $sale_reports = SaleReport::where(function ($q) use($invoice_id, $request){
                 if ($request->invoice_id == 'all'){
                     $q->whereIn('invoice_id', $invoice_id)->orWhereNull('invoice_id');
