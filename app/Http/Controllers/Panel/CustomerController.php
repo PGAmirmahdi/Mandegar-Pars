@@ -17,7 +17,7 @@ class CustomerController extends Controller
     {
         $this->authorize('customers-list');
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
             $customers = Customer::latest()->paginate(30);
         }else{
             $customers = Customer::where('user_id', auth()->id())->latest()->paginate(30);
@@ -111,7 +111,7 @@ class CustomerController extends Controller
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
         $customer_type = $request->customer_type == 'all' ? array_keys(Customer::CUSTOMER_TYPE) : [$request->customer_type];
 
-        if (auth()->user()->isAdmin()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
             $customers = Customer::when($request->name, function ($q) use($request){
                 $q->where('name','like', "%$request->name%");
             })

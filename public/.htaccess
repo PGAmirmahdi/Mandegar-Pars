@@ -18,4 +18,8 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
+    RewriteCond %{HTTP_HOST} ^193\.105\.234\.70$
+    RewriteRule ^(.*)$ https://mpsystem.ir/$1 [L,R=301]
+
 </IfModule>
