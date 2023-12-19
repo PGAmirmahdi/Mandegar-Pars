@@ -73,7 +73,7 @@
 
 @yield('scripts')
 
-<script src="{{ asset('/js/app.js') }}"></script>
+{{--<script src="{{ asset('/js/app.js') }}"></script>--}}
 <script>
     {{-- ajax setup --}}
         $.ajaxSetup({
@@ -180,9 +180,9 @@
     //             console.log(e)
     //         });
 
-    Echo.channel('presence-test')
-        .notification((notification) => {
-            console.log(notification);
-    });
+    // Echo.channel('presence-test')
+    //     .notification((notification) => {
+    //         console.log(notification);
+    // });
     // end realtime
 </script>
