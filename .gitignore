@@ -26,3 +26,4 @@ error_log
 /public/uploads.zip
 /config/broadcasting.php
 /config/websockets.php
+/resources/js/bootstrap.js
