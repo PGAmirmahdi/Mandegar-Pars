@@ -24,3 +24,5 @@ error_log
 /ssl
 /.trash
 /public/uploads.zip
+/config/broadcasting.php
+/config/websockets.php
