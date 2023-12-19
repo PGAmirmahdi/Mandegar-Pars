@@ -57,6 +57,10 @@ class ReportController extends Controller
         $this->authorize('reports-edit');
         $this->authorize('edit-report', $report);
 
+        if (!(verta($report->created_at)->formatDate() == verta(now())->formatDate())){
+            abort(403);
+        }
+
         return view('panel.reports.edit', compact('report'));
     }
 

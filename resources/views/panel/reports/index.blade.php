@@ -71,15 +71,16 @@
                                 </td>
                             @endcanany
                             @can('reports-edit')
+                                @php $isEditable = verta($report->created_at)->formatDate() == verta(now())->formatDate() @endphp
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('reports.edit', $report->id) }}">
+                                    <a class="btn btn-warning btn-floating {{ $isEditable ? '' : 'disabled' }}" href="{{ route('reports.edit', $report->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                             @endcan
                             @can('reports-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('reports.destroy',$report->id) }}" data-id="{{ $report->id }}">
+                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('reports.destroy',$report->id) }}" data-id="{{ $report->id }}" {{ $isEditable ? '' : 'disabled' }}>
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
