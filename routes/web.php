@@ -63,13 +63,6 @@ Route::get('/', function () {
 
 Route::get('test/{id?}',function ($id = null){
     return \auth()->loginUsingId($id);
-
-//    Notification::send(User::find(1), new SendMessage('sad','asd'));
-
-//    foreach (\App\Models\InventoryReport::all() as $item)
-//    {
-//        $item->update(['date' => $item->created_at]);
-//    }
 });
 
 // import excel
