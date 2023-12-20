@@ -25,3 +25,5 @@ Route::post('get-invoice-products', [ApiController::class, 'getInvoiceProducts']
 Route::get('get-printer-brands', [ApiController::class, 'getPrinterBrands']);
 Route::get('get-printers/{brand?}', [ApiController::class, 'getPrinters']);
 Route::get('get-cartridges/{printer_id}', [ApiController::class, 'getCartridges']);
+
+Route::post('create-bot-user',[ApiController::class, 'createBotUser']);

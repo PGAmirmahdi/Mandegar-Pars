@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\BotUser;
 use App\Models\Factor;
 use App\Models\Inventory;
 use App\Models\Printer;
@@ -128,7 +129,16 @@ class ApiController extends Controller
     {
         $cartridges = Printer::whereId($printer_id)->first()->cartridges;
         $cartridges = explode(',',$cartridges);
-        
+
         return $cartridges;
+    }
+
+    public function createBotUser(Request $request)
+    {
+        BotUser::create([
+            'user_id' => $request->id,
+            'first_name' => $request->first_name,
+            'username' => $request->username,
+        ]);
     }
 }
