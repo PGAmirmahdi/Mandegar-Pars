@@ -8,18 +8,13 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Events\SendMessage as SendMessageEvent;
 
-class SendMessage extends Notification implements ShouldBroadcast
+class SendMessage extends Notification
 {
     use Queueable;
 
-    /**
-     * @var string
-     */
     private $message;
-    /**
-     * @var string
-     */
     private $url;
 
     /**
@@ -33,11 +28,6 @@ class SendMessage extends Notification implements ShouldBroadcast
         $this->url = $url;
     }
 
-    public function broadcastOn()
-    {
-        return new PresenceChannel('test');
-    }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -46,7 +36,7 @@ class SendMessage extends Notification implements ShouldBroadcast
      */
     public function via($notifiable)
     {
-        return ['database','broadcast'];
+        return ['database'];
     }
 
     /**
@@ -57,9 +47,14 @@ class SendMessage extends Notification implements ShouldBroadcast
      */
     public function toArray($notifiable)
     {
-        return [
+        $data = [
+            'id' => $this->id,
             'message' => $this->message,
             'url' => $this->url,
         ];
+
+        event(new SendMessageEvent($notifiable->id, $data));
+
+        return $data;
     }
 }

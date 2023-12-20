@@ -62,9 +62,10 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
 
-//    Notification::send(User::find(1), new SendMessage('sf','sdf'));
+//    event(new App\Events\SendMessage(2,'dfgfdg'));
+    Notification::send(User::find(1), new SendMessage('sf','sdf'));
 });
 
 // import excel
