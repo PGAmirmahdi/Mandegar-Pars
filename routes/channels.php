@@ -17,6 +17,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('test', function ($user){
-    return $user->id == auth()->id() ? $user : false;
+Broadcast::channel('notification.{userId}', function ($user, $userId){
+    return $user->id == $userId ? $user : false;
 });

@@ -74,7 +74,9 @@
 @yield('scripts')
 
 <script src="{{ asset('/js/app.js') }}"></script>
+
 <script>
+
     {{-- ajax setup --}}
         $.ajaxSetup({
             headers: {
@@ -162,27 +164,31 @@
     });
     // end network status
 
-    // realtime
-    //     Echo.join(`test`)
-    //         .here((users) => {
-    //             // console.log(users)
-    //         })
-    //         .joining((user) => {
-    //             console.log(user.name);
-    //         })
-    //         .leaving((user) => {
-    //             console.log(user.name);
-    //         })
-    //         .error((error) => {
-    //             console.error(error);
-    //         })
-    //         .listen('SendMessage', (e) => {
-    //             console.log(e)
-    //         });
-
-    Echo.channel('presence-test')
-        .notification((notification) => {
-            console.log(notification);
-    });
+    // realtime notification
+    var audio = new Audio('/audio/notification.wav');
+    let userId = "{{ auth()->id() }}"
+    Echo.channel('presence-notification.'+userId)
+        .listen('SendMessage', (e) =>{
+            $('#notification_sec a').addClass('nav-link-notify')
+            $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
+            $(".timeline").prepend(`<div class="timeline-item">
+                                        <div>
+                                            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
+													<i class="fa fa-bell font-size-20"></i>
+												</span>
+                                            </figure>
+                                        </div>
+                                        <div>
+                                            <p class="m-b-5">
+                                                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                                            </p>
+                                            <small class="text-muted">
+                                                <i class="fa fa-clock-o m-r-5"></i>الان
+                                                </small>
+                                            </div>
+                                        </div>`)
+            audio.play();
+        });
     // end realtime
 </script>

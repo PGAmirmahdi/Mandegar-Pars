@@ -44,14 +44,14 @@
                         <i class="fa fa-power-off"></i>
                     </a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" id="notification_sec">
                     <a href="#" class="nav-link {{ auth()->user()->unreadNotifications->count() ? 'nav-link-notify' : '' }}" data-toggle="dropdown">
                         <i class="ti-bell" data-toggle="tooltip" data-placement="bottom" data-original-title="اعلانات"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-big">
                         <div class="p-4 text-center" data-backround-image="/assets/media/image/image1.png">
                             <h6 class="m-b-0">اعلان ها</h6>
-                            <small class="font-size-13 opacity-7">{{ auth()->user()->unreadNotifications->count() }} اعلان خوانده نشده</small>
+                            <small class="font-size-13 opacity-7"><span id="notif_count">{{ auth()->user()->unreadNotifications->count() }}</span> اعلان خوانده نشده</small>
                         </div>
                         <div class="p-3" style="overflow-y: auto; max-height: 400px;">
                             <div class="timeline">
