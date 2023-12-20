@@ -135,10 +135,12 @@ class ApiController extends Controller
 
     public function createBotUser(Request $request)
     {
-        BotUser::create([
-            'user_id' => $request->id,
-            'first_name' => $request->first_name,
-            'username' => $request->username,
-        ]);
+        if (!BotUser::where('user_id', $request->id)->first()){
+            BotUser::create([
+                'user_id' => $request->id,
+                'first_name' => $request->first_name,
+                'username' => $request->username,
+            ]);
+        }
     }
 }
