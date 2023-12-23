@@ -149,7 +149,7 @@
             @endcan
             @can('printers-list')
                 <li>
-                    <a class="{{ active_sidebar(['printers','printers/create','printers/{printer}/edit']) ? 'active' : '' }}" href="{{ route('printers.index') }}">پرینتر ها</a>
+                    <a class="{{ active_sidebar(['printers','printers/create','printers/{printer}/edit','search/printers']) ? 'active' : '' }}" href="{{ route('printers.index') }}">پرینتر ها</a>
                 </li>
             @endcan
             @can('coupons-list')
