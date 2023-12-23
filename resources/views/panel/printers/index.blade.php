@@ -12,6 +12,25 @@
                     </a>
                 @endcan
             </div>
+            <form action="{{ route('printers.search') }}" method="post" id="search_form">
+                @csrf
+            </form>
+            <div class="row mb-3">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <input type="text" name="name" form="search_form" class="form-control" placeholder="نام پرینتر" value="{{ request()->name ?? null }}">
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="brand" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                        <option value="all">برند (همه)</option>
+                        @foreach(\App\Models\Printer::BRANDS as $value)
+                            <option value="{{ $value }}" {{ request()->brand == $value ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>

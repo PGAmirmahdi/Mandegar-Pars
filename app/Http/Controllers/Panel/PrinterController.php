@@ -72,4 +72,15 @@ class PrinterController extends Controller
         $printer->delete();
         return back();
     }
+
+    public function search(Request $request)
+    {
+        $this->authorize('printers-list');
+        $brands = $request->brand == 'all' ? array_values(Printer::BRANDS) : [$request->brand];
+
+        $printers = Printer::whereIn('brand',$brands)
+            ->where('name','like', "%$request->name%")
+            ->latest()->paginate(30);
+        return view('panel.printers.index', compact('printers'));
+    }
 }

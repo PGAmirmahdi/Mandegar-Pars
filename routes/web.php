@@ -97,6 +97,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Printers
     Route::resource('printers', PrinterController::class)->except('show');
+    Route::match(['get', 'post'],'search/printers', [PrinterController::class, 'search'])->name('printers.search');
 
     // Invoices
     Route::resource('invoices', InvoiceController::class);
