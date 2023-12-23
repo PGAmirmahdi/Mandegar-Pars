@@ -147,10 +147,14 @@
                         <img src="/assets/media/image/header-logo.png" style="width: 15rem;">
                     </div>
                     <div class="col-3 text-right">
-                        @if(request()->type == 'pishfactor')
-                            <h3>پیش فاکتور</h3>
+                        @if(!auth()->user()->isAccountant())
+                            <h3>ثبت سفارش</h3>
                         @else
-                            <h3>صورت حساب فروش کالا و خدمات</h3>
+                            @if(request()->type == 'pishfactor')
+                                <h3>پیش فاکتور</h3>
+                            @else
+                                <h3>صورت حساب فروش کالا و خدمات</h3>
+                            @endif
                         @endif
                     </div>
                     <div class="col-2"></div>

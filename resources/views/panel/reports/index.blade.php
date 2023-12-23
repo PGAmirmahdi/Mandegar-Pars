@@ -44,11 +44,11 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>همکار</th>
-                        <th>تاریخ ثبت</th>
                         @canany(['admin','ceo'])
-                            <th>مشاهده</th>
+                            <th>همکار</th>
                         @endcanany
+                        <th>تاریخ ثبت</th>
+                        <th>مشاهده</th>
                         @can('reports-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -61,15 +61,15 @@
                     @foreach($reports as $key => $report)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $report->user->fullName() }}</td>
-                            <td>{{ verta($report->created_at)->format('H:i - Y/m/d') }}</td>
                             @canany(['admin','ceo'])
-                                <td>
-                                    <button class="btn btn-info btn-floating btn_show" data-toggle="modal" data-target="#itemsModal" data-id="{{ $report->id }}">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                </td>
+                                <td>{{ $report->user->fullName() }}</td>
                             @endcanany
+                            <td>{{ verta($report->created_at)->format('H:i - Y/m/d') }}</td>
+                            <td>
+                                <button class="btn btn-info btn-floating btn_show" data-toggle="modal" data-target="#itemsModal" data-id="{{ $report->id }}">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </td>
                             @can('reports-edit')
                                 @php $isEditable = verta($report->created_at)->formatDate() == verta(now())->formatDate() @endphp
                                 <td>
