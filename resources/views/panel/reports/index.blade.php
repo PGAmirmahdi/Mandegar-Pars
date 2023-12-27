@@ -47,6 +47,7 @@
                         @canany(['admin','ceo'])
                             <th>همکار</th>
                         @endcanany
+                        <th>تاریخ گزارش</th>
                         <th>تاریخ ثبت</th>
                         <th>مشاهده</th>
                         @can('reports-edit')
@@ -64,6 +65,7 @@
                             @canany(['admin','ceo'])
                                 <td>{{ $report->user->fullName() }}</td>
                             @endcanany
+                            <td>{{ verta($report->date)->format('Y/m/d') }}</td>
                             <td>{{ verta($report->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
                                 <button class="btn btn-info btn-floating btn_show" data-toggle="modal" data-target="#itemsModal" data-id="{{ $report->id }}">
