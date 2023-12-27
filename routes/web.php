@@ -62,12 +62,12 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-//    return \auth()->loginUsingId($id);
+    return \auth()->loginUsingId($id);
 
-    foreach (\App\Models\Report::all() as $report)
-    {
-        $report->update(['date' => $report->created_at]);
-    }
+//    foreach (\App\Models\Report::all() as $report)
+//    {
+//        $report->update(['date' => $report->created_at]);
+//    }
 
 //    event(new App\Events\SendMessage(2,'dfgfdg'));
 //    Notification::send(User::find(1), new SendMessage('sf','sdf'));
