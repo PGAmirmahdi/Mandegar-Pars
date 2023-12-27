@@ -27,3 +27,4 @@ error_log
 /config/broadcasting.php
 /config/websockets.php
 /resources/js/bootstrap.js
+.git.zip
