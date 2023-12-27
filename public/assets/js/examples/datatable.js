@@ -58,7 +58,7 @@ $(document).ready(function () {
     });
 
     $('.dataTable').DataTable({
-        "scrollY": "500px",
+        // "scrollY": "500px",
         "scrollCollapse": true,
         "paging": false,
         "searching": false,
