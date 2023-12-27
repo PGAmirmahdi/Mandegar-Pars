@@ -28,3 +28,4 @@ error_log
 /config/websockets.php
 /resources/js/bootstrap.js
 .git.zip
+composer.lock

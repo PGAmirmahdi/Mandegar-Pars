@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Report;
+use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -36,11 +37,19 @@ class ReportController extends Controller
             return back()->withErrors(['item' => 'حداقل یک مورد اضافه کنید']);
         }
 
+        $date = Verta::parse($request->date)->toCarbon()->toDateString();
+        $reportExist = Report::where('date', 'like', "$date __:__:__")->where('user_id', auth()->id())->first();
+
+        if ($reportExist){
+            return back()->withErrors(['date' => 'گزارش تاریخ مورد نظر قبلا ثبت شده است'])->with(['items' => $request->items]);
+        }
+
         $items = explode(',', $request->items);
 
         Report::create([
             'user_id' => auth()->id(),
-            'items' => json_encode($items)
+            'items' => json_encode($items),
+            'date' => $date
         ]);
 
         alert()->success('گزارش روزانه با موفقیت ثبت شد','ثبت گزارش');
@@ -72,10 +81,19 @@ class ReportController extends Controller
             return back()->withErrors(['item' => 'حداقل یک مورد اضافه کنید']);
         }
 
+        $date = Verta::parse($request->date)->toCarbon()->toDateString();
+
+        $reportExist = Report::where('id', '!=', $report->id)->where('date', 'like', "$date __:__:__")->where('user_id', auth()->id())->first();
+
+        if ($reportExist){
+            return back()->withErrors(['date' => 'گزارش تاریخ مورد نظر قبلا ثبت شده است'])->with(['items' => $request->items]);
+        }
+
         $items = explode(',', $request->items);
 
         $report->update([
-            'items' => json_encode($items)
+            'items' => json_encode($items),
+            'date' => $date
         ]);
 
         alert()->success('گزارش روزانه با موفقیت ویرایش شد','ویرایش گزارش');

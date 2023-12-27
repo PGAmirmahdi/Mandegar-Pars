@@ -15,6 +15,12 @@
             </div>
             <div class="form-row mb-5">
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                    <input type="text" name="date" class="form-control date-picker-shamsi-list" id="date" value="{{ verta($report->date)->format('Y/m/d') }}" form="form" required>
+                    @error('date')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <input type="text" name="item" class="form-control" id="item" placeholder="تماس با مشتری...">
                     @error('item')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -28,16 +34,10 @@
                 </div>
                 <div class="col-12 mb-3">
                     <ol id="items">
-                        @foreach(json_decode($report->items) as $item)
-                            <li>
-                                <span>{{ $item }}</span>
-                                <i class="fa fa-times text-danger ml-2 btn_remove" title="حذف"></i>
-                            </li>
-                        @endforeach
                     </ol>
                 </div>
             </div>
-            <form action="{{ route('reports.update', $report->id) }}" method="post">
+            <form action="{{ route('reports.update', $report->id) }}" method="post" id="form">
                 @csrf
                 @method('put')
                 <input type="hidden" name="items" id="items_input">
@@ -51,7 +51,7 @@
         var items = [];
 
         @foreach(json_decode($report->items) as $item)
-            items.push('{{$item}}')
+            add_item('{{$item}}')
         @endforeach
 
         $(document).ready(function () {
@@ -78,23 +78,23 @@
 
                 $('#items_input').val(items)
             })
+        })
 
-            // add item
-            function add_item(item) {
-                if (item !== '' && items.includes(item) !== true)
-                {
-                    $('#items').append(`<li>
+        // add item
+        function add_item(item) {
+            if (item !== '' && items.includes(item) !== true)
+            {
+                $('#items').append(`<li>
                         <span>${item}</span>
                         <i class="fa fa-times text-danger ml-2 btn_remove" title="حذف"></i>
                     </li>`)
 
-                    $('#item').val('')
+                $('#item').val('')
 
-                    items.push(item)
+                items.push(item)
 
-                    $('#items_input').val(items)
-                }
+                $('#items_input').val(items)
             }
-        })
+        }
     </script>
 @endsection
