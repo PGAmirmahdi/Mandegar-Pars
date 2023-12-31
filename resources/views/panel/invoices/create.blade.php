@@ -149,6 +149,59 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if(old('products'))
+                                        @foreach(old('products') as $i => $productId)
+                                            <tr>
+                                                <td>
+                                                    <select class="form-control" name="products[]" required>
+                                                        <option value="" disabled selected>انتخاب کنید...</option>
+                                                        @foreach(\App\Models\Product::all(['id','title']) as $item)
+                                                            <option value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->title }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="colors[]" required>
+                                                        @foreach(\App\Models\Product::COLORS as $key => $value)
+                                                            <option value="{{ $key }}" {{ $key == old('colors')[$i] ? 'selected' : '' }}>{{ $value }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="counts[]" class="form-control" min="1" value="{{ old('counts')[$i] }}" required>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="units[]">
+                                                        <option value="number">عدد</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="prices[]" class="form-control" min="0" value="{{ old('prices')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="total_prices[]" class="form-control" min="0" value="{{ old('total_prices')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="discount_amounts[]" class="form-control" min="0" value="{{ old('discount_amounts')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="extra_amounts[]" class="form-control" min="0" value="{{ old('extra_amounts')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="{{ old('total_prices_with_off')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="taxes[]" class="form-control" min="0" value="{{ old('taxes')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="invoice_nets[]" class="form-control" min="0" value="{{ old('invoice_nets')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -179,6 +232,52 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if(old('other_products'))
+                                        @foreach(old('other_products') as $i => $otherProduct)
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="form-control" name="other_products[]" placeholder="عنوان کالا" value="{{ $otherProduct }}" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="other_colors[]" placeholder="نام رنگ" value="{{ old('other_colors')[$i] }}" required>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_counts[]" class="form-control" min="1" value="{{ old('other_counts')[$i] }}" required>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="other_units[]">
+                                                        <option value="number">عدد</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ old('other_prices')[$i] }}" required>
+                                                    <span class="price_with_grouping text-primary"></span>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_total_prices[]" class="form-control" min="0" value="{{ old('other_total_prices')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="{{ old('other_discount_amounts')[$i] }}" required>
+                                                    <span class="price_with_grouping text-primary"></span>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="{{ old('other_extra_amounts')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="{{ old('other_total_prices_with_off')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_taxes[]" class="form-control" min="0" value="{{ old('other_taxes')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="{{ old('other_invoice_nets')[$i] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
