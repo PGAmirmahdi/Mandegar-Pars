@@ -14,6 +14,7 @@ class ForeignCustomer extends Model
     const STATUS = [
         'sent' => 'ارسال شده',
         'received' => 'دریافت شده',
+        'success' => 'موفق',
         'failed' => 'ناموفق',
         'unknown' => 'نامشخص',
     ];
@@ -21,6 +22,7 @@ class ForeignCustomer extends Model
     const STATUS_COLOR = [
         'sent' => 'success',
         'received' => 'success',
+        'success' => 'success',
         'failed' => 'danger',
         'unknown' => 'warning',
     ];
