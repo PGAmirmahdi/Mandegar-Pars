@@ -23,7 +23,8 @@
         "melipayamak/laravel": "1.0.0",
         "mews/captcha": "^3.3",
         "pusher/pusher-php-server": "4.*",
-        "uxweb/sweet-alert": "^2.0"
+        "uxweb/sweet-alert": "^2.0",
+      "ext-pdo": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

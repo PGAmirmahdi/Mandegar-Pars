@@ -138,6 +138,9 @@ class PermissionSeeder extends Seeder
 //            'reports-create' => 'ثبت گزارش',
 //            'reports-edit' => 'ویرایش گزارش',
 //            'reports-delete' => 'حذف گزارش',
+
+//            'artin-products-list' => 'لیست محصولات آرتین',
+//            'artin-products-edit' => 'ویرایش محصول آرتین',
         ];
 
         foreach ($items as $key => $item)

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\CouponController;
@@ -213,6 +214,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::resource('reports', ReportController::class);
     Route::get('get-report-items/{report}', [ReportController::class, 'getItems'])->name('report.get-items');
 
+    // Artin
+    Route::get('artin-products',[ArtinController::class, 'products'])->name('artin.products');
+    Route::post('artin-products-update-price',[ArtinController::class, 'updatePrice'])->name('artin-products-update-price');
 });
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
