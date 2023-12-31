@@ -25,6 +25,8 @@ class ArtinController extends Controller
 
     public function products()
     {
+        $this->authorize('artin-products-list');
+
         try {
             // set the PDO error mode to exception
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -49,6 +51,8 @@ class ArtinController extends Controller
 
     public function updatePrice(Request $request)
     {
+        $this->authorize('artin-products-edit');
+
         $product_id = $request->product_id;
         $price = $request->price;
 
