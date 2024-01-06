@@ -22,6 +22,7 @@
                         <select class="form-control" id="bodyId">
                             <option value="177554">کد رهگیری مرسوله</option>
                             <option value="178278">عودت فاکتور</option>
+                            <option value="185679">یادآوری پرداخت فاکتور</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -264,7 +265,23 @@
                     $('#text').html(`کد پیگیری مرسوله شما: ${code} \n\n` +
                         `شرکت صنایع ماشین های اداری ماندگار پارس\n` +
                         `Artintoner.com\n`)
-                }else{
+                }else if(bodyId == 185679){
+                    if(receiver == ''){
+                        $('#text_error').text('ابتدا فیلد گیرنده را وارد نمایید')
+                        text_error = true;
+                    }else {
+                        text_error = false;
+                        $('#text_error').text('')
+                    }
+
+                    $('#text').html(`مشتری گرامی ${receiver} \n` +
+                        `لطفا جهت پرداخت فاکتور خود اقدام نمایید. \n` +
+                        ` با تشکر\n` +
+                        `شرکت صنایع ماشین های اداری ماندگار پارس \n` +
+                        `Artintoner.com`)
+
+                    args = [receiver];
+                } else{
                     if(receiver == ''){
                         $('#text_error').text('ابتدا فیلد گیرنده را وارد نمایید')
                         text_error = true;
