@@ -63,7 +63,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\Report::all() as $report)
 //    {

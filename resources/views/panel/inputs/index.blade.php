@@ -12,8 +12,7 @@
                     </a>
                 @endcan
             </div>
-            <form action="{{ route('inventory-reports.search') }}" method="post" id="search_form">
-                @csrf
+            <form action="{{ route('inventory-reports.search') }}" method="get" id="search_form">
                 <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
                 <input type="hidden" name="type" value="{{ request()->type }}">
             </form>

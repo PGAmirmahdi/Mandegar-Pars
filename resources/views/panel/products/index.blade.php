@@ -24,9 +24,7 @@
                 </div>
 
             </div>
-            <form action="{{ route('products.search') }}" method="post" id="search_form">
-                @csrf
-            </form>
+            <form action="{{ route('products.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
                     <input type="text" name="code" class="form-control" placeholder="کد محصول" value="{{ request()->code ?? null }}" form="search_form">

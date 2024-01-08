@@ -23,9 +23,7 @@
                     @endcan
                 </div>
             </div>
-            <form action="{{ route('customers.search') }}" method="post" id="search_form">
-                @csrf
-            </form>
+            <form action="{{ route('customers.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری" value="{{ request()->name ?? null }}">

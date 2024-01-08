@@ -23,9 +23,7 @@
                     @endcan
                 </div>
             </div>
-            <form action="{{ route('foreign-customers.search') }}" method="post" id="search_form">
-                @csrf
-            </form>
+            <form action="{{ route('foreign-customers.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="country" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">

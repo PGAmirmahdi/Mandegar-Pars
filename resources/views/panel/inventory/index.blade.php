@@ -59,8 +59,7 @@
                     @endcan
                 </div>
             </div>
-            <form action="{{ route('inventory.search') }}" method="post" id="search_form">
-                @csrf
+            <form action="{{ route('inventory.search') }}" method="get" id="search_form">
                 <input type="hidden" name="warehouse_id" value="{{ $warehouse_id }}">
             </form>
             <div class="row mb-3">

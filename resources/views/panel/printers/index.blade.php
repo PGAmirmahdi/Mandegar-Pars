@@ -32,9 +32,7 @@
                     </a>
                 @endcan
             </div>
-            <form action="{{ route('printers.search') }}" method="post" id="search_form">
-                @csrf
-            </form>
+            <form action="{{ route('printers.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <input type="text" name="name" form="search_form" class="form-control" placeholder="نام پرینتر" value="{{ request()->name ?? null }}">
