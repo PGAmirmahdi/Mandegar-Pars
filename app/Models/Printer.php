@@ -14,6 +14,7 @@ class Printer extends Model
     const BRANDS = [
         'HP',
         'Canon',
+        'Brother'
     ];
 
     public function products()
