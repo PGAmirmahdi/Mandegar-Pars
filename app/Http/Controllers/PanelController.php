@@ -48,8 +48,18 @@ class PanelController extends Controller
                 $invoices->push($item);
             }
         });
-        // end merge same province invoices and sum it amounts
 
+        // final discount
+        $invoices_discounts = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->where('status','pending')
+            ->groupBy('province')
+            ->select('province', DB::raw('SUM(invoices.discount) as discount'))
+            ->get();
+
+        foreach ($invoices as $key => $invoice)
+        {
+            $invoices[$key]->amount -= $invoices_discounts->where('province', $invoice->province)->first()->discount;
+        }
+        // end merge same province invoices and sum it amounts
 
         // factors
         $factors1 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('products', function ($query) {
@@ -82,6 +92,17 @@ class PanelController extends Controller
                 $factors->push($item);
             }
         });
+
+        // final discount
+        $factors_discounts = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->where('status','invoiced')
+            ->groupBy('province')
+            ->select('province', DB::raw('SUM(invoices.discount) as discount'))
+            ->get();
+
+        foreach ($factors as $key => $factor)
+        {
+            $factors[$key]->amount -= $factors_discounts->where('province', $factor->province)->first()->discount;
+        }
         // end merge same province factors and sum it amounts
 
         $factors_monthly = $this->getFactorsMonthly();
@@ -170,6 +191,9 @@ class PanelController extends Controller
             foreach ($factors2 as $item){
                 $factors[$month] += $item->amount;
             }
+
+            $factors_discounts_amount = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->where('status','invoiced')->sum('discount');
+            $factors[$month] -= $factors_discounts_amount;
         }
 
         return collect($factors);

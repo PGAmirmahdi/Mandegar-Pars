@@ -58,7 +58,7 @@
             <form action="{{ route('invoices.update', $invoice->id) }}" method="post" id="invoice_form">
                 @csrf
                 @method('PATCH')
-                <div class="form-row">
+                <div class="form-row mb-4">
                     <div class="col-12 mb-4 text-center">
                         <h4>مشخصات خریدار</h4>
                     </div>
@@ -334,6 +334,14 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div class="col-12 mb-2 mt-2 text-center">
+                        <hr>
+                        <h4>تخفیف نهایی</h4>
+                    </div>
+                    <div class="form-group">
+                        <label for="final_discount">مبلغ تخفیف</label>
+                        <input type="text" class="form-control" name="final_discount" id="final_discount" value="{{ $invoice->discount }}" required>
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>

@@ -316,6 +316,14 @@
                                         <td>{{ number_format($sum_invoice_net) }}</td>
                                     </tr>
                                     <tr>
+                                        <th class="p-0 title-sec" colspan="6">تخفیف نهایی</th>
+                                        <th class="p-0 title-sec" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">{{ number_format($invoice->discount) }}</td>
+                                        <td colspan="6">{{ number_format($sum_invoice_net - $invoice->discount) }}</td>
+                                    </tr>
+                                    <tr>
                                         <td colspan="4">
                                             <div class="d-flex">
                                                 <span class="mr-4">شرایط و نحوه فروش</span>

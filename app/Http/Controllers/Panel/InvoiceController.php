@@ -70,6 +70,7 @@ class InvoiceController extends Controller
             'address' => $request->address,
             'created_in' => 'automation',
 //            'status' => $request->status,
+            'discount' => $request->final_discount,
         ]);
 
         $this->send_notif_to_accountants($invoice);
@@ -141,6 +142,7 @@ class InvoiceController extends Controller
             'city' => $request->city,
             'address' => $request->address,
             'status' => $request->status,
+            'discount' => $request->final_discount,
         ]);
 
         // create factor
