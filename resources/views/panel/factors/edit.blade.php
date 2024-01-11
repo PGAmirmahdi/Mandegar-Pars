@@ -53,14 +53,69 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>ویرایش فاکتور</h6>
-                <a href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'factor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
+            <div class="card-title">
+                <div class="row d-flex justify-content-between align-items-center">
+                    <h6>ویرایش فاکتور</h6>
+                    <a href="{{ route('invoices.show', [$factor->invoice->id, 'type' => 'factor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
+                </div>
+                <div class="row">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ $factor->invoice->type == 'official' || old('type') == 'official' ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="type1">رسمی</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ $factor->invoice->type == 'unofficial' || old('type') == 'unofficial' ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="type2">غیر رسمی</label>
+                    </div>
+                </div>
             </div>
             <form action="{{ route('factors.update', $factor->id) }}" method="post" enctype="multipart/form-data" id="invoice_form">
                 @csrf
                 @method('PATCH')
                 <div class="form-row mb-4">
+                    <div class="col-12 mb-4 text-center {{ $factor->invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec">
+                        <h4>مشخصات فروشنده</h4>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 {{ $factor->invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                        <label for="seller_name">فروشنده <span class="text-danger">*</span></label>
+                        <input type="text" name="seller_name" class="form-control" id="seller_name" value="{{ $factor->invoice->seller ? $factor->invoice->seller->name : '' }}">
+                        @error('seller_name')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 {{ $factor->invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                        <label for="seller_phone">شماره تماس<span class="text-danger">*</span></label>
+                        <input type="text" name="seller_phone" class="form-control" id="seller_phone" value="{{ $factor->invoice->seller ? $factor->invoice->seller->phone : '' }}">
+                        @error('seller_phone')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 {{ $factor->invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                        <label for="seller_province">استان <span class="text-danger">*</span></label>
+                        <select name="seller_province" id="seller_province" class="js-example-basic-single select2-hidden-accessible" data-select2-id="15" tabindex="-1" aria-hidden="true">
+                            @foreach(\App\Models\Province::all() as $province)
+                                <option value="{{ $province->name }}" {{ $factor->invoice->seller ? $factor->invoice->seller->province == $province->name ? 'selected' : '' : '' }}>{{ $province->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('seller_province')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 {{ $factor->invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                        <label for="seller_city">شهر<span class="text-danger">*</span></label>
+                        <input type="text" name="seller_city" class="form-control" id="seller_city" value="{{ $factor->invoice->seller ? $factor->invoice->seller->city : '' }}">
+                        @error('seller_city')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 {{ $factor->invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                        <label for="seller_address">نشانی<span class="text-danger">*</span></label>
+                        <textarea name="seller_address" id="seller_address" class="form-control">{{ $factor->invoice->seller ? $factor->invoice->seller->address : '' }}</textarea>
+                        @error('seller_address')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="col-12 mb-4 text-center">
                         <h4>مشخصات خریدار</h4>
                     </div>
@@ -673,7 +728,18 @@
             })
         }
 
+        $('input[name="type"]').on('change', function () {
+            let type = this.value;
+            changeType(type);
+        })
 
+        function changeType(type) {
+            if (type == 'official'){
+                $('.seller_sec').addClass('d-none')
+            }else{
+                $('.seller_sec').removeClass('d-none')
+            }
+        }
     </script>
 @endsection
 

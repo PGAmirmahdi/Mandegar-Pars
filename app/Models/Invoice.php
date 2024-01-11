@@ -22,6 +22,11 @@ class Invoice extends Model
         'automation' => 'اتوماسیون',
     ];
 
+    const TYPE = [
+        'official' => 'رسمی',
+        'unofficial' => 'غیر رسمی',
+    ];
+
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot([
@@ -70,6 +75,11 @@ class Invoice extends Model
     public function sale_reports()
     {
         return $this->hasMany(SaleReport::class);
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class);
     }
 
     public function getNetAmount()

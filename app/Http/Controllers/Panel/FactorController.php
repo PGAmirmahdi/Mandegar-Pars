@@ -11,6 +11,7 @@ use App\Models\Permission;
 use App\Models\Product;
 use App\Models\Province;
 use App\Models\Role;
+use App\Models\Seller;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
@@ -88,8 +89,39 @@ class FactorController extends Controller
         }
         $deposit_doc = $request->file('deposit_doc') ? upload_file($request->file('deposit_doc'),'DepositDocs') : null;
 
+        $type = $request->type;
+
+        if ($type == 'unofficial'){
+            if (!$invoice->seller){
+                $seller = Seller::create([
+                    'name' => $request->seller_name,
+                    'phone' => $request->seller_phone,
+                    'province' => $request->seller_province,
+                    'city' => $request->seller_city,
+                    'address' => $request->seller_address,
+                ]);
+            }else{
+                $invoice->seller()->update([
+                    'name' => $request->seller_name,
+                    'phone' => $request->seller_phone,
+                    'province' => $request->seller_province,
+                    'city' => $request->seller_city,
+                    'address' => $request->seller_address,
+                ]);
+
+                $seller = $invoice->seller;
+            }
+        }else{
+            $seller = null;
+            if ($invoice->seller){
+                $invoice->update(['seller_id' => null]);
+                $invoice->seller->delete();
+            }
+        }
 
         $invoice->update([
+            'seller_id' => $seller ? $seller->id : null,
+            'type' => $type,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
             'postal_code' => $request->postal_code,

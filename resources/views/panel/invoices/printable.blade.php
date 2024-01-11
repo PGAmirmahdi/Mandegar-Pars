@@ -144,7 +144,9 @@
             <div class="card-title">
                 <div class="row">
                     <div class="col-4">
-                        <img src="/assets/media/image/header-logo.png" style="width: 15rem;">
+                        @if($invoice->type == 'official')
+                            <img src="/assets/media/image/header-logo.png" style="width: 15rem;">
+                        @endif
                     </div>
                     <div class="col-3 text-right">
                         @if(!auth()->user()->isAccountant())
@@ -175,21 +177,37 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td class="text-center">
-                                <div class="mb-3">
-                                    <span class="mr-100">نام شخص حقیقی/حقوقی: شرکت صنایع ماشین های اداری ماندگار پارس</span>
-                                    <span class="mr-100">شماره اقتصادی: 14011383061</span>
-                                    <span class="mr-100">شماره ثبت/شماره ملی: 9931</span>
-                                    <span class="mr-100">شناسه ملی: 14011383061</span>
-                                </div>
-                                <div>
-                                    <span class="mr-100">نشانی: تهران، شهرستان ملارد، شهرک صنعتی صفادشت، بلوار خرداد، بین خیابان پنجم و ششم غربی، پلاک 228</span>
-                                    <span class="mr-100">کد پستی: 3164114855</span>
-                                    <span class="mr-100">شماره تلفن: 02165425053</span>
-                                </div>
-                            </td>
-                        </tr>
+                        @if($invoice->type == 'official')
+                            <tr>
+                                <td class="text-center">
+                                    <div class="mb-3">
+                                        <span class="mr-100">نام شخص حقیقی/حقوقی: شرکت صنایع ماشین های اداری ماندگار پارس</span>
+                                        <span class="mr-100">شماره اقتصادی: 14011383061</span>
+                                        <span class="mr-100">شماره ثبت/شماره ملی: 9931</span>
+                                        <span class="mr-100">شناسه ملی: 14011383061</span>
+                                    </div>
+                                    <div>
+                                        <span class="mr-100">نشانی: تهران، شهرستان ملارد، شهرک صنعتی صفادشت، بلوار خرداد، بین خیابان پنجم و ششم غربی، پلاک 228</span>
+                                        <span class="mr-100">کد پستی: 3164114855</span>
+                                        <span class="mr-100">شماره تلفن: 02165425053</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td class="text-center">
+                                    <div class="mb-3">
+                                        <span class="mr-100">نام شخص حقیقی/حقوقی: {{ $invoice->seller->name }}</span>
+                                        <span class="mr-100">استان: {{ $invoice->seller->province }}</span>
+                                        <span class="mr-100">شهر: {{ $invoice->seller->city }}</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="mr-100">نشانی: {{ $invoice->seller->address }}</span>
+                                        <span class="mr-100">شماره تماس: {{ $invoice->seller->phone }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
                         </tbody>
                     </table>
                     <table class="table table-bordered mb-5">
@@ -343,7 +361,9 @@
                                     <tr>
                                         <td colspan="6" id="seller_sign_sec">
                                             <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign">
+                                            @if($invoice->type == 'official')
                                             <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp">
+                                            @endif
                                             <small>مهر و امضای فروشنده</small>
                                         </td>
                                         <td colspan="6"><small>مهر و امضای خریدار</small></td>

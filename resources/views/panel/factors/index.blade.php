@@ -65,6 +65,7 @@
                     <tr>
                         <th>#</th>
                         <th>خریدار</th>
+                        <th>نوع</th>
                         <th>استان</th>
                         <th>شهر</th>
                         <th>شماره تماس</th>
@@ -88,17 +89,18 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $factor->invoice->customer->name }}</td>
+                            <td>{{ \App\Models\Invoice::TYPE[$factor->invoice->type] }}</td>
                             <td>{{ $factor->invoice->province }}</td>
                             <td>{{ $factor->invoice->city }}</td>
                             <td>{{ $factor->invoice->phone }}</td>
                             <td>
                                 @can('accountant')
                                     @if($factor->status == 'paid')
-                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-success {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
+                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-success {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}" style="display: block ruby">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
                                     @elseif($factor->status == 'canceled')
-                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-danger disabled">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
+                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-danger disabled" style="display: block ruby">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
                                     @else
-                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-warning {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
+                                        <a href="{{ route('factors.changeStatus', $factor->id) }}" class="btn btn-warning {{ $factor->invoice->created_in == 'website' ? 'disabled' : '' }}" style="display: block ruby">{{ \App\Models\Factor::STATUS[$factor->status] }}</a>
                                     @endif
                                 @else
                                     @if($factor->status == 'paid')

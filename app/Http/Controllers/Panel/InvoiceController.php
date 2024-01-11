@@ -13,6 +13,7 @@ use App\Models\Permission;
 use App\Models\Product;
 use App\Models\Province;
 use App\Models\Role;
+use App\Models\Seller;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
@@ -57,8 +58,23 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-create');
 
+        $type = $request->type;
+
+        if ($type == 'unofficial'){
+            $seller = Seller::create([
+                'name' => $request->seller_name,
+                'phone' => $request->seller_phone,
+                'province' => $request->seller_province,
+                'city' => $request->seller_city,
+                'address' => $request->seller_address,
+            ]);
+        }else{
+            $seller = null;
+        }
+
         $invoice = Invoice::create([
             'user_id' => auth()->id(),
+            'seller_id' => $seller ? $seller->id : null,
             'customer_id' => $request->buyer_name,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
@@ -69,6 +85,7 @@ class InvoiceController extends Controller
             'city' => $request->city,
             'address' => $request->address,
             'created_in' => 'automation',
+            'type' => $type,
 //            'status' => $request->status,
             'discount' => $request->final_discount,
         ]);
@@ -131,8 +148,40 @@ class InvoiceController extends Controller
             Notification::send($invoice->user, new SendMessage($message, $url));
         }
 
+        $type = $request->type;
+
+        if ($type == 'unofficial'){
+            if (!$invoice->seller){
+                $seller = Seller::create([
+                    'name' => $request->seller_name,
+                    'phone' => $request->seller_phone,
+                    'province' => $request->seller_province,
+                    'city' => $request->seller_city,
+                    'address' => $request->seller_address,
+                ]);
+            }else{
+                $invoice->seller()->update([
+                    'name' => $request->seller_name,
+                    'phone' => $request->seller_phone,
+                    'province' => $request->seller_province,
+                    'city' => $request->seller_city,
+                    'address' => $request->seller_address,
+                ]);
+
+                $seller = $invoice->seller;
+            }
+        }else{
+            $seller = null;
+            if ($invoice->seller){
+                $invoice->update(['seller_id' => null]);
+                $invoice->seller->delete();
+            }
+        }
+
         $invoice->update([
             'customer_id' => $request->buyer_name,
+            'seller_id' => $seller ? $seller->id : null,
+            'type' => $type,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
             'need_no' => $request->need_no,

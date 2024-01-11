@@ -202,6 +202,11 @@ return [
         'text' => 'متن',
         'brand' => 'برند',
         'cartridges' => 'کارتریج ها',
+        'seller_name' => 'فروشنده',
+        'seller_phone' => 'شماره تماس',
+        'seller_province' => 'استان',
+        'seller_city' => 'شهر',
+        'seller_address' => 'نشانی',
     ],
 
 ];

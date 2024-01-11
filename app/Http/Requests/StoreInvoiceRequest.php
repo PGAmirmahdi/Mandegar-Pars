@@ -23,16 +23,36 @@ class StoreInvoiceRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'buyer_name' => 'required',
-            'national_number' => 'required|numeric',
-            'postal_code' => 'required|numeric',
-            'economical_number' => (auth()->user()->isSystemUser() ? 'required|numeric' : 'nullable|numeric'),
-            'need_no' => 'nullable|numeric',
-            'phone' => 'required',
-            'province' => 'required',
-            'city' => 'required',
-            'address' => 'required',
-        ];
+        if ($this->request->get('type') == 'unofficial'){
+            return [
+                'seller_name' => 'required',
+                'seller_phone' => 'required',
+                'seller_province' => 'required',
+                'seller_city' => 'required',
+                'seller_address' => 'required',
+
+                'buyer_name' => 'required',
+                'national_number' => 'required|numeric',
+                'postal_code' => 'required|numeric',
+                'economical_number' => (auth()->user()->isSystemUser() ? 'required|numeric' : 'nullable|numeric'),
+                'need_no' => 'nullable|numeric',
+                'phone' => 'required',
+                'province' => 'required',
+                'city' => 'required',
+                'address' => 'required',
+            ];
+        }else{
+            return [
+                'buyer_name' => 'required',
+                'national_number' => 'required|numeric',
+                'postal_code' => 'required|numeric',
+                'economical_number' => (auth()->user()->isSystemUser() ? 'required|numeric' : 'nullable|numeric'),
+                'need_no' => 'nullable|numeric',
+                'phone' => 'required',
+                'province' => 'required',
+                'city' => 'required',
+                'address' => 'required',
+            ];
+        }
     }
 }

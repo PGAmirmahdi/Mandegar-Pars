@@ -95,6 +95,7 @@
                     <tr>
                         <th>#</th>
                         <th>خریدار</th>
+                        <th>نوع</th>
                         <th>استان</th>
                         <th>شهر</th>
                         <th>شماره تماس</th>
@@ -121,21 +122,22 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $invoice->customer->name }}</td>
+                            <td>{{ \App\Models\Invoice::TYPE[$invoice->type] }}</td>
                             <td>{{ $invoice->province }}</td>
                             <td>{{ $invoice->city }}</td>
                             <td>{{ $invoice->phone }}</td>
                             <td>
                                 @can('accountant')
                                     @if($invoice->status == 'paid')
-                                        <a href="{{ route('invoices.changeStatus', $invoice->id) }}" class="btn btn-success {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</a>
+                                        <a href="{{ route('invoices.changeStatus', $invoice->id) }}" class="btn btn-success {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}" style="display: block ruby">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</a>
                                     @else
-                                        <a href="{{ route('invoices.changeStatus', $invoice->id) }}" class="btn btn-warning {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</a>
+                                        <a href="{{ route('invoices.changeStatus', $invoice->id) }}" class="btn btn-warning {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}" style="display: block ruby">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</a>
                                     @endif
                                 @else
                                     @if($invoice->status == 'paid')
-                                        <span class="badge badge-success">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
+                                        <span class="badge badge-success" style="display: block ruby">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
                                     @else
-                                        <span class="badge badge-warning">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
+                                        <span class="badge badge-warning" style="display: block ruby">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
                                     @endif
                                 @endcan
                             </td>
