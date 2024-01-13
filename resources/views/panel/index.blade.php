@@ -1,6 +1,25 @@
 @extends('panel.layouts.master')
 @section('title', 'پنل مدیریت')
+
+@section('styles')
+    <style>
+        #app_updates ul:not(.list-unstyled) li{
+            list-style-type: disclosure-closed
+        }
+        #app_updates ul{
+            line-height: 2rem;
+        }
+    </style>
+@endsection
 @section('content')
+    <div class="alert alert-success alert-with-border mb-4" id="app_updates">
+        <h4 class="alert-heading">بروزرسانی های نرم افزار!</h4>
+        <ul>
+            <li>پیش فاکتور های غیر رسمی</li>
+            <li>تخفیف نهایی</li>
+            <li>رفع برخی باگ ها</li>
+        </ul>
+    </div>
     <div class="card">
         <div class="card-body">
                 <div class="card-title d-flex justify-content-between align-items-center">
