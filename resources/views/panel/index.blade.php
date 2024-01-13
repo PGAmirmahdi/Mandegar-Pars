@@ -12,14 +12,24 @@
     </style>
 @endsection
 @section('content')
-    <div class="alert alert-success alert-with-border mb-4" id="app_updates">
-        <h4 class="alert-heading">بروزرسانی های نرم افزار!</h4>
-        <ul>
-            <li>پیش فاکتور های غیر رسمی</li>
-            <li>تخفیف نهایی</li>
-            <li>رفع برخی باگ ها</li>
-        </ul>
-    </div>
+    @php
+        $update = \App\Models\SoftwareUpdate::where('date', [now()->startOfDay(), now()->endOfDay()])->orderBy('date','desc')->first();
+    @endphp
+    @if($update)
+        <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
+            <div>
+                <i class="ti-announcement d-inline m-r-10"></i>
+                <h5 class="alert-heading d-inline">بروزرسانی نرم افزار - تاریخ انتشار {{ verta($update->date)->format('Y/m/d') }} - نسخه{{ $update->version }}</h5>
+            </div>
+            <ul>
+                @foreach(explode(',',$update->description) as $item)
+                    <li>{{ $item }}</li>
+                @endforeach
+            </ul>
+            <hr>
+            <small>برای مشاهده تغییرات پیشین می توانید به صفحه درباره برنامه مراجعه کنید</small>
+        </div>
+    @endif
     <div class="card">
         <div class="card-body">
                 <div class="card-title d-flex justify-content-between align-items-center">

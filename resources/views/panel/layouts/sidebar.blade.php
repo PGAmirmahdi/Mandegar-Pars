@@ -2,7 +2,7 @@
 <div class="navigation">
     <div class="navigation-icon-menu" style="overflow-y: auto">
         <ul>
-            <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit','leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
+            <li class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit','leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit','software-updates','software-updates/create','software-updates/{software_update}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="داشبورد">
                 <a href="#navigationDashboards" title="داشبوردها">
                     <i class="icon ti-dashboard"></i>
                 </a>
@@ -72,6 +72,11 @@
 {{--            @endcan--}}
         </ul>
         <ul>
+            <li data-toggle="tooltip" title="نسخه های برنامه">
+                <a href="{{ route('app.versions') }}" class="go-to-page">
+                    <i class="fa fa-code icon"></i>
+                </a>
+            </li>
             <li data-toggle="tooltip" title="ویرایش پروفایل">
                 <a href="{{ route('users.edit', auth()->id()) }}" class="go-to-page">
                     <i class="icon ti-settings"></i>
@@ -89,7 +94,7 @@
         </ul>
     </div>
     <div class="navigation-menu-body">
-        <ul id="navigationDashboards" class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit', 'leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit']) ? 'navigation-active' : '' }}">
+        <ul id="navigationDashboards" class="{{ active_sidebar(['panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit', 'leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit','software-updates','software-updates/create','software-updates/{software_update}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">داشبورد</li>
             <li>
                 <a class="{{ active_sidebar(['panel']) ? 'active' : '' }}" href="{{ route('panel') }}">پنل</a>
@@ -122,6 +127,11 @@
             @can('reports-list')
                 <li>
                     <a class="{{ active_sidebar(['reports','reports/create','reports/{report}/edit']) ? 'active' : '' }}" href="{{ route('reports.index') }}">گزارشات روزانه</a>
+                </li>
+            @endcan
+            @can('software-updates-list')
+                <li>
+                    <a class="{{ active_sidebar(['software-updates','software-updates/create','software-updates/{software_update}/edit']) ? 'active' : '' }}" href="{{ route('software-updates.index') }}">تغییرات نرم افزار</a>
                 </li>
             @endcan
         </ul>

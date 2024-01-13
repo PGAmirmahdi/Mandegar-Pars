@@ -207,6 +207,8 @@ return [
         'seller_province' => 'استان',
         'seller_city' => 'شهر',
         'seller_address' => 'نشانی',
+        'version_number' => 'شماره نسخه',
+        'release_date' => 'تاریخ انتشار',
     ],
 
 ];

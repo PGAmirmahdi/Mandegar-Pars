@@ -25,6 +25,7 @@ use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
 use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\SmsHistoryController;
+use App\Http\Controllers\Panel\SoftwareUpdateController;
 use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\UserController;
@@ -217,6 +218,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Artin
     Route::get('artin-products',[ArtinController::class, 'products'])->name('artin.products');
     Route::post('artin-products-update-price',[ArtinController::class, 'updatePrice'])->name('artin-products-update-price');
+
+    // Software Updates
+    Route::resource('software-updates', SoftwareUpdateController::class)->except('show');
+    Route::get('app-versions', [SoftwareUpdateController::class, 'versions'])->name('app.versions');
 });
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');

@@ -141,6 +141,11 @@ class PermissionSeeder extends Seeder
 
 //            'artin-products-list' => 'لیست محصولات آرتین',
 //            'artin-products-edit' => 'ویرایش محصول آرتین',
+
+//            'software-updates-list' => 'لیست تغییرات نرم افزار',
+//            'software-updates-create' => 'ثبت تغییرات نرم افزار',
+//            'software-updates-edit' => 'ویرایش تغییرات نرم افزار',
+//            'software-updates-delete' => 'حذف تغییرات نرم افزار',
         ];
 
         foreach ($items as $key => $item)
