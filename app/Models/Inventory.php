@@ -19,6 +19,7 @@ class Inventory extends Model
         'hot_glue' => 'چسب حرارتی',
         'ribbon' => 'ریبون',
         'label' => 'لیبل',
+        'drum' => 'درام',
     ];
 
     public function warehouse()
