@@ -264,6 +264,13 @@ class InventoryReportController extends Controller
             // delete in-outs
             foreach ($report->in_outs as $item){
                 $inventory = Inventory::find($item->inventory_id);
+
+//                if ($inventory->current_count - $item->count < 0){
+//                    $message = "کالای فلان خروجی ";
+//                    alert()->error('', '');
+//                    return back();
+//                }
+
                 $inventory->current_count -= $item->count;
                 $inventory->save();
             }

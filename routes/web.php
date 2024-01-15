@@ -64,6 +64,12 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
+//    \App\Models\InventoryReport::where('warehouse_id',2)->where('type','output')->where('id','!=',183)->delete();
+//    $inventory_reports = \App\Models\InventoryReport::where('warehouse_id',2)->where('type','output')->get();
+//    foreach ($inventory_reports as $report){
+//        $report->in_outs()->update(['inventory_report_id' => 183]);
+//    }
+
 //    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\Report::all() as $report)
