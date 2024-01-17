@@ -1,5 +1,21 @@
 @extends('panel.layouts.master')
 @section('title', 'ویرایش خروجی')
+@section('styles')
+    <style>
+        .input-group > .custom-select:not(:first-child), .input-group > .form-control:not(:first-child) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-top-right-radius: .25rem;
+            border-bottom-right-radius: .25rem;
+        }
+        .input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle), .input-group > .input-group-append:last-child > .input-group-text:not(:last-child), .input-group > .input-group-append:not(:last-child) > .btn, .input-group > .input-group-append:not(:last-child) > .input-group-text, .input-group > .input-group-prepend > .btn, .input-group > .input-group-prepend > .input-group-text{
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-top-left-radius: .25rem;
+            border-bottom-left-radius: .25rem;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="card">
         <div class="card-body">
@@ -31,7 +47,21 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-8"></div>
+                    <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
+                        <label for="guarantee_serial">سریال گارانتی</label>
+                        <div class="input-group mb-2" style="direction: ltr">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">MP</div>
+                            </div>
+                            <input type="text" name="guarantee_serial" id="guarantee_serial" class="form-control" value="{{ $inventoryReport->guarantee ? substr($inventoryReport->guarantee->serial, 2) : null }}" maxlength="8">
+                        </div>
+                        <div id="serial_status"></div>
+
+                        @error('guarantee_serial')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-4"></div>
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <div class="form-group">
                             <label for="person"> تحویل گیرنده <span class="text-danger">*</span></label>
@@ -126,7 +156,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <button class="btn btn-primary" type="submit" id="btn_submit">ثبت فرم</button>
             </form>
         </div>
     </div>
@@ -134,6 +164,7 @@
 
 @section('scripts')
     <script>
+        var inventory_report_id = {{ $inventoryReport->id }};
         var inventory = [];
 
         var options_html;
@@ -235,6 +266,45 @@
                     })
                 }
             })
+
+            // guarantee serial
+            var last_value_length;
+            serialCheck($('#guarantee_serial').val());
+
+            $('#guarantee_serial').on('keyup', function () {
+                serialCheck(this.value)
+            })
+
+            function serialCheck(serial)
+            {
+                if (serial.length === 8 && last_value_length !== 8){
+                    $.ajax({
+                        url: "{{ route('serial.check') }}",
+                        type: 'post',
+                        data: {
+                            serial,
+                            inventory_report_id
+                        },
+                        success: function (res) {
+                            if(res.data.error){
+                                $('#serial_status').html(`<small class="text-danger">${res.data.message}</small>`)
+                                $('#btn_submit').attr('disabled','disabled')
+                            }else{
+                                $('#serial_status').html(`<small class="text-success">${res.data.message}</small>`)
+                                $('#btn_submit').removeAttr('disabled')
+                            }
+                        }
+                    })
+                }else if(serial.length < 8 && serial.length !== 0){
+                    $('#serial_status').html(`<small class="text-danger">سریال گارانتی معتبر نیست</small>`)
+                    $('#btn_submit').attr('disabled','disabled')
+                }else if(serial.length === 0){
+                    $('#serial_status').html('')
+                    $('#btn_submit').removeAttr('disabled')
+                }
+
+                last_value_length = serial.length;
+            }
         })
     </script>
 @endsection

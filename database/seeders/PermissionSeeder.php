@@ -146,6 +146,11 @@ class PermissionSeeder extends Seeder
 //            'software-updates-create' => 'ثبت تغییرات نرم افزار',
 //            'software-updates-edit' => 'ویرایش تغییرات نرم افزار',
 //            'software-updates-delete' => 'حذف تغییرات نرم افزار',
+
+//            'guarantees-list' => 'لیست گارانتی ها',
+//            'guarantees-create' => 'ثبت گارانتی',
+//            'guarantees-edit' => 'ویرایش گارانتی',
+//            'guarantees-delete' => 'حذف گارانتی',
         ];
 
         foreach ($items as $key => $item)

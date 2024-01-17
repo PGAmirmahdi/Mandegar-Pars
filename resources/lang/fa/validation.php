@@ -209,6 +209,7 @@ return [
         'seller_address' => 'نشانی',
         'version_number' => 'شماره نسخه',
         'release_date' => 'تاریخ انتشار',
+        'serial_number' => 'شماره سریال'
     ],
 
 ];

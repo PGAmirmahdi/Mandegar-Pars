@@ -9,6 +9,7 @@ use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
 use App\Http\Controllers\Panel\ForeignCustomerController;
+use App\Http\Controllers\Panel\GuaranteeController;
 use App\Http\Controllers\Panel\InputController;
 use App\Http\Controllers\Panel\InventoryController;
 use App\Http\Controllers\Panel\InventoryReportController;
@@ -64,6 +65,22 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
+//    $servername = "78.159.108.71";
+//    $username = "parsot_admin";
+//    $password = ">nm5Wf#TM#W.@&s";
+//    $dbname = "parsot_tjart";
+//
+//    try {
+//        $conn = new \PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+//        $sql = "SELECT * FROM pt_users";
+//        $stmt = $conn->prepare($sql);
+//        $stmt->execute();
+//
+//        dd( $stmt->fetchAll());
+//    } catch(\PDOException $e) {
+//        echo "Connection failed: " . $e->getMessage();
+//    }
+
 //    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\Report::all() as $report)
@@ -222,6 +239,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Software Updates
     Route::resource('software-updates', SoftwareUpdateController::class)->except('show');
     Route::get('app-versions', [SoftwareUpdateController::class, 'versions'])->name('app.versions');
+
+    // Guarantees
+    Route::resource('guarantees', GuaranteeController::class)->except('show');
+    Route::post('serial-check', [GuaranteeController::class, 'serialCheck'])->name('serial.check');
 });
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');

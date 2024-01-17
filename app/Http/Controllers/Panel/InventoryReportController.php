@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Factor;
+use App\Models\Guarantee;
 use App\Models\Inventory;
 use App\Models\InventoryReport;
 use Hekmatinasser\Verta\Verta;
@@ -88,10 +89,14 @@ class InventoryReportController extends Controller
             $this->storeCheckInventoryCount($request);
         }
 
+        $serial = 'MP'.$request->guarantee_serial;
+        $guarantee_id = $request->guarantee_serial ? Guarantee::where('serial', $serial)->first()->id : null;
+
         // create report
         $report = InventoryReport::create([
             'warehouse_id' => $request->warehouse_id,
             'factor_id' => $request->factor_id,
+            'guarantee_id' => $guarantee_id,
             'type' => $request->type,
             'person' => $request->person,
             'description' => $request->description,
@@ -168,9 +173,13 @@ class InventoryReportController extends Controller
             $this->updateCheckInventoryCount($inventoryReport ,$request);
         }
 
+        $serial = 'MP'.$request->guarantee_serial;
+        $guarantee_id = $request->guarantee_serial ? Guarantee::where('serial', $serial)->first()->id : null;
+
         // create input report
         $inventoryReport->update([
             'factor_id' => $request->factor_id,
+            'guarantee_id' => $guarantee_id,
             'type' => $request->type,
             'person' => $request->person,
             'description' => $request->description,

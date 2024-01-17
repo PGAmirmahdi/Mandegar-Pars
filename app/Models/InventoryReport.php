@@ -30,4 +30,9 @@ class InventoryReport extends Model
     {
         return $this->hasOne(ExitDoor::class);
     }
+
+    public function guarantee()
+    {
+        return $this->belongsTo(Guarantee::class);
+    }
 }

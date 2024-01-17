@@ -50,7 +50,7 @@
                 </li>
             @endcanany
             @canany(['inventory-list','input-reports-list','output-reports-list'])
-                <li class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports']) ? 'active' : '' }}" data-toggle="tooltip" title="انبار">
+                <li class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports','guarantees','guarantees/create','guarantees/{guarantee}/edit']) ? 'active' : '' }}" data-toggle="tooltip" title="انبار">
                     <a href="#navigationInventory" title="انبار">
                         <i class="icon ti-package "></i>
                     </a>
@@ -252,8 +252,13 @@
                 </a>
             </li>
         </ul>
-        <ul id="navigationInventory" class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports']) ? 'navigation-active' : '' }}">
+        <ul id="navigationInventory" class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports','guarantees','guarantees/create','guarantees/{guarantee}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">انبار</li>
+            @can('guarantees-list')
+                <li>
+                    <a class="{{ active_sidebar(['guarantees','guarantees/create','guarantees/{guarantee}/edit']) ? 'active' : '' }}" href="{{ route('guarantees.index') }}">گارانتی ها</a>
+                </li>
+            @endcan
             @can('warehouses-list')
                 <li>
                     <a class="{{ active_sidebar(['warehouses','warehouses/create','warehouses/{warehouse}/edit']) ? 'active' : '' }}" href="{{ route('warehouses.index') }}">انبار</a>
