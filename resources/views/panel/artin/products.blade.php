@@ -86,7 +86,7 @@
         var product_id;
 
         $(document).ready(function () {
-            $('.btn_edit').on('click', function () {
+            $(document).on('click', '.btn_edit' ,function () {
                 product_id = $(this).data('id');
                 let price = $(this).data('price');
                 price = parseInt(price);
