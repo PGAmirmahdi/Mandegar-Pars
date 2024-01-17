@@ -13,7 +13,7 @@
 @endsection
 @section('content')
     @php
-        $update = \App\Models\SoftwareUpdate::where('date', [now()->startOfDay(), now()->endOfDay()])->orderBy('date','desc')->first();
+        $update = \App\Models\SoftwareUpdate::where('date', [now()->startOfDay(), now()->endOfDay()])->latest()->first();
     @endphp
     @if($update)
         <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
@@ -27,7 +27,7 @@
                 @endforeach
             </ul>
             <hr>
-            <small>برای مشاهده تغییرات پیشین می توانید به صفحه درباره برنامه مراجعه کنید</small>
+            <small>برای مشاهده تغییرات پیشین می توانید به صفحه نسخه های برنامه مراجعه کنید</small>
         </div>
     @endif
     <div class="card">

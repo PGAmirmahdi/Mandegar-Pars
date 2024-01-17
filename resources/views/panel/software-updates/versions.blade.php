@@ -13,7 +13,7 @@
 @endsection
 @section('content')
     @php
-        $updates = \App\Models\SoftwareUpdate::orderBy('date','desc')->get();
+        $updates = \App\Models\SoftwareUpdate::latest()->get();
     @endphp
     @foreach($updates as $update)
         <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
