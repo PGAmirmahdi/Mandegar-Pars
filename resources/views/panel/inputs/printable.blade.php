@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'چاپ خروج انبار')
+@section('title', 'چاپ رسید انبار')
 @php
     $sidebar = false;
     $header = false;
@@ -116,9 +116,9 @@
                     </div>
                     <div class="col-3 text-right text-center" id="person_sec">
                         <h3>شرکت صنایع ماشین های اداری ماندگار پارس</h3>
-                        <small>مجوز خروج انبار (فروش)</small>
+                        <small>رسید انبار</small>
                         <br>
-                        <small>تحویل گیرنده: {{ $inventoryReport->person }}</small>
+                        <small>تحویل دهنده: {{ $inventoryReport->person }}</small>
                     </div>
                     <div class="col-2"></div>
                     <div class="col-2 text-center">

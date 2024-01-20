@@ -37,6 +37,7 @@
                         <th>تحویل دهنده</th>
                         <th>تاریخ ورود</th>
                         <th>تاریخ ثبت</th>
+                        <th>رسید انبار</th>
                         @can('input-reports-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -52,6 +53,11 @@
                             <td><strong>{{ $item->person }}</strong></td>
                             <td>{{ verta($item->date)->format('Y/m/d') }}</td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
+                            <td>
+                                <a class="btn btn-info btn-floating" href="{{ route('inventory-reports.show', $item) }}">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </td>
                             @can('input-reports-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating" href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'input', 'warehouse_id' => request()->warehouse_id]) }}">

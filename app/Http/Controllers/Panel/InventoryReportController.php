@@ -114,7 +114,11 @@ class InventoryReportController extends Controller
     {
         $this->authorize('output-reports-edit');
 
-        return view('panel.outputs.printable', compact('inventoryReport'));
+        if ($inventoryReport->type == 'input'){
+            return view('panel.inputs.printable', compact('inventoryReport'));
+        }else{
+            return view('panel.outputs.printable', compact('inventoryReport'));
+        }
     }
 
     public function edit(InventoryReport $inventoryReport)
