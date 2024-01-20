@@ -7,6 +7,7 @@ use App\Models\Factor;
 use App\Models\Guarantee;
 use App\Models\Inventory;
 use App\Models\InventoryReport;
+use Dflydev\DotAccessData\Data;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 
@@ -186,6 +187,20 @@ class InventoryReportController extends Controller
             'date' => $date,
         ]);
 
+        // check current count when input edit
+        foreach ($request->inventory_id as $key => $inventory_id){
+            $inventory = Inventory::find($inventory_id);
+            $temp_input = $inventoryReport->in_outs()->where('inventory_id', $inventory_id)->first()->count;
+            $temp_current_count = ($inventory->current_count - $temp_input) < 0 ? 0 : $inventory->current_count - $temp_input;
+
+            $new_input = $request->counts[$key];
+            if ($new_input + $temp_current_count - $inventory->getOutputCount() < 0){
+                alert()->error('مجموع موجودی فعلی و ورود کالا نمی تواند از خروجی کمتر باشد','خطای موجودی');
+                return back();
+            }
+        }
+        // end check current count when input edit
+
         $this->deleteInOut($inventoryReport, $type);
         $this->createInOut($inventoryReport, $request, $type);
 
@@ -197,6 +212,18 @@ class InventoryReportController extends Controller
     {
         if ($inventoryReport->type == 'input'){
             $this->authorize('input-reports-delete');
+
+            // check current count when input delete
+            foreach ($inventoryReport->in_outs as $input){
+                $inventory = Inventory::find($input->inventory_id);
+                $temp_input = $input->count;
+                $temp_current_count = ($input->inventory->current_count - $temp_input) < 0 ? 0 : $input->inventory->current_count - $temp_input;
+
+                if ($temp_current_count - $inventory->getOutputCount() < 0){
+                    return response('حذف این ورودی صرفا با حذف خروجی ها امکان پذیر است',500);
+                }
+            }
+            // end check current count when input delete
 
             $inventoryReport->in_outs()->each(function ($item){
                 $inventory = Inventory::find($item->inventory_id);
@@ -273,13 +300,6 @@ class InventoryReportController extends Controller
             // delete in-outs
             foreach ($report->in_outs as $item){
                 $inventory = Inventory::find($item->inventory_id);
-
-//                if ($inventory->current_count - $item->count < 0){
-//                    $message = "کالای فلان خروجی ";
-//                    alert()->error('', '');
-//                    return back();
-//                }
-
                 $inventory->current_count -= $item->count;
                 $inventory->save();
             }

@@ -71,11 +71,6 @@ class InventoryController extends Controller
     {
         $this->authorize('inventory-edit');
 
-        if ($request->count < $inventory->current_count){
-            alert()->error('موجودی اولیه نمی تواند کمتر از موجودی اولیه باشد','عدم تطابق موجودی فعلی و اولیه');
-            return back();
-        }
-
         $code = $request->code;
         $warehouse_id = $inventory->warehouse_id;
 
@@ -91,6 +86,7 @@ class InventoryController extends Controller
             'code' => $request->code,
             'type' => $request->type,
             'initial_count' => $request->count,
+            'current_count' => ($inventory->current_count - $inventory->initial_count) + $request->count,
         ]);
 
         alert()->success('کالا مورد نظر با موفقیت ویرایش شد','ویرایش کالا');

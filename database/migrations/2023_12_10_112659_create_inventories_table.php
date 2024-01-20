@@ -20,7 +20,7 @@ class CreateInventoriesTable extends Migration
             $table->string('code')->nullable();
             $table->string('type');
             $table->unsignedBigInteger('initial_count');
-            $table->unsignedBigInteger('current_count');
+            $table->bigInteger('current_count');
             $table->timestamps();
 
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
