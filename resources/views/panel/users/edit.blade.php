@@ -55,6 +55,9 @@
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                             <label for="sign_image">تصویر امضاء (PNG)</label>
                             <input type="file" class="form-control" name="sign_image" id="sign_image" accept="image/png">
+                            @if($user->sign_image)
+                                <a href="{{ $user->sign_image }}" class="btn btn-link" target="_blank">مشاهده امضاء</a>
+                            @endif
                             @error('sign_image')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
