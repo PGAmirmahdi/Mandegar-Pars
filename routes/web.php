@@ -65,6 +65,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
+//    dd(User::whereIn('role_id', [6])->latest()->first());
 //    $servername = "78.159.108.71";
 //    $username = "parsot_admin";
 //    $password = ">nm5Wf#TM#W.@&s";

@@ -24,7 +24,7 @@ class ApiController extends Controller
         $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
             $permission->where('name', 'single-price-user');
         })->pluck('id');
-        $single_price_user = User::whereIn('role_id', $role_id)->first();
+        $single_price_user = User::whereIn('role_id', $role_id)->latest()->first();
         // end users where has single-price-user permission
 
         // create customer
@@ -56,6 +56,7 @@ class ApiController extends Controller
             'phone' => $customer->phone1,
             'status' => 'invoiced',
             'created_in' => 'website',
+            'discount' => 0,
         ]);
 
         $tax = 0.09;
