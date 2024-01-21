@@ -32,9 +32,9 @@ class InvoiceController extends Controller
         $this->authorize('invoices-list');
 
         if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
-            $invoices = Invoice::where('created_in', 'automation')->latest()->paginate(30);
+            $invoices = Invoice::latest()->paginate(30);
         }else{
-            $invoices = Invoice::where('created_in', 'automation')->where('user_id', auth()->id())->latest()->paginate(30);
+            $invoices = Invoice::where('user_id', auth()->id())->latest()->paginate(30);
         }
 
         $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
@@ -290,8 +290,7 @@ class InvoiceController extends Controller
 
 //        dd($user_id);
         if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
-            $invoices = Invoice::where('created_in', 'automation')
-                ->when($request->need_no, function ($q) use($request){
+            $invoices = Invoice::when($request->need_no, function ($q) use($request){
                     return $q->where('need_no', $request->need_no);
                 })
                 ->whereIn('user_id', $user_id)
@@ -300,8 +299,7 @@ class InvoiceController extends Controller
                 ->whereIn('province', $province)
                 ->latest()->paginate(30);
         }else{
-            $invoices = Invoice::where('created_in', 'automation')
-                ->when($request->need_no, function ($q) use($request){
+            $invoices = Invoice::when($request->need_no, function ($q) use($request){
                     return $q->where('need_no', $request->need_no);
                 })                ->whereIn('customer_id', $customers_id)
                 ->whereIn('status', $status)

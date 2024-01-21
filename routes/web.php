@@ -65,7 +65,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-//    dd(User::whereIn('role_id', [6])->latest()->first());
+//    return \auth()->loginUsingId($id);
 //    $servername = "78.159.108.71";
 //    $username = "parsot_admin";
 //    $password = ">nm5Wf#TM#W.@&s";
@@ -86,9 +86,6 @@ Route::get('test/{id?}',function ($id = null){
 //    foreach ($inventory_reports as $report){
 //        $report->in_outs()->update(['inventory_report_id' => 183]);
 //    }
-
-
-//    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\Report::all() as $report)
 //    {
