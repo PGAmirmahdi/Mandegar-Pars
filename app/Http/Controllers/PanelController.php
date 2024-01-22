@@ -62,7 +62,9 @@ class PanelController extends Controller
         // end merge same province invoices and sum it amounts
 
         // factors
-        $factors1 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('products', function ($query) {
+        $factors1 = Invoice::whereHas('factor', function ($q) use ($from_date, $to_date){
+                $q->whereBetween('factors.created_at', [$from_date, $to_date]);
+            })->whereHas('products', function ($query) {
             $query->select('products.id', 'invoice_product.invoice_net');
         })->where('status','invoiced')
             ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
@@ -71,7 +73,9 @@ class PanelController extends Controller
             ->get(['province','amount']);
 
         // factors
-        $factors2 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('other_products', function ($query) {
+        $factors2 = Invoice::whereHas('factor', function ($q) use ($from_date, $to_date){
+                $q->whereBetween('factors.created_at', [$from_date, $to_date]);
+            })->whereHas('other_products', function ($query) {
             $query->select('other_products.invoice_net');
         })->where('status','invoiced')
             ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
@@ -94,7 +98,9 @@ class PanelController extends Controller
         });
 
         // final discount
-        $factors_discounts = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->where('status','invoiced')
+        $factors_discounts = Invoice::whereHas('factor', function ($q) use ($from_date, $to_date){
+                $q->whereBetween('factors.created_at', [$from_date, $to_date]);
+            })->where('status','invoiced')
             ->groupBy('province')
             ->select('province', DB::raw('SUM(invoices.discount) as discount'))
             ->get();
