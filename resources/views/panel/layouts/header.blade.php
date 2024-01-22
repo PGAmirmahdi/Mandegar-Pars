@@ -39,6 +39,11 @@
                         </span>
                      </div>
                 </li>
+                <li class="nav-item dropdown" id="notification_sec">
+                    <a href="#internalTelModal" class="nav-link" data-toggle="modal">
+                        <i class="ti-headphone" data-toggle="tooltip" data-placement="bottom" data-original-title="داخلی همکاران"></i>
+                    </a>
+                </li>
                 <li class="nav-item dropdown">
                     <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" data-toggle="tooltip" data-placement="bottom" data-original-title="خروج">
                         <i class="fa fa-power-off"></i>

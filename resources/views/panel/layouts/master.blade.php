@@ -4,6 +4,7 @@
 @includeWhen(!isset($sidebar), 'panel.layouts.sidebar')
 @includeWhen(!isset($header), 'panel.layouts.header')
 @includeWhen(!isset($loader), 'panel.layouts.loader')
+@includeWhen(!isset($loader), 'panel.layouts.internal-tels')
 
 <!-- begin::main content -->
 <main class="main-content">
