@@ -130,6 +130,7 @@ class FactorController extends Controller
             'city' => $request->city,
             'address' => $request->address,
             'discount' => $request->final_discount,
+            'description' => $request->description,
         ]);
 
         $factor->update([
