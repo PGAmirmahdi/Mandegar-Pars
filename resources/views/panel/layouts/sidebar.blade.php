@@ -175,22 +175,21 @@
         </ul>
         <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">صورتحساب</li>
-            @can('invoices-list')
-                <li>
-                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">
-                        @can('accountant')
-                            پیش فاکتور
-                        @else
-                            سفارش مشتری
-                        @endcan
-                    </a>
-                </li>
+            @can('accountant')
+                @can('invoices-list')
+                    <li>
+                        <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">پیش فاکتور</a>
+                    </li>
+                @endcan
+                @can('factors-list')
+                    <li>
+                        <a class="{{ active_sidebar(['factors','factors/create','factors/{factor}/edit','search/factors']) ? 'active' : '' }}" href="{{ route('factors.index') }}">فاکتور</a>
+                    </li>
+                @endcan
             @endcan
-            @can('factors-list')
-                <li>
-                    <a class="{{ active_sidebar(['factors','factors/create','factors/{factor}/edit','search/factors']) ? 'active' : '' }}" href="{{ route('factors.index') }}">فاکتور</a>
-                </li>
-            @endcan
+            <li>
+                <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات</a>
+            </li>
             @can('sale-reports-list')
                 <li>
                     <a class="{{ active_sidebar(['sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports']) ? 'active' : '' }}" href="{{ route('sale-reports.index') }}">گزارشات فروش</a>

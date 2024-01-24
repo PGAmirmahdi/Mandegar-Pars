@@ -12,8 +12,9 @@ class Invoice extends Model
     protected $guarded = [];
 
     const STATUS = [
-        'pending' => 'در دست اقدام',
+        'pending' => 'پیش فاکتور شده',
         'invoiced' => 'فاکتور شده',
+        'order' => 'ثبت سفارش', // Default
 //        'return' => 'عودت داده شده',
     ];
 
@@ -80,6 +81,11 @@ class Invoice extends Model
     public function seller()
     {
         return $this->belongsTo(Seller::class);
+    }
+
+    public function order_status()
+    {
+        return $this->hasOne(OrderStatus::class);
     }
 
     public function getNetAmount()
