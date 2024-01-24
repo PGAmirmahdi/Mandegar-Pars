@@ -162,16 +162,13 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-{{--                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">--}}
-{{--                        <label for="status">وضعیت <span class="text-danger">*</span></label>--}}
-{{--                        <select name="status" id="status" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5" tabindex="-2" aria-hidden="true">--}}
-{{--                            <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['pending'] }}</option>--}}
-{{--                            <option value="paid" {{ old('status') == 'paid' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['paid'] }}</option>--}}
-{{--                        </select>--}}
-{{--                        @error('status')--}}
-{{--                            <div class="invalid-feedback d-block">{{ $message }}</div>--}}
-{{--                        @enderror--}}
-{{--                    </div>--}}
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="description">توضیحات</label>
+                        <textarea name="description" id="description" class="form-control">{{ old('description') }}</textarea>
+                        @error('description')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <div class="col-12 mb-4 mt-2 text-center">
                         <hr>
                         <h4>مشخصات کالا یا خدمات مورد معامله</h4>

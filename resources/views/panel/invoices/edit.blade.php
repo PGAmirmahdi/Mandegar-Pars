@@ -194,6 +194,13 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="description">توضیحات</label>
+                        <textarea name="description" id="description" class="form-control">{{ $invoice->description }}</textarea>
+                        @error('description')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
                     @can('accountant')
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                             <label for="status">وضعیت <span class="text-danger">*</span></label>
