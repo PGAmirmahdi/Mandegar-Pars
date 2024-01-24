@@ -184,6 +184,13 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="description">توضیحات</label>
+                        <textarea name="description" id="description" class="form-control">{{ $factor->invoice->description }}</textarea>
+                        @error('description')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="status">وضعیت <span class="text-danger">*</span></label>
                         <select name="status" id="status" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5" tabindex="-2" aria-hidden="true">
                             <option value="invoiced" {{ $factor->status == 'invoiced' ? 'selected' : '' }}>{{ \App\Models\Factor::STATUS['invoiced'] }}</option>
