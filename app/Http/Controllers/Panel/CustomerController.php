@@ -40,6 +40,7 @@ class CustomerController extends Controller
         Customer::create([
             'user_id' => auth()->id(),
             'name' => $request->name,
+            'code' => $request->customer_code,
             'type' => $request->type,
             'customer_type' => $request->customer_type,
             'economical_number' => $request->economical_number,
@@ -77,6 +78,7 @@ class CustomerController extends Controller
 
         $customer->update([
             'name' => $request->name,
+            'code' => $request->customer_code,
             'type' => $request->type,
             'customer_type' => $request->customer_type,
             'economical_number' => $request->economical_number,
@@ -112,7 +114,10 @@ class CustomerController extends Controller
         $customer_type = $request->customer_type == 'all' ? array_keys(Customer::CUSTOMER_TYPE) : [$request->customer_type];
 
         if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
-            $customers = Customer::when($request->name, function ($q) use($request){
+            $customers = Customer::when($request->code, function ($q) use($request){
+                    $q->where('code', $request->code);
+                })
+                ->when($request->name, function ($q) use($request){
                 $q->where('name','like', "%$request->name%");
             })
                 ->whereIn('province', $province)
@@ -120,6 +125,9 @@ class CustomerController extends Controller
                 ->latest()->paginate(30);
         }else{
             $customers = Customer::where('user_id', auth()->id())
+                ->when($request->code, function ($q) use($request){
+                    $q->where('code', $request->code);
+                })
                 ->when($request->name, function ($q) use($request){
                     $q->where('name','like', "%$request->name%");
                 })

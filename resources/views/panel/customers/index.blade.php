@@ -26,6 +26,9 @@
             <form action="{{ route('customers.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <input type="text" name="code" form="search_form" class="form-control" placeholder="کد مشتری" value="{{ request()->code ?? null }}">
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری" value="{{ request()->name ?? null }}">
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
@@ -54,6 +57,7 @@
                     <tr>
                         <th>#</th>
                         <th>نام حقیقی/حقوقی</th>
+                        <th>کد مشتری</th>
                         <th>نوع</th>
                         <th>مشتری</th>
                         <th>استان</th>
@@ -73,6 +77,7 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $customer->name }}</td>
+                            <td>{{ $customer->code ?? '---' }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
                             <td>{{ \App\Models\Customer::CUSTOMER_TYPE[$customer->customer_type] }}</td>
                             <td>{{ $customer->province }}</td>

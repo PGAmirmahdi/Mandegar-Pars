@@ -21,6 +21,13 @@
                 @method('PATCH')
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="customer_code">کد مشتری <span class="text-danger">*</span></label>
+                        <input type="text" name="customer_code" class="form-control" id="customer_code" value="{{ $customer->code }}">
+                        @error('customer_code')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="name">نام حقیقی/حقوقی <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" id="name" value="{{ $customer->name }}">
                         @error('name')
