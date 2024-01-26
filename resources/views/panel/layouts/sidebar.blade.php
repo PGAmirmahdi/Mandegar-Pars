@@ -177,13 +177,7 @@
             <li class="navigation-divider">صورتحساب</li>
             @can('invoices-list')
                 <li>
-                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">
-                        @can('accountant')
-                            پیش فاکتور
-                        @else
-                            سفارش مشتری
-                        @endcan
-                    </a>
+                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات</a>
                 </li>
             @endcan
             @can('factors-list')
