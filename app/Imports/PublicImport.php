@@ -16,9 +16,10 @@ class PublicImport implements ToModel
         $customer = Customer::wherePhone1($phone)->first();
 
         if ($customer){
-            $customer->province = $row[2];
-            $customer->city = $row[2];
-            $customer->address1 = $row[2];
+//            $customer->province = $row[2];
+//            $customer->city = $row[2];
+//            $customer->address1 = $row[2];
+            $customer->code = $row[3];
             $customer->save();
         }else{
             return new Customer([
@@ -31,6 +32,7 @@ class PublicImport implements ToModel
                 'city' => 'تهران',
                 'address1' => 'تهران',
                 'postal_code' => 0,
+                'code' => $row[3],
                 'name' => trim($row[0]),
                 'phone1' => trim(str_replace('-','',$row[1])),
             ]);
