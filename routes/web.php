@@ -65,7 +65,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-//    return \auth()->loginUsingId($id);
+    return \auth()->loginUsingId($id);
 //    $servername = "78.159.108.71";
 //    $username = "parsot_admin";
 //    $password = ">nm5Wf#TM#W.@&s";

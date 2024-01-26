@@ -106,8 +106,6 @@
                         <th>تاریخ ایجاد</th>
                         @can('accountant')
                             <th>پیش فاکتور</th>
-                        @else
-                            <th>سفارش</th>
                         @endcan
                         @can('invoices-edit')
                             <th>ویرایش</th>
@@ -145,11 +143,17 @@
                                 <td>{{ $invoice->user->fullName() }}</td>
                             @endcan
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
-                            <td>
-                                <a class="text-primary" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
-                                    <u><strong>{{ $invoice->id }}</strong></u>
-                                </a>
-                            </td>
+                            @can('accountant')
+                                @if($invoice->status != 'order')
+                                    <td>
+                                        <a class="text-primary" href="{{ route('invoices.show', [$invoice->id, 'type' => 'pishfactor']) }}">
+                                            <u><strong>{{ $invoice->id }}</strong></u>
+                                        </a>
+                                    </td>
+                                @else
+                                    <td>---</td>
+                                @endif
+                            @endcan
                             @can('invoices-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">

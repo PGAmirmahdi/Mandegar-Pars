@@ -96,7 +96,7 @@ class InvoiceController extends Controller
         // create products for invoice
         $this->storeInvoiceProducts($invoice, $request);
 
-        alert()->success('پیش فاکتور مورد نظر با موفقیت ایجاد شد','ایجاد پیش فاکتور');
+        alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش');
         return redirect()->route('invoices.edit', $invoice->id);
     }
 
@@ -144,7 +144,7 @@ class InvoiceController extends Controller
         if ($request->status != $invoice->status){
             $status = Invoice::STATUS[$request->status];
             $url = route('invoices.index');
-            $message = "وضعیت پیش فاکتور شماره {$invoice->id} به '{$status}' تغییر یافت";
+            $message = "وضعیت سفارش شماره {$invoice->id} به '{$status}' تغییر یافت";
 
             Notification::send($invoice->user, new SendMessage($message, $url));
         }
@@ -201,7 +201,7 @@ class InvoiceController extends Controller
             $invoice->factor()->updateOrCreate(['status' => 'invoiced']);
         }
 
-        alert()->success('پیش فاکتور مورد نظر با موفقیت ویرایش شد','ویرایش پیش فاکتور');
+        alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش');
         return redirect()->route('invoices.index');
     }
 
@@ -393,10 +393,16 @@ class InvoiceController extends Controller
 
             $status = Invoice::STATUS[$invoice->status];
             $url = route('invoices.index');
-            $message = "وضعیت پیش فاکتور شماره {$invoice->id} به '{$status}' تغییر یافت";
+            $message = " وضعیت سفارش {$invoice->customer->name} به '{$status}' تغییر یافت";
 
             Notification::send($invoice->user, new SendMessage($message, $url));
         }else{
+            $status = Invoice::STATUS['pending'];
+            $url = route('invoices.index');
+            $message = " وضعیت سفارش {$invoice->customer->name} به '{$status}' تغییر یافت";
+
+            Notification::send($invoice->user, new SendMessage($message, $url));
+
             $invoice->update(['status' => 'pending']);
         }
 
@@ -481,7 +487,7 @@ class InvoiceController extends Controller
         $accountants = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id)->get();
 
         $url = route('invoices.edit', $invoice->id);
-        $message = "پیش فاکتوری با شماره $invoice->id ثبت شد";
+        $message = "سفارش '{$invoice->customer->name}' ثبت شد";
 
         Notification::send($accountants, new SendMessage($message, $url));
     }
