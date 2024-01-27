@@ -18,20 +18,40 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <div class="card-title d-flex justify-content-between align-items-center">
-                <div>
+            <div class="card-title d-flex justify-content-between align-items-center mb-5">
+                <div class="w-100">
                     @can('accountant')
                         <h6>ایجاد پیش فاکتور</h6>
                     @else
                         <h6>ایجاد سفارش</h6>
                     @endcan
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ old('type') == 'official' || old('type') == null ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="type1">رسمی</label>
+                    <div class="col-12 mb-4 text-center">
+                        <h4>
+                            @can('accountants')
+                                نوع فاکتور
+                            @else
+                                نوع سفارش
+                            @endcan
+                        </h4>
                     </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ old('type') == 'unofficial' ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="type2">غیر رسمی</label>
+                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                        <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'official' || old('type') == null ? 'active' : '' }}">
+                            <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ old('type') == 'official' || old('type') == null ? 'checked' : '' }}>رسمی
+                        </label>
+                        <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'unofficial' ? 'active' : '' }}">
+                            <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی
+                        </label>
+                    </div>
+                    <div class="col-12 mb-4 text-center mt-5">
+                        <h4>درخواست برای</h4>
+                    </div>
+                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                        <label class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'active' : '' }}">
+                            <input type="radio" id="req_for1" name="req_for" class="custom-control-input" value="pre-invoice" form="invoice_form" {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'checked' : '' }}>پیش فاکتور
+                        </label>
+                        <label class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'invoice' ? 'active' : '' }}">
+                            <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="invoice" form="invoice_form" {{ old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
+                        </label>
                     </div>
                 </div>
             </div>

@@ -47,22 +47,40 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title">
-                <div class="row d-flex justify-content-between align-items-center">
+                <div class="row d-flex justify-content-between align-items-center mb-5">
                     @can('accountant')
                         <h6>ویرایش پیش فاکتور</h6>
                         <a href="{{ route('invoices.show', ['invoice' => $invoice->id, 'type' => 'pishfactor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
                     @else
                         <h6>ویرایش سفارش</h6>
                     @endcan
-                </div>
-                <div class="row">
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ $invoice->type == 'official' || old('type') == 'official' ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="type1">رسمی</label>
+                    <div class="col-12 mb-4 text-center">
+                        <h4>
+                            @can('accountants')
+                                نوع فاکتور
+                            @else
+                                نوع سفارش
+                            @endcan
+                        </h4>
                     </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="type2">غیر رسمی</label>
+                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                        <label class="btn btn-outline-primary justify-content-center {{ $invoice->type == 'official' && old('type') == null || old('type') == 'official' ? 'active' : '' }}">
+                            <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ $invoice->type == 'official' || old('type') == 'official' ? 'checked' : '' }}>رسمی
+                        </label>
+                        <label class="btn btn-outline-primary justify-content-center {{ $invoice->type == 'unofficial' && old('type') == null || old('type') == 'unofficial' ? 'active' : '' }}">
+                            <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی
+                        </label>
+                    </div>
+                    <div class="col-12 mb-4 text-center mt-5">
+                        <h4>درخواست برای</h4>
+                    </div>
+                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                        <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'pre-invoice' && old('req_for') == null || old('req_for') == 'pre-invoice' ? 'active' : '' }}">
+                            <input type="radio" id="req_for1" name="req_for" class="custom-control-input" value="pre-invoice" form="invoice_form" {{ $invoice->req_for == 'pre-invoice' || old('req_for') == 'pre-invoice' ? 'checked' : '' }}>پیش فاکتور
+                        </label>
+                        <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'invoice' && old('req_for') == null || old('req_for') == 'invoice' ? 'active' : '' }}">
+                            <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="invoice" form="invoice_form" {{ $invoice->req_for == 'invoice' || old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
+                        </label>
                     </div>
                 </div>
             </div>

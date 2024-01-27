@@ -59,6 +59,7 @@ class InvoiceController extends Controller
         $this->authorize('invoices-create');
 
         $type = $request->type;
+        $req_for = $request->req_for;
 
         if ($type == 'unofficial'){
             $seller = Seller::create([
@@ -86,6 +87,7 @@ class InvoiceController extends Controller
             'address' => $request->address,
             'created_in' => 'automation',
             'type' => $type,
+            'req_for' => $req_for,
 //            'status' => $request->status,
             'discount' => $request->final_discount,
             'description' => $request->description,
@@ -150,6 +152,7 @@ class InvoiceController extends Controller
         }
 
         $type = $request->type;
+        $req_for = $request->req_for;
 
         if ($type == 'unofficial'){
             if (!$invoice->seller){
@@ -183,6 +186,7 @@ class InvoiceController extends Controller
             'customer_id' => $request->buyer_name,
             'seller_id' => $seller ? $seller->id : null,
             'type' => $type,
+            'req_for' => $req_for,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
             'need_no' => $request->need_no,

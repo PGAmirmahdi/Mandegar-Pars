@@ -28,6 +28,11 @@ class Invoice extends Model
         'unofficial' => 'غیر رسمی',
     ];
 
+    const REQ_FOR = [
+        'pre-invoice' => 'پیش فاکتور',
+        'invoice' => 'فاکتور',
+    ];
+
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot([
