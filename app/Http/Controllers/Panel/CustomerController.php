@@ -18,7 +18,7 @@ class CustomerController extends Controller
     {
         $this->authorize('customers-list');
 
-        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
             $customers = Customer::orderByRaw('-code DESC')->paginate(30);
         }else{
             $customers = Customer::where('user_id', auth()->id())->orderByRaw('-code DESC')->paginate(30);
@@ -114,7 +114,7 @@ class CustomerController extends Controller
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
         $customer_type = $request->customer_type == 'all' ? array_keys(Customer::CUSTOMER_TYPE) : [$request->customer_type];
 
-        if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
+        if (auth()->user()->isAdmin() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
             $customers = Customer::when($request->code, function ($q) use($request){
                     $q->where('code', $request->code);
                 })

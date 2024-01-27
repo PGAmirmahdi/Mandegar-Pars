@@ -64,6 +64,11 @@ class User extends Authenticatable
         return $this->role->permissions->pluck('name')->contains('ceo');
     }
 
+    public function isSalesManager()
+    {
+        return $this->role->permissions->pluck('name')->contains('sales-manager');
+    }
+
     public function isExitDoor()
     {
         return $this->role->permissions->pluck('name')->contains('exit-door');
