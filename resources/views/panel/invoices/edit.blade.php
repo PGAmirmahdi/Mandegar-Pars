@@ -214,7 +214,7 @@
                             @enderror
                         </div>
                     @else
-                        <input type="hidden" name="status" value="pending">
+                        <input type="hidden" name="status" value="order">
                     @endcan
 
                     <div class="col-12 mb-4 mt-2 text-center">

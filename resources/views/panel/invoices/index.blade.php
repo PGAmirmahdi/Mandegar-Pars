@@ -156,14 +156,14 @@
                             @endcan
                             @can('invoices-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
+                                    <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }} @canany(['admin','warehouse','accountant','ceo']) @else {{ $invoice->status == 'pending' ? 'disabled' : '' }} @endcanany" href="{{ route('invoices.edit', $invoice->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                             @endcan
                             @can('invoices-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('invoices.destroy',$invoice->id) }}" data-id="{{ $invoice->id }}" {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}>
+                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('invoices.destroy',$invoice->id) }}" data-id="{{ $invoice->id }}" {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }} @canany(['admin','warehouse','accountant','ceo']) @else {{ $invoice->status == 'pending' ? 'disabled' : '' }} @endcanany>
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>

@@ -18,9 +18,9 @@ class CustomerController extends Controller
         $this->authorize('customers-list');
 
         if (auth()->user()->isAdmin() || auth()->user()->isCEO()){
-            $customers = Customer::latest()->paginate(30);
+            $customers = Customer::orderByRaw('-code DESC')->paginate(30);
         }else{
-            $customers = Customer::where('user_id', auth()->id())->latest()->paginate(30);
+            $customers = Customer::where('user_id', auth()->id())->orderByRaw('-code DESC')->paginate(30);
         }
 
         return view('panel.customers.index', compact('customers'));
@@ -122,7 +122,7 @@ class CustomerController extends Controller
             })
                 ->whereIn('province', $province)
                 ->whereIn('customer_type', $customer_type)
-                ->latest()->paginate(30);
+                ->orderByRaw('-code DESC')->paginate(30);
         }else{
             $customers = Customer::where('user_id', auth()->id())
                 ->when($request->code, function ($q) use($request){
@@ -133,7 +133,7 @@ class CustomerController extends Controller
                 })
                 ->whereIn('province', $province)
                 ->whereIn('customer_type', $customer_type)
-                ->latest()->paginate(30);
+                ->orderByRaw('-code DESC')->paginate(30);
         }
 
         return view('panel.customers.index', compact('customers'));
