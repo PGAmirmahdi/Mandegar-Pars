@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rules\In;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF as PDF;
 
@@ -421,6 +422,16 @@ class InvoiceController extends Controller
         ]);
 
         return $pdf->stream("order.pdf");
+    }
+
+    public function action(Invoice $invoice)
+    {
+        return view('panel.invoices.action', compact('invoice'));
+    }
+
+    public function actionStore(Invoice $invoice, Request $request)
+    {
+        dd($invoice, $request->all());
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)
