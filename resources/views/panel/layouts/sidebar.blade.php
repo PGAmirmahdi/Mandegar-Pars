@@ -180,11 +180,11 @@
                     <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات</a>
                 </li>
             @endcan
-            @can('factors-list')
-                <li>
-                    <a class="{{ active_sidebar(['factors','factors/create','factors/{factor}/edit','search/factors']) ? 'active' : '' }}" href="{{ route('factors.index') }}">فاکتور</a>
-                </li>
-            @endcan
+{{--            @can('factors-list')--}}
+{{--                <li>--}}
+{{--                    <a class="{{ active_sidebar(['factors','factors/create','factors/{factor}/edit','search/factors']) ? 'active' : '' }}" href="{{ route('factors.index') }}">فاکتور</a>--}}
+{{--                </li>--}}
+{{--            @endcan--}}
             @can('sale-reports-list')
                 <li>
                     <a class="{{ active_sidebar(['sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports']) ? 'active' : '' }}" href="{{ route('sale-reports.index') }}">گزارشات فروش</a>

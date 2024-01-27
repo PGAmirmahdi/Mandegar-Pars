@@ -81,16 +81,12 @@
                         <img src="{{ public_path('/assets/media/image/header-logo.png') }}" style="width: 15rem;">
                     </td>
                     <td>
-                        @if($type == 'pishfactor')
-                            <span style="font-size: 25px">پیش فاکتور</span>
-                        @else
-                            <span style="font-size: 20px">صورت حساب فروش کالا و خدمات</span>
-                        @endif
+                        <span style="font-size: 25px">سفارش مشتری</span>
                     </td>
                     <td style="width: 200px">
-                        <p style="font-size: 15px">شماره سریال: {{ $type == 'pishfactor' ? $invoice->id : $invoice->factor->id }}</p>
+                        <p style="font-size: 15px">شماره سریال: {{ $invoice->id }}</p>
                         <br>
-                        <p style="font-size: 15px">تاریخ: {{ $type == 'pishfactor' ? verta($invoice->created_at)->format('Y/m/d') : verta($invoice->factor->created_at)->format('Y/m/d') }}</p>
+                        <p style="font-size: 15px">تاریخ: {{ verta($invoice->created_at)->format('Y/m/d') }}</p>
                     </td>
                 </tr>
             </table>

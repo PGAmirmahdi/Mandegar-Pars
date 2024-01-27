@@ -200,11 +200,6 @@ class InvoiceController extends Controller
             'description' => $request->description,
         ]);
 
-        // create factor
-        if ($request->status == 'invoiced'){
-            $invoice->factor()->updateOrCreate(['status' => 'invoiced']);
-        }
-
         alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش');
         return redirect()->route('invoices.index');
     }
@@ -290,7 +285,7 @@ class InvoiceController extends Controller
         })->pluck('id');
 
         $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
-        $status = $request->status == 'all' ? ['pending','return','invoiced'] : [$request->status];
+        $status = $request->status == 'all' ? ['pending','return','invoiced','order'] : [$request->status];
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
         $user_id = $request->user == 'all' || $request->user == null ? User::whereIn('role_id', $roles_id)->pluck('id') : [$request->user];
 
@@ -393,7 +388,6 @@ class InvoiceController extends Controller
 
         if ($invoice->status == 'pending'){
             $invoice->update(['status' => 'invoiced']);
-            $invoice->factor()->updateOrCreate(['status' => 'invoiced']);
 
             $status = Invoice::STATUS[$invoice->status];
             $url = route('invoices.index');
@@ -415,10 +409,9 @@ class InvoiceController extends Controller
 
     public function downloadPDF(Request $request)
     {
-        $type = $request->type;
         $invoice = Invoice::find($request->invoice_id);
 
-        $pdf = PDF::loadView('panel.pdf.invoice',['invoice' => $invoice, 'type' => $type],[], [
+        $pdf = PDF::loadView('panel.pdf.invoice',['invoice' => $invoice],[], [
             'format' => 'A3',
             'orientation' => 'L',
             'margin_left' => 2,
@@ -427,7 +420,7 @@ class InvoiceController extends Controller
             'margin_bottom' => 0,
         ]);
 
-        return $pdf->stream("invoice.pdf");
+        return $pdf->stream("order.pdf");
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)

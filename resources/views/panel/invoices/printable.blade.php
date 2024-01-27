@@ -103,42 +103,6 @@
 
 @endsection
 @section('content')
-    {{--  Screenshot Guide Modal  --}}
-    <div class="modal fade" id="screenshotModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="screenshotModalLabel">راهنمای اسکرین شات</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
-                        <i class="ti-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="guide_box">
-                        <strong>Google Chrome</strong>
-                        <p>از کلید <code>Print Screen</code> در کیبورد خود استفاده کنید</p>
-                    </div>
-                    <div class="guide_box">
-                        <strong>Mozilla Firefox</strong>
-                        <p>از کلید های ترکیبی <code>Ctrl + Shift + S</code> استفاده کنید</p>
-                    </div>
-                    <div class="guide_box">
-                        <strong>Safari</strong>
-                        <p>از کلید های ترکیبی <code>Command + Shift + 4</code>  استفاده کنید </p>
-                    </div>
-                    <div class="guide_box">
-                        <strong>Microsoft Edge</strong>
-                        <p>از کلید <code>Print Screen</code> در کیبورد خود استفاده کنید</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{--  End Screenshot Guide Modal  --}}
-
     <div class="card">
         <div class="card-body" id="printable_sec">
             <div class="card-title">
@@ -149,21 +113,13 @@
                         @endif
                     </div>
                     <div class="col-3 text-right">
-                        @if(!auth()->user()->isAccountant())
-                            <h3>ثبت سفارش</h3>
-                        @else
-                            @if(request()->type == 'pishfactor')
-                                <h3>پیش فاکتور</h3>
-                            @else
-                                <h3>صورت حساب فروش کالا و خدمات</h3>
-                            @endif
-                        @endif
+                        <h3>سفارش مشتری</h3>
                     </div>
                     <div class="col-2"></div>
                     <div class="col-2 text-center">
-                        <p class="m-0">شماره سریال: {{ request()->type == 'pishfactor' ? $invoice->id : $factor->id }}</p>
+                        <p class="m-0"> شماره سریال: {{ $invoice->id }}</p>
                         <hr class="mt-0">
-                        <p class="m-0">تاریخ: {{ request()->type == 'pishfactor' ? verta($invoice->created_at)->format('Y/m/d') : verta($factor->created_at)->format('Y/m/d') }}</p>
+                        <p class="m-0">تاریخ: {{ verta($invoice->created_at)->format('Y/m/d') }}</p>
                         <hr class="mt-0">
                     </div>
                 </div>
@@ -380,8 +336,7 @@
             <button class="btn btn-info" id="btn_print"><i class="fa fa-print mr-2"></i>چاپ</button>
             <form action="{{ route('invoices.download') }}" method="post">
                 @csrf
-                <input type="hidden" name="type" value="{{ request()->type }}">
-                <input type="hidden" name="invoice_id" value="{{ request()->type == 'pishfactor' ? $invoice->id : $factor->invoice->id }}">
+                <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
                 <button class="btn btn-danger"><i class="fa fa-file-pdf mr-2"></i>دانلود</button>
             </form>
         </div>
