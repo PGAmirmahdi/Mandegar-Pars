@@ -151,6 +151,8 @@ class PermissionSeeder extends Seeder
 //            'guarantees-create' => 'ثبت گارانتی',
 //            'guarantees-edit' => 'ویرایش گارانتی',
 //            'guarantees-delete' => 'حذف گارانتی',
+
+//            'sales-manager' => 'مدیر فروش'
         ];
 
         foreach ($items as $key => $item)

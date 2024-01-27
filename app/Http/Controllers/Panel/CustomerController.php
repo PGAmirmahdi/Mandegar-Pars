@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -78,7 +79,7 @@ class CustomerController extends Controller
 
         $customer->update([
             'name' => $request->name,
-            'code' => $request->customer_code,
+            'code' => Gate::allows('sales-manager') ? $request->customer_code : $customer->code,
             'type' => $request->type,
             'customer_type' => $request->customer_type,
             'economical_number' => $request->economical_number,
