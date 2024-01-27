@@ -53,7 +53,6 @@
                         <a href="{{ route('invoices.show', ['invoice' => $invoice->id, 'type' => 'pishfactor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
                     @else
                         <h6>ویرایش سفارش</h6>
-                        <a href="{{ route('invoices.show', ['invoice' => $invoice->id, 'type' => 'pishfactor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
                     @endcan
                 </div>
                 <div class="row">
@@ -205,6 +204,7 @@
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                             <label for="status">وضعیت <span class="text-danger">*</span></label>
                             <select name="status" id="status" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5" tabindex="-2" aria-hidden="true">
+                                <option value="order" {{ $invoice->status == 'order' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['order'] }}</option>
                                 <option value="pending" {{ $invoice->status == 'pending' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['pending'] }}</option>
                                 <option value="invoiced" {{ $invoice->status == 'invoiced' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['invoiced'] }}</option>
 {{--                                <option value="return" {{ $invoice->status == 'return' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['return'] }}</option>--}}
