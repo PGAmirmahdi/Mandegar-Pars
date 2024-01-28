@@ -3,6 +3,21 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            @can('warehouse-keeper')
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle font-size-20 align-middle"></i>
+                    <strong>توجه!</strong>
+                    پس از صدور فاکتور و ارسال به انبار دکمه دانلود فاکتور فعال خواهد شد
+                </div>
+            @else
+                @cannot('accountant')
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle font-size-20 align-middle"></i>
+                        <strong>توجه!</strong>
+                        درصورت نیاز به تایید پیش فاکتور توسط شما، دکمه اقدام فعال خواهد شد
+                    </div>
+                @endcannot
+            @endcan
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>سفارشات</h6>
                 <div>

@@ -487,7 +487,7 @@ class InvoiceController extends Controller
                 $q->whereIn('permission_id', $permissionsId);
             })->pluck('id');
 
-            $url = route('invoice.action', $invoice->id);
+            $url = route('invoices.index');
             $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
             $accountants = User::whereIn('role_id', $roles_id)->get();
             Notification::send($accountants, new SendMessage($notif_message, $url));
@@ -532,7 +532,7 @@ class InvoiceController extends Controller
                     $q->whereIn('permission_id', $permissionsId);
                 })->pluck('id');
 
-                $url = route('invoice.action', $invoice->id);
+                $url = route('invoices.index');
                 $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
                 $accountants = User::whereIn('role_id', $roles_id)->get();
                 Notification::send($accountants, new SendMessage($notif_message, $url));
