@@ -426,12 +426,125 @@ class InvoiceController extends Controller
 
     public function action(Invoice $invoice)
     {
+        if (!Gate::allows('accountant') && $invoice->action == null){
+            return back();
+        }
+
         return view('panel.invoices.action', compact('invoice'));
     }
 
     public function actionStore(Invoice $invoice, Request $request)
     {
-        dd($invoice, $request->all());
+        $status = $request->status;
+
+        if ($request->has('send_to_accountant')){
+            if (!$request->has('confirm')){
+                alert()->error('لطفا تیک تایید پیش فاکتور را بزنید', 'عدم تایید');
+                return back();
+            }
+
+            $invoice->action()->updateOrCreate([
+                'invoice_id' => $invoice->id
+            ], [
+                'acceptor_id' => auth()->id(),
+                'confirm' => 1
+            ]);
+
+            $title = 'ثبت و ارسال به حسابدار';
+            $message = 'تاییدیه شما به حسابداری ارسال شد';
+
+            //send notif to accountants
+            $permissionsId = Permission::where('name', 'accountant')->pluck('id');
+            $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+                $q->whereIn('permission_id', $permissionsId);
+            })->pluck('id');
+
+            $url = route('invoice.action', $invoice->id);
+            $notif_message = "پیش فاکتور سفارش {$invoice->customer->name} مورد تایید قرار گرفت";
+            $accountants = User::whereIn('role_id', $roles_id)->get();
+            Notification::send($accountants, new SendMessage($notif_message, $url));
+            //end send notif to accountants
+
+        }elseif ($request->has('send_to_warehouse')){
+            $request->validate(['factor_file' => 'required|mimes:pdf|max:5000']);
+
+            $file = upload_file($request->factor_file, 'Action/Factors');
+            $invoice->action()->updateOrCreate([
+                'invoice_id' => $invoice->id
+            ], [
+                'factor_file' => $file,
+                'sent_to_warehouse' => 1
+            ]);
+
+            $title = 'ثبت و ارسال به انبار';
+            $message = 'فاکتور مورد نظر با موفقیت به انبار ارسال شد';
+
+            $invoice->update(['status' => 'invoiced']);
+
+            //send notif to warehouse-keeper
+            $permissionsId = Permission::where('name', 'warehouse-keeper')->pluck('id');
+            $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+                $q->whereIn('permission_id', $permissionsId);
+            })->pluck('id');
+
+            $url = route('invoice.action', $invoice->id);
+            $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
+            $accountants = User::whereIn('role_id', $roles_id)->get();
+            Notification::send($accountants, new SendMessage($notif_message, $url));
+            //end send notif to warehouse-keeper
+        }else{
+            if ($status == 'invoice'){
+                $request->validate(['invoice_file' => 'required|mimes:pdf|max:5000']);
+
+                $file = upload_file($request->invoice_file, 'Action/Invoices');
+                $invoice->action()->updateOrCreate([
+                    'invoice_id' => $invoice->id
+                ], [
+                    'status' => $status,
+                    'invoice_file' => $file
+                ]);
+
+                $title = 'ثبت و ارسال پیش فاکتور';
+                $message = 'پیش فاکتور مورد نظر با موفقیت به همکار فروش ارسال شد';
+
+                //send notif
+                $url = route('invoice.action', $invoice->id);
+                $notif_message = "پیش فاکتور {$invoice->customer->name} دریافت شد";
+                Notification::send($invoice->user, new SendMessage($notif_message, $url));
+                //end send notif
+            }else{
+                $request->validate(['factor_file' => 'required|mimes:pdf|max:5000']);
+
+                $file = upload_file($request->factor_file, 'Action/Factors');
+                $invoice->action()->updateOrCreate([
+                    'invoice_id' => $invoice->id
+                ], [
+                    'status' => $status,
+                    'factor_file' => $file
+                ]);
+
+                $title = 'ثبت و ارسال فاکتور';
+                $message = 'فاکتور مورد نظر با موفقیت به انبار ارسال شد';
+
+                //send notif to warehouse-keeper
+                $permissionsId = Permission::where('name', 'warehouse-keeper')->pluck('id');
+                $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+                    $q->whereIn('permission_id', $permissionsId);
+                })->pluck('id');
+
+                $url = route('invoice.action', $invoice->id);
+                $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
+                $accountants = User::whereIn('role_id', $roles_id)->get();
+                Notification::send($accountants, new SendMessage($notif_message, $url));
+                //end send notif to warehouse-keeper
+            }
+
+            $status = $status == 'invoice' ? 'pending' : 'invoiced';
+            $invoice->update(['status' => $status]);
+        }
+
+        alert()->success($message, $title);
+        return back();
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)

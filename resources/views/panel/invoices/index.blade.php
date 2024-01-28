@@ -87,6 +87,10 @@
                         <th>تاریخ ایجاد</th>
                         @can('accountant')
                             <th>مشاهده سفارش</th>
+                        @endcan
+                        @can('warehouse-keeper')
+                            <th>فاکتور</th>
+                        @else
                             <th>اقدام</th>
                         @endcan
                         @cannot('accountant')
@@ -110,19 +114,7 @@
                             <td>{{ $invoice->city }}</td>
                             <td>{{ $invoice->phone }}</td>
                             <td>
-                                @can('accountant')
-                                    @if($invoice->status == 'paid')
-                                        <a href="{{ route('invoices.changeStatus', $invoice->id) }}" class="btn btn-success {{ $invoice->created_in == 'website' ? 'disabled' : '' }}" style="display: block ruby">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</a>
-                                    @else
-                                        <a href="{{ route('invoices.changeStatus', $invoice->id) }}" class="btn btn-warning {{ $invoice->created_in == 'website' ? 'disabled' : '' }}" style="display: block ruby">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</a>
-                                    @endif
-                                @else
-                                    @if($invoice->status == 'paid')
-                                        <span class="badge badge-success" style="display: block ruby">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
-                                    @else
-                                        <span class="badge badge-warning" style="display: block ruby">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
-                                    @endif
-                                @endcan
+                                <span class="badge badge-primary d-block">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
                             </td>
                             @can('accountant')
                                 <td>{{ $invoice->user->fullName() }}</td>
@@ -134,8 +126,16 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 </td>
+                            @endcan
+                            @can('warehouse-keeper')
                                 <td>
-                                    <a class="btn btn-primary btn-floating" href="{{ route('invoice.action', $invoice->id) }}">
+                                    <a href="{{ $invoice->action ? $invoice->action->factor_file ?? '#' : '#' }}" class="btn btn-primary btn-floating {{ $invoice->action ? $invoice->action->factor_file ? '' : 'disabled' : 'disabled' }}" target="_blank">
+                                        <i class="fa fa-download"></i>
+                                    </a>
+                                </td>
+                            @else
+                                <td>
+                                    <a class="btn btn-primary btn-floating @cannot('accountant') {{ $invoice->action ? '' : 'disabled' }} @endcannot" href="{{ route('invoice.action', $invoice->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>

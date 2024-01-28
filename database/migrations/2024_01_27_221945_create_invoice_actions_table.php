@@ -23,6 +23,9 @@ class CreateInvoiceActionsTable extends Migration
             $table->boolean('confirm')->default(0)->comment('تایید توسط مسئول فروش');
             $table->boolean('sent_to_warehouse')->default(0);
             $table->timestamps();
+
+            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+            $table->foreign('acceptor_id')->references('id')->on('users')->onDelete(null);
         });
     }
 
