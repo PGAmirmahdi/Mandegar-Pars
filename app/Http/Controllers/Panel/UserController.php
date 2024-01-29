@@ -66,10 +66,16 @@ class UserController extends Controller
         $this->authorize('users-edit');
 
         if (auth()->user()->isAdmin()){
-            if ($user->sign_image){
-                unlink(public_path($user->sign_image));
+            if ($request->sign_image){
+                if ($user->sign_image){
+                    unlink(public_path($user->sign_image));
+                    $sign_image = upload_file($request->file('sign_image'),'Signs');
+                }else{
+                    $sign_image = upload_file($request->file('sign_image'),'Signs');
+                }
+            }else{
+                $sign_image = $user->sign_image;
             }
-            $sign_image = upload_file($request->file('sign_image'),'Signs');
         }
 
         $user->update([
@@ -78,7 +84,7 @@ class UserController extends Controller
             'phone' => $request->phone,
             'role_id' => $request->role ?? $user->role_id,
             'password' => $request->password ? bcrypt($request->password) : $user->password,
-            'sign_image' => $sign_image ?? $user->sign_image
+            'sign_image' => $sign_image,
         ]);
 
         if (Gate::allows('edit-profile',$user->id)){
