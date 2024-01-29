@@ -26,25 +26,26 @@
                         <h6>ایجاد سفارش</h6>
                     @endcan
                     @can('unofficial-sales')
-                        <div class="col-12 mb-4 text-center">
-                            <h4>
-                                @can('accountants')
-                                    نوع فاکتور
-                                @else
-                                    نوع سفارش
-                                @endcan
-                            </h4>
-                        </div>
-                        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-                            <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'official' || old('type') == null ? 'active' : '' }}">
-                                <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ old('type') == 'official' || old('type') == null ? 'checked' : '' }}>رسمی
-                            </label>
-                            <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'unofficial' ? 'active' : '' }}">
-                                <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی
-                            </label>
-                        </div>
-                    @else
-                        <input type="hidden" name="type" value="official" form="invoice_form">
+{{--                        <div class="col-12 mb-4 text-center">--}}
+{{--                            <h4>--}}
+{{--                                @can('accountants')--}}
+{{--                                    نوع فاکتور--}}
+{{--                                @else--}}
+{{--                                    نوع سفارش--}}
+{{--                                @endcan--}}
+{{--                            </h4>--}}
+{{--                        </div>--}}
+{{--                        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">--}}
+{{--                            <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'official' || old('type') == null ? 'active' : '' }}">--}}
+{{--                                <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ old('type') == 'official' || old('type') == null ? 'checked' : '' }}>رسمی--}}
+{{--                            </label>--}}
+{{--                            <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'unofficial' ? 'active' : '' }}">--}}
+{{--                                <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی--}}
+{{--                            </label>--}}
+{{--                        </div>--}}
+                            <input type="hidden" name="type" value="unofficial" form="invoice_form">
+                        @else
+                            <input type="hidden" name="type" value="official" form="invoice_form">
                     @endcan
                     <div class="col-12 mb-4 text-center mt-5">
                         <h4>درخواست برای</h4>
