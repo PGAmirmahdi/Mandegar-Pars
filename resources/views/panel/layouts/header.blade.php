@@ -39,7 +39,7 @@
                         </span>
                      </div>
                 </li>
-                <li class="nav-item dropdown" id="notification_sec">
+                <li class="nav-item dropdown">
                     <a href="#internalTelModal" class="nav-link" data-toggle="modal">
                         <i class="ti-headphone" data-toggle="tooltip" data-placement="bottom" data-original-title="داخلی همکاران"></i>
                     </a>
