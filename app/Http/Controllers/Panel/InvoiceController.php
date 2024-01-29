@@ -9,6 +9,7 @@ use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\Factor;
 use App\Models\Invoice;
+use App\Models\InvoiceAction;
 use App\Models\Permission;
 use App\Models\Product;
 use App\Models\Province;
@@ -511,6 +512,15 @@ class InvoiceController extends Controller
         }
 
         alert()->success($message, $title);
+        return back();
+    }
+
+    public function deleteInvoiceFile(InvoiceAction $invoiceAction)
+    {
+        unlink(public_path($invoiceAction->invoice_file));
+        $invoiceAction->delete();
+
+        alert()->success('فایل پیش فاکتور مورد نظر حذف شد','حذف پیش فاکتور');
         return back();
     }
 

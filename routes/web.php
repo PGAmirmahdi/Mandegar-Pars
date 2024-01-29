@@ -141,6 +141,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('downloadPDF', [InvoiceController::class, 'downloadPDF'])->name('invoices.download');
     Route::get('invoice-action/{invoice}', [InvoiceController::class, 'action'])->name('invoice.action');
     Route::post('invoice-action/{invoice}', [InvoiceController::class, 'actionStore'])->name('invoice.action.store');
+    Route::put('invoice-file/{invoice_action}/delete', [InvoiceController::class, 'deleteInvoiceFile'])->name('invoice.action.delete');
 
     // Coupons
     Route::resource('coupons', CouponController::class)->except('show');
