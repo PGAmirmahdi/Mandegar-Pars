@@ -67,24 +67,25 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_name">فروشنده <span class="text-danger">*</span></label>
-                        <input type="text" name="seller_name" class="form-control" id="seller_name" value="{{ old('seller_name') }}">
+                        <input type="text" name="seller_name" class="form-control" id="seller_name" value="{{ $seller->name }}" readonly>
                         @error('seller_name')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_phone">شماره تماس<span class="text-danger">*</span></label>
-                        <input type="text" name="seller_phone" class="form-control" id="seller_phone" value="{{ old('seller_phone') }}">
+                        <input type="text" name="seller_phone" class="form-control" id="seller_phone" value="{{ $seller->phone }}" readonly>
                         @error('seller_phone')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_province">استان <span class="text-danger">*</span></label>
-                        <select name="seller_province" id="seller_province" class="js-example-basic-single select2-hidden-accessible" data-select2-id="4" tabindex="-1" aria-hidden="true">
-                            @foreach(\App\Models\Province::all() as $province)
-                                <option value="{{ $province->name }}" {{ old('seller_province') == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
-                            @endforeach
+                        <select name="seller_province" id="seller_province" class="form-control" readonly style="pointer-events: none">
+                            <option value="{{ $seller->province }}">{{ $seller->province }}</option>
+{{--                            @foreach(\App\Models\Province::all() as $province)--}}
+{{--                                <option value="{{ $province->name }}" {{ old('seller_province') == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>--}}
+{{--                            @endforeach--}}
                         </select>
                         @error('seller_province')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -92,14 +93,14 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_city">شهر<span class="text-danger">*</span></label>
-                        <input type="text" name="seller_city" class="form-control" id="seller_city" value="{{ old('seller_city') }}">
+                        <input type="text" name="seller_city" class="form-control" id="seller_city" value="{{ $seller->city }}" readonly>
                         @error('seller_city')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_address">نشانی<span class="text-danger">*</span></label>
-                        <textarea name="seller_address" id="seller_address" class="form-control">{{ old('seller_address') }}</textarea>
+                        <textarea name="seller_address" id="seller_address" class="form-control" readonly>{{ $seller->address }}</textarea>
                         @error('seller_address')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
