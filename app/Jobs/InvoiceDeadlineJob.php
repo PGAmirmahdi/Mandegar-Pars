@@ -36,7 +36,7 @@ class InvoiceDeadlineJob implements ShouldQueue
         $packets = Packet::with('user')->where('notif_time', now()->format('Y/m/d 00:00:00'))->get();
 
         foreach ($packets as $packet){
-            $message = "به تاریخ تسویه پیش فاکتور شماره $packet->invoice_id نزدیک می شوید";
+            $message = "به تاریخ تسویه سفارش شماره $packet->invoice_id نزدیک می شوید";
             Notification::send($packet->user, new SendMessage($message, route('packets.index')));
         }
     }

@@ -114,7 +114,7 @@ class ProductController extends Controller
         $this->authorize('products-delete');
 
         if ($product->invoices()->exists()){
-            return response('این محصول در پیش فاکتور هایی موجود است',500);
+            return response('این محصول در سفارشاتی موجود است',500);
         }
 
         $product->delete();

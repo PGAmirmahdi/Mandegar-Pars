@@ -1,9 +1,5 @@
 @extends('panel.layouts.master')
-@can('accountant')
-    @section('title', 'ایجاد پیش فاکتور')
-@else
-    @section('title', 'ایجاد سفارش')
-@endcan
+@section('title', 'ثبت سفارش')
 @section('styles')
     <style>
         #products_table input, #products_table select{
@@ -20,11 +16,7 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center mb-5">
                 <div class="w-100">
-                    @can('accountant')
-                        <h6>ایجاد پیش فاکتور</h6>
-                    @else
-                        <h6>ایجاد سفارش</h6>
-                    @endcan
+                    <h6>ثبت سفارش</h6>
                     @can('unofficial-sales')
 {{--                        <div class="col-12 mb-4 text-center">--}}
 {{--                            <h4>--}}

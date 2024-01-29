@@ -1,9 +1,5 @@
 @extends('panel.layouts.master')
-@can('accountant')
-    @section('title', 'ویرایش پیش فاکتور')
-@else
-    @section('title', 'ویرایش سفارش')
-@endcan
+@section('title', 'ویرایش سفارش')
 @section('styles')
     <style>
         #products_table input, #products_table select{
@@ -48,12 +44,8 @@
         <div class="card-body">
             <div class="card-title">
                 <div class="row d-flex justify-content-between align-items-center mb-5">
-                    @can('accountant')
-                        <h6>ویرایش پیش فاکتور</h6>
-                        <a href="{{ route('invoices.show', ['invoice' => $invoice->id, 'type' => 'pishfactor']) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
-                    @else
-                        <h6>ویرایش سفارش</h6>
-                    @endcan
+                    <h6>ویرایش سفارش</h6>
+                    <a href="{{ route('invoices.show', ['invoice' => $invoice->id) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
                     @can('unofficial-sales')
 {{--                        <div class="col-12 mb-4 text-center">--}}
 {{--                            <h4>--}}

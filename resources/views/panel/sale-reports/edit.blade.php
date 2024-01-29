@@ -32,7 +32,7 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="invoice">پیش فاکتور</label>
+                        <label for="invoice">سفارش</label>
                         <select class="js-example-basic-single select2-hidden-accessible" name="invoice" id="invoice">
                             @foreach($invoices as $invoiceId => $customerName)
                                 <option value="{{ $invoiceId }}" {{ $saleReport->invoice_id == $invoiceId ? 'selected' : '' }}> {{ $invoiceId }} - {{ $customerName }}</option>

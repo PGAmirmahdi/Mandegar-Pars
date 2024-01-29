@@ -64,7 +64,7 @@ class PacketsExport implements FromCollection, WithMapping, WithHeadings, WithSt
     {
         return [
             'A' => 'گیرنده',
-            'B' => 'شماره پیش فاکتور',
+            'B' => 'شماره سفارش',
             'C' => 'آدرس',
             'D' => 'زمان ارسال',
             'E' => 'نوع ارسال',

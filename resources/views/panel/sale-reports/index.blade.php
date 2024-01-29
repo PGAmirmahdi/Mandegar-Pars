@@ -16,7 +16,7 @@
             <div class="row mb-3">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="invoice_id" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
-                        <option value="all">پیش فاکتور (همه)</option>
+                        <option value="all">سفارش (همه)</option>
                         @foreach($invoices as $invoice_id => $customer_name)
                             <option value="{{ $invoice_id }}" {{ request()->invoice_id == $invoice_id ? 'selected' : '' }}>{{ $invoice_id.' - '.$customer_name }}</option>
                         @endforeach
@@ -43,7 +43,7 @@
                         <th>نام شخص</th>
                         <th>نام سازمان</th>
                         <th>کد/شناسه ملی</th>
-                        <th>شماره پیش فاکتور</th>
+                        <th>شماره سفارش</th>
                         <th>نوع پرداخت</th>
                         <th>تاریخ ایجاد</th>
                         @can('sale-reports-edit')

@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'چاپ پیش فاکتور')
+@section('title', 'چاپ سفارش')
 @php
     $sidebar = false;
     $header = false;
