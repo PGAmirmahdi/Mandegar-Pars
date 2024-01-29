@@ -25,7 +25,7 @@
                     @else
                         <h6>ایجاد سفارش</h6>
                     @endcan
-                    @can('sales-manager')
+                    @can('unofficial-sales')
                         <div class="col-12 mb-4 text-center">
                             <h4>
                                 @can('accountants')
