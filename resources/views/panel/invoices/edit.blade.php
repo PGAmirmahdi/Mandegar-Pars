@@ -45,7 +45,7 @@
             <div class="card-title">
                 <div class="row d-flex justify-content-between align-items-center mb-5">
                     <h6>ویرایش سفارش</h6>
-                    <a href="{{ route('invoices.show', ['invoice' => $invoice->id) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
+                    <a href="{{ route('invoices.show', ['invoice' => $invoice->id]) }}" class="btn btn-outline-info"><i class="fa fa-print mr-2"></i>نسخه چاپی </a>
                     @can('unofficial-sales')
 {{--                        <div class="col-12 mb-4 text-center">--}}
 {{--                            <h4>--}}
@@ -584,28 +584,36 @@
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this)
             })
-            $(document).on('keyup', '#products_table input[name="counts[]"]', function () {
-                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+            $(document).on('keyup', '#products_table input[name="counts[]"]', function (e) {
+                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value){
+                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+                }
             })
             $(document).on('change', '#products_table input[name="counts[]"]', function () {
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this)
             })
-            $(document).on('keyup', '#other_products_table input[name="other_counts[]"]', function () {
-                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+            $(document).on('keyup', '#other_products_table input[name="other_counts[]"]', function (e) {
+                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value){
+                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+                }
             })
             $(document).on('change', '#other_products_table input[name="other_counts[]"]', function () {
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcOtherProductInvoice(this)
             })
-            $(document).on('keyup', '#other_products_table input[name="other_prices[]"]', function () {
-                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+            $(document).on('keyup', '#other_products_table input[name="other_prices[]"]', function (e) {
+                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value){
+                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+                }
             })
             $(document).on('change', '#other_products_table input[name="other_prices[]"]', function () {
                 CalcOtherProductInvoice(this)
             })
-            $(document).on('keyup', '#other_products_table input[name="other_discount_amounts[]"]', function () {
-                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+            $(document).on('keyup', '#other_products_table input[name="other_discount_amounts[]"]', function (e) {
+                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value){
+                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+                }
             })
             $(document).on('change', '#other_products_table input[name="other_discount_amounts[]"]', function () {
                 CalcOtherProductInvoice(this)
