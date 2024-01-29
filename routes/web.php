@@ -165,6 +165,8 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('excel/invoices', [InvoiceController::class, 'excel'])->name('invoices.excel');
     Route::get('change-status-invoice/{invoice}', [InvoiceController::class, 'changeStatus'])->name('invoices.changeStatus');
     Route::post('downloadPDF', [InvoiceController::class, 'downloadPDF'])->name('invoices.download');
+    Route::get('invoice-action/{invoice}', [InvoiceController::class, 'action'])->name('invoice.action');
+    Route::post('invoice-action/{invoice}', [InvoiceController::class, 'actionStore'])->name('invoice.action.store');
 
     // Coupons
     Route::resource('coupons', CouponController::class)->except('show');

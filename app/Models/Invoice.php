@@ -93,6 +93,11 @@ class Invoice extends Model
         return $this->hasOne(OrderStatus::class);
     }
 
+    public function action()
+    {
+        return $this->hasOne(InvoiceAction::class);
+    }
+
     public function getNetAmount()
     {
         return $this->products()->sum('invoice_net') + $this->other_products()->sum('invoice_net');

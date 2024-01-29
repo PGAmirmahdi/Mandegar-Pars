@@ -210,7 +210,9 @@ return [
         'version_number' => 'شماره نسخه',
         'release_date' => 'تاریخ انتشار',
         'serial_number' => 'شماره سریال',
-        'customer_code' => 'کد مشتری'
+        'customer_code' => 'کد مشتری',
+        'invoice_file' => 'فایل پیش فاکتور',
+        'factor_file' => 'فایل فاکتور'
     ],
 
 ];
