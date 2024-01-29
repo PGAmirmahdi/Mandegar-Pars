@@ -21,9 +21,4 @@ class Factor extends Model
     {
         return $this->belongsTo(Invoice::class);
     }
-
-    public function inventory_report()
-    {
-        return $this->hasOne(InventoryReport::class);
-    }
 }

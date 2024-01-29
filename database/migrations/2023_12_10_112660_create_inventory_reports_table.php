@@ -18,12 +18,12 @@ class CreateInventoryReportsTable extends Migration
             $table->unsignedBigInteger('warehouse_id');
             $table->enum('type', ['input','output']);
             $table->string('person')->comment('طرف حساب');
-            $table->unsignedBigInteger('factor_id')->nullable();
+            $table->unsignedBigInteger('invoice_id')->nullable();
             $table->longText('description')->nullable();
             $table->timestamps();
 
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
-            $table->foreign('factor_id')->references('id')->on('factors');
+            $table->foreign('invoice_id')->references('id')->on('invoices');
         });
     }
 

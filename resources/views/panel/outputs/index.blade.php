@@ -35,7 +35,7 @@
                     <tr>
                         <th>#</th>
                         <th>تحویل گیرنده</th>
-                        <th>فاکتور</th>
+                        <th>سفارش</th>
                         <th>تاریخ خروج</th>
                         <th>تاریخ ثبت</th>
                         <th>خروج انبار</th>
@@ -53,8 +53,8 @@
                             <td>{{ ++$key }}</td>
                             <td><strong>{{ $item->person }}</strong></td>
                             <td>
-                                @if($item->factor)
-                                    <strong><u><a href="{{ route('invoices.show', [$item->factor->invoice->id, 'type' => 'factor']) }}" class="text-primary" target="_blank">{{ $item->factor->invoice_id }}</a></u></strong>
+                                @if($item->invoice)
+                                    <strong><u><a href="{{ route('invoices.show', [$item->invoice->id]) }}" class="text-primary" target="_blank">{{ $item->invoice_id }}</a></u></strong>
                                 @else
                                     ---
                                 @endif

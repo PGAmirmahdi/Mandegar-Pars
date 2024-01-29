@@ -96,7 +96,7 @@ class InventoryReportController extends Controller
         // create report
         $report = InventoryReport::create([
             'warehouse_id' => $request->warehouse_id,
-            'factor_id' => $request->factor_id,
+            'invoice_id' => $request->invoice_id,
             'guarantee_id' => $guarantee_id,
             'type' => $request->type,
             'person' => $request->person,
@@ -183,7 +183,7 @@ class InventoryReportController extends Controller
 
         // create input report
         $inventoryReport->update([
-            'factor_id' => $request->factor_id,
+            'invoice_id' => $request->invoice_id,
             'guarantee_id' => $guarantee_id,
             'type' => $request->type,
             'person' => $request->person,
@@ -194,7 +194,7 @@ class InventoryReportController extends Controller
         // check current count when input edit
         foreach ($request->inventory_id as $key => $inventory_id){
             $inventory = Inventory::find($inventory_id);
-            $temp_input = $inventoryReport->in_outs()->where('inventory_id', $inventory_id)->first()->count;
+            $temp_input = $inventoryReport->in_outs()->where('inventory_id', $inventory_id)->first() ? $inventoryReport->in_outs()->where('inventory_id', $inventory_id)->first()->count : 0;
             $temp_current_count = ($inventory->current_count - $temp_input) < 0 ? 0 : $inventory->current_count - $temp_input;
 
             $new_input = $request->counts[$key];

@@ -29,21 +29,21 @@
                 <input type="hidden" name="type" value="{{ request()->type }}">
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
-                        <label for="factor_id">فاکتور</label>
-                        <select class="js-example-basic-single select2-hidden-accessible" name="factor_id" id="factor_id">
+                        <label for="invoice_id">سفارش</label>
+                        <select class="js-example-basic-single select2-hidden-accessible" name="invoice_id" id="invoice_id">
                             <option value="">انتخاب کنید...</option>
-                            @if(\App\Models\Factor::doesntHave('inventory_report')->count())
-                                @foreach(\App\Models\Factor::doesntHave('inventory_report')->get() as $factor)
-                                    <option value="{{ $factor->id }}" {{ old('factor_id') == $factor->id ? 'selected' : '' }}> {{ $factor->id }} - {{ $factor->invoice->customer->name }}</option>
+                            @if(\App\Models\Invoice::doesntHave('inventory_report')->count())
+                                @foreach(\App\Models\Invoice::doesntHave('inventory_report')->get() as $invoice)
+                                    <option value="{{ $invoice->id }}" {{ old('invoice_id') == $invoice->id ? 'selected' : '' }}> {{ $invoice->id }} - {{ $invoice->customer->name }}</option>
                                 @endforeach
                             @else
-                                <option value="" disabled selected>فاکتوری موجود نیست!</option>
+                                <option value="" disabled selected>سفارشی موجود نیست!</option>
                             @endif
                         </select>
                         <span id="factor_link">
-                            <a href="" class="btn-link" target="_blank">نمایش فاکتور</a>
+                            <a href="" class="btn-link" target="_blank">نمایش سفارش</a>
                         </span>
-                        @error('factor_id')
+                        @error('invoice_id')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
@@ -135,7 +135,7 @@
                                     <div id="miss_products" class="d-none">
                                         <div>
                                             <strong><i class="fa fa-circle"></i></strong>
-                                            <strong>توجه!</strong> برخی کالاهای فاکتور در انبار تعریف نشده اند
+                                            <strong>توجه!</strong> برخی کالاهای سفارش در انبار تعریف نشده اند
                                         </div>
                                         <small>ابتدا آنها را در انبار تعریف کنید</small>
                                         <br>
@@ -147,7 +147,7 @@
                                     <div id="other_products" class="d-none">
                                         <div>
                                             <strong><i class="fa fa-circle"></i></strong>
-                                            <strong>توجه!</strong> محصولات دیگر در فاکتور باید بصورت دستی وارد شوند
+                                            <strong>توجه!</strong> محصولات دیگر در سفارش باید بصورت دستی وارد شوند
                                             <ul id="items">
                                             </ul>
                                         </div>
@@ -222,18 +222,18 @@
             })
             // end remove property
 
-            $(document).on('change','#factor_id', function (){
+            $(document).on('change','#invoice_id', function (){
                 if (this.value !== '')
                 {
-                    let factor_id = this.value;
+                    let invoice_id = this.value;
                     $.ajax({
                         type: 'post',
                         url: '/api/get-invoice-products',
                         data: {
-                            factor_id
+                            invoice_id
                         },
                         success: function (res) {
-                            let url = `/panel/invoices/${res.invoice_id}?type=factor`
+                            let url = `/panel/invoices/${res.invoice_id}`
                             $('#factor_link a').attr('href', url)
 
                             if (res.missed){

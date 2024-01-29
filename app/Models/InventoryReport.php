@@ -21,9 +21,9 @@ class InventoryReport extends Model
         return $this->hasMany(InOut::class);
     }
 
-    public function factor()
+    public function invoice()
     {
-        return $this->belongsTo(Factor::class);
+        return $this->belongsTo(Invoice::class);
     }
 
     public function exit_door()

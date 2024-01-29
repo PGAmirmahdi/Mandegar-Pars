@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BotUser;
 use App\Models\Factor;
 use App\Models\Inventory;
+use App\Models\Invoice;
 use App\Models\Printer;
 use App\Models\Product;
 use App\Models\User;
@@ -89,10 +90,10 @@ class ApiController extends Controller
 
     public function getInvoiceProducts(Request $request)
     {
-        $factor = Factor::find($request->factor_id);
+        $invoice = Invoice::find($request->invoice_id);
 
-        $invoice_other_products = $factor->invoice->other_products;
-        $invoice_products_code = $factor->invoice->products->pluck('code')->toArray();
+        $invoice_other_products = $invoice->other_products;
+        $invoice_products_code = $invoice->products->pluck('code')->toArray();
         $inventory_products_code = Inventory::pluck('code')->toArray();
         $missed = false;
         $miss_products = [];
@@ -104,11 +105,11 @@ class ApiController extends Controller
         }
 
         return response()->json([
-            'data' => $factor->invoice->products,
+            'data' => $invoice->products,
             'missed' => $missed,
             'miss_products' => $miss_products,
             'other_products' => $invoice_other_products,
-            'invoice_id' => $factor->invoice_id
+            'invoice_id' => $invoice->id
         ]);
     }
 
