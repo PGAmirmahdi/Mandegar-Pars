@@ -52,7 +52,8 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-create');
 
-        return view('panel.invoices.create');
+        $seller = Seller::first();
+        return view('panel.invoices.create', compact('seller'));
     }
 
     public function store(StoreInvoiceRequest $request)
@@ -62,17 +63,7 @@ class InvoiceController extends Controller
         $type = $request->type;
         $req_for = $request->req_for;
 
-        if ($type == 'unofficial'){
-            $seller = Seller::create([
-                'name' => $request->seller_name,
-                'phone' => $request->seller_phone,
-                'province' => $request->seller_province,
-                'city' => $request->seller_city,
-                'address' => $request->seller_address,
-            ]);
-        }else{
-            $seller = null;
-        }
+        $seller = Seller::first();
 
         $invoice = Invoice::create([
             'user_id' => auth()->id(),
@@ -127,7 +118,9 @@ class InvoiceController extends Controller
             return back();
         }
 
-        return view('panel.invoices.edit', compact('invoice'));
+        $seller = Seller::first();
+
+        return view('panel.invoices.edit', compact('invoice','seller'));
     }
 
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
@@ -155,33 +148,7 @@ class InvoiceController extends Controller
         $type = $request->type;
         $req_for = $request->req_for;
 
-        if ($type == 'unofficial'){
-            if (!$invoice->seller){
-                $seller = Seller::create([
-                    'name' => $request->seller_name,
-                    'phone' => $request->seller_phone,
-                    'province' => $request->seller_province,
-                    'city' => $request->seller_city,
-                    'address' => $request->seller_address,
-                ]);
-            }else{
-                $invoice->seller()->update([
-                    'name' => $request->seller_name,
-                    'phone' => $request->seller_phone,
-                    'province' => $request->seller_province,
-                    'city' => $request->seller_city,
-                    'address' => $request->seller_address,
-                ]);
-
-                $seller = $invoice->seller;
-            }
-        }else{
-            $seller = null;
-            if ($invoice->seller){
-                $invoice->update(['seller_id' => null]);
-                $invoice->seller->delete();
-            }
-        }
+        $seller = Seller::first();
 
         $invoice->update([
             'customer_id' => $request->buyer_name,

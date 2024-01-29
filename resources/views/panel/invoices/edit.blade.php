@@ -54,23 +54,27 @@
                     @else
                         <h6>ویرایش سفارش</h6>
                     @endcan
-                    <div class="col-12 mb-4 text-center">
-                        <h4>
-                            @can('accountants')
-                                نوع فاکتور
-                            @else
-                                نوع سفارش
-                            @endcan
-                        </h4>
-                    </div>
-                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-                        <label class="btn btn-outline-primary justify-content-center {{ $invoice->type == 'official' && old('type') == null || old('type') == 'official' ? 'active' : '' }}">
-                            <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ $invoice->type == 'official' || old('type') == 'official' ? 'checked' : '' }}>رسمی
-                        </label>
-                        <label class="btn btn-outline-primary justify-content-center {{ $invoice->type == 'unofficial' && old('type') == null || old('type') == 'unofficial' ? 'active' : '' }}">
-                            <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی
-                        </label>
-                    </div>
+                    @can('sales-manager')
+                        <div class="col-12 mb-4 text-center">
+                            <h4>
+                                @can('accountants')
+                                    نوع فاکتور
+                                @else
+                                    نوع سفارش
+                                @endcan
+                            </h4>
+                        </div>
+                        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                            <label class="btn btn-outline-primary justify-content-center {{ $invoice->type == 'official' && old('type') == null || old('type') == 'official' ? 'active' : '' }}">
+                                <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ $invoice->type == 'official' || old('type') == 'official' ? 'checked' : '' }}>رسمی
+                            </label>
+                            <label class="btn btn-outline-primary justify-content-center {{ $invoice->type == 'unofficial' && old('type') == null || old('type') == 'unofficial' ? 'active' : '' }}">
+                                <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی
+                            </label>
+                        </div>
+                    @else
+                        <input type="hidden" name="type" value="official" form="invoice_form">
+                    @endcan
                     <div class="col-12 mb-4 text-center mt-5">
                         <h4>درخواست برای</h4>
                     </div>
@@ -93,24 +97,25 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_name">فروشنده <span class="text-danger">*</span></label>
-                        <input type="text" name="seller_name" class="form-control" id="seller_name" value="{{ $invoice->seller ? $invoice->seller->name : old('seller_name') }}">
+                        <input type="text" name="seller_name" class="form-control" id="seller_name" value="{{ $seller->name }}" readonly>
                         @error('seller_name')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_phone">شماره تماس<span class="text-danger">*</span></label>
-                        <input type="text" name="seller_phone" class="form-control" id="seller_phone" value="{{ $invoice->seller ? $invoice->seller->phone : old('seller_phone') }}">
+                        <input type="text" name="seller_phone" class="form-control" id="seller_phone" value="{{ $seller->phone }}"  readonly>
                         @error('seller_phone')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_province">استان <span class="text-danger">*</span></label>
-                        <select name="seller_province" id="seller_province" class="js-example-basic-single select2-hidden-accessible" data-select2-id="15" tabindex="-1" aria-hidden="true">
-                            @foreach(\App\Models\Province::all() as $province)
-                                <option value="{{ $province->name }}" {{ $invoice->seller ? $invoice->seller->province == $province->name ? 'selected' : '' : (old('seller_province') == $province->name ? 'selected' : '') }}>{{ $province->name }}</option>
-                            @endforeach
+                        <select name="seller_province" id="seller_province" class="form-control" style="pointer-events: none" readonly>
+                            <option value="{{ $seller->province }}">{{ $seller->province }}</option>
+{{--                            @foreach(\App\Models\Province::all() as $province)--}}
+{{--                                <option value="{{ $province->name }}" {{ $invoice->seller ? $invoice->seller->province == $province->name ? 'selected' : '' : (old('seller_province') == $province->name ? 'selected' : '') }}>{{ $province->name }}</option>--}}
+{{--                            @endforeach--}}
                         </select>
                         @error('seller_province')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -118,14 +123,14 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_city">شهر<span class="text-danger">*</span></label>
-                        <input type="text" name="seller_city" class="form-control" id="seller_city" value="{{ $invoice->seller ? $invoice->seller->city : old('seller_city') }}">
+                        <input type="text" name="seller_city" class="form-control" id="seller_city" value="{{ $seller->city }}" readonly>
                         @error('seller_city')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_address">نشانی<span class="text-danger">*</span></label>
-                        <textarea name="seller_address" id="seller_address" class="form-control">{{ $invoice->seller ? $invoice->seller->address : old('seller_address') }}</textarea>
+                        <textarea name="seller_address" id="seller_address" class="form-control" readonly>{{ $seller->address }}</textarea>
                         @error('seller_address')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
