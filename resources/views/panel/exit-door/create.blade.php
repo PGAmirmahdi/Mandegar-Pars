@@ -10,19 +10,19 @@
                 @csrf
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
-                        <label for="inventory_report_id">فاکتور<span class="text-danger">*</span></label>
+                        <label for="inventory_report_id">سفارش<span class="text-danger">*</span></label>
                         <select class="js-example-basic-single select2-hidden-accessible" name="inventory_report_id" id="inventory_report_id">
                             <option value="">انتخاب کنید...</option>
                             @if($inventory_reports->count())
                                 @foreach($inventory_reports as $inventory_report)
-                                    <option value="{{ $inventory_report->id }}" {{ old('inventory_report_id') == $inventory_report->id ? 'selected' : '' }}> {{ $inventory_report->factor->id }} - {{ $inventory_report->factor->invoice->customer->name }}</option>
+                                    <option value="{{ $inventory_report->id }}" {{ old('inventory_report_id') == $inventory_report->id ? 'selected' : '' }}> {{ $inventory_report->invoice->id }} - {{ $inventory_report->invoice->customer->name }}</option>
                                 @endforeach
                             @else
-                                <option value="" disabled selected>فاکتوری موجود نیست!</option>
+                                <option value="" disabled selected>سفارشی موجود نیست!</option>
                             @endif
                         </select>
                         <span id="factor_link">
-                            <a href="" class="btn-link" target="_blank">نمایش فاکتور</a>
+                            <a href="" class="btn-link" target="_blank">نمایش سفارش</a>
                         </span>
                         @error('inventory_report_id')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -79,7 +79,7 @@
                     url: '/panel/get-in-outs/'+inventory_report_id,
                     type: 'get',
                     success: function (res){
-                        let url = `/panel/invoices/${res.data.invoice_id}?type=factor`
+                        let url = `/panel/invoices/${res.data.invoice_id}`
                         $('#factor_link a').attr('href', url);
                         $('#properties_table tbody').html('')
                         $.each(res.data.items, function (i, item) {

@@ -34,7 +34,8 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>فاکتور</th>
+                        <th>سفارش</th>
+                        <th>شماره سفارش</th>
                         <th>وضعیت</th>
                         <th>تاریخ ثبت</th>
                         <th>توضیحات</th>
@@ -46,8 +47,9 @@
                     @foreach($data as $key => $item)
                         <tr>
                             <td>{{ ++$key }}</td>
+                            <td>{{ $item->inventory_report->invoice->customer->name }}</td>
                             <td>
-                                <strong><u><a href="{{ route('invoices.show', [$item->inventory_report->factor->invoice_id, 'type' => 'factor']) }}" class="text-primary" target="_blank">{{ $item->inventory_report->factor->invoice_id }}</a></u></strong>
+                                <strong><u><a href="{{ route('invoices.show', [$item->inventory_report->invoice_id]) }}" class="text-primary" target="_blank">{{ $item->inventory_report->invoice_id }}</a></u></strong>
                             </td>
                             <td>
                                 @if($item->status == 'confirmed')

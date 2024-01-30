@@ -21,7 +21,7 @@ class ExitDoorController extends Controller
     {
         $this->authorize('exit-door');
 
-        $inventory_reports = InventoryReport::whereType('output')->has('factor')->doesntHave('exit_door')->get();
+        $inventory_reports = InventoryReport::whereType('output')->has('invoice')->doesntHave('exit_door')->get();
         return view('panel.exit-door.create', compact('inventory_reports'));
     }
 
@@ -32,7 +32,7 @@ class ExitDoorController extends Controller
         $request->validate([
             'inventory_report_id' => 'required'
         ],[
-            'inventory_report_id.required' => 'انتخاب فاکتور الزامی است'
+            'inventory_report_id.required' => 'انتخاب سفارش الزامی است'
         ]);
 
         ExitDoor::create([
@@ -75,7 +75,7 @@ class ExitDoorController extends Controller
 
         $data = [
             'items' => $inventoryReport->in_outs()->with('inventory')->get(),
-            'invoice_id' => $inventoryReport->factor->invoice_id
+            'invoice_id' => $inventoryReport->invoice_id
         ];
 
         return response()->json(['data' => $data]);
