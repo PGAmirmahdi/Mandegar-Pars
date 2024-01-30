@@ -87,8 +87,6 @@ class TicketController extends Controller
     {
         $this->authorize('tickets-create');
 
-        $request->validate(['text' => 'required']);
-
         $ticket->update(['status' => 'pending']);
 
         // prevent from send sequence notification

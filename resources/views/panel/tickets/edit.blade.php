@@ -161,6 +161,8 @@
         $(document).ready(function () {
             $('#file').on('change', function () {
                 $('#file_lbl').text(this.files[0].name)
+
+                $('input[name="text"]').removeAttr('required')
             })
         })
     </script>

@@ -17,7 +17,7 @@ class CreateMessagesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('ticket_id');
-            $table->longText('text');
+            $table->longText('text')->nullable();
             $table->json('file')->nullable();
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
