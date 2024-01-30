@@ -105,7 +105,7 @@
                         _method: 'delete'
                     },
                     success: function(res) {
-                        $('tbody').html($(res).find('tbody').html());
+                        $('tbody:not(.internal_tels)').html($(res).find('tbody:not(.internal_tels)').html());
                         Swal.fire({
                             title: 'با موفقیت حذف شد',
                             icon: 'success',

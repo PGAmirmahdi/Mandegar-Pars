@@ -26,7 +26,7 @@
                             <th>داخلی</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="internal_tels">
                         <tr>
                             <td>مدیرعامل (غلامی)</td>
                             <td>111</td>
