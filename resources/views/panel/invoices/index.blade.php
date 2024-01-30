@@ -100,9 +100,9 @@
                             <th>همکار</th>
                         @endcan
                         <th>تاریخ ایجاد</th>
-                        @can('accountant')
+                        @canany(['accountant','admin','ceo'])
                             <th>مشاهده سفارش</th>
-                        @endcan
+                        @endcanany
                         @can('warehouse-keeper')
                             <th>فاکتور</th>
                         @else
@@ -135,13 +135,13 @@
                                 <td>{{ $invoice->user->fullName() }}</td>
                             @endcan
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
-                            @can('accountant')
+                            @canany(['accountant','admin','ceo'])
                                 <td>
                                     <a class="btn btn-info btn-floating" href="{{ route('invoices.show', $invoice->id) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 </td>
-                            @endcan
+                            @endcanany
                             @can('warehouse-keeper')
                                 <td>
                                     <a href="{{ $invoice->action ? $invoice->action->factor_file ?? '#' : '#' }}" class="btn btn-primary btn-floating {{ $invoice->action ? $invoice->action->factor_file ? '' : 'disabled' : 'disabled' }}" target="_blank">
