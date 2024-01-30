@@ -41,10 +41,10 @@ class PermissionSeeder extends Seeder
 //            'printers-edit' => 'ویرایش پرینتر',
 //            'printers-delete' => 'حذف پرینتر',
 //
-//            'invoices-list' => 'لیست پیش فاکتور ها',
-//            'invoices-create' => 'ایجاد پیش فاکتور',
-//            'invoices-edit' => 'ویرایش پیش فاکتور',
-//            'invoices-delete' => 'حذف پیش فاکتور',
+//            'invoices-list' => 'لیست سفارشات',
+//            'invoices-create' => 'ایجاد سفارش',
+//            'invoices-edit' => 'ویرایش سفارش',
+//            'invoices-delete' => 'حذف سفارش',
 //
 //            'system-user' => 'سامانه',
 //            'partner-tehran-user' => 'همکار تهران',
@@ -119,11 +119,6 @@ class PermissionSeeder extends Seeder
 //            'foreign-customers-create' => 'ثبت مشتری خارجی',
 //            'foreign-customers-edit' => 'ویرایش مشتری خارجی',
 //            'foreign-customers-delete' => 'حذف مشتری خارجی',
-
-//            'factors-list' => 'لیست فاکتور ها',
-//            'factors-create' => 'ایجاد فاکتور',
-//            'factors-edit' => 'ویرایش فاکتور',
-//            'factors-delete' => 'حذف فاکتور',
 
 //            'tickets-list' => 'لیست تیکت ها',
 //            'tickets-create' => 'ثبت تیکت',
