@@ -27,7 +27,8 @@ class User extends Authenticatable
         'role_id',
         'sign_image',
         'password',
-        'najva_token'
+        'najva_token',
+        'fcm_token'
     ];
 
     /**

@@ -149,6 +149,12 @@ class PanelController extends Controller
         return response()->json(['data' => 'your token stored: '. $request->najva_user_token]);
     }
 
+    public function saveFCMToken(Request $request)
+    {
+        auth()->user()->update(['fcm_token' => $request->token]);
+        return response()->json(['token saved successfully.']);
+    }
+
     private function getFactorsMonthly()
     {
         $factors = [
