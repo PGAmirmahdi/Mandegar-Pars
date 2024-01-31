@@ -15,6 +15,7 @@ class UpdateUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('najva_token')->nullable()->after('sign_image');
+            $table->string('fcm_token')->nullable()->after('najva_token');
         });
     }
 

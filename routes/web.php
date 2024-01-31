@@ -67,7 +67,9 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
+
+    (new PanelController)->sendNotification('test','this is test');
 
 //    foreach (\App\Models\InventoryReport::where('factor_id', '!=', null)->get() as $item){
 //        $item->update(['invoice_id' => $item->factor->invoice_id]);
@@ -88,6 +90,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::match(['get','post'],'/', [PanelController::class, 'index'])->name('panel');
     Route::post('send-sms', [PanelController::class, 'sendSMS'])->name('sendSMS');
     Route::post('najva_token', [PanelController::class, 'najva_token_store']);
+    Route::post('saveFcmToken', [PanelController::class, 'saveFCMToken']);
 
     // Users
     Route::resource('users',UserController::class)->except('show');

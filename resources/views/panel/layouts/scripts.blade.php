@@ -74,6 +74,7 @@
 @yield('scripts')
 
 <script src="{{ asset('/js/app.js') }}"></script>
+<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 
 <script>
 
@@ -191,4 +192,57 @@
             audio.play();
         });
     // end realtime
+
+    // firebase push notification
+    var firebaseConfig = {
+        apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
+        authDomain: "mandegarpars-5e075.firebaseapp.com",
+        projectId: "mandegarpars-5e075",
+        storageBucket: "mandegarpars-5e075.appspot.com",
+        messagingSenderId: "11452789862",
+        appId: "1:11452789862:web:8ee1465cf4e374fcbde9a7"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    function initFirebaseMessagingRegistration() {
+        messaging
+            .requestPermission()
+            .then(function () {
+                return messaging.getToken()
+            })
+            .then(function(token) {
+                console.log(token);
+
+                $.ajax({
+                    url: '/panel/saveFcmToken',
+                    type: 'POST',
+                    data: {
+                        token: token
+                    },
+                    dataType: 'JSON',
+                    success: function (response) {
+                        alert('Token saved successfully.');
+                    },
+                    error: function (err) {
+                        console.log('User Chat Token Error'+ err);
+                    },
+                });
+
+            }).catch(function (err) {
+            console.log('User Chat Token Error'+ err);
+        });
+    }
+
+    initFirebaseMessagingRegistration();
+
+    messaging.onMessage(function(payload) {
+        const noteTitle = payload.notification.title;
+        const noteOptions = {
+            body: payload.notification.body,
+            icon: payload.notification.icon,
+        };
+        new Notification(noteTitle, noteOptions);
+    });
 </script>
