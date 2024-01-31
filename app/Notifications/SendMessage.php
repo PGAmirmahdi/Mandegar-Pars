@@ -67,9 +67,9 @@ class SendMessage extends Notification
     {
         // najva push notification
         $data = [
-            "title" => $this->message,
+            "title" => $message,
             "body" => ".",
-            "url" => $this->url,
+            "url" => $url,
             "icon" => "https://mpsystem.ir/assets/media/image/logo.png",
             "utm" => [],
             "light_up_screen" => false,
@@ -102,6 +102,8 @@ class SendMessage extends Notification
             return 'Error:' . curl_error($ch);
         }
         curl_close($ch);
+
+        Log::info($result);
         // najva push notification
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Models\Ticket;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 class TicketController extends Controller
