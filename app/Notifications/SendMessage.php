@@ -66,7 +66,7 @@ class SendMessage extends Notification
 
     private function send_firebase_notification($message, $url, $token)
     {
-        $firebaseToken = User::whereNotNull('fcm_token')->pluck('fcm_token')->all();
+        $firebaseToken = [$token];
 
         $SERVER_API_KEY = 'AAAAAqqjtGY:APA91bGqBtuYddBnAnliS0HOL1PBuf8cbWgdkNWMpOJCMFuWPVq2nCZoLTZIcxDQMJf8OwAsWRYYan5BpXC6qFdoIpyWW91OCUOu-eDOggSmBv-Oi5ebT2FWdSRid7OV1iP02_9rGftS';
 
@@ -74,7 +74,8 @@ class SendMessage extends Notification
             "registration_ids" => $firebaseToken,
             "notification" => [
                 "title" => $message,
-                "body" => '...',
+                "body" => '',
+                "icon" => 'https://mpsystem.ir/assets/media/image/logo.png',
                 "content_available" => true,
                 "priority" => "high",
             ]
