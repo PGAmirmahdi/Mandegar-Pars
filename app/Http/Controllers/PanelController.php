@@ -140,6 +140,15 @@ class PanelController extends Controller
         return $result;
     }
 
+    public function najva_token_store(Request $request)
+    {
+        \auth()->user()->update([
+            'najva_token' => $request->najva_user_token
+        ]);
+
+        return response()->json(['data' => 'your token stored: '. $request->najva_user_token]);
+    }
+
     private function getFactorsMonthly()
     {
         $factors = [

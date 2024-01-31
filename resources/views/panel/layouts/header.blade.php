@@ -123,6 +123,5 @@
 
     </div>
     <!-- end::header body -->
-
 </div>
 <!-- end::header -->

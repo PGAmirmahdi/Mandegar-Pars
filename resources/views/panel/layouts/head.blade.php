@@ -91,6 +91,19 @@
     </script>
     <!-- END NAJVA PUSH NOTIFICATION -->
 
+    <script>
+        window.najvaUserSubscribed = function(najva_user_token){
+            $.ajax({
+                url: '/panel/najva_token',
+                type: 'post',
+                data: {najva_user_token},
+                success: function (res){
+                    console.log(res.data)
+                }
+            })
+        }
+    </script>
+
 </head>
 <body>
 
