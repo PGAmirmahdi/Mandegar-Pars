@@ -67,10 +67,8 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-//    return \auth()->loginUsingId($id);
-
-    (new PanelController)->sendNotification('test','this is test');
-
+    return \auth()->loginUsingId($id);
+    
 //    foreach (\App\Models\InventoryReport::where('factor_id', '!=', null)->get() as $item){
 //        $item->update(['invoice_id' => $item->factor->invoice_id]);
 //    }
