@@ -2,8 +2,8 @@
 Give the service worker access to Firebase Messaging.
 Note that you can only use Firebase Messaging here, other Firebase libraries are not available in the service worker.
 */
-importScripts('https://www.gstatic.com/firebasejs/7.23.0/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/7.23.0/firebase-messaging.js');
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
 /*
 Initialize the Firebase app in the service worker by passing in the messagingSenderId.
@@ -32,7 +32,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
     const notificationTitle = "Background Message Title";
     const notificationOptions = {
         body: "Background Message body.",
-        icon: "/itwonders-web-logo.png",
+        icon: "https://mpsystem.ir/assets/media/image/logo.png",
     };
 
     return self.registration.showNotification(

@@ -75,9 +75,14 @@ class SendMessage extends Notification
             "notification" => [
                 "title" => $message,
                 "body" => '',
-                "icon" => 'https://mpsystem.ir/assets/media/image/logo.png',
-                "content_available" => true,
+//                "image" => 'https://mpsystem.ir/assets/media/image/logo.png',
+//                "content_available" => true,
                 "priority" => "high",
+            ],
+            "webpush" => [
+                "headers" => [
+                    "image" => "https://mpsystem.ir/assets/media/image/logo.png",
+                ]
             ]
         ];
         $dataString = json_encode($data);
@@ -92,7 +97,6 @@ class SendMessage extends Notification
         curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
 
