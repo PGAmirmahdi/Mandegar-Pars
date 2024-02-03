@@ -21,11 +21,9 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            @can('warehouse-keeper')
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <h6>وضعیت سفارش</h6>
-                </div>
-            @endcan
+            <div class="card-title d-flex justify-content-between align-items-center">
+                <h6>وضعیت سفارش</h6>
+            </div>
             <div class="orders">
                 @php
                     $order = $invoice->order_status()->where('status', 'register')->firstOrCreate(['order' => 1]);
@@ -38,16 +36,22 @@
                     $current_status = $invoice->order_status()->orderByDesc('order')->first()->status;
                 @endphp
                 <div class="item rounded shadow p-4 mt-4">
-                    <div class="d-flex justify-content-between">
-                        <h5>{{ $invoice->customer->name }}</h5>
-                        <div class="form-group">
-                            <select class="form-control change_status" data-invoice_id="{{ $invoice->id }}">
-                                @foreach(\App\Models\OrderStatus::STATUS as $key => $status)
-                                    <option value="{{ $key }}" {{ $key == $current_status ? 'selected' : '' }}>{{ $status }}</option>
-                                @endforeach
-                            </select>
+                    @can('warehouse-keeper')
+                        <div class="d-flex justify-content-between">
+                            <h5>{{ $invoice->customer->name }}</h5>
+                            <div class="form-group">
+                                <select class="form-control change_status" data-invoice_id="{{ $invoice->id }}">
+                                    @foreach(\App\Models\OrderStatus::STATUS as $key => $status)
+                                        <option value="{{ $key }}" {{ $key == $current_status ? 'selected' : '' }}>{{ $status }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    @else
+                        <div class="d-flex">
+                            <h5>{{ $invoice->customer->name }}</h5>
+                        </div>
+                    @endcan
                     <div class="row">
                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-4 my-2">
                             <img src="{{ asset('assets/media/image/order/register.png') }}" data-toggle="tooltip" data-placement="top" data-original-title="{{ verta($order->created_at)->format('H:i - Y/m/d') }}">
