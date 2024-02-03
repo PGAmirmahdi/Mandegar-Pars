@@ -18,6 +18,11 @@
                     </div>
                 @endcannot
             @endcan
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle font-size-20 align-middle"></i>
+                <strong>توجه!</strong>
+                وضعیت سفارشات قبل از تاریخ 1402/11/14 قابل مشاهده نیست
+            </div>
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>سفارشات</h6>
                 <div>
@@ -144,7 +149,8 @@
                                 </td>
                             @endcanany
                             <td>
-                                <a href="{{ route('orders-status.index', $invoice->id) }}" class="btn btn-gradient-warning btn-floating" target="_blank">
+                                {{-- invoices before 2024-02-03 order-status disabled --}}
+                                <a href="{{ route('orders-status.index', $invoice->id) }}" class="btn btn-gradient-warning btn-floating {{ $invoice->created_at < verta('2024-02-03 00:00:00') ? 'disabled' : '' }}" target="_blank">
                                     <i class="fa fa-truck-fast"></i>
                                 </a>
                             </td>
