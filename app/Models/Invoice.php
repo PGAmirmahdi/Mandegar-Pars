@@ -90,7 +90,7 @@ class Invoice extends Model
 
     public function order_status()
     {
-        return $this->hasOne(OrderStatus::class);
+        return $this->hasMany(OrderStatus::class);
     }
 
     public function action()

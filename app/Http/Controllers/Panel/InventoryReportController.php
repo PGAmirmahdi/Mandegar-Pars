@@ -7,6 +7,7 @@ use App\Models\Factor;
 use App\Models\Guarantee;
 use App\Models\Inventory;
 use App\Models\InventoryReport;
+use App\Models\Invoice;
 use Dflydev\DotAccessData\Data;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
@@ -74,6 +75,12 @@ class InventoryReportController extends Controller
 
         }else{
             $this->authorize('output-reports-create');
+
+            // order status
+            $invoice = Invoice::find($request->invoice_id);
+            $invoice->order_status()->firstOrCreate(['order' => 2, 'status' => 'processing']);
+            $invoice->order_status()->firstOrCreate(['order' => 3, 'status' => 'out']);
+            // end order status
 
             $type_lbl = 'خروجی';
             $request->validate([

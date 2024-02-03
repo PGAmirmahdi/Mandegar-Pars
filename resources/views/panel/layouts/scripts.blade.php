@@ -213,7 +213,7 @@
                 return messaging.getToken()
             })
             .then(function(token) {
-                console.log(token);
+                // console.log(token);
 
                 $.ajax({
                     url: '/panel/saveFcmToken',

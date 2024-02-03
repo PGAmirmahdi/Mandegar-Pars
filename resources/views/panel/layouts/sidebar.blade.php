@@ -15,7 +15,7 @@
                 </li>
             @endcanany
             @canany(['invoices-list'])
-            <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}']) ? 'active' : '' }}" data-toggle="tooltip" title="صورتحساب">
+            <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" data-toggle="tooltip" title="صورتحساب">
                 <a href="#navigationInvoices" title="صورتحساب">
                     <i class="icon ti-shopping-cart"></i>
                 </a>
@@ -173,11 +173,11 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}']) ? 'navigation-active' : '' }}">
+        <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">صورتحساب</li>
             @can('invoices-list')
                 <li>
-                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','invoice-action/{invoice}']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات</a>
+                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات</a>
                 </li>
             @endcan
 {{--            @can('factors-list')--}}

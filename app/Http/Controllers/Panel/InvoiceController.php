@@ -91,6 +91,9 @@ class InvoiceController extends Controller
         // create products for invoice
         $this->storeInvoiceProducts($invoice, $request);
 
+        // create order status
+        $invoice->order_status()->create(['order' => 1, 'status' => 'register']);
+
         alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش');
         return redirect()->route('invoices.edit', $invoice->id);
     }

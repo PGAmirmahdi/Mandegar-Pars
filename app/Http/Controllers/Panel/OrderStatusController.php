@@ -3,20 +3,24 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use App\Models\OrderStatus;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 
 class OrderStatusController extends Controller
 {
-    public function index()
+    public function index(Invoice $invoice)
     {
-        $orders = OrderStatus::where('status', 'register')->latest()->paginate(10);
-        return view('panel.invoices.order-status', compact('orders'));
+        $this->authorize('invoices-list');
+
+        return view('panel.invoices.order-status', compact('invoice'));
     }
 
     public function changeStatus(Request $request)
     {
+        $this->authorize('invoices-list');
+
         $status = $request->status;
         $index = array_search($status, array_keys(OrderStatus::STATUS));
         $nextStatuses = array_keys(array_slice(OrderStatus::STATUS, $index + 1));
@@ -48,5 +52,7 @@ class OrderStatusController extends Controller
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        return back();
     }
 }

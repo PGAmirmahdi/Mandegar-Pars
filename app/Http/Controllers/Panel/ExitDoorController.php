@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\ExitDoor;
 use App\Models\InventoryReport;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 
 class ExitDoorController extends Controller
@@ -34,6 +35,14 @@ class ExitDoorController extends Controller
         ],[
             'inventory_report_id.required' => 'انتخاب سفارش الزامی است'
         ]);
+
+        // order status
+        $inventory_report = InventoryReport::find($request->inventory_report_id);
+        $invoice = $inventory_report->invoice;
+        $invoice->order_status()->firstOrCreate(['order' => 2, 'status' => 'processing']);
+        $invoice->order_status()->firstOrCreate(['order' => 3, 'status' => 'out']);
+        $invoice->order_status()->firstOrCreate(['order' => 4, 'status' => 'exit_door']);
+        // end order status
 
         ExitDoor::create([
             'inventory_report_id' => $request->inventory_report_id,

@@ -103,6 +103,7 @@
                         @canany(['accountant','admin','ceo'])
                             <th>مشاهده سفارش</th>
                         @endcanany
+                        <th>وضعیت سفارش</th>
                         @can('warehouse-keeper')
                             <th>فاکتور</th>
                         @else
@@ -142,6 +143,11 @@
                                     </a>
                                 </td>
                             @endcanany
+                            <td>
+                                <a href="{{ route('orders-status.index', $invoice->id) }}" class="btn btn-gradient-warning btn-floating" target="_blank">
+                                    <i class="fa fa-truck-fast"></i>
+                                </a>
+                            </td>
                             @can('warehouse-keeper')
                                 <td>
                                     <a href="{{ $invoice->action ? $invoice->action->factor_file ?? '#' : '#' }}" class="btn btn-primary btn-floating {{ $invoice->action ? $invoice->action->factor_file ? '' : 'disabled' : 'disabled' }}" target="_blank">
