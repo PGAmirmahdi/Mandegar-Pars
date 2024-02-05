@@ -132,30 +132,6 @@ class ProductController extends Controller
         return view('panel.products.index', compact('products'));
     }
 
-    public function priceList($type)
-    {
-        $this->authorize('prices-list');
-
-        ini_set('memory_limit', '64M');
-
-        $backPath = public_path('/assets/media/image/prices/background.png');
-        $data = \App\Models\Product::all();
-
-        $pdf = PDF::loadView('panel.pdf.prices',['data' => $data, 'type' => $type],[], [
-            'margin_top' => 50,
-            'margin_bottom' => 20,
-            'watermark_image_alpha' => 1,
-            'default_font_size' => 15,
-            'show_watermark_image' => true,
-            'watermarkImgBehind' => true,
-            'watermark_image_path' => $backPath
-        ]);
-
-        $name = 'لیست '.Product::PRICE_TYPE[$type];
-
-        return $pdf->stream("$name.pdf");
-    }
-
     public function pricesHistory()
     {
         $this->authorize('price-history');

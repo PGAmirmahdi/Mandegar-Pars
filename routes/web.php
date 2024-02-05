@@ -20,6 +20,7 @@ use App\Http\Controllers\Panel\OffSiteProductController;
 use App\Http\Controllers\Panel\OrderController;
 use App\Http\Controllers\Panel\OrderStatusController;
 use App\Http\Controllers\Panel\PacketController;
+use App\Http\Controllers\Panel\PriceController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
 use App\Http\Controllers\Panel\ReportController;
@@ -155,8 +156,14 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('get-leave-info',[LeaveController::class, 'getLeaveInfo']);
 
     // Price List
-    Route::view('prices-list','panel.prices.list')->name('prices-list')->can('prices-list');
-    Route::get('prices-list/pdf/{type}', [ProductController::class, 'priceList'])->name('prices-list-pdf');
+    Route::get('prices-list', [PriceController::class, 'index'])->name('prices-list');
+    Route::get('other-prices-list', [PriceController::class, 'otherList'])->name('other-prices-list');
+    Route::post('update-price', [PriceController::class, 'updatePrice'])->name('updatePrice');
+    Route::post('add-model', [PriceController::class, 'addModel'])->name('addModel');
+    Route::post('add-seller', [PriceController::class, 'addSeller'])->name('addSeller');
+    Route::post('remove-seller', [PriceController::class, 'removeSeller'])->name('removeSeller');
+    Route::post('remove-model', [PriceController::class, 'removeModel'])->name('removeModel');
+    Route::get('prices-list/pdf/{type}', [PriceController::class, 'priceList'])->name('prices-list-pdf');
 
     // Price History
     Route::get('price-history', [ProductController::class, 'pricesHistory'])->name('price-history');
