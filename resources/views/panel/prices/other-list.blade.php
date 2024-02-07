@@ -35,6 +35,34 @@
             vertical-align: middle;
             cursor: pointer;
         }
+
+        /* table th sticky */
+        .tableFixHead {
+            overflow: auto !important;
+            height: 800px !important;
+        }
+
+        .tableFixHead thead th{
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1 !important;
+        }
+
+        /* Just common table stuff. Really. */
+        table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+        }
+
+        th, td {
+            padding: 8px 16px !important;
+        }
+
+        .tableFixHead thead th {
+            background: #fff !important;
+            border: 1px solid #dee2e6 !important;
+        }
+        /* table th sticky */
     </style>
 @endsection
 @section('content')
@@ -137,7 +165,7 @@
     <div class="card">
         <div class="card-body">
             <h3 class="text-center mb-4">لیست قیمت ها - (ریال)</h3>
-            <div style="overflow-x: auto">
+            <div style="overflow-x: auto" class="tableFixHead">
                 <table class="table table-striped table-bordered dtr-inline text-center" id="price_table">
                     <thead>
                     <tr>
@@ -165,7 +193,7 @@
                     <tbody>
                     @foreach(\Illuminate\Support\Facades\DB::table('price_list_models')->get() as $model)
                         <tr>
-                            <th>
+                            <th style="display: block ruby">
                                 <i class="fa fa-times text-danger btn_remove_model mr-2" data-toggle="modal" data-target="#removeModelModal"></i>
                                 <span>{{ $model->name }}</span>
                             </th>
