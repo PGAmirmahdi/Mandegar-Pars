@@ -118,6 +118,10 @@ class PanelController extends Controller
         }
 
         $notif = auth()->user()->unreadNotifications()->whereId($notification)->first();
+        if (!$notif){
+            return back();
+        }
+
         $notif->markAsRead();
         return redirect()->to($notif->data['url']);
     }
