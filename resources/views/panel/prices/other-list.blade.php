@@ -237,12 +237,13 @@
                         'price': $(item).val(),
                     })
                 })
+                // console.log(items)
 
                 $.ajax({
                     url: "{{ route('updatePrice') }}",
                     type: 'post',
                     data: {
-                        items
+                        items: JSON.stringify(items)
                     },
                     success: function (res) {
                         $('#btn_save').removeAttr('disabled');

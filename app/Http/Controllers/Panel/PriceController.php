@@ -28,7 +28,8 @@ class PriceController extends Controller
     {
         $this->authorize('prices-list');
 
-        foreach ($request->items as $item) {
+        $items = json_decode($request->items, true);
+        foreach ($items as $item) {
             $price = trim(str_replace('-',null,$item['price']));
             $price = trim(str_replace(',',null,$price));
             $price = $price == '' ? null : $price;
