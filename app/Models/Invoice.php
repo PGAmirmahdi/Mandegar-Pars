@@ -31,6 +31,7 @@ class Invoice extends Model
     const REQ_FOR = [
         'pre-invoice' => 'پیش فاکتور',
         'invoice' => 'فاکتور',
+        'amani-invoice' => 'فاکتور امانی',
     ];
 
     public function products()

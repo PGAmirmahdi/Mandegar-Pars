@@ -105,15 +105,15 @@
                             <th>همکار</th>
                         @endcan
                         <th>تاریخ ایجاد</th>
-                        @canany(['accountant','admin','ceo'])
-                            <th>مشاهده سفارش</th>
-                        @endcanany
+{{--                        @canany(['accountant','admin','ceo'])--}}
+                        <th>مشاهده سفارش</th>
+{{--                        @endcanany--}}
                         <th>وضعیت سفارش</th>
-                        @can('warehouse-keeper')
+                        @canany(['warehouse-keeper','unofficial-sales'])
                             <th>فاکتور</th>
                         @else
                             <th>اقدام</th>
-                        @endcan
+                        @endcanany
                         @cannot('accountant')
                             @can('invoices-edit')
                                 <th>ویرایش</th>
@@ -141,20 +141,20 @@
                                 <td>{{ $invoice->user->fullName() }}</td>
                             @endcan
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
-                            @canany(['accountant','admin','ceo'])
+{{--                            @canany(['accountant','admin','ceo'])--}}
                                 <td>
                                     <a class="btn btn-info btn-floating" href="{{ route('invoices.show', $invoice->id) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 </td>
-                            @endcanany
+{{--                            @endcanany--}}
                             <td>
                                 {{-- invoices before 2024-02-03 order-status disabled --}}
                                 <a href="{{ route('orders-status.index', $invoice->id) }}" class="btn btn-gradient-warning btn-floating {{ $invoice->created_at < verta('2024-02-03 00:00:00') ? 'disabled' : '' }}" target="_blank">
                                     <i class="fa fa-truck-fast"></i>
                                 </a>
                             </td>
-                            @can('warehouse-keeper')
+                            @canany(['warehouse-keeper','unofficial-sales'])
                                 <td>
                                     <a href="{{ $invoice->action ? $invoice->action->factor_file ?? '#' : '#' }}" class="btn btn-primary btn-floating {{ $invoice->action ? $invoice->action->factor_file ? '' : 'disabled' : 'disabled' }}" target="_blank">
                                         <i class="fa fa-download"></i>
@@ -166,7 +166,7 @@
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
-                            @endcan
+                            @endcanany
                             @cannot('accountant')
                                 @can('invoices-edit')
                                     <td>

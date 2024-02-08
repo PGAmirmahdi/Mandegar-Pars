@@ -64,21 +64,26 @@
 {{--                                <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ $invoice->type == 'unofficial' || old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی--}}
 {{--                            </label>--}}
 {{--                        </div>--}}
+
+                            <input type="hidden" name="req_for" value="invoice" form="invoice_form">
                             <input type="hidden" name="type" value="unofficial" form="invoice_form">
                         @else
+                            <div class="col-12 mb-4 text-center mt-5">
+                                <h4>درخواست برای</h4>
+                            </div>
+                            <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                                <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'pre-invoice' && old('req_for') == null || old('req_for') == 'pre-invoice' ? 'active' : '' }}">
+                                    <input type="radio" id="req_for1" name="req_for" class="custom-control-input" value="pre-invoice" form="invoice_form" {{ $invoice->req_for == 'pre-invoice' || old('req_for') == 'pre-invoice' ? 'checked' : '' }}>پیش فاکتور
+                                </label>
+                                <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'invoice' && old('req_for') == null || old('req_for') == 'invoice' ? 'active' : '' }}">
+                                    <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="invoice" form="invoice_form" {{ $invoice->req_for == 'invoice' || old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
+                                </label>
+                                <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'amani-invoice' && old('req_for') == null || old('req_for') == 'amani-invoice' ? 'active' : '' }}">
+                                    <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="amani-invoice" form="invoice_form" {{ $invoice->req_for == 'amani-invoice' || old('req_for') == 'amani-invoice' ? 'checked' : '' }}>فاکتور امانی
+                                </label>
+                            </div>
                             <input type="hidden" name="type" value="official" form="invoice_form">
                         @endcan
-                    <div class="col-12 mb-4 text-center mt-5">
-                        <h4>درخواست برای</h4>
-                    </div>
-                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-                        <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'pre-invoice' && old('req_for') == null || old('req_for') == 'pre-invoice' ? 'active' : '' }}">
-                            <input type="radio" id="req_for1" name="req_for" class="custom-control-input" value="pre-invoice" form="invoice_form" {{ $invoice->req_for == 'pre-invoice' || old('req_for') == 'pre-invoice' ? 'checked' : '' }}>پیش فاکتور
-                        </label>
-                        <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'invoice' && old('req_for') == null || old('req_for') == 'invoice' ? 'active' : '' }}">
-                            <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="invoice" form="invoice_form" {{ $invoice->req_for == 'invoice' || old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
-                        </label>
-                    </div>
                 </div>
             </div>
             <form action="{{ route('invoices.update', $invoice->id) }}" method="post" id="invoice_form">
