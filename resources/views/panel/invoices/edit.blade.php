@@ -439,7 +439,7 @@
         var products = [];
         var colors = [];
         var invoice_id = "{{ $invoice->id }}";
-        var unofficials = {{ \Illuminate\Support\Facades\Gate::allows('unofficial-sales') }};
+        var unofficials = "{{ \Illuminate\Support\Facades\Gate::allows('unofficial-sales') }}";
 
         var form = document.getElementById('invoice_form');
         form.addEventListener('keypress', function(e) {
