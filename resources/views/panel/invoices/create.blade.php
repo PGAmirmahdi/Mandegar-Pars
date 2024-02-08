@@ -111,8 +111,8 @@
                         <label for="buyer_name">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
                         <select name="buyer_name" id="buyer_name" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5" tabindex="-2" aria-hidden="true">
                             <option value="" disabled selected>انتخاب کنید...</option>
-                            @foreach(\App\Models\Customer::all(['id','name']) as $customer)
-                                <option value="{{ $customer->id }}" {{ old('buyer_name') == $customer->id ? 'selected' : '' }}>{{ $customer->code.' '.$customer->name }}</option>
+                            @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
+                                <option value="{{ $customer->id }}" {{ old('buyer_name') == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
                             @endforeach
                         </select>
                         @error('buyer_name')

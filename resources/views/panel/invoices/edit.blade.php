@@ -140,8 +140,8 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="buyer_name">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
                         <select name="buyer_name" id="buyer_name" class="js-example-basic-single select2-hidden-accessible" data-select2-id="6" tabindex="-3" aria-hidden="true">
-                            @foreach(\App\Models\Customer::all(['id','name']) as $customer)
-                                    <option value="{{ $customer->id }}" {{ $invoice->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                            @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
+                                    <option value="{{ $customer->id }}" {{ $invoice->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
                             @endforeach
                         </select>
                         @error('buyer_name')
