@@ -187,6 +187,8 @@ class InvoiceController extends Controller
 
     public function calcProductsInvoice(Request $request)
     {
+        $unofficial = (bool) $request->unofficial;
+
         $usedCoupon = DB::table('coupon_invoice')->where([
             'product_id' => $request->product_id,
             'invoice_id' => $request->invoice_id,
@@ -206,7 +208,7 @@ class InvoiceController extends Controller
 
         $extra_amount = 0;
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
-        $tax = (int) ($total_price_with_off * self::TAX_AMOUNT);
+        $tax = $unofficial ? 0 : (int) ($total_price_with_off * self::TAX_AMOUNT);
         $invoice_net = $tax + $total_price_with_off;
 
         $data = [
@@ -224,13 +226,14 @@ class InvoiceController extends Controller
 
     public function calcOtherProductsInvoice(Request $request)
     {
+        $unofficial = (bool) $request->unofficial;
         $price = $request->price;
         $total_price = $price * $request->count;
         $discount_amount = $request->discount_amount;
 
         $extra_amount = 0;
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
-        $tax = (int) ($total_price_with_off * self::TAX_AMOUNT);
+        $tax = $unofficial ? 0 : (int) ($total_price_with_off * self::TAX_AMOUNT);
         $invoice_net = $tax + $total_price_with_off;
 
         $data = [

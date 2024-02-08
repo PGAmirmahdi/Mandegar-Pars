@@ -374,6 +374,7 @@
     <script>
         var products = [];
         var colors = [];
+        var unofficials = {{ \Illuminate\Support\Facades\Gate::allows('unofficial-sales') }}
 
         var form = document.getElementById('invoice_form');
         form.addEventListener('keypress', function(e) {
@@ -589,6 +590,7 @@
                 data: {
                     'product_id': product_id,
                     'count': count,
+                    'unofficial': unofficials,
                 },
                 success: function (res) {
                     $('#products_table input[name="prices[]"]')[index].value = res.data.price;
@@ -624,6 +626,7 @@
                     'price': price,
                     'count': count,
                     'discount_amount': discount_amount,
+                    'unofficial': unofficials,
                 },
                 success: function (res) {
                     $('#other_products_table input[name="other_prices[]"]')[index].value = res.data.price;
