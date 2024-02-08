@@ -18,12 +18,7 @@ class CustomerController extends Controller
     {
         $this->authorize('customers-list');
 
-        if (auth()->user()->isAdmin() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
-            $customers = Customer::orderByRaw('-code DESC')->paginate(30);
-        }else{
-            $customers = Customer::where('user_id', auth()->id())->orderByRaw('-code DESC')->paginate(30);
-        }
-
+        $customers = Customer::orderByRaw('-code DESC')->paginate(30);
         return view('panel.customers.index', compact('customers'));
     }
 
@@ -114,28 +109,15 @@ class CustomerController extends Controller
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
         $customer_type = $request->customer_type == 'all' ? array_keys(Customer::CUSTOMER_TYPE) : [$request->customer_type];
 
-        if (auth()->user()->isAdmin() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
-            $customers = Customer::when($request->code, function ($q) use($request){
-                    $q->where('code', $request->code);
-                })
-                ->when($request->name, function ($q) use($request){
-                $q->where('name','like', "%$request->name%");
+        $customers = Customer::when($request->code, function ($q) use($request){
+                $q->where('code', $request->code);
             })
-                ->whereIn('province', $province)
-                ->whereIn('customer_type', $customer_type)
-                ->orderByRaw('-code DESC')->paginate(30);
-        }else{
-            $customers = Customer::where('user_id', auth()->id())
-                ->when($request->code, function ($q) use($request){
-                    $q->where('code', $request->code);
-                })
-                ->when($request->name, function ($q) use($request){
-                    $q->where('name','like', "%$request->name%");
-                })
-                ->whereIn('province', $province)
-                ->whereIn('customer_type', $customer_type)
-                ->orderByRaw('-code DESC')->paginate(30);
-        }
+            ->when($request->name, function ($q) use($request){
+            $q->where('name','like', "%$request->name%");
+        })
+            ->whereIn('province', $province)
+            ->whereIn('customer_type', $customer_type)
+            ->orderByRaw('-code DESC')->paginate(30);
 
         return view('panel.customers.index', compact('customers'));
     }
