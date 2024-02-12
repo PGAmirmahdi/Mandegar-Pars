@@ -10,8 +10,10 @@ use App\Models\Invoice;
 use App\Models\Printer;
 use App\Models\Product;
 use App\Models\User;
+use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class ApiController extends Controller
 {
@@ -27,6 +29,18 @@ class ApiController extends Controller
         })->pluck('id');
         $single_price_user = User::whereIn('role_id', $role_id)->latest()->first();
         // end users where has single-price-user permission
+
+        // send notification
+        $notifiables = User::whereHas('role' , function ($role) {
+            $role->whereHas('permissions', function ($q) {
+                $q->whereIn('name', ['single-price-user','sales-manager']);
+            });
+        })->get();
+
+        $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
+        $url = route('invoices.index');
+        Notification::send($notifiables, new SendMessage($notif_message, $url));
+        // end send notification
 
         // create customer
         $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
