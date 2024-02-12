@@ -31,7 +31,7 @@
                 <h6>محصولات وبسایت Artin</h6>
             </div>
             <div class="table-responsive">
-                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                <table class="table table-striped table-bordered dataTable dtr-inline text-center" id="products_table">
                     <thead>
                     <tr>
                         <th>#</th>
@@ -94,7 +94,7 @@
                 $('#price').val(price)
             })
 
-            $('#btn_update').on('click', function (){
+            $(document).on('click','#btn_update', function (){
                 $(this).attr('disabled','disabled').text('درحال بروزرسانی...')
 
                 let price = $('#price').val();
@@ -110,7 +110,7 @@
                         $('#editPriceModal').hide();
                         $('.modal-backdrop').remove();
                         $('body').removeClass('modal-open');
-                        $('tbody').html($(res).find('tbody').html());
+                        $('#products_table tbody').html($(res).find('#products_table tbody').html());
 
                         $('#btn_update').removeAttr('disabled').text('اعمال')
 
