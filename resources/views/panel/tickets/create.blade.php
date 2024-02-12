@@ -33,6 +33,7 @@
                         @error('file')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
+                        <a href="" target="_blank" class="btn btn-link d-none" id="file_preview">پیش نمایش</a>
                     </div>
                     <div class="col-xl-2 col-lg-2 col-md-2"></div>
                     <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
@@ -47,5 +48,19 @@
             </form>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            $('#file').on('change', function () {
+                $('#file_preview').removeClass('d-none')
+
+                let file = this.files[0];
+                let url = URL.createObjectURL(file);
+
+                $('#file_preview').attr('href',url)
+            })
+        })
+    </script>
 @endsection
 
