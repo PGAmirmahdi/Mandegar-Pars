@@ -118,7 +118,7 @@ class InvoiceController extends Controller
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
 
-        if ($invoice->created_in == 'website'){
+        if ($invoice->created_in == 'website' || $invoice->status == 'invoiced'){
             return back();
         }
 
@@ -134,6 +134,10 @@ class InvoiceController extends Controller
 
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
+
+        if ($invoice->status == 'invoiced'){
+            return back();
+        }
 
         $invoice->products()->detach();
 
