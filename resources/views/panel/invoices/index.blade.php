@@ -170,7 +170,7 @@
                             @cannot('accountant')
                                 @can('invoices-edit')
                                     <td>
-                                        <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }} @canany(['admin','warehouse','accountant','ceo']) @else {{ $invoice->status == 'pending' ? 'disabled' : '' }} @endcanany" href="{{ route('invoices.edit', $invoice->id) }}">
+                                        <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || $invoice->factor ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                     </td>
