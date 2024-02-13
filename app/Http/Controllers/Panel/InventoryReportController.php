@@ -8,9 +8,12 @@ use App\Models\Guarantee;
 use App\Models\Inventory;
 use App\Models\InventoryReport;
 use App\Models\Invoice;
+use App\Models\User;
+use App\Notifications\SendMessage;
 use Dflydev\DotAccessData\Data;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class InventoryReportController extends Controller
 {
@@ -95,6 +98,18 @@ class InventoryReportController extends Controller
 
             // check inventory count is enough
             $this->storeCheckInventoryCount($request);
+
+            // send notification
+            $notifiables = User::whereHas('role' , function ($role) {
+                $role->whereHas('permissions', function ($q) {
+                    $q->where('name', 'exit-door');
+                });
+            })->get();
+
+            $notif_message = 'یک خروج انبار توسط انباردار ثبت شد';
+            $url = route('exit-door.index');
+            Notification::send($notifiables, new SendMessage($notif_message, $url));
+            // end send notification
         }
 
         $serial = 'MP'.$request->guarantee_serial;
