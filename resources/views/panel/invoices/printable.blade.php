@@ -161,6 +161,10 @@
                                         <span class="mr-100">نشانی: {{ $invoice->seller->address }}</span>
                                         <span class="mr-100">شماره تماس: {{ $invoice->seller->phone }}</span>
                                     </div>
+                                    <div class="mb-3">
+                                        <span class="mr-100">شماره کارت: {{ $invoice->seller->card_number }}</span>
+                                        <span class="mr-100">شماره شبا: {{ $invoice->seller->sheba_number }}</span>
+                                    </div>
                                 </td>
                             </tr>
                         @endif
