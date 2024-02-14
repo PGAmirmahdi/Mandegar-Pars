@@ -14,7 +14,7 @@
 @endphp
 @section('content')
     @if($invoice->action && \Illuminate\Support\Facades\Gate::allows('accountant'))
-        {{--  reset Modal  --}}
+        {{--  invoice reset Modal  --}}
         <div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -38,7 +38,33 @@
                 </div>
             </div>
         </div>
-        {{--  end reset Modal  --}}
+        {{--  end invoice reset Modal  --}}
+
+        {{--  factor reset Modal  --}}
+        <div class="modal fade" id="factorResetModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="factorResetModalLabel">تایید حذف</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                            <i class="ti-close"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h6>می خواهید فایل فاکتور را حذف و مجدد بارگذاری کنید؟</h6>
+                        <form action="{{ route('factor.action.delete', $invoice->action->id) }}" method="post" id="deleteFactorAction">
+                            @csrf
+                            @method('put')
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">لغو</button>
+                        <button type="submit" class="btn btn-danger" form="deleteFactorAction">حذف</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{--  end factor reset Modal  --}}
     @endif
     <div class="card">
         <div class="card-body">
@@ -129,6 +155,12 @@
                                             <i class="fa fa-file-pdf mr-2"></i>
                                             دانلود فایل فاکتور
                                         </a>
+                                        @can('accountant')
+                                            <a href="#factorResetModal" class="nav-link" data-toggle="modal">
+                                                <i class="fa fa-times mr-2 text-danger"></i>
+                                                حذف و بارگذاری مجدد فایل
+                                            </a>
+                                        @endcan
                                     </div>
                                 </div>
                             @endif

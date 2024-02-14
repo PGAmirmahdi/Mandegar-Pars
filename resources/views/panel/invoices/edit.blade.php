@@ -68,20 +68,24 @@
                             <input type="hidden" name="req_for" value="invoice" form="invoice_form">
                             <input type="hidden" name="type" value="unofficial" form="invoice_form">
                         @else
-                            <div class="col-12 mb-4 text-center mt-5">
-                                <h4>درخواست برای</h4>
-                            </div>
-                            <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-                                <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'pre-invoice' && old('req_for') == null || old('req_for') == 'pre-invoice' ? 'active' : '' }}">
-                                    <input type="radio" id="req_for1" name="req_for" class="custom-control-input" value="pre-invoice" form="invoice_form" {{ $invoice->req_for == 'pre-invoice' || old('req_for') == 'pre-invoice' ? 'checked' : '' }}>پیش فاکتور
-                                </label>
-                                <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'invoice' && old('req_for') == null || old('req_for') == 'invoice' ? 'active' : '' }}">
-                                    <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="invoice" form="invoice_form" {{ $invoice->req_for == 'invoice' || old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
-                                </label>
-                                <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'amani-invoice' && old('req_for') == null || old('req_for') == 'amani-invoice' ? 'active' : '' }}">
-                                    <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="amani-invoice" form="invoice_form" {{ $invoice->req_for == 'amani-invoice' || old('req_for') == 'amani-invoice' ? 'checked' : '' }}>فاکتور امانی
-                                </label>
-                            </div>
+                            @if($invoice->status != 'invoiced')
+                                <div class="col-12 mb-4 text-center mt-5">
+                                    <h4>درخواست برای</h4>
+                                </div>
+                                <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                                    <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'pre-invoice' && old('req_for') == null || old('req_for') == 'pre-invoice' ? 'active' : '' }}">
+                                        <input type="radio" id="req_for1" name="req_for" class="custom-control-input" value="pre-invoice" form="invoice_form" {{ $invoice->req_for == 'pre-invoice' || old('req_for') == 'pre-invoice' ? 'checked' : '' }}>پیش فاکتور
+                                    </label>
+                                    <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'invoice' && old('req_for') == null || old('req_for') == 'invoice' ? 'active' : '' }}">
+                                        <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="invoice" form="invoice_form" {{ $invoice->req_for == 'invoice' || old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
+                                    </label>
+                                    <label class="btn btn-outline-primary justify-content-center {{ $invoice->req_for == 'amani-invoice' && old('req_for') == null || old('req_for') == 'amani-invoice' ? 'active' : '' }}">
+                                        <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="amani-invoice" form="invoice_form" {{ $invoice->req_for == 'amani-invoice' || old('req_for') == 'amani-invoice' ? 'checked' : '' }}>فاکتور امانی
+                                    </label>
+                                </div>
+                            @else
+                                <input type="hidden" name="req_for" value="{{ $invoice->req_for }}" form="invoice_form">
+                            @endif
                             <input type="hidden" name="type" value="official" form="invoice_form">
                         @endcan
                 </div>
@@ -229,197 +233,199 @@
                             @enderror
                         </div>
                     @else
-                        <input type="hidden" name="status" value="order">
+                        <input type="hidden" name="status" value="{{ $invoice->status }}">
                     @endcan
 
-                    <div class="col-12 mb-4 mt-2 text-center">
-                        <hr>
-                        <h4>مشخصات کالا یا خدمات مورد معامله</h4>
-                    </div>
-                    <div class="col-12 mt-2 text-center">
-                        <h5>محصولات آرتین</h5>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <div class="d-flex justify-content-between mb-3">
-                            <button class="btn btn-outline-success" type="button" id="btn_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
+                    @if($invoice->status != 'invoiced')
+                        <div class="col-12 mb-4 mt-2 text-center">
+                            <hr>
+                            <h4>مشخصات کالا یا خدمات مورد معامله</h4>
                         </div>
-                        <div class="overflow-auto">
-                            <table class="table table-bordered table-striped text-center" id="products_table">
-                                <thead>
-                                <tr>
-                                    <th>کالا</th>
-                                    <th>رنگ</th>
-                                    <th>تعداد</th>
-                                    <th>واحد اندازه گیری</th>
-                                    <th>مبلغ واحد</th>
-                                    <th>مبلغ کل</th>
-                                    <th>مبلغ تخفیف</th>
-                                    <th>مبلغ اضافات</th>
-                                    <th>مبلغ کل پس از تخفیف و اضافات</th>
-                                    <th>جمع مالیات و عوارض</th>
-                                    <th>خالص فاکتور</th>
-                                    <th>اعمال تخفیف</th>
-                                    <th>حذف</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($invoice->products()->exists())
-                                    @foreach($invoice->products as $item)
-                                        @php
-                                            $usedCoupon = DB::table('coupon_invoice')->where([
-                                                'product_id' => $item->pivot->product_id,
-                                                'invoice_id' => $invoice->id,
-                                            ])->first();
-
-                                            if ($usedCoupon){
-                                                $coupon = \App\Models\Coupon::find($usedCoupon->coupon_id);
-                                                $discount_amount = $item->pivot->total_price * ($coupon->amount_pc / 100);
-                                            }else{
-                                                $discount_amount = 0;
-                                            }
-                                        @endphp
-                                        <tr>
-                                            <td>
-                                                <select class="form-control" name="products[]" required>
-                                                    <option value="" disabled selected>انتخاب کنید...</option>
-                                                    @foreach(\App\Models\Product::all(['id','title']) as $product)
-                                                        <option value="{{ $product->id }}" {{ $item->pivot->product_id == $product->id ? 'selected' : '' }}>{{ $product->title }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select class="form-control" name="colors[]">
-                                                    @foreach(\App\Models\Product::COLORS as $key => $value)
-                                                        <option value="{{ $key }}" {{ $item->pivot->color == $key ? 'selected' : '' }}>{{ $value }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="counts[]" class="form-control" min="1" value="{{ $item->pivot->count }}" required>
-                                            </td>
-                                            <td>
-                                                <select class="form-control" name="units[]">
-                                                    <option value="{{ $item->pivot->unit }}">{{ \App\Models\Product::UNITS[$item->pivot->unit] }}</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="prices[]" class="form-control" min="0" value="{{ $item->pivot->price }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="total_prices[]" class="form-control" min="0" value="{{ $item->pivot->total_price }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="discount_amounts[]" class="form-control" min="0" value="{{ $discount_amount }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="extra_amounts[]" class="form-control" min="0" value="{{ $item->pivot->extra_amount }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="{{ $item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount) }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="taxes[]" class="form-control" min="0" value="{{ $item->pivot->tax }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="invoice_nets[]" class="form-control" min="0" value="{{ $item->pivot->invoice_net }}" readonly>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-floating btn_discount" data-toggle="modal" data-target="#discountModal"><i class="fa fa-percent"></i></button>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
+                        <div class="col-12 mt-2 text-center">
+                            <h5>محصولات آرتین</h5>
                         </div>
-                    </div>
-                    <div class="col-12 mt-4 text-center">
-                        <h5>محصولات دیگر</h5>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <div class="d-flex justify-content-between mb-3">
-                            <button class="btn btn-outline-success" type="button" id="btn_other_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
-                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between mb-3">
+                                <button class="btn btn-outline-success" type="button" id="btn_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
+                            </div>
                             <div class="overflow-auto">
-                            <table class="table table-bordered table-striped text-center" id="other_products_table">
-                                <thead>
+                                <table class="table table-bordered table-striped text-center" id="products_table">
+                                    <thead>
                                     <tr>
-                                    <th>کالا</th>
-                                    <th>رنگ</th>
-                                    <th>تعداد</th>
-                                    <th>واحد اندازه گیری</th>
-                                    <th>مبلغ واحد</th>
-                                    <th>مبلغ کل</th>
-                                    <th>مبلغ تخفیف</th>
-                                    <th>مبلغ اضافات</th>
-                                    <th>مبلغ کل پس از تخفیف و اضافات</th>
-                                    <th>جمع مالیات و عوارض</th>
-                                    <th>خالص فاکتور</th>
-                                    <th>حذف</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($invoice->other_products()->exists())
-                                    @foreach($invoice->other_products as $product)
-                                        <tr>
-                                            <td>
-                                                <input type="text" name="other_products[]" class="form-control" value="{{ $product->title }}" placeholder="عنوان کالا" required>
-                                            </td>
-                                            <td>
-                                                <input type="text" name="other_colors[]" class="form-control" value="{{ $product->color }}" placeholder="نام رنگ" required>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="other_counts[]" class="form-control" min="1" value="{{ $product->count }}" required>
-                                            </td>
-                                            <td>
-                                                <select class="form-control" name="other_units[]">
-                                                    <option value="number">عدد</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ $product->price }}" required>
-                                                <span class="price_with_grouping text-primary"></span>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="other_total_prices[]" class="form-control" min="0" value="{{ $product->total_price }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="{{ $product->discount_amount }}" required>
-                                                <span class="price_with_grouping text-primary"></span>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="{{ $product->extra_amount }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="{{ $product->total_price - ($product->extra_amount + $product->discount_amount) }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="other_taxes[]" class="form-control" min="0" value="{{ $product->tax }}" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="{{ $product->invoice_net }}" readonly>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
+                                        <th>کالا</th>
+                                        <th>رنگ</th>
+                                        <th>تعداد</th>
+                                        <th>واحد اندازه گیری</th>
+                                        <th>مبلغ واحد</th>
+                                        <th>مبلغ کل</th>
+                                        <th>مبلغ تخفیف</th>
+                                        <th>مبلغ اضافات</th>
+                                        <th>مبلغ کل پس از تخفیف و اضافات</th>
+                                        <th>جمع مالیات و عوارض</th>
+                                        <th>خالص فاکتور</th>
+                                        <th>اعمال تخفیف</th>
+                                        <th>حذف</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if($invoice->products()->exists())
+                                        @foreach($invoice->products as $item)
+                                            @php
+                                                $usedCoupon = DB::table('coupon_invoice')->where([
+                                                    'product_id' => $item->pivot->product_id,
+                                                    'invoice_id' => $invoice->id,
+                                                ])->first();
+
+                                                if ($usedCoupon){
+                                                    $coupon = \App\Models\Coupon::find($usedCoupon->coupon_id);
+                                                    $discount_amount = $item->pivot->total_price * ($coupon->amount_pc / 100);
+                                                }else{
+                                                    $discount_amount = 0;
+                                                }
+                                            @endphp
+                                            <tr>
+                                                <td>
+                                                    <select class="form-control" name="products[]" required>
+                                                        <option value="" disabled selected>انتخاب کنید...</option>
+                                                        @foreach(\App\Models\Product::all(['id','title']) as $product)
+                                                            <option value="{{ $product->id }}" {{ $item->pivot->product_id == $product->id ? 'selected' : '' }}>{{ $product->title }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="colors[]">
+                                                        @foreach(\App\Models\Product::COLORS as $key => $value)
+                                                            <option value="{{ $key }}" {{ $item->pivot->color == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="counts[]" class="form-control" min="1" value="{{ $item->pivot->count }}" required>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="units[]">
+                                                        <option value="{{ $item->pivot->unit }}">{{ \App\Models\Product::UNITS[$item->pivot->unit] }}</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="prices[]" class="form-control" min="0" value="{{ $item->pivot->price }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="total_prices[]" class="form-control" min="0" value="{{ $item->pivot->total_price }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="discount_amounts[]" class="form-control" min="0" value="{{ $discount_amount }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="extra_amounts[]" class="form-control" min="0" value="{{ $item->pivot->extra_amount }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="{{ $item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount) }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="taxes[]" class="form-control" min="0" value="{{ $item->pivot->tax }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="invoice_nets[]" class="form-control" min="0" value="{{ $item->pivot->invoice_net }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-floating btn_discount" data-toggle="modal" data-target="#discountModal"><i class="fa fa-percent"></i></button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12 mb-2 mt-2 text-center">
-                        <hr>
-                        <h4>تخفیف نهایی</h4>
-                    </div>
-                    <div class="form-group">
-                        <label for="final_discount">مبلغ تخفیف</label>
-                        <input type="text" class="form-control" name="final_discount" id="final_discount" value="{{ $invoice->discount }}" required>
-                    </div>
+                        <div class="col-12 mt-4 text-center">
+                            <h5>محصولات دیگر</h5>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between mb-3">
+                                <button class="btn btn-outline-success" type="button" id="btn_other_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
+                            </div>
+                            <div class="overflow-auto">
+                                <table class="table table-bordered table-striped text-center" id="other_products_table">
+                                    <thead>
+                                    <tr>
+                                        <th>کالا</th>
+                                        <th>رنگ</th>
+                                        <th>تعداد</th>
+                                        <th>واحد اندازه گیری</th>
+                                        <th>مبلغ واحد</th>
+                                        <th>مبلغ کل</th>
+                                        <th>مبلغ تخفیف</th>
+                                        <th>مبلغ اضافات</th>
+                                        <th>مبلغ کل پس از تخفیف و اضافات</th>
+                                        <th>جمع مالیات و عوارض</th>
+                                        <th>خالص فاکتور</th>
+                                        <th>حذف</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if($invoice->other_products()->exists())
+                                        @foreach($invoice->other_products as $product)
+                                            <tr>
+                                                <td>
+                                                    <input type="text" name="other_products[]" class="form-control" value="{{ $product->title }}" placeholder="عنوان کالا" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="other_colors[]" class="form-control" value="{{ $product->color }}" placeholder="نام رنگ" required>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_counts[]" class="form-control" min="1" value="{{ $product->count }}" required>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="other_units[]">
+                                                        <option value="number">عدد</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ $product->price }}" required>
+                                                    <span class="price_with_grouping text-primary"></span>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_total_prices[]" class="form-control" min="0" value="{{ $product->total_price }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="{{ $product->discount_amount }}" required>
+                                                    <span class="price_with_grouping text-primary"></span>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="{{ $product->extra_amount }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="{{ $product->total_price - ($product->extra_amount + $product->discount_amount) }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_taxes[]" class="form-control" min="0" value="{{ $product->tax }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="{{ $product->invoice_net }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-2 mt-2 text-center">
+                            <hr>
+                            <h4>تخفیف نهایی</h4>
+                        </div>
+                        <div class="form-group">
+                            <label for="final_discount">مبلغ تخفیف</label>
+                            <input type="text" class="form-control" name="final_discount" id="final_discount" value="{{ $invoice->discount }}" required>
+                        </div>
+                    @endif
                 </div>
                 <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
             </form>

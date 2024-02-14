@@ -118,7 +118,7 @@ class InvoiceController extends Controller
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
 
-        if ($invoice->created_in == 'website' || $invoice->status == 'invoiced'){
+        if ($invoice->created_in == 'website' || ($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice')){
             return back();
         }
 
@@ -135,14 +135,16 @@ class InvoiceController extends Controller
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
 
-        if ($invoice->status == 'invoiced'){
+        if (($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice')){
             return back();
         }
 
-        $invoice->products()->detach();
+        if ($invoice->status != 'invoiced'){
+            $invoice->products()->detach();
 
-        // create products for invoice
-        $this->storeInvoiceProducts($invoice, $request);
+            // create products for invoice
+            $this->storeInvoiceProducts($invoice, $request);
+        }
 
 //        send notif to creator of the invoice
         if ($request->status != $invoice->status){
@@ -172,7 +174,7 @@ class InvoiceController extends Controller
             'city' => $request->city,
             'address' => $request->address,
             'status' => $request->status,
-            'discount' => $request->final_discount,
+            'discount' => $request->final_discount ?? $invoice->discount,
             'description' => $request->description,
         ]);
 
@@ -531,6 +533,15 @@ class InvoiceController extends Controller
         $invoiceAction->delete();
 
         alert()->success('فایل پیش فاکتور مورد نظر حذف شد','حذف پیش فاکتور');
+        return back();
+    }
+
+    public function deleteFactorFile(InvoiceAction $invoiceAction)
+    {
+        unlink(public_path($invoiceAction->factor_file));
+        $invoiceAction->delete();
+
+        alert()->success('فایل فاکتور مورد نظر حذف شد','حذف فاکتور');
         return back();
     }
 
