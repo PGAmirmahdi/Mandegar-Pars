@@ -29,3 +29,4 @@ error_log
 /resources/js/bootstrap.js
 .git.zip
 composer.lock
+/public_html
