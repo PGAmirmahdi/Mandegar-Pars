@@ -87,6 +87,7 @@ class InvoiceController extends Controller
         ]);
 
         $this->send_notif_to_accountants($invoice);
+        $this->send_notif_to_sales_manager($invoice);
 
         // create products for invoice
         $this->storeInvoiceProducts($invoice, $request);
@@ -375,6 +376,11 @@ class InvoiceController extends Controller
             return back();
         }
 
+        $roles_id = Role::whereHas('permissions', function ($q){
+            $q->where('name', 'sales-manager');
+        })->pluck('id');
+        $sales_manager = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id)->get();
+
         if ($invoice->status == 'pending'){
             $invoice->update(['status' => 'invoiced']);
 
@@ -383,12 +389,14 @@ class InvoiceController extends Controller
             $message = " وضعیت سفارش {$invoice->customer->name} به '{$status}' تغییر یافت";
 
             Notification::send($invoice->user, new SendMessage($message, $url));
+            Notification::send($sales_manager, new SendMessage($message, $url));
         }else{
             $status = Invoice::STATUS['pending'];
             $url = route('invoices.index');
             $message = " وضعیت سفارش {$invoice->customer->name} به '{$status}' تغییر یافت";
 
             Notification::send($invoice->user, new SendMessage($message, $url));
+            Notification::send($sales_manager, new SendMessage($message, $url));
 
             $invoice->update(['status' => 'pending']);
         }
@@ -473,8 +481,8 @@ class InvoiceController extends Controller
 
             $invoice->update(['status' => 'invoiced']);
 
-            //send notif to warehouse-keeper
-            $permissionsId = Permission::where('name', 'warehouse-keeper')->pluck('id');
+            //send notif to warehouse-keeper and sales-manager
+            $permissionsId = Permission::whereIn('name', ['warehouse-keeper','sales-manager'])->pluck('id');
             $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
                 $q->whereIn('permission_id', $permissionsId);
             })->pluck('id');
@@ -483,7 +491,7 @@ class InvoiceController extends Controller
             $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
             $accountants = User::whereIn('role_id', $roles_id)->get();
             Notification::send($accountants, new SendMessage($notif_message, $url));
-            //end send notif to warehouse-keeper
+            //end send notif to warehouse-keeper and sales-manager
         }else{
             if ($status == 'invoice'){
                 $request->validate(['invoice_file' => 'required|mimes:pdf|max:5000']);
@@ -500,9 +508,15 @@ class InvoiceController extends Controller
                 $message = 'پیش فاکتور مورد نظر با موفقیت به همکار فروش ارسال شد';
 
                 //send notif
+                $roles_id = Role::whereHas('permissions', function ($q){
+                    $q->where('name', 'sales-manager');
+                })->pluck('id');
+                $sales_manager = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id)->get();
+
                 $url = route('invoice.action', $invoice->id);
                 $notif_message = "پیش فاکتور {$invoice->customer->name} دریافت شد";
                 Notification::send($invoice->user, new SendMessage($notif_message, $url));
+                Notification::send($sales_manager, new SendMessage($notif_message, $url));
                 //end send notif
             }else{
                 $request->validate(['factor_file' => 'required|mimes:pdf|max:5000']);
@@ -518,8 +532,8 @@ class InvoiceController extends Controller
                 $title = 'ثبت و ارسال فاکتور';
                 $message = 'فاکتور مورد نظر با موفقیت به انبار ارسال شد';
 
-                //send notif to warehouse-keeper
-                $permissionsId = Permission::where('name', 'warehouse-keeper')->pluck('id');
+                //send notif to warehouse-keeper and sales-manager
+                $permissionsId = Permission::whereIn('name', ['warehouse-keeper','sales-manager'])->pluck('id');
                 $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
                     $q->whereIn('permission_id', $permissionsId);
                 })->pluck('id');
@@ -528,7 +542,7 @@ class InvoiceController extends Controller
                 $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
                 $accountants = User::whereIn('role_id', $roles_id)->get();
                 Notification::send($accountants, new SendMessage($notif_message, $url));
-                //end send notif to warehouse-keeper
+                //end send notif to warehouse-keeper and sales-manager
             }
 
             $status = $status == 'invoice' ? 'pending' : 'invoiced';
@@ -614,12 +628,27 @@ class InvoiceController extends Controller
 
     private function send_notif_to_accountants(Invoice $invoice)
     {
-        $roles_id = Role::where('name', 'accountant')->pluck('id');
+        $roles_id = Role::whereHas('permissions', function ($q){
+            $q->where('name', 'accountant');
+        })->pluck('id');
         $accountants = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id)->get();
 
         $url = route('invoices.edit', $invoice->id);
         $message = "سفارش '{$invoice->customer->name}' ثبت شد";
 
         Notification::send($accountants, new SendMessage($message, $url));
+    }
+
+    private function send_notif_to_sales_manager(Invoice $invoice)
+    {
+        $roles_id = Role::whereHas('permissions', function ($q){
+            $q->where('name', 'sales-manager');
+        })->pluck('id');
+        $managers = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id)->get();
+
+        $url = route('invoices.edit', $invoice->id);
+        $message = "سفارش '{$invoice->customer->name}' ثبت شد";
+
+        Notification::send($managers, new SendMessage($message, $url));
     }
 }
