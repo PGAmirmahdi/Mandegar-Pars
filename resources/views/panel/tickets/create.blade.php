@@ -17,7 +17,7 @@
                                     <option value="{{ $user->id }}" {{ old('receiver') == $user->id ? 'selected' : '' }}>{{ $user->role->label.' - '.$user->fullName() }}</option>
                                 @endforeach
                             @else
-                                @can('sales-manager')
+                                @canany(['sales-manager','ceo','warehouse-keeper'])
                                     @foreach(\App\Models\User::where('id','!=', auth()->id())->get() as $user)
                                         <option value="{{ $user->id }}" {{ old('receiver') == $user->id ? 'selected' : '' }}>{{ $user->role->label.' - '.$user->fullName() }}</option>
                                     @endforeach
@@ -32,7 +32,7 @@
                                     @foreach(\App\Models\User::where('id','!=', auth()->id())->whereNotIn('id',$accountants)->get() as $user)
                                         <option value="{{ $user->id }}" {{ old('receiver') == $user->id ? 'selected' : '' }}>{{ $user->role->label.' - '.$user->fullName() }}</option>
                                     @endforeach
-                                @endcan
+                                @endcanany
                             @endcan
                         </select>
                         @error('receiver')
