@@ -53,7 +53,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-invoice', function ($user, Invoice $invoice){
-            return $user->id == $invoice->user_id || $user->isAdmin() || $user->isAccountant() || $user->isCEO();
+            return $user->id == $invoice->user_id || $user->isAdmin() || $user->isAccountant() || $user->isCEO() || $user->isSalesManager();
         });
 
         Gate::define('edit-factor', function ($user, Invoice $invoice){

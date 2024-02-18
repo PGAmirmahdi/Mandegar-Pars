@@ -33,7 +33,7 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-list');
 
-        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
+        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
             $invoices = Invoice::latest()->paginate(30);
         }else{
             $invoices = Invoice::where('user_id', auth()->id())->latest()->paginate(30);
@@ -44,7 +44,7 @@ class InvoiceController extends Controller
             $q->whereIn('permission_id', $permissionsId);
         })->pluck('id');
 
-        $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+        $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isWareHouseKeeper() || auth()->user()->isSalesManager() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
         return view('panel.invoices.index', compact('invoices','customers','roles_id'));
     }
@@ -266,7 +266,7 @@ class InvoiceController extends Controller
     public function search(Request $request)
     {
         $this->authorize('invoices-list');
-        $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+        $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
         $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
         $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
@@ -279,7 +279,7 @@ class InvoiceController extends Controller
         $user_id = $request->user == 'all' || $request->user == null ? User::whereIn('role_id', $roles_id)->pluck('id') : [$request->user];
 
 //        dd($user_id);
-        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO()){
+        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
             $invoices = Invoice::when($request->need_no, function ($q) use($request){
                     return $q->where('need_no', $request->need_no);
                 })
