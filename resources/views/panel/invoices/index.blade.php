@@ -109,11 +109,13 @@
                         <th>مشاهده سفارش</th>
 {{--                        @endcanany--}}
                         <th>وضعیت سفارش</th>
-                        @canany(['warehouse-keeper','unofficial-sales'])
+                        @can('warehouse-keeper')
                             <th>فاکتور</th>
                         @else
-                            <th>اقدام</th>
-                        @endcanany
+                            @canany(['sales-manager','accountant'])
+                                <th>اقدام</th>
+                            @endcanany
+                        @endcan
                         @cannot('accountant')
                             @can('invoices-edit')
                                 <th>ویرایش</th>
@@ -154,19 +156,21 @@
                                     <i class="fa fa-truck-fast"></i>
                                 </a>
                             </td>
-                            @canany(['warehouse-keeper','unofficial-sales'])
+                            @can('warehouse-keeper')
                                 <td>
                                     <a href="{{ $invoice->action ? $invoice->action->factor_file ?? '#' : '#' }}" class="btn btn-primary btn-floating {{ $invoice->action ? $invoice->action->factor_file ? '' : 'disabled' : 'disabled' }}" target="_blank">
                                         <i class="fa fa-download"></i>
                                     </a>
                                 </td>
                             @else
-                                <td>
-                                    <a class="btn btn-primary btn-floating @cannot('accountant') {{ $invoice->action ? '' : 'disabled' }} @endcannot" href="{{ route('invoice.action', $invoice->id) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                </td>
-                            @endcanany
+                                @canany(['sales-manager','accountant'])
+                                    <td>
+                                        <a class="btn btn-primary btn-floating @cannot('accountant') {{ $invoice->action ? '' : 'disabled' }} @endcannot" href="{{ route('invoice.action', $invoice->id) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    </td>
+                                @endcanany
+                            @endcan
                             @cannot('accountant')
                                 @can('sales-manager')
                                     @can('invoices-edit')

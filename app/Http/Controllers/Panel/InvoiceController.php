@@ -418,6 +418,10 @@ class InvoiceController extends Controller
             return back();
         }
 
+        if (!Gate::any(['sales-manager','accountant'])){
+            return back();
+        }
+
         return view('panel.invoices.action', compact('invoice'));
     }
 
