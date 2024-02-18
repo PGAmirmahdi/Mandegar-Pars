@@ -168,19 +168,36 @@
                                 </td>
                             @endcanany
                             @cannot('accountant')
-                                @can('invoices-edit')
-                                    <td>
-                                        <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || ($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice') ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                    </td>
-                                @endcan
-                                @can('invoices-delete')
-                                    <td>
-                                        <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('invoices.destroy',$invoice->id) }}" data-id="{{ $invoice->id }}" {{ $invoice->created_in == 'website' || $invoice->status == 'invoiced' ? 'disabled' : '' }} @canany(['admin','warehouse','accountant','ceo']) @else {{ $invoice->status == 'pending' ? 'disabled' : '' }} @endcanany>
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </td>
+                                @can('sales-manager')
+                                    @can('invoices-edit')
+                                        <td>
+                                            <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    @endcan
+                                    @can('invoices-delete')
+                                        <td>
+                                            <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('invoices.destroy',$invoice->id) }}" data-id="{{ $invoice->id }}" {{ $invoice->created_in == 'website' ? 'disabled' : '' }} @canany(['admin','warehouse','accountant','ceo']) @else {{ $invoice->status == 'pending' ? 'disabled' : '' }} @endcanany>
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    @endcan
+                                @else
+                                    @can('invoices-edit')
+                                        <td>
+                                            <a class="btn btn-warning btn-floating {{ $invoice->created_in == 'website' || ($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice') ? 'disabled' : '' }}" href="{{ route('invoices.edit', $invoice->id) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    @endcan
+                                    @can('invoices-delete')
+                                        <td>
+                                            <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('invoices.destroy',$invoice->id) }}" data-id="{{ $invoice->id }}" {{ $invoice->created_in == 'website' || $invoice->status == 'invoiced' ? 'disabled' : '' }} @canany(['admin','warehouse','accountant','ceo']) @else {{ $invoice->status == 'pending' ? 'disabled' : '' }} @endcanany>
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    @endcan
                                 @endcan
                             @endcannot
                         </tr>

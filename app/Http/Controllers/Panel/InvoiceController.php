@@ -118,8 +118,14 @@ class InvoiceController extends Controller
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
 
-        if ($invoice->created_in == 'website' || ($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice')){
-            return back();
+        if (Gate::allows('sales-manager')){
+            if ($invoice->created_in == 'website'){
+                return back();
+            }
+        }else{
+            if ($invoice->created_in == 'website' || ($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice')){
+                return back();
+            }
         }
 
         $seller = Seller::first();
@@ -135,11 +141,13 @@ class InvoiceController extends Controller
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
 
-        if (($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice')){
-            return back();
+        if (!Gate::allows('sales-manager')){
+            if (($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice')){
+                return back();
+            }
         }
 
-        if ($invoice->status != 'invoiced'){
+        if ($invoice->status != 'invoiced' || Gate::allows('sales-manager')){
             $invoice->products()->detach();
 
             // create products for invoice

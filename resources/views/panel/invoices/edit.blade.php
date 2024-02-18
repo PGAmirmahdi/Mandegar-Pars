@@ -236,7 +236,7 @@
                         <input type="hidden" name="status" value="{{ $invoice->status }}">
                     @endcan
 
-                    @if($invoice->status != 'invoiced')
+                    @if($invoice->status != 'invoiced' || \Illuminate\Support\Facades\Gate::allows('sales-manager'))
                         <div class="col-12 mb-4 mt-2 text-center">
                             <hr>
                             <h4>مشخصات کالا یا خدمات مورد معامله</h4>
