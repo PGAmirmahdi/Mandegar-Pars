@@ -15,8 +15,8 @@
                 </li>
             @endcanany
             @canany(['invoices-list'])
-            <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" data-toggle="tooltip" title="صورتحساب">
-                <a href="#navigationInvoices" title="صورتحساب">
+            <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" data-toggle="tooltip" title="سفارشات و فروش">
+                <a href="#navigationInvoices" title="سفارشات و فروش">
                     <i class="icon ti-shopping-cart"></i>
                 </a>
             </li>
@@ -177,7 +177,7 @@
             @endcan
         </ul>
         <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}']) ? 'navigation-active' : '' }}">
-            <li class="navigation-divider">صورتحساب</li>
+            <li class="navigation-divider">سفارشات و فروش</li>
             @can('invoices-list')
                 <li>
                     <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات</a>
