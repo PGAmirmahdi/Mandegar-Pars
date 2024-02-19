@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\PriceRequest;
+use App\Models\User;
+use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 
 class PriceRequestController extends Controller
 {
@@ -48,6 +51,18 @@ class PriceRequestController extends Controller
             'items' => json_encode($items)
         ]);
 
+        // notification sent to ceo
+        $notifiables = User::where('id','!=',auth()->id())->whereHas('role' , function ($role) {
+            $role->whereHas('permissions', function ($q) {
+                $q->whereIn('name', ['ceo','sales-manager']);
+            });
+        })->get();
+
+        $notif_message = 'یک درخواست قیمت توسط همکار فروش ثبت گردید';
+        $url = route('price-requests.index');
+        Notification::send($notifiables, new SendMessage($notif_message, $url));
+        // end notification sent to ceo
+
         alert()->success('درخواست قیمت با موفقیت ثبت شد','ثبت درخواست قیمت');
         return redirect()->route('price-requests.index');
     }
@@ -83,6 +98,19 @@ class PriceRequestController extends Controller
             'items' => json_encode($items),
             'status' => 'sent',
         ]);
+
+        // notification sent to ceo
+        $notifiables = User::whereHas('role' , function ($role) {
+            $role->whereHas('permissions', function ($q) {
+                $q->where('name', 'sales-manager');
+            });
+        })->get();
+
+        $notif_message = 'قیمت کالاهای درخواستی توسط مدیر ثبت گردید';
+        $url = route('price-requests.index');
+        Notification::send($notifiables, new SendMessage($notif_message, $url));
+        Notification::send($priceRequest->user, new SendMessage($notif_message, $url));
+        // end notification sent to ceo
 
         alert()->success(' قیمت ها با موفقیت ثبت شدند','ثبت قیمت');
         return redirect()->route('price-requests.index');
