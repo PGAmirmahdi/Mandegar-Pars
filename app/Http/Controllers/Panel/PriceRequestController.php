@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Http\Controllers\Panel;
+
+use App\Http\Controllers\Controller;
+use App\Models\PriceRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
+class PriceRequestController extends Controller
+{
+    public function index()
+    {
+        $this->authorize('price-requests-list');
+
+        if (Gate::any(['ceo','admin'])){
+            $price_requests = PriceRequest::latest()->paginate(30);
+        }else{
+            $price_requests = PriceRequest::where('user_id', auth()->id())->latest()->paginate(30);
+        }
+
+        return view('panel.price-requests.index', compact('price_requests'));
+    }
+
+    public function create()
+    {
+        $this->authorize('price-requests-create');
+
+        return view('panel.price-requests.create');
+    }
+
+    public function store(Request $request)
+    {
+        $this->authorize('price-requests-create');
+
+        $items = [];
+
+        foreach ($request->products as $key => $product){
+            $items[] = [
+                'product' => $product,
+                'count' => $request->counts[$key],
+            ];
+        }
+
+        PriceRequest::create([
+            'user_id' => auth()->id(),
+            'max_send_time' => $request->max_send_time,
+            'items' => json_encode($items)
+        ]);
+
+        alert()->success('درخواست قیمت با موفقیت ثبت شد','ثبت درخواست قیمت');
+        return redirect()->route('price-requests.index');
+    }
+
+    public function show(PriceRequest $priceRequest)
+    {
+        $this->authorize('price-requests-list');
+
+        return view('panel.price-requests.show', compact('priceRequest'));
+    }
+
+    public function edit(PriceRequest $priceRequest)
+    {
+        $this->authorize('ceo');
+
+        return view('panel.price-requests.edit', compact('priceRequest'));
+    }
+
+    public function update(Request $request, PriceRequest $priceRequest)
+    {
+        $this->authorize('ceo');
+
+        $items = [];
+        foreach (json_decode($priceRequest->items) as $key => $item){
+            $items[] = [
+                'product' => $item->product,
+                'count' => $item->count,
+                'price' => str_replace(',','',$request->prices[$key]),
+            ];
+        }
+
+        $priceRequest->update([
+            'items' => json_encode($items),
+            'status' => 'sent',
+        ]);
+
+        alert()->success(' قیمت ها با موفقیت ثبت شدند','ثبت قیمت');
+        return redirect()->route('price-requests.index');
+    }
+
+    public function destroy(PriceRequest $priceRequest)
+    {
+        $this->authorize('price-requests-delete');
+
+        $priceRequest->delete();
+        return back();
+    }
+}

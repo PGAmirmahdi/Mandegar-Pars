@@ -149,6 +149,10 @@ class PermissionSeeder extends Seeder
 
 //            'sales-manager' => 'مدیر فروش'
 //            'unofficial-sales' => 'فروش غیر رسمی'
+
+//            'price-requests-list' => 'لیست درخواست قیمت',
+//            'price-requests-create' => 'ثبت درخواست قیمت',
+//            'price-requests-delete' => 'حذف درخواست قیمت',
         ];
 
         foreach ($items as $key => $item)

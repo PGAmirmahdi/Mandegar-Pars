@@ -130,6 +130,11 @@ class User extends Authenticatable
         return $this->hasMany(Report::class);
     }
 
+    public function price_requests()
+    {
+        return $this->hasMany(PriceRequest::class);
+    }
+
     private function leavesUpdate()
     {
         $leave_info = DB::table('leave_info')->where('user_id', $this->id);

@@ -21,6 +21,7 @@ use App\Http\Controllers\Panel\OrderController;
 use App\Http\Controllers\Panel\OrderStatusController;
 use App\Http\Controllers\Panel\PacketController;
 use App\Http\Controllers\Panel\PriceController;
+use App\Http\Controllers\Panel\PriceRequestController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
 use App\Http\Controllers\Panel\ReportController;
@@ -243,6 +244,9 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Order Statuses
     Route::get('orders-status/{invoice}', [OrderStatusController::class, 'index'])->name('orders-status.index');
     Route::post('orders-status', [OrderStatusController::class, 'changeStatus'])->name('orders-status.change');
+
+    // Price Request
+    Route::resource('price-requests', PriceRequestController::class);
 });
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
