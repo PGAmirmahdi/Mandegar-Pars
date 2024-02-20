@@ -17,14 +17,14 @@ class CreateInvoiceProductTable extends Migration
             $table->id();
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('product_id');
-            $table->unsignedInteger('count');
+            $table->unsignedBigInteger('count');
             $table->enum('unit', ['number'])->default('number');
-            $table->unsignedInteger('price');
-            $table->unsignedInteger('total_price');
-            $table->unsignedInteger('discount_amount')->default(0)->comment('مبلغ تخفیف');
-            $table->unsignedInteger('extra_amount')->default(0)->comment('مبلغ اضافات');
-            $table->unsignedInteger('tax')->comment('جمع مالیات و عوارض');
-            $table->unsignedInteger('invoice_net')->comment('خالص فاکتور');
+            $table->unsignedBigInteger('price');
+            $table->unsignedBigInteger('total_price');
+            $table->unsignedBigInteger('discount_amount')->default(0)->comment('مبلغ تخفیف');
+            $table->unsignedBigInteger('extra_amount')->default(0)->comment('مبلغ اضافات');
+            $table->unsignedBigInteger('tax')->comment('جمع مالیات و عوارض');
+            $table->unsignedBigInteger('invoice_net')->comment('خالص فاکتور');
             $table->timestamps();
 
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
