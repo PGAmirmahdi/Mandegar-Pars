@@ -21,7 +21,11 @@ class PriceController extends Controller
     {
         $this->authorize('prices-list');
 
-        return view('panel.prices.other-list');
+        if (auth()->user()->isCEO() && auth()->user()->isAdmin()){
+            return view('panel.prices.other-list');
+        }else{
+            return view('panel.prices.other-list-printable');
+        }
     }
 
     public function updatePrice(Request $request)
