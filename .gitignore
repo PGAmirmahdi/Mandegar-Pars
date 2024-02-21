@@ -30,3 +30,4 @@ error_log
 .git.zip
 composer.lock
 /public_html
+.bash_history
