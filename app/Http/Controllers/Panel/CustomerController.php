@@ -98,6 +98,10 @@ class CustomerController extends Controller
     {
         $this->authorize('customers-delete');
 
+        if ($customer->invoices()->exists()){
+            return response('ابتدا سفارشات این مشتری را حذف کنید',500);
+        }
+        
         $customer->delete();
         return back();
     }
