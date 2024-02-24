@@ -65,21 +65,22 @@ class CustomersExport implements FromCollection, WithMapping, WithHeadings, With
         return [
             'A' => 'نام حقیقی/حقوقی',
             'B' => 'نوع',
-            'C' => 'مشتری',
-            'D' => 'شماره اقتصادی',
-            'E' => 'شماره ثبت/ملی',
-            'F' => 'کد پستی',
-            'G' => 'استان',
-            'H' => 'شهر',
-            'I' => 'شماره تماس',
-            'J' => 'آدرس',
-            'K' => 'توضیحات',
+            'C' => 'نوع',
+            'D' => 'مشتری',
+            'E' => 'شماره اقتصادی',
+            'F' => 'شماره ثبت/ملی',
+            'G' => 'کد پستی',
+            'H' => 'استان',
+            'I' => 'شهر',
+            'J' => 'شماره تماس',
+            'K' => 'آدرس',
+            'L' => 'توضیحات',
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:K1')->applyFromArray([
+        $sheet->getStyle('A1:L1')->applyFromArray([
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => '5d4a9c']
@@ -94,8 +95,8 @@ class CustomersExport implements FromCollection, WithMapping, WithHeadings, With
     public function columnFormats(): array
     {
         return [
-            'D' => NumberFormat::FORMAT_NUMBER,
             'E' => NumberFormat::FORMAT_NUMBER,
+            'F' => NumberFormat::FORMAT_NUMBER,
         ];
     }
 }
