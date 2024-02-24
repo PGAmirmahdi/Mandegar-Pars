@@ -69,7 +69,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-
+//    dd(__METHOD__);
     return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\InventoryReport::where('factor_id', '!=', null)->get() as $item){
