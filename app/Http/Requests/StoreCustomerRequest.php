@@ -24,7 +24,7 @@ class StoreCustomerRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|unique:customers,name',
             'customer_code' => 'nullable|unique:customers,code',
             'type' => 'required',
             'national_number' => 'required|numeric',

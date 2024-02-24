@@ -1,6 +1,28 @@
 @extends('panel.layouts.master')
 @section('title', 'ایجاد مشتری')
 @section('content')
+    {{--  customers Modal  --}}
+    <div class="modal fade" id="customersModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customersModalLabel">مشتریان مرتبط</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="بستن">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">
+                        <strong>توجه!</strong>
+                        چنانچه نام مشتری مورد نظر در لیست زیر موجود می باشد نیاز به ثبت دوباره آن نیست.
+                    </p>
+                    <ul style="line-height: 1.5rem">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{--  end customers Modal  --}}
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -135,4 +157,28 @@
         </div>
     </div>
 @endsection
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', '#name', function () {
+                let name = this.value;
 
+                $('#customersModal .modal-body ul').html('')
+                $.ajax({
+                    url: "{{ route('customers.relevant') }}",
+                    type: 'get',
+                    data: {
+                        name
+                    },
+                    success: function (res) {
+                        $.each(res.data, function (i, item) {
+                            $('#customersModal .modal-body ul').append(`<li>${item}</li>`)
+                        })
+                    }
+                })
+
+                $('#customersModal').modal('show')
+            })
+        })
+    </script>
+@endsection

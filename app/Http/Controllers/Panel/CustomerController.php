@@ -101,7 +101,7 @@ class CustomerController extends Controller
         if ($customer->invoices()->exists()){
             return response('ابتدا سفارشات این مشتری را حذف کنید',500);
         }
-        
+
         $customer->delete();
         return back();
     }
@@ -146,5 +146,12 @@ class CustomerController extends Controller
     public function excel()
     {
         return Excel::download(new \App\Exports\CustomersExport, 'customers.xlsx');
+    }
+
+    public function getRelevantCustomers(Request $request)
+    {
+        $customers = Customer::where('name', 'like', "%$request->name%")->pluck('name');
+
+        return response()->json(['data' => $customers]);
     }
 }

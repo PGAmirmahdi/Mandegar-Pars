@@ -24,7 +24,7 @@ class UpdateCustomerRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|unique:customers,name,'.$this->customer->id,
             'customer_code' => 'nullable|unique:customers,code,'.$this->customer->id,
             'type' => 'required',
             'national_number' => 'required|numeric',
