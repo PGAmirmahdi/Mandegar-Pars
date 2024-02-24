@@ -64,7 +64,7 @@ class CustomersExport implements FromCollection, WithMapping, WithHeadings, With
     {
         return [
             'A' => 'نام حقیقی/حقوقی',
-            'B' => 'نوع',
+            'B' => 'کد',
             'C' => 'نوع',
             'D' => 'مشتری',
             'E' => 'شماره اقتصادی',
