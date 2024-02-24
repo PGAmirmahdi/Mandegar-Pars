@@ -171,13 +171,15 @@
                         name
                     },
                     success: function (res) {
-                        $.each(res.data, function (i, item) {
-                            $('#customersModal .modal-body ul').append(`<li>${item}</li>`)
-                        })
+                        if (res.data.length !== 0){
+                            $.each(res.data, function (i, item) {
+                                $('#customersModal .modal-body ul').append(`<li>${item}</li>`)
+                            })
+
+                            $('#customersModal').modal('show')
+                        }
                     }
                 })
-
-                $('#customersModal').modal('show')
             })
         })
     </script>
