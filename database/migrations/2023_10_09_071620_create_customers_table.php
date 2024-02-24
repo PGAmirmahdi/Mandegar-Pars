@@ -15,7 +15,7 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->enum('type',['government','private']);
             $table->string('economical_number')->comment('شماره اقتصادی')->nullable();
             $table->string('national_number')->comment('شماره ملی');
