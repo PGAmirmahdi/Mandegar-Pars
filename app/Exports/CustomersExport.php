@@ -30,6 +30,7 @@ class CustomersExport implements FromCollection, WithMapping, WithHeadings, With
     {
         return [
             $customer->name,
+            $customer->code ?? '---',
             Customer::TYPE[$customer->type],
             Customer::CUSTOMER_TYPE[$customer->customer_type],
             $customer->economical_number ?? '---',
