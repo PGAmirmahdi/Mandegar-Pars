@@ -220,10 +220,10 @@
                                         @foreach(old('products') as $i => $productId)
                                             <tr>
                                                 <td>
-                                                    <select class="form-control" name="products[]" required>
-                                                        <option value="" disabled selected>انتخاب کنید...</option>
-                                                        @foreach(\App\Models\Product::all(['id','title']) as $item)
-                                                            <option value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->title }}</option>
+                                                    <select class="js-example-basic-single" name="products[]" required>
+                                                        <option value="" disabled selected>..................... انتخاب کنید .....................</option>
+                                                        @foreach(\App\Models\Product::all(['id','title','code']) as $item)
+                                                            <option value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
                                                         @endforeach
                                                     </select>
                                                 </td>
@@ -377,10 +377,11 @@
             }
         })
 
-        @foreach(\App\Models\Product::all(['id','title']) as $product)
+        @foreach(\App\Models\Product::all(['id','title','code']) as $product)
             products.push({
                 "id": "{{ $product->id }}",
                 "title": "{{ $product->title }}",
+                "code": "{{ $product->code }}",
             })
         @endforeach
         @foreach(\App\Models\Product::COLORS as $key => $value)
@@ -394,7 +395,7 @@
         var colors_options_html = '';
 
         $.each(products, function (i, item) {
-            products_options_html += `<option value="${item.id}">${item.title}</option>`
+            products_options_html += `<option value="${item.id}">${item.code} - ${item.title}</option>`
         })
 
         $.each(colors, function (i, item) {
@@ -407,8 +408,8 @@
                     $('#products_table tbody').append(`
                 <tr>
                 <td>
-                    <select class="form-control" name="products[]" required>
-                        <option value="" disabled selected>انتخاب کنید...</option>
+                    <select class="js-example-basic-single" name="products[]" style="width: 300px !important;" required>
+                        <option value="" disabled selected>..................... انتخاب کنید .....................</option>
                         ${products_options_html}
                     </select>
                 </td>
@@ -452,6 +453,7 @@
             </tr>
 
 `);
+                    $('.js-example-basic-single').select2()
                 })
             // end add artin property
 

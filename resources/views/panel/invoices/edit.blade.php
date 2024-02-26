@@ -286,9 +286,9 @@
                                             <tr>
                                                 <td>
                                                     <select class="form-control" name="products[]" required>
-                                                        <option value="" disabled selected>انتخاب کنید...</option>
-                                                        @foreach(\App\Models\Product::all(['id','title']) as $product)
-                                                            <option value="{{ $product->id }}" {{ $item->pivot->product_id == $product->id ? 'selected' : '' }}>{{ $product->title }}</option>
+                                                        <option value="" disabled selected>..................... انتخاب کنید .....................</option>
+                                                        @foreach(\App\Models\Product::all(['id','title','code']) as $product)
+                                                            <option value="{{ $product->id }}" {{ $item->pivot->product_id == $product->id ? 'selected' : '' }}>{{ $product->code.' - '.$product->title }}</option>
                                                         @endforeach
                                                     </select>
                                                 </td>
@@ -448,10 +448,11 @@
             }
         })
 
-        @foreach(\App\Models\Product::all(['id','title']) as $product)
+        @foreach(\App\Models\Product::all(['id','title','code']) as $product)
         products.push({
             "id": "{{ $product->id }}",
             "title": "{{ $product->title }}",
+            "code": "{{ $product->code }}",
         })
         @endforeach
         @foreach(\App\Models\Product::COLORS as $key => $value)
@@ -465,7 +466,7 @@
         var colors_options_html = '';
 
         $.each(products, function (i, item) {
-            products_options_html += `<option value="${item.id}">${item.title}</option>`
+            products_options_html += `<option value="${item.id}">${item.code} - ${item.title}</option>`
         })
 
         $.each(colors, function (i, item) {
@@ -479,7 +480,7 @@
                 <tr>
                 <td>
                     <select class="form-control" name="products[]" required>
-                        <option value="" disabled selected>انتخاب کنید...</option>
+                        <option value="" disabled selected>..................... انتخاب کنید .....................</option>
                         ${products_options_html}
                     </select>
                 </td>
