@@ -285,7 +285,7 @@
                                             @endphp
                                             <tr>
                                                 <td>
-                                                    <select class="form-control" name="products[]" required>
+                                                    <select class="js-example-basic-single" name="products[]" required>
                                                         <option value="" disabled selected>..................... انتخاب کنید .....................</option>
                                                         @foreach(\App\Models\Product::all(['id','title','code']) as $product)
                                                             <option value="{{ $product->id }}" {{ $item->pivot->product_id == $product->id ? 'selected' : '' }}>{{ $product->code.' - '.$product->title }}</option>
@@ -479,7 +479,7 @@
                 $('#products_table tbody').append(`
                 <tr>
                 <td>
-                    <select class="form-control" name="products[]" required>
+                    <select class="js-example-basic-single" name="products[]" required>
                         <option value="" disabled selected>..................... انتخاب کنید .....................</option>
                         ${products_options_html}
                     </select>
@@ -527,6 +527,7 @@
             </tr>
 
 `);
+                $('.js-example-basic-single').select2()
             })
             // end add property
 
