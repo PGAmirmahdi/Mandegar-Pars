@@ -16,7 +16,7 @@ class PriceRequestController extends Controller
     {
         $this->authorize('price-requests-list');
 
-        if (Gate::any(['ceo','admin'])){
+        if (Gate::any(['ceo','admin','sales-manager'])){
             $price_requests = PriceRequest::latest()->paginate(30);
         }else{
             $price_requests = PriceRequest::where('user_id', auth()->id())->latest()->paginate(30);

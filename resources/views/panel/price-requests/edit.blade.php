@@ -32,7 +32,7 @@
                                 <tr>
                                     <td>{{ $item->product }}</td>
                                     <td>{{ $item->count }}</td>
-                                    <td class="d-flex justify-content-center"><input type="text" class="form-control" name="prices[]" value="{{ number_format($item->price) }}" required></td>
+                                    <td class="d-flex justify-content-center"><input type="text" class="form-control" name="prices[]" value="{{ isset($item->price) ? number_format($item->price) : 0 }}" required></td>
                                 </tr>
                             @endforeach
                             </tbody>
