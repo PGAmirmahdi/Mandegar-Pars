@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\BuyOrder;
 use App\Models\Invoice;
 use App\Models\Note;
 use App\Models\Packet;
@@ -78,6 +79,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('edit-report', function ($user, Report $report){
             return $user->id == $report->user_id || $user->isAdmin() || $user->isCEO();
+        });
+
+        Gate::define('edit-buy-order', function ($user, BuyOrder $buyOrder){
+            return $user->id == $buyOrder->user_id || $user->isSalesManager();
         });
     }
 }

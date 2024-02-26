@@ -41,10 +41,10 @@ class PermissionSeeder extends Seeder
 //            'printers-edit' => 'ویرایش پرینتر',
 //            'printers-delete' => 'حذف پرینتر',
 //
-//            'invoices-list' => 'لیست سفارشات',
-//            'invoices-create' => 'ایجاد سفارش',
-//            'invoices-edit' => 'ویرایش سفارش',
-//            'invoices-delete' => 'حذف سفارش',
+//            'invoices-list' => 'لیست سفارشات فروش',
+//            'invoices-create' => 'ایجاد سفارش فروش',
+//            'invoices-edit' => 'ویرایش سفارش فروش',
+//            'invoices-delete' => 'حذف سفارش فروش',
 //
 //            'system-user' => 'سامانه',
 //            'partner-tehran-user' => 'همکار تهران',
@@ -153,6 +153,11 @@ class PermissionSeeder extends Seeder
 //            'price-requests-list' => 'لیست درخواست قیمت',
 //            'price-requests-create' => 'ثبت درخواست قیمت',
 //            'price-requests-delete' => 'حذف درخواست قیمت',
+
+//            'buy-orders-list' => 'سفارشات خرید',
+//            'buy-orders-create' => 'ثبت سفارش خرید',
+//            'buy-orders-edit' => 'ویرایش سفارش خرید',
+//            'buy-orders-delete' => 'حذف سفارش خرید',
         ];
 
         foreach ($items as $key => $item)

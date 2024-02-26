@@ -212,7 +212,8 @@ return [
         'serial_number' => 'شماره سریال',
         'customer_code' => 'کد مشتری',
         'invoice_file' => 'فایل پیش فاکتور',
-        'factor_file' => 'فایل فاکتور'
+        'factor_file' => 'فایل فاکتور',
+        'customer_id' => 'مشتری'
     ],
 
 ];

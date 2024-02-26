@@ -135,6 +135,11 @@ class User extends Authenticatable
         return $this->hasMany(PriceRequest::class);
     }
 
+    public function buy_orders()
+    {
+        return $this->hasMany(BuyOrder::class);
+    }
+
     private function leavesUpdate()
     {
         $leave_info = DB::table('leave_info')->where('user_id', $this->id);

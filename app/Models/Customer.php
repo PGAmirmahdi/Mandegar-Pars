@@ -27,4 +27,9 @@ class Customer extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function buy_orders()
+    {
+        return $this->hasMany(BuyOrder::class);
+    }
 }

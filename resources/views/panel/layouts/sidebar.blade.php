@@ -14,8 +14,8 @@
                     </a>
                 </li>
             @endcanany
-            @canany(['invoices-list'])
-            <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}']) ? 'active' : '' }}" data-toggle="tooltip" title="سفارشات و فروش">
+            @canany(['invoices-list','sale-reports-list','price-requests','buy-orders'])
+            <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders']) ? 'active' : '' }}" data-toggle="tooltip" title="سفارشات و فروش">
                 <a href="#navigationInvoices" title="سفارشات و فروش">
                     <i class="icon ti-shopping-cart"></i>
                 </a>
@@ -176,18 +176,18 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}']) ? 'navigation-active' : '' }}">
+        <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">سفارشات و فروش</li>
             @can('invoices-list')
                 <li>
-                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات</a>
+                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات فروش</a>
                 </li>
             @endcan
-{{--            @can('factors-list')--}}
-{{--                <li>--}}
-{{--                    <a class="{{ active_sidebar(['factors','factors/create','factors/{factor}/edit','search/factors']) ? 'active' : '' }}" href="{{ route('factors.index') }}">فاکتور</a>--}}
-{{--                </li>--}}
-{{--            @endcan--}}
+            @can('buy-orders-list')
+                <li>
+                    <a class="{{ active_sidebar(['buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders']) ? 'active' : '' }}" href="{{ route('buy-orders.index') }}">سفارشات خرید</a>
+                </li>
+            @endcan
             @can('sale-reports-list')
                 <li>
                     <a class="{{ active_sidebar(['sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports']) ? 'active' : '' }}" href="{{ route('sale-reports.index') }}">گزارشات فروش</a>

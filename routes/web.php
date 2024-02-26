@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BotController;
+use App\Http\Controllers\Panel\BuyOrderController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
@@ -248,6 +249,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
 
     // Price Request
     Route::resource('price-requests', PriceRequestController::class);
+
+    // Buy Orders
+    Route::resource('buy-orders', BuyOrderController::class);
+    Route::post('buy-order/{buy_order}/change-status', [BuyOrderController::class, 'changeStatus'])->name('buy-orders.changeStatus');
 });
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
