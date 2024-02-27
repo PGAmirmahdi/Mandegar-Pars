@@ -128,7 +128,7 @@
                             </td>
                             @can('packets-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('packets.edit', $packet->id) }}">
+                                    <a class="btn btn-warning btn-floating" href="{{ route('packets.edit', ['packet' => $packet->id, 'url' => request()->getRequestUri()]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>

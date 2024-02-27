@@ -65,7 +65,9 @@ class CustomerController extends Controller
     {
         $this->authorize('customers-edit');
 
-        return view('panel.customers.edit', compact('customer'));
+        $url = \request()->url;
+
+        return view('panel.customers.edit', compact('customer','url'));
     }
 
     public function update(UpdateCustomerRequest $request, Customer $customer)
@@ -90,8 +92,10 @@ class CustomerController extends Controller
             'description' => $request->description,
         ]);
 
+        $url = $request->url;
+
         alert()->success('مشتری مورد نظر با موفقیت ویرایش شد','ویرایش مشتری');
-        return redirect()->route('customers.index');
+        return redirect($url);
     }
 
     public function destroy(Customer $customer)

@@ -78,7 +78,9 @@ class PacketController extends Controller
 
         $invoices = Invoice::with('customer')->latest()->get()->pluck('customer.name','id');
 
-        return view('panel.packets.edit', compact('invoices', 'packet'));
+        $url = \request()->url;
+
+        return view('panel.packets.edit', compact('invoices', 'packet', 'url'));
     }
 
     public function update(UpdatePacketRequest $request, Packet $packet)
@@ -105,8 +107,10 @@ class PacketController extends Controller
             'notif_time' => Carbon::parse($sent_time)->addDays(20),
         ]);
 
+        $url = $request->url;
+
         alert()->success('بسته مورد نظر با موفقیت ویرایش شد','ویرایش بسته');
-        return redirect()->route('packets.index');
+        return redirect($url);
     }
 
     public function destroy(Packet $packet)

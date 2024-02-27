@@ -19,6 +19,7 @@
             <form action="{{ route('customers.update', $customer->id) }}" method="post">
                 @csrf
                 @method('PATCH')
+                <input type="hidden" name="url" value="{{ $url }}">
                 <div class="form-row">
                     @can('sales-manager')
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">

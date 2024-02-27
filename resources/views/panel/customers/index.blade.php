@@ -86,7 +86,7 @@
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('customers-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('customers.edit', $customer->id) }}">
+                                    <a class="btn btn-warning btn-floating" href="{{ route('customers.edit', ['customer' => $customer->id, 'url' => request()->getRequestUri()]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>

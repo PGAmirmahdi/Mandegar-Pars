@@ -49,6 +49,7 @@
             <form action="{{ route('packets.update', $packet->id) }}" method="post">
                 @csrf
                 @method('PATCH')
+                <input type="hidden" name="url" value="{{ $url }}">
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="invoice">سفارش<span class="text-danger">*</span></label>
