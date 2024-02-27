@@ -162,14 +162,20 @@ class TicketController extends Controller
 
     private function generateCode()
     {
-        $year = verta()->year;
-        $month = verta()->month;
-        $day = verta()->day;
-        $hour = verta()->hour;
-        $minute = verta()->minute;
-        $second = verta()->second;
+        $last_ticket = Ticket::latest()->first();
 
-        $code = $year.$month.$day.$hour.$minute.$second;
-        return $code;
+        if ($last_ticket){
+            return ++$last_ticket->code;
+        }else{
+            $year = verta()->year;
+            $month = verta()->month;
+            $day = verta()->day;
+            $hour = verta()->hour;
+            $minute = verta()->minute;
+            $second = verta()->second;
+
+            $code = $year.$month.$day.$hour.$minute.$second;
+            return $code;
+        }
     }
 }
