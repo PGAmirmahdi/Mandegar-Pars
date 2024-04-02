@@ -76,6 +76,8 @@ class UserController extends Controller
             }else{
                 $sign_image = $user->sign_image;
             }
+        }else{
+            $sign_image = $user->sign_image;
         }
 
         $user->update([

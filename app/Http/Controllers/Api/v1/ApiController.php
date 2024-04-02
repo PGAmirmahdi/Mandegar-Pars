@@ -74,7 +74,7 @@ class ApiController extends Controller
             'discount' => 0,
         ]);
 
-        $tax = 0.09;
+        $tax = 0.1;
 
         // create product items
         foreach ($request->items as $item){

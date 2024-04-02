@@ -27,7 +27,7 @@ use PDF as PDF;
 
 class InvoiceController extends Controller
 {
-    const TAX_AMOUNT = 0.09;
+    const TAX_AMOUNT = 0.1;
 
     public function index()
     {
