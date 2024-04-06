@@ -158,6 +158,8 @@ class PermissionSeeder extends Seeder
 //            'buy-orders-create' => 'ثبت سفارش خرید',
 //            'buy-orders-edit' => 'ویرایش سفارش خرید',
 //            'buy-orders-delete' => 'حذف سفارش خرید',
+
+            'delivery-day' => 'انتخاب روزهای تحویل سفارش',
         ];
 
         foreach ($items as $key => $item)

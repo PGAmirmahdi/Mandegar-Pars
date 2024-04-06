@@ -14,8 +14,8 @@
                     </a>
                 </li>
             @endcanany
-            @canany(['invoices-list','sale-reports-list','price-requests','buy-orders'])
-            <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders']) ? 'active' : '' }}" data-toggle="tooltip" title="سفارشات و فروش">
+            @canany(['invoices-list','sale-reports-list','price-requests','buy-orders','delivery-day'])
+            <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days']) ? 'active' : '' }}" data-toggle="tooltip" title="سفارشات و فروش">
                 <a href="#navigationInvoices" title="سفارشات و فروش">
                     <i class="icon ti-shopping-cart"></i>
                 </a>
@@ -176,7 +176,7 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders']) ? 'navigation-active' : '' }}">
+        <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">سفارشات و فروش</li>
             @can('invoices-list')
                 <li>
@@ -186,6 +186,11 @@
             @can('buy-orders-list')
                 <li>
                     <a class="{{ active_sidebar(['buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders']) ? 'active' : '' }}" href="{{ route('buy-orders.index') }}">سفارشات خرید</a>
+                </li>
+            @endcan
+            @can('delivery-day')
+                <li>
+                    <a class="{{ active_sidebar(['delivery-days']) ? 'active' : '' }}" href="{{ route('delivery-days.index') }}">روز های تحویل سفارش</a>
                 </li>
             @endcan
             @can('sale-reports-list')

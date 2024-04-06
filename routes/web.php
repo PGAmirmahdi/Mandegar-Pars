@@ -7,6 +7,7 @@ use App\Http\Controllers\Panel\BuyOrderController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
+use App\Http\Controllers\Panel\DeliveryDayController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
 use App\Http\Controllers\Panel\ForeignCustomerController;
@@ -253,6 +254,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Buy Orders
     Route::resource('buy-orders', BuyOrderController::class);
     Route::post('buy-order/{buy_order}/change-status', [BuyOrderController::class, 'changeStatus'])->name('buy-orders.changeStatus');
+
+    // Delivery Days
+    Route::get('delivery-days', [DeliveryDayController::class, 'index'])->name('delivery-days.index');
+    Route::post('select-day', [DeliveryDayController::class, 'toggleDay'])->name('select-day');
 });
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
