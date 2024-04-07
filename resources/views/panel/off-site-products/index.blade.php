@@ -40,6 +40,27 @@
         </div>
         {{--  end price history Modal  --}}
     @endif
+    @if(request()->website == 'torob' || request()->website == 'emalls')
+        {{--  avg price Modal  --}}
+        <div class="modal fade" id="avgPriceModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="avgPriceModalLabel">میانگین قیمت(3 روز اخیر)</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                            <i class="ti-close"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{--  avg price Modal  --}}
+    @endif
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -56,7 +77,10 @@
                         <th>#</th>
                         <th>عنوان محصول</th>
                         <th>تاریخ ایجاد</th>
-                        <th>مشاهده قیمت</th>
+                        <th>مشاهده قیمت فروشندگان</th>
+                        @if(request()->website == 'torob' || request()->website == 'emalls')
+                            <th>میانگین قیمت</th>
+                        @endif
                         <th>تاریخچه قیمت</th>
                         <th>ویرایش</th>
                         <th>حذف</th>
@@ -73,6 +97,13 @@
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </td>
+                            @if(request()->website == 'torob' || request()->website == 'emalls')
+                                <td>
+                                    <button class="btn btn-info btn-floating btn_avg_price" data-toggle="modal" data-target="#avgPriceModal" data-id="{{ $item->id }}">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </td>
+                            @endif
                             <td>
                                 <button class="btn btn-info btn-floating btn_price_history" data-toggle="modal" data-target="#priceHistoryModal" data-id="{{ $item->id }}">
                                     <i class="fa fa-eye"></i>
@@ -129,6 +160,20 @@
                         emallsChart();
                         break;
                 }
+            })
+
+            $('.btn_avg_price').on('click', function () {
+                id = $(this).data('id');
+
+                $('#avgPriceModal .modal-body').html(`<div class="spinner-grow text-primary"></div>`)
+
+                $.ajax({
+                    url: `/panel/avg-price/${website}/${id}`,
+                    type: 'get',
+                    success: function (res) {
+                        $('#avgPriceModal .modal-body').html(`<h4>${res}</h4>`)
+                    }
+                });
             })
 
             function torobChart() {

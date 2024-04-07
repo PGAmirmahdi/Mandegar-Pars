@@ -115,24 +115,91 @@ class OffSiteProductController extends Controller
         }
     }
 
-    private function torob($url)
+    public function avgPrice($website, OffSiteProduct $offSiteProduct)
     {
+        switch ($website)
+        {
+            case 'torob':
+                return $this->torobAvgPrice($offSiteProduct);
+            case 'emalls':
+                return $this->emallsAvgPrice($offSiteProduct);
+        }
+    }
+
+    private function torobAvgPrice($offSiteProduct)
+    {
+        $pattern = '/\/p\/([^\/]+)/';
+        preg_match($pattern, $offSiteProduct->url, $matches);
+        $id = $matches[1];
+
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_URL, "https://api.torob.com/v4/base-product/sellers/?prk=$id");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
         $response = curl_exec($ch);
         curl_close($ch);
 
-        $dom = new \DOMDocument();
-        libxml_use_internal_errors(true);
-        $dom->validateOnParse = true;
-        $dom->loadHTML($response);
-        libxml_clear_errors();
+        $sellers = collect(json_decode($response)->results)->whereNotNull('last_price_change_date')->filter(function ($item) {
+            return in_array($item->last_price_change_date, ['دیروز','۳ روز پیش','۲ روز پیش']) || strpos($item->last_price_change_date, 'ساعت') || strpos($item->last_price_change_date, 'دقیقه');
+        });
 
-        $res = json_decode($dom->getElementsByTagName('script')->item(1)->nodeValue);
-        $data = $res->offers->offers;
+        $avg = (int)$sellers->pluck('price')->avg();
+        return number_format($avg).' تومان ';
+    }
+
+    private function emallsAvgPrice($offSiteProduct)
+    {
+        $ch = curl_init();
+
+        $id = explode('~',$offSiteProduct->url)[2];
+        $params = [
+            'id' => $id,
+            'startfrom' => 0
+        ];
+
+        curl_setopt($ch, CURLOPT_URL, 'https://emalls.ir/swservice/webshopproduct.ashx');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $headers = [];
+        $headers[] = "Referer: $offSiteProduct->url";
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        $data = collect(json_decode($response));
+
+        $avg = (int)$data->where('ismojood', true)->filter(function ($item) {
+            return in_array($item->lastupdate, ['۱ روز پیش','۳ روز پیش','۲ روز پیش']) || strpos($item->lastupdate, 'ساعت') || strpos($item->lastupdate, 'دقیقه');
+        })->pluck('Price')->avg();
+
+        return number_format($avg).' تومان ';
+    }
+
+    private function torob($url)
+    {
+        $pattern = '/\/p\/([^\/]+)/';
+        preg_match($pattern, $url, $matches);
+        $id = $matches[1];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://api.torob.com/v4/base-product/sellers/?prk=$id");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $data = collect(json_decode($response)->results);
 
         return view('panel.off-site-products.torob', compact('data'));
     }
@@ -146,7 +213,6 @@ class OffSiteProductController extends Controller
 
         $response = curl_exec($ch);
         curl_close($ch);
-
         $res = json_decode($response);
         $data = $res->data->product;
 
@@ -221,7 +287,7 @@ class OffSiteProductController extends Controller
 
         OffSiteProduct::create([
             'title' => $request->title,
-            'url' => "https://api.digikala.com/v1/product/$request->code/",
+            'url' => "https://api.digikala.com/v2/product/$request->code/",
             'website' => $request->website,
         ]);
     }
@@ -235,7 +301,7 @@ class OffSiteProductController extends Controller
 
         $offSiteProduct->update([
             'title' => $request->title,
-            'url' => "https://api.digikala.com/v1/product/$request->code/",
+            'url' => "https://api.digikala.com/v2/product/$request->code/",
         ]);
     }
 
@@ -263,7 +329,7 @@ class OffSiteProductController extends Controller
 
     private function digikalaHistory(OffSiteProduct $offSiteProduct)
     {
-        $product_id = str_replace(['https://api.digikala.com/v1/product/','/'],'',$offSiteProduct->url);
+        $product_id = str_replace(['https://api.digikala.com/v2/product/','/'],'',$offSiteProduct->url);
 
         $endpoint = "https://api.digikala.com/v1/product/$product_id/price-chart/";
 

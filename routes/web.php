@@ -189,6 +189,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('off-site-product-create',[OffSiteProductController::class, 'store'])->name('off-site-products.store');
     Route::resource('off-site-products', OffSiteProductController::class)->except('index','show','create');
     Route::get('off-site-product-history/{website}/{off_site_product}', [OffSiteProductController::class, 'priceHistory']);
+    Route::get('avg-price/{website}/{off_site_product}', [OffSiteProductController::class, 'avgPrice']);
 
     // Inventory
     Route::resource('inventory', InventoryController::class)->except('show');

@@ -19,8 +19,8 @@
                     @foreach($data as $key => $item)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td><a href="{{ $item->url }}" class="btn-link" target="_blank">{{ $item->name }}</a></td>
-                            <td>{{ number_format($item->price * 0.1) }} تومان</td>
+                            <td><a href="{{ $item->page_url }}" class="btn-link" target="_blank">{{ $item->shop_name }}</a></td>
+                            <td>{{ number_format($item->price) }} تومان</td>
                         </tr>
                     @endforeach
                     </tbody>
