@@ -78,7 +78,9 @@
             <table>
                 <tr>
                     <td style="width: 700px">
-                        <img src="{{ public_path('/assets/media/image/header-logo.png') }}" style="width: 15rem;">
+                        @if($invoice->type == 'official')
+                            <img src="{{ public_path('/assets/media/image/header-logo.png') }}" style="width: 15rem;">
+                        @endif
                     </td>
                     <td>
                         <span style="font-size: 25px">سفارش مشتری</span>
@@ -100,28 +102,54 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>
-                            <div>
-                                <span>نام شخص حقیقی/حقوقی: شرکت صنایع ماشین های اداری ماندگار پارس</span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span>شماره اقتصادی: 14011383061</span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span>شماره ثبت/شماره ملی: 9931</span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span>شناسه ملی: 14011383061</span>
-                            </div>
-                            <div style="height: 2rem">&nbsp;</div>
-                            <div>
-                                <span>نشانی: تهران، شهرستان ملارد، شهرک صنعتی صفادشت، بلوار خرداد، بین خیابان پنجم و ششم غربی، پلاک 228</span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span>کد پستی: 3164114855</span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span>شماره تلفن: 02165425053</span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            </div>
-                        </td>
-                    </tr>
+                    @if($invoice->type == 'official')
+                        <tr>
+                            <td>
+                                <div>
+                                    <span>نام شخص حقیقی/حقوقی: شرکت صنایع ماشین های اداری ماندگار پارس</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>شماره اقتصادی: 14011383061</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>شماره ثبت/شماره ملی: 9931</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>شناسه ملی: 14011383061</span>
+                                </div>
+                                <div style="height: 2rem">&nbsp;</div>
+                                <div>
+                                    <span>نشانی: تهران، شهرستان ملارد، شهرک صنعتی صفادشت، بلوار خرداد، بین خیابان پنجم و ششم غربی، پلاک 228</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>کد پستی: 3164114855</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>شماره تلفن: 02165425053</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td class="text-center">
+                                <div class="mb-3">
+                                    <span>نام شخص حقیقی/حقوقی: {{ $invoice->seller->name }}</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>استان: {{ $invoice->seller->province }}</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>شهر: {{ $invoice->seller->city }}</span>
+                                </div>
+                                <div style="height: 2rem">&nbsp;</div>
+                                <div class="mb-3">
+                                    <span>نشانی: {{ $invoice->seller->address }}</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>شماره تماس: {{ $invoice->seller->phone }}</span>
+                                </div>
+                                <div style="height: 2rem">&nbsp;</div>
+                                <div class="mb-3">
+                                    <span>شماره کارت: {{ $invoice->seller->card_number }}</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>شماره شبا: {{ $invoice->seller->sheba_number }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    @endif
                     </tbody>
                 </table>
                 <table class="table table-bordered mb-5">
@@ -257,6 +285,14 @@
                                 <td>{{ number_format($sum_invoice_net) }}</td>
                             </tr>
                             <tr>
+                                <th class="p-0 title-sec" colspan="6">تخفیف نهایی</th>
+                                <th class="p-0 title-sec" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
+                            </tr>
+                            <tr>
+                                <td colspan="6">{{ number_format($invoice->discount) }}</td>
+                                <td colspan="6">{{ number_format($sum_invoice_net - $invoice->discount) }}</td>
+                            </tr>
+                            <tr>
                                 <td colspan="4">
                                     <div style="text-align: right; display: flex">
                                         <span class="mr-4">شرایط و نحوه فروش</span>
@@ -268,7 +304,8 @@
                             </tr>
                             <tr>
                                 <td colspan="2"><small>توضیحات</small></td>
-                                <td colspan="10">لطفا مبلغ فاکتور را به شماره شبا IR55 0110 0000 0010 3967 1380 01 نزد بانک صنعت و معدن شعبه مرکزی واریز فرمایید.</td>
+                                <td colspan="10">{{ $invoice->description }}</td>
+                                {{--                                <td colspan="10">لطفا مبلغ فاکتور را به شماره شبا IR55 0110 0000 0010 3967 1380 01 نزد بانک صنعت و معدن شعبه مرکزی واریز فرمایید.</td>--}}
                             </tr>
                             <tr>
                                 <td colspan="6">
@@ -285,7 +322,9 @@
                                 </td>
                                 <td>
                                     <img src="{{ $invoice->user->sign_image ? public_path($invoice->user->sign_image) : '' }}" style="width: 10rem">
-                                    <img src="{{ public_path('assets/media/image/stamp.png') }}" style="width: 13rem">
+                                    @if($invoice->type == 'official')
+                                        <img src="{{ public_path('assets/media/image/stamp.png') }}" style="width: 13rem">
+                                    @endif
                                 </td>
                                 <td></td>
                                 <td></td>
