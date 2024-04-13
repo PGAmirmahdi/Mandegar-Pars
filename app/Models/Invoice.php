@@ -21,6 +21,7 @@ class Invoice extends Model
     const CREATED_IN = [
         'website' => 'وبسایت',
         'automation' => 'اتوماسیون',
+        'app' => 'اپلیکیشن',
     ];
 
     const TYPE = [

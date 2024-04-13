@@ -14,7 +14,7 @@ class UpdateInvoicesTable3 extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->enum('created_in',['website', 'automation'])->after('customer_id');
+            $table->enum('created_in',['website', 'automation','app'])->after('customer_id');
         });
     }
 

@@ -70,7 +70,7 @@ class ApiController extends Controller
             'postal_code' => $customer->postal_code,
             'phone' => $customer->phone1,
             'status' => 'order',
-            'created_in' => 'website',
+            'created_in' => $data['created_in'],
             'discount' => 0,
         ]);
 
@@ -79,10 +79,10 @@ class ApiController extends Controller
         // create product items
         foreach ($request->items as $item){
             // for test
-            $product = Product::first();
+//            $product = Product::first();
             // end for test
 
-//            $product = Product::where('code', $item['acc_code'])->first();
+            $product = Product::where('code', $item['acc_code'])->first();
 
             $price = ($item['total'] / $item['quantity']) .'0';
             $total = $item['total'].'0';
