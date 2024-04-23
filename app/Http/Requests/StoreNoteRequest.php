@@ -26,7 +26,6 @@ class StoreNoteRequest extends FormRequest
         return [
             'title' => 'required',
             'text' => 'required',
-            'status' => 'required',
         ];
     }
 }

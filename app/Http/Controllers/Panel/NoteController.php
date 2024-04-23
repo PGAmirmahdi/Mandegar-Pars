@@ -18,73 +18,34 @@ class NoteController extends Controller
         return view('panel.notes.index', compact('notes'));
     }
 
-    public function create()
+    public function store(Request $request)
     {
         $this->authorize('notes-create');
 
-        return view('panel.notes.create');
-    }
+        if (!$request->title && !$request->text){
+            return response()->json(['title or text required']);
+        }
 
-    public function store(StoreNoteRequest $request)
-    {
-        $this->authorize('notes-create');
-
-        Note::create([
+        $data = [
             'user_id' => auth()->id(),
             'title' => $request->title,
             'text' => $request->text,
-            'status' => $request->status,
-        ]);
+        ];
+        if (!$request->note_id) {
+            $note = Note::create($data);
+        } else {
+            Note::find($request->note_id)->update($data);
+            $note = Note::find($request->note_id);
+        }
 
-        alert()->success('یادداشت مورد نظر با موفقیت ایجاد شد','ایجاد یادداشت');
-        return redirect()->route('notes.index');
+        return response()->json(['data' => true, 'id' => $note->id]);
     }
 
-    public function show(Note $note)
-    {
-        //
-    }
-
-    public function edit(Note $note)
-    {
-        $this->authorize('notes-edit');
-        $this->authorize('edit-note', $note);
-
-
-        return view('panel.notes.edit', compact('note'));
-    }
-
-    public function update(UpdateNoteRequest $request, Note $note)
-    {
-        $this->authorize('notes-edit');
-        $this->authorize('edit-note', $note);
-
-        $note->update([
-            'title' => $request->title,
-            'text' => $request->text,
-            'status' => $request->status,
-        ]);
-
-        alert()->success('یادداشت مورد نظر با موفقیت ویرایش شد','ویرایش یادداشت');
-        return redirect()->route('notes.index');
-    }
-
-    public function destroy(Note $note)
+    public function delete(Request $request)
     {
         $this->authorize('notes-delete');
 
-        $note->delete();
-        return back();
-    }
-
-    public function changeStatus(Request $request)
-    {
-        $note = Note::find($request->note_id);
-
-        if ($note->status == 'done'){
-            $note->update(['status' => 'undone']);
-        }else{
-            $note->update(['status' => 'done']);
-        }
+        Note::find($request->note_id)->delete();
+        return response()->json(['data' => true]);
     }
 }

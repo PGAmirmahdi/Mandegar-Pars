@@ -152,8 +152,10 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     Route::post('task/get-desc',[TaskController::class, 'getDescription']);
 
     // Notes
-    Route::resource('notes', NoteController::class)->except('show');
-    Route::post('note/change-status', [NoteController::class, 'changeStatus']);
+    Route::get('notes', [NoteController::class, 'index'])->name('notes.index');
+    Route::post('notes', [NoteController::class, 'store'])->name('notes.store');
+    Route::post('notes/delete', [NoteController::class, 'delete'])->name('notes.destroy');
+//    Route::post('note/change-status', [NoteController::class, 'changeStatus']);
 
     // Leaves
     Route::resource('leaves',LeaveController::class)->except('show')->parameters(['leaves' => 'leave']);

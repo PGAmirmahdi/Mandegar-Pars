@@ -1,92 +1,251 @@
 @extends('panel.layouts.master')
 @section('title', 'یادداشت ها')
+
+@section('styles')
+    <style>
+        .paper {
+            position: relative;
+            height: 340px;
+            width: 300px;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0px 0px 5px 0px #888;
+        }
+        .paper::before {
+            content: '';
+            position: absolute;
+            right: 45px;
+            height: 100%;
+            width: 2px;
+            background: rgba(255,0,0,0.4);
+        }
+        .lines {
+            height: calc(100% - 40px);
+            width: 100%;
+            background-image: repeating-linear-gradient(white 0px, white 24px, steelblue 25px);
+        }
+        .title {
+            text-align: center;
+            font-size: large;
+            width: 100%;
+            background: transparent;
+            border: none;
+        }
+        .text {
+            position: absolute;
+            top: 75px;
+            right: 55px;
+            bottom: 10px;
+            width: 83%;
+            /*right: 10px;*/
+            line-height: 1.8rem;
+            overflow: auto;
+            outline: none;
+            text-align: justify;
+            padding-left: 30px;
+            background: transparent;
+            border: none;
+            height: 265px;
+            resize: none;
+        }
+        .holes {
+            position: absolute;
+            right: 10px;
+            height: 25px;
+            width: 25px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: inset 0px 0px 2px 0px #888;
+        }
+        .hole-top {
+            top: 10%;
+        }
+        .hole-middle {
+            top: 50%;
+        }
+        .hole-bottom {
+            bottom: 10%;
+        }
+        .loading{
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            padding-left: 1rem;
+            color: #5d4a9c;
+        }
+
+        .btn-remove{
+            background: #ff898e;
+            color: #fff;
+            width: 30px;
+            display: block;
+            text-align: center;
+            border-radius: 15px 0 0 15px;
+            cursor: pointer;
+        }
+
+        .btn-remove:hover{
+            background: #ff0009;
+        }
+
+    </style>
+@endsection
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>یادداشت ها</h6>
                 @can('notes-create')
-                    <a href="{{ route('notes.create') }}" class="btn btn-primary">
+                    <button class="btn btn-primary" id="btn_add">
                         <i class="fa fa-plus mr-2"></i>
                         ایجاد یادداشت
-                    </a>
+                    </button>
                 @endcan
             </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>عنوان</th>
-                        <th>وضعیت</th>
-                        <th>تاریخ ایجاد</th>
-                        @can('notes-edit')
-                            <th>ویرایش</th>
-                        @endcan
-                        @can('notes-delete')
-                            <th>حذف</th>
-                        @endcan
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($notes as $key => $note)
-                        <tr>
-                            <td>{{ ++$key }}</td>
-                            <td>{{ $note->title }}</td>
-                            <td>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input btn_status" id="customSwitch" data-id="{{ $note->id }}" {{ $note->status == 'done' ? 'checked' : '' }}>
-                                    <label class="custom-control-label" for="customSwitch"></label>
+            <div class="row" id="list">
+                @foreach($notes as $note)
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mt-3">
+                        <div class="paper">
+                            <span class="btn-remove">&times;</span>
+                            <div class="lines">
+                                <input type="text" name="note-title" class="title" value="{{ $note->title }}" data-id="{{ $note->id }}" maxlength="30" placeholder="عنوان یادداشت">
+                                <textarea class="text" name="note-text" spellcheck="false" placeholder="متن یادداشت...">{{ $note->text }}</textarea>
+                                <div class="loading d-none">
+                                    درحال ذخیره سازی ...
                                 </div>
-                            </td>
-                            <td>{{ verta($note->created_at)->format('H:i - Y/m/d') }}</td>
-                            @can('notes-edit')
-                                <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('notes.edit', $note->id) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                </td>
-                            @endcan
-                            @can('notes-delete')
-                                <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('notes.destroy',$note->id) }}" data-id="{{ $note->id }}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            @endcan
-                        </tr>
-                    @endforeach
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                    </tr>
-                    </tfoot>
-                </table>
+                            </div>
+                            <div class="holes hole-top"></div>
+                            <div class="holes hole-middle"></div>
+                            <div class="holes hole-bottom"></div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-            <div class="d-flex justify-content-center">{{ $notes->links() }}</div>
+            <div class="d-flex justify-content-center mt-5">{{ $notes->links() }}</div>
         </div>
     </div>
 @endsection
 @section('scripts')
     <script>
         $(document).ready(function () {
-            $(document).on('change', '.btn_status', function () {
-                var self = $(this);
-                self.attr('disabled','disabled');
-                let note_id = self.data('id');
+            // add note card
+            $(document).on('click', '#btn_add', function () {
+                $('#list').prepend(`<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mt-3">
+                        <div class="paper">
+                            <span class="btn-remove">&times;</span>
+                            <div class="lines">
+                                <input type="text" name="note-title" class="title" data-id="" maxlength="30" placeholder="عنوان یادداشت">
+                                <textarea class="text" name="note-text" spellcheck="false" placeholder="متن یادداشت..."></textarea>
+                                <div class="loading d-none">
+                                    درحال ذخیره سازی ...
+                                </div>
+                            </div>
+                            <div class="holes hole-top"></div>
+                            <div class="holes hole-middle"></div>
+                            <div class="holes hole-bottom"></div>
+                        </div>
+                    </div>`)
 
-                $.ajax({
-                    url: '/panel/note/change-status',
-                    type: 'post',
-                    data: {
-                        note_id
-                    },
-                    success: function (res) {
-                        self.removeAttr('disabled');
-                    }
-                })
+                $(this).attr('disabled', 'disabled')
             })
+            // end add note card
+
+            let timeout;
+            // save title and text
+            $(document).on('keyup', 'input[name="note-title"]', function () {
+                let item = $(this);
+                item.siblings('.loading').removeClass('d-none')
+
+                clearTimeout(timeout)
+
+                timeout = setTimeout(function () {
+                    let title = item.val()
+                    let text = item.siblings(':first').val()
+                    let note_id = item.data('id')
+
+                    $.ajax({
+                        url: "{{ route('notes.store') }}",
+                        type: 'post',
+                        data: {
+                            title,
+                            text,
+                            note_id
+                        },
+                        success: function (res) {
+                            item.data('id', res.id)
+                            item.siblings('.loading').addClass('d-none')
+                            $('#btn_add').removeAttr('disabled')
+                        }
+                    })
+                }, 1500)
+            })
+
+            $(document).on('keyup', 'textarea[name="note-text"]', function () {
+                let item = $(this);
+                item.siblings('.loading').removeClass('d-none')
+
+                clearTimeout(timeout)
+
+                timeout = setTimeout(function () {
+                    let title = item.siblings(':first').val()
+                    let text = item.val()
+                    let note_id = item.siblings(':first').data('id')
+
+                    $.ajax({
+                        url: "{{ route('notes.store') }}",
+                        type: 'post',
+                        data: {
+                            title,
+                            text,
+                            note_id
+                        },
+                        success: function (res) {
+                            item.siblings(':first').data('id', res.id)
+                            item.siblings('.loading').addClass('d-none')
+                            $('#btn_add').removeAttr('disabled')
+                        }
+                    })
+                }, 1500)
+            })
+            // end title and text
+
+            // btn remove
+            $(document).on('click', '.btn-remove', function () {
+                let self = $(this)
+                self.addClass('confirm-delete')
+                self.css('width','100%').css('border-radius','1px').css('transition','0.5s').text('حذف')
+
+                setTimeout(function () {
+                    if(!self.hasClass('deleting')){
+                        self.removeClass('confirm-delete')
+                        self.css('width','30px').css('border-radius','15px 0 0 15px').css('transition','0.5s').text('×')
+                    }
+                },3000)
+            })
+
+            $(document).on('click', '.confirm-delete', function () {
+                let self = $(this)
+                let note_id = self.siblings('.lines').children('.title').data('id')
+
+                self.addClass('deleting')
+                self.css('width','100%').css('border-radius','1px').css('transition','0.5s').css('pointer-events','none').text('درحال حذف...')
+
+                if (note_id){
+                    $.ajax({
+                        url: "{{ route('notes.destroy') }}",
+                        type: 'post',
+                        data: {
+                            note_id
+                        },
+                        success: function (res) {
+                            self.parent().parent().remove()
+                        }
+                    })
+                }else {
+                    self.parent().parent().remove()
+                    $('#btn_add').removeAttr('disabled')
+                }
+            })
+            // end btn remove
         })
     </script>
 @endsection
-
