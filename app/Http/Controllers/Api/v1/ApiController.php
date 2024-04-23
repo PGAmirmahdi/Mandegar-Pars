@@ -20,8 +20,6 @@ class ApiController extends Controller
     public function createInvoice(Request $request)
     {
         $data = $request->all();
-//
-//        Log::info($data);
 
         // users where has single-price-user permission
         $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
@@ -37,7 +35,12 @@ class ApiController extends Controller
             });
         })->get();
 
-        $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
+        if ($data['created_in'] == 'app'){
+            $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
+        }else{
+            $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
+        }
+
         $url = route('invoices.index');
         Notification::send($notifiables, new SendMessage($notif_message, $url));
         // end send notification
