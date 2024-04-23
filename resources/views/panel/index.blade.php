@@ -2,6 +2,7 @@
 @section('title', 'پنل مدیریت')
 
 @section('styles')
+    <link rel="stylesheet" href="/assets/css/notes-styles.css">
     <style>
         #app_updates ul:not(.list-unstyled) li{
             list-style-type: disclosure-closed
@@ -138,6 +139,33 @@
                             </div>
                         </div>
                 </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body pt-2 pb-0">
+            <div class="card-title d-flex justify-content-between align-items-center">
+                <h6>یادداشت های اخیر</h6>
+                <a href="{{ route('notes.index') }}" class="btn btn-link">رفتن به همه یادداشت ها</a>
+            </div>
+        </div>
+        <div class="row justify-content-lg-center mb-4" id="list">
+            @if(auth()->user()->notes()->latest()->limit(3)->exists())
+                @foreach(auth()->user()->notes()->latest()->limit(3)->get() as $note)
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mt-3">
+                        <div class="paper">
+                            <div class="lines">
+                                <input type="text" name="note-title" class="title" value="{{ $note->title }}" maxlength="30" placeholder="عنوان یادداشت" disabled>
+                                <textarea class="text" name="note-text" spellcheck="false" placeholder="متن یادداشت..." disabled>{{ $note->text }}</textarea>
+                            </div>
+                            <div class="holes hole-top"></div>
+                            <div class="holes hole-middle"></div>
+                            <div class="holes hole-bottom"></div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <p class="text-muted">یادداشتی اضافه نکرده اید!</p>
+            @endif
         </div>
     </div>
     @can('accountant')
