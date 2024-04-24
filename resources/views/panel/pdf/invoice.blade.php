@@ -59,7 +59,6 @@
     .guide_box{
         text-align: center;
     }
-
 </style>
 @php
     $sidebar = false;
@@ -307,9 +306,11 @@
                                 <td colspan="10">{{ $invoice->description }}</td>
                                 {{--                                <td colspan="10">لطفا مبلغ فاکتور را به شماره شبا IR55 0110 0000 0010 3967 1380 01 نزد بانک صنعت و معدن شعبه مرکزی واریز فرمایید.</td>--}}
                             </tr>
-                            <tr>
-                                <td colspan="12"><strong>تمام اجناس ارائه شده دارای 18 ماه گارانتی از سوی شرکت صنایع ماشین های اداری ماندگار پارس می باشد</strong></td>
-                            </tr>
+                            @if($invoice->type == 'official')
+                                <tr>
+                                    <td colspan="12"><strong>تمام اجناس ارائه شده دارای 18 ماه گارانتی از سوی شرکت صنایع ماشین های اداری ماندگار پارس می باشد</strong></td>
+                                </tr>
+                            @endif
                             <tr>
                                 <td colspan="6">
                                     <small>مهر و امضای فروشنده</small>
