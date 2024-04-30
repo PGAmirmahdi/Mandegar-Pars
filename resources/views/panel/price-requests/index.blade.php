@@ -19,9 +19,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        @canany(['admin','ceo'])
-                            <th>درخواست دهنده</th>
-                        @endcanany
+                        <th>درخواست دهنده</th>
                         <th>حداکثر زمان ثبت قیمت</th>
                         <th>وضعیت</th>
                         <th>زمان ثبت</th>
@@ -39,9 +37,7 @@
                     @foreach($price_requests as $key => $price_request)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            @canany(['admin','ceo'])
-                                <td>{{ $price_request->user->fullName() }}</td>
-                            @endcanany
+                            <td>{{ $price_request->user->fullName() }}</td>
                             <td>{{ $price_request->max_send_time }} ساعت </td>
                             <td>
                                 @if($price_request->status == 'sent')
