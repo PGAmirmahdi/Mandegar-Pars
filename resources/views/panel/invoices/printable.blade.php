@@ -104,7 +104,7 @@
             min-height: 100% !important;
             max-height: 130% !important;
         }
-        
+
     </style>
 
 @endsection

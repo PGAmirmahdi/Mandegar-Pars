@@ -36,7 +36,7 @@
                     $current_status = $invoice->order_status()->orderByDesc('order')->first()->status;
                 @endphp
                 <div class="item rounded shadow p-4 mt-4">
-                    @can('warehouse-keeper')
+                    @canany(['warehouse-keeper', 'sales-manager'])
                         <div class="d-flex justify-content-between">
                             <h5>{{ $invoice->customer->name }}</h5>
                             <div class="form-group">
@@ -51,7 +51,7 @@
                         <div class="d-flex">
                             <h5>{{ $invoice->customer->name }}</h5>
                         </div>
-                    @endcan
+                    @endcanany
                     <div class="row">
                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-4 my-2">
                             <img src="{{ asset('assets/media/image/order/register.png') }}" data-toggle="tooltip" data-placement="top" data-original-title="{{ verta($order->created_at)->format('H:i - Y/m/d') }}">
