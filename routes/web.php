@@ -71,7 +71,7 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\InventoryReport::where('factor_id', '!=', null)->get() as $item){
 //        $item->update(['invoice_id' => $item->factor->invoice_id]);
@@ -249,6 +249,7 @@ Route::middleware('auth')->prefix('/panel')->group(function (){
     // Order Statuses
     Route::get('orders-status/{invoice}', [OrderStatusController::class, 'index'])->name('orders-status.index');
     Route::post('orders-status', [OrderStatusController::class, 'changeStatus'])->name('orders-status.change');
+    Route::post('orders-status-description', [OrderStatusController::class, 'addDescription'])->name('orders-status.desc');
 
     // Price Request
     Route::resource('price-requests', PriceRequestController::class);

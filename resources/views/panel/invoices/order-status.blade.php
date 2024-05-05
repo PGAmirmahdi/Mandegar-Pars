@@ -83,11 +83,24 @@
                     </div>
                 </div>
             </div>
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="description">توضیحات</label>
+                        <textarea id="description" class="form-control" rows="6">{{ $invoice->order_status_desc }}</textarea>
+                    </div>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button class="btn btn-primary" id="save_description">ذخیره</button>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
 @section('scripts')
     <script>
+        var invoice_id = "{{ $invoice->id }}";
+
         $(document).ready(function () {
             $(document).on('change', '.change_status', function () {
                 $(this).attr('disabled','disabled')
@@ -108,6 +121,25 @@
                         $('#changing').addClass('d-none')
 
                         $('.card').html($(res).find('.card').html());
+                    }
+                })
+            })
+
+            $(document).on('click', '#save_description', function (){
+                let self = $(this);
+                let description = $('#description').val();
+
+                self.attr('disabled','disabled').text('درحال ذخیره سازی');
+
+                $.ajax({
+                    url: "{{ route('orders-status.desc') }}",
+                    type: 'post',
+                    data: {
+                        invoice_id,
+                        description
+                    },
+                    success: function (res) {
+                        self.removeAttr('disabled').text('ذخیره');
                     }
                 })
             })

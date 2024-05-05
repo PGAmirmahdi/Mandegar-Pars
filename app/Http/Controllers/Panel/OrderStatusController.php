@@ -55,4 +55,9 @@ class OrderStatusController extends Controller
 
         return back();
     }
+
+    public function addDescription(Request $request)
+    {
+        Invoice::find($request->invoice_id)->update(['order_status_desc' => $request->description]);
+    }
 }
