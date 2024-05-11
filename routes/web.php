@@ -71,6 +71,16 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}',function ($id = null){
+
+//    dd();
+//    $phones = App\Models\Customer::where('phone1','like','09_________')->pluck('phone1')->unique();
+//    $amount = '5000';
+//
+//    foreach (){
+//
+//    }
+//    sendSMS(215126, $user->phone, [$amount]);
+
 //    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\InventoryReport::where('factor_id', '!=', null)->get() as $item){

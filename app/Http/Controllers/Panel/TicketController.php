@@ -163,9 +163,13 @@ class TicketController extends Controller
     private function generateCode()
     {
         $last_ticket = Ticket::latest()->first();
+        $newCode = $last_ticket->code++;
 
         if ($last_ticket){
-            return ++$last_ticket->code;
+            while (Ticket::where('code', $newCode)->exists()) {
+                $newCode++;
+            }
+            return $newCode;
         }else{
             $year = verta()->year;
             $month = verta()->month;

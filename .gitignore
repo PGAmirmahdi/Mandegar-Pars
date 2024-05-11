@@ -31,3 +31,5 @@ error_log
 composer.lock
 /public_html
 .bash_history
+mail/
+etc/
