@@ -50,21 +50,22 @@ class DeliveryDayController extends Controller
         $days = [];
 
         foreach ($week as $day => $item) {
-            $url = "https://holidayapi.ir/jalali/{$item->year}/{$item->month}/{$item->day}";
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $res = json_decode(curl_exec($ch));
-            curl_close($ch);
+//            $url = "https://holidayapi.ir/jalali/{$item->year}/{$item->month}/{$item->day}";
+//
+//            $ch = curl_init();
+//            curl_setopt($ch, CURLOPT_URL, $url);
+//            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+//            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//            $res = json_decode(curl_exec($ch));
+//            curl_close($ch);
 
             $is_selected = $this->isSelected($item->format('Y/m/d'));
 
             $days[$day] = [
                 'date' => $item->format('Y/m/d'),
                 'text' => $item->formatWord('l'),
-                'is_holiday' => $res->is_holiday,
+//                'is_holiday' => $res->is_holiday,
+                'is_holiday' => false,
                 'is_selected' => $is_selected,
             ];
         }

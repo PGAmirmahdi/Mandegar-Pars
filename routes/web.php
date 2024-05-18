@@ -72,14 +72,18 @@ Route::get('/', function () {
 
 Route::get('test/{id?}',function ($id = null){
 
-//    dd();
-//    $phones = App\Models\Customer::where('phone1','like','09_________')->pluck('phone1')->unique();
+//     send sms to customers (install app)
+//    set_time_limit(1000000000000000000);
+//    $phones_sent = \App\Models\SmsHistory::whereBetween('created_at', ['2024-05-11 12:00:00','2024-05-11 13:59:59'])->pluck('phone')->unique();
+//    $phones = App\Models\Customer::whereNotIn('phone1',$phones_sent)->where('phone1','like','09_________')->pluck('phone1')->unique();
+//    dd($phones);
+//
 //    $amount = '5000';
 //
-//    foreach (){
-//
+//    foreach ($phones as $phone){
+//        sendSMS(215126, $phone, [$amount]);
 //    }
-//    sendSMS(215126, $user->phone, [$amount]);
+//     END send sms to customers (install app)
 
 //    return \auth()->loginUsingId($id);
 
