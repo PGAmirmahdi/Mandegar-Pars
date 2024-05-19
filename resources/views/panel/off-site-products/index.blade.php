@@ -358,4 +358,7 @@
             }
         })
     </script>
+{{--    @if (\Session::has('error'))--}}
+{{--        <script>window.alert("{{Session::get('error')}}")</script>--}}
+{{--    @endif--}}
 @endsection

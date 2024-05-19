@@ -24,6 +24,9 @@
                             @error('url')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
+                            @error('error')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                         </div>
                     @elseif(request()->website == 'digikala')
                         <div class="col-xl-4 col-lg-4 col-md-4 mb-3">

@@ -28,8 +28,7 @@ class OffSiteProductController extends Controller
     {
         $this->authorize('shops');
 
-        switch ($request->website)
-        {
+        switch ($request->website) {
             case 'emalls':
                 $this->publicStore($request);
                 break;
@@ -43,7 +42,7 @@ class OffSiteProductController extends Controller
                 return back();
         }
 
-        alert()->success('محصول مورد نظر با موفقیت ایجاد شد','ایجاد محصول');
+        alert()->success('محصول مورد نظر با موفقیت ایجاد شد', 'ایجاد محصول');
         return redirect()->route('off-site-products.index', $request->website);
     }
 
@@ -51,8 +50,7 @@ class OffSiteProductController extends Controller
     {
         $this->authorize('shops');
 
-        switch ($offSiteProduct->website)
-        {
+        switch ($offSiteProduct->website) {
             case 'torob':
                 return $this->torob($offSiteProduct->url);
             case 'emalls':
@@ -75,22 +73,21 @@ class OffSiteProductController extends Controller
     {
         $this->authorize('shops');
 
-        switch ($offSiteProduct->website)
-        {
+        switch ($offSiteProduct->website) {
             case 'emalls':
-                $this->publicUpdate($offSiteProduct ,$request);
+                $this->publicUpdate($offSiteProduct, $request);
                 break;
             case 'torob':
-                $this->publicUpdate($offSiteProduct ,$request);
+                $this->publicUpdate($offSiteProduct, $request);
                 break;
             case 'digikala':
-                $this->digikalaUpdate($offSiteProduct ,$request);
+                $this->digikalaUpdate($offSiteProduct, $request);
                 break;
             default:
                 return back();
         }
 
-        alert()->success('محصول مورد نظر با موفقیت ویرایش شد','ویرایش محصول');
+        alert()->success('محصول مورد نظر با موفقیت ویرایش شد', 'ویرایش محصول');
         return redirect()->route('off-site-products.index', $offSiteProduct->website);
     }
 
@@ -104,8 +101,7 @@ class OffSiteProductController extends Controller
 
     public function priceHistory($website, OffSiteProduct $offSiteProduct)
     {
-        switch ($website)
-        {
+        switch ($website) {
             case 'torob':
                 return $this->torobHistory($offSiteProduct);
             case 'digikala':
@@ -117,8 +113,7 @@ class OffSiteProductController extends Controller
 
     public function avgPrice($website, OffSiteProduct $offSiteProduct)
     {
-        switch ($website)
-        {
+        switch ($website) {
             case 'torob':
                 return $this->torobAvgPrice($offSiteProduct);
             case 'emalls':
@@ -142,18 +137,18 @@ class OffSiteProductController extends Controller
         curl_close($ch);
 
         $sellers = collect(json_decode($response)->results)->whereNotNull('last_price_change_date')->filter(function ($item) {
-            return in_array($item->last_price_change_date, ['دیروز','۳ روز پیش','۲ روز پیش']) || strpos($item->last_price_change_date, 'ساعت') || strpos($item->last_price_change_date, 'دقیقه');
+            return in_array($item->last_price_change_date, ['دیروز', '۳ روز پیش', '۲ روز پیش']) || strpos($item->last_price_change_date, 'ساعت') || strpos($item->last_price_change_date, 'دقیقه');
         });
 
         $avg = (int)$sellers->pluck('price')->avg();
-        return number_format($avg).' تومان ';
+        return number_format($avg) . ' تومان ';
     }
 
     private function emallsAvgPrice($offSiteProduct)
     {
         $ch = curl_init();
 
-        $id = explode('~',$offSiteProduct->url)[2];
+        $id = explode('~', $offSiteProduct->url)[2];
         $params = [
             'id' => $id,
             'startfrom' => 0
@@ -178,10 +173,10 @@ class OffSiteProductController extends Controller
         $data = collect(json_decode($response));
 
         $avg = (int)$data->where('ismojood', true)->filter(function ($item) {
-            return in_array($item->lastupdate, ['۱ روز پیش','۳ روز پیش','۲ روز پیش']) || strpos($item->lastupdate, 'ساعت') || strpos($item->lastupdate, 'دقیقه');
+            return in_array($item->lastupdate, ['۱ روز پیش', '۳ روز پیش', '۲ روز پیش']) || strpos($item->lastupdate, 'ساعت') || strpos($item->lastupdate, 'دقیقه');
         })->pluck('Price')->avg();
 
-        return number_format($avg).' تومان ';
+        return number_format($avg) . ' تومان ';
     }
 
     private function torob($url)
@@ -223,7 +218,7 @@ class OffSiteProductController extends Controller
     {
         $ch = curl_init();
 
-        $id = explode('~',$url)[2];
+        $id = explode('~', $url)[2];
         $params = [
             'id' => $id,
             'startfrom' => 0
@@ -256,7 +251,45 @@ class OffSiteProductController extends Controller
             'title' => 'required',
             'url' => 'required',
         ]);
+        if ($request->website == 'torob') {
+            $pattern = '/\/p\/([^\/]+)/';
+            preg_match($pattern, $request->url, $matches);
 
+            if (!str_contains($request->url, 'torob.com')) {
+                $request->validate([
+                    'error' => 'required',
+                ], [
+                    'error.required' => 'لینک وارد شده نامعتبر میباشد',
+                ]);
+            }
+
+            if (!isset($matches[1])) {
+                $request->validate([
+                    'error' => 'required',
+                ], [
+                    'error.required' => 'لینک وارد شده نامعتبر میباشد',
+                ]);
+            }
+        }
+//            Emalls
+        if ($request->website == "emalls") {
+            if (!isset(explode('~', $request->url)[2])){
+                $request->validate([
+                    'error' => 'required',
+                ], [
+                    'error.required' => 'لینک وارد شده نامعتبر میباشد',
+                ]);
+            }
+
+            $id = explode('~', $request->url)[2];
+            if (!str_contains($request->url, 'emalls.ir')) {
+                $request->validate([
+                    'error' => 'required',
+                ], [
+                    'error.required' => 'لینک وارد شده نامعتبر میباشد',
+                ]);
+            }
+        }
         OffSiteProduct::create([
             'title' => $request->title,
             'url' => $request->url,
@@ -307,10 +340,10 @@ class OffSiteProductController extends Controller
 
     private function torobHistory(OffSiteProduct $offSiteProduct)
     {
-        $url = str_replace('https://torob.com/p/','',$offSiteProduct->url);
-        $offset = strpos($url,'/');
+        $url = str_replace('https://torob.com/p/', '', $offSiteProduct->url);
+        $offset = strpos($url, '/');
 
-        $product_id = substr($url,0,$offset);
+        $product_id = substr($url, 0, $offset);
 
         $endpoint = "https://api.torob.com/v4/base-product/price-chart/?prk=$product_id";
 
@@ -329,7 +362,7 @@ class OffSiteProductController extends Controller
 
     private function digikalaHistory(OffSiteProduct $offSiteProduct)
     {
-        $product_id = str_replace(['https://api.digikala.com/v2/product/','/'],'',$offSiteProduct->url);
+        $product_id = str_replace(['https://api.digikala.com/v2/product/', '/'], '', $offSiteProduct->url);
 
         $endpoint = "https://api.digikala.com/v1/product/$product_id/price-chart/";
 

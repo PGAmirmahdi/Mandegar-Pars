@@ -85,7 +85,7 @@ Route::get('test/{id?}',function ($id = null){
 //    }
 //     END send sms to customers (install app)
 
-//    return \auth()->loginUsingId($id);
+    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\InventoryReport::where('factor_id', '!=', null)->get() as $item){
 //        $item->update(['invoice_id' => $item->factor->invoice_id]);
