@@ -134,6 +134,9 @@ class OffSiteProductController extends Controller
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
         $response = curl_exec($ch);
+        if ($response == null){
+            return redirect()->route('')->with('error','قیمتی برای محصول یافت نشد');
+        }
         curl_close($ch);
 
         $sellers = collect(json_decode($response)->results)->whereNotNull('last_price_change_date')->filter(function ($item) {
@@ -193,8 +196,11 @@ class OffSiteProductController extends Controller
 
         $response = curl_exec($ch);
         curl_close($ch);
-
+        if (!isset(json_decode($response)->results)){
+            return redirect()->back()->with('error','قیمتی برای محصول یافت نشد');
+        }
         $data = collect(json_decode($response)->results);
+
 
         return view('panel.off-site-products.torob', compact('data'));
     }
