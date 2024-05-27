@@ -176,7 +176,7 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days']) ? 'navigation-active' : '' }}">
+        <ul id="navigationInvoices" class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days','cheque','cheque/create','cheque/{cheque}/edit','cheque/{cheque}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">سفارشات و فروش</li>
             @can('invoices-list')
                 <li>
@@ -201,6 +201,11 @@
             @can('price-requests-list')
                 <li>
                     <a class="{{ active_sidebar(['price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}']) ? 'active' : '' }}" href="{{ route('price-requests.index') }}">درخواست قیمت</a>
+                </li>
+            @endcan
+            @can('cheque-check-list')
+                <li>
+                    <a class="{{ active_sidebar(['cheque','cheque/create','cheque/{cheque}/edit','cheque/{cheque}']) ? 'active' : '' }}" href="{{ route('cheque.index') }}">درخواست وضعیت چک</a>
                 </li>
             @endcan
         </ul>
