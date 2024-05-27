@@ -134,7 +134,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(PriceRequest::class);
     }
-
+    public function cheque()
+    {
+        return $this->hasMany(Cheque::class);
+    }
     public function buy_orders()
     {
         return $this->hasMany(BuyOrder::class);
