@@ -60,7 +60,7 @@ class ChequeController extends Controller
         Notification::send($notifiables, new SendMessage($notif_message, $url));
         // end notification sent to ceo
 
-        alert()->success('وضعیت چک با موفقیت ثبت شد','ثبت درخواست وضعیت چک');
+        alert()->success('وضعیت چک با موفقیت ثبت شد','وضعیت چک ثبت شد');
         return redirect()->route('cheque.index');
     }
 
@@ -109,7 +109,7 @@ class ChequeController extends Controller
         Notification::send($cheque->user, new SendMessage($notif_message, $url));
         // end notification sent to ceo
 
-        alert()->success(' وضعیت چک ها با موفقیت ثبت شدند','ثبت وضعیت چک');
+        alert()->success(' وضعیت چک ها با موفقیت ثبت شدند','وضعیت چک تغییر یافته');
         return redirect()->route('cheque.index');
     }
 
