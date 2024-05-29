@@ -72,7 +72,7 @@ class ChequeController extends Controller
     }
     public function edit(Cheque $cheque)
     {
-        $this->authorize('ceo');
+        $this->authorize('edit-cheque-check');
 
         return view('panel.cheque-check.edit', compact('cheque'));
     }
@@ -80,7 +80,7 @@ class ChequeController extends Controller
 
     public function update(Request $request, Cheque $cheque)
     {
-        $this->authorize('ceo');
+        $this->authorize('edit-cheque-check');
 
         $items = [];
         foreach (json_decode($cheque->items) as $key => $item){
