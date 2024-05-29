@@ -21,6 +21,7 @@
                         <tr>
                             <th>عنوان درخواست ثبت چک</th>
                             <th>شناسه صیادی</th>
+                            <th>وضعیت چک</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -28,6 +29,11 @@
                             <tr>
                                 <td>{{ $item->title }}</td>
                                 <td>{{ $item->code }}</td>
+                                <td>@if(isset($item->stats))
+                                        {{$item->stats}}
+                                    @else
+                                        ثبت نشده
+                                    @endif</td>
                             </tr>
                         @endforeach
                         </tbody>

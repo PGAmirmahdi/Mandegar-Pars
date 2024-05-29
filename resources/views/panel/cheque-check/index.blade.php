@@ -21,7 +21,7 @@
                         <th>حداکثر زمان ثبت وضعیت چک</th>
                         <th>وضعیت</th>
                         <th>زمان ثبت</th>
-                        @can('ceo')
+                        @can('edit-cheque-check')
                             <th>ثبت وضعیت چک</th>
                         @else
                             <th>مشاهده وضعیت چک</th>
@@ -45,7 +45,7 @@
                                 @endif
                             </td>
                             <td>{{ verta($Cheque->created_at)->format('H:i - Y/m/d') }}</td>
-                            @can('ceo')
+                            @can('edit-cheque-check')
                                 <td>
                                     <a class="btn btn-primary btn-floating" href="{{ route('cheque.edit', $Cheque->id) }}">
                                         <i class="fa fa-edit"></i>
