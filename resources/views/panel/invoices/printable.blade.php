@@ -332,9 +332,11 @@
                                     @endif
                                     <tr>
                                         <td colspan="6" id="seller_sign_sec">
+                                            @if($invoice->status == "invoiced")
                                             <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign">
                                             @if($invoice->type == 'official')
                                             <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp">
+                                            @endif
                                             @endif
                                             <small>مهر و امضای فروشنده</small>
                                         </td>
