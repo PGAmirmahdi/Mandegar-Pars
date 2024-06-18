@@ -38,6 +38,7 @@ use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\Panel\WarehouseController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\testController;
 use App\Models\Invoice;
 use App\Models\Packet;
 use App\Models\User;
@@ -252,6 +253,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Artin
     Route::get('artin-products', [ArtinController::class, 'products'])->name('artin.products');
     Route::post('artin-products-update-price', [ArtinController::class, 'updatePrice'])->name('artin-products-update-price');
+    Route::post('artin-products-store', [ArtinController::class, 'store'])->name('artin-products-store');
 
     // Software Updates
     Route::resource('software-updates', SoftwareUpdateController::class)->except('show');
@@ -277,6 +279,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Delivery Days
     Route::get('delivery-days', [DeliveryDayController::class, 'index'])->name('delivery-days.index');
     Route::post('select-day', [DeliveryDayController::class, 'toggleDay'])->name('select-day');
+
+    Route::get('test', [testController::class, 'test'])->name('test');
 });
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
