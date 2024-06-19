@@ -18,6 +18,7 @@ class ArtinController extends Controller
 
         try {
             $this->conn = new \PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(\PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }
@@ -143,6 +144,55 @@ class ArtinController extends Controller
             // Redirect back with success message
             return redirect()->back()->with('success', 'Product created successfully.');
         } catch(\PDOException $e) {
+            // Handle PDO exceptions
+            return "Connection failed: " . $e->getMessage();
+        }
+    }
+    public function destroy($id)
+    {
+        $this->authorize('artin-products-delete');
+
+        if (!$this->conn) {
+            return "Connection not established.";
+        }
+
+        try {
+            // Ensure PDO connection is established
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Begin transaction
+            $this->conn->beginTransaction();
+
+            // Delete from mand_postmeta table
+            $sql1 = "DELETE FROM mand_postmeta WHERE post_id = :product_id";
+            $stmt1 = $this->conn->prepare($sql1);
+            $stmt1->bindParam(':product_id', $id);
+            $stmt1->execute();
+
+            // Delete from mand_wc_product_meta_lookup table
+            $sql2 = "DELETE FROM mand_wc_product_meta_lookup WHERE product_id = :product_id";
+            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2->bindParam(':product_id', $id);
+            $stmt2->execute();
+
+            // Delete from mand_posts table
+            $sql3 = "DELETE FROM mand_posts WHERE ID = :product_id";
+            $stmt3 = $this->conn->prepare($sql3);
+            $stmt3->bindParam(':product_id', $id);
+            $stmt3->execute();
+
+            // Commit transaction
+            $this->conn->commit();
+
+            // Close PDO connection
+            $this->conn = null;
+
+            // Redirect back with success message
+            return redirect()->back()->with('success', 'Product deleted successfully.');
+        } catch (\PDOException $e) {
+            // Rollback transaction if there is an error
+            $this->conn->rollBack();
+
             // Handle PDO exceptions
             return "Connection failed: " . $e->getMessage();
         }
