@@ -2,6 +2,7 @@
 @section('title', 'محصولات وبسایت Artin')
 @section('content')
     {{--  Create Product Modal  --}}
+    @can('artin-products-create')
     <div class="modal fade" id="createProductModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -39,8 +40,10 @@
             </div>
         </div>
     </div>
+    @endcan
     {{--  end Create Product Modal  --}}
     {{--  edit Price Modal  --}}
+    @can('artin-products-edit')
     <div class="modal fade" id="editPriceModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -63,6 +66,7 @@
             </div>
         </div>
     </div>
+    @endcan
     {{--  end edit Price Modal  --}}
     <div class="card">
         <div class="card-body">
@@ -106,6 +110,13 @@
                                 <td>
                                     <button class="btn btn-warning btn-floating btn_edit" data-toggle="modal" data-target="#editPriceModal" data-id="{{ $product->id }}" data-price="{{ $product->min_price }}">
                                         <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                            @endcan
+                            @can('artin-products-delete')
+                                <td>
+                                    <button class="btn btn-danger btn-floating btn_delete" data-id="{{ $product->id }}">
+                                        <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
                             @endcan
@@ -231,6 +242,57 @@
                             text: xhr.responseJSON.error,
                             icon: 'error',
                             showConfirmButton: true,
+                        });
+                    }
+                });
+            });
+
+            // Delete product functionality
+            $(document).on('click', '.btn_delete', function () {
+                product_id = $(this).data('id');
+
+                Swal.fire({
+                    title: 'آیا مطمئن هستید؟',
+                    text: "این عملیات قابل بازگشت نیست!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'بله، حذف شود!',
+                    cancelButtonText: 'لغو'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/panel/artin-products-destroy',
+                            type: 'post',
+                            data: { product_id },
+                            success: function (res) {
+                                $('#products_table tbody').html($(res).find('#products_table tbody').html());
+
+                                Swal.fire({
+                                    title: 'محصول با موفقیت حذف شد',
+                                    icon: 'success',
+                                    showConfirmButton: false,
+                                    toast: true,
+                                    timer: 2000,
+                                    timerProgressBar: true,
+                                    position: 'top-start',
+                                    customClass: {
+                                        popup: 'my-toast',
+                                        icon: 'icon-center',
+                                        title: 'left-gap',
+                                        content: 'left-gap',
+                                    }
+                                });
+                            },
+                            error: function (xhr) {
+                                Swal.fire({
+                                    title: 'خطا در حذف محصول',
+                                    text: xhr.responseJSON.error,
+                                    icon: 'error',
+                                    showConfirmButton: true,
+                                });
+                            }
                         });
                     }
                 });
