@@ -87,6 +87,9 @@
                         @can('artin-products-edit')
                             <th>ویرایش قیمت</th>
                         @endcan
+                        @can('artin-products-delete')
+                            <th>حذف محصول</th>
+                        @endcan
                     </tr>
                     </thead>
                     <tbody>
