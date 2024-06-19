@@ -152,16 +152,12 @@ class ArtinController extends Controller
     {
         $this->authorize('artin-products-delete');
 
-        if (!$this->conn) {
-            return "Connection not established.";
-        }
-
         try {
+            // Begin PDO transaction
+            $this->conn->beginTransaction();
+
             // Ensure PDO connection is established
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Begin transaction
-            $this->conn->beginTransaction();
 
             // Delete from mand_postmeta table
             $sql1 = "DELETE FROM mand_postmeta WHERE post_id = :product_id";
@@ -187,14 +183,16 @@ class ArtinController extends Controller
             // Close PDO connection
             $this->conn = null;
 
-            // Redirect back with success message
-            return redirect()->back()->with('success', 'Product deleted successfully.');
+            // Return success message or redirect back
+            return response()->json(['success' => 'Product deleted successfully.']);
+
         } catch (\PDOException $e) {
-            // Rollback transaction if there is an error
+            // Rollback transaction on error
             $this->conn->rollBack();
 
             // Handle PDO exceptions
-            return "Connection failed: " . $e->getMessage();
+            return response()->json(['error' => 'Connection failed: ' . $e->getMessage()], 500);
         }
     }
+
 }

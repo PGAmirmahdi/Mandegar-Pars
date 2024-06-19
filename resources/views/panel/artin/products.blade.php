@@ -3,69 +3,69 @@
 @section('content')
     {{--  Create Product Modal  --}}
     @can('artin-products-create')
-    <div class="modal fade" id="createProductModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createProductModalLabel">ایجاد محصول جدید</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
-                        <i class="ti-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="create_title">عنوان</label>
-                        <input type="text" name="title" id="create_title" class="form-control">
+        <div class="modal fade" id="createProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createProductModalLabel">ایجاد محصول جدید</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                            <i class="ti-close"></i>
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <label for="create_sku">کد محصول</label>
-                        <input type="text" name="sku" id="create_sku" class="form-control">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="create_title">عنوان</label>
+                            <input type="text" name="title" id="create_title" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="create_sku">کد محصول</label>
+                            <input type="text" name="sku" id="create_sku" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="create_price">قیمت</label>
+                            <input type="text" name="price" id="create_price" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="create_status">وضعیت</label>
+                            <select name="status" id="create_status" class="form-control">
+                                <option value="publish">منتشر شده</option>
+                                <option value="draft">پیش نویس</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="create_price">قیمت</label>
-                        <input type="text" name="price" id="create_price" class="form-control">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">لغو</button>
+                        <button type="button" class="btn btn-primary" id="btn_create">ایجاد</button>
                     </div>
-                    <div class="form-group">
-                        <label for="create_status">وضعیت</label>
-                        <select name="status" id="create_status" class="form-control">
-                            <option value="publish">منتشر شده</option>
-                            <option value="draft">پیش نویس</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">لغو</button>
-                    <button type="button" class="btn btn-primary" id="btn_create">ایجاد</button>
                 </div>
             </div>
         </div>
-    </div>
     @endcan
     {{--  end Create Product Modal  --}}
     {{--  edit Price Modal  --}}
     @can('artin-products-edit')
-    <div class="modal fade" id="editPriceModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editPriceModalLabel">ویرایش قیمت</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
-                        <i class="ti-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="price">قیمت</label>
-                        <input type="text" name="price" id="price" class="form-control">
+        <div class="modal fade" id="editPriceModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPriceModalLabel">ویرایش قیمت</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                            <i class="ti-close"></i>
+                        </button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">لغو</button>
-                    <button type="button" class="btn btn-primary" id="btn_update">اعمال</button>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="price">قیمت</label>
+                            <input type="text" name="price" id="price" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">لغو</button>
+                        <button type="button" class="btn btn-primary" id="btn_update">اعمال</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     @endcan
     {{--  end edit Price Modal  --}}
     <div class="card">
@@ -251,53 +251,66 @@
             });
 
             // Delete product functionality
-            $(document).on('click', '.btn_delete', function () {
-                product_id = $(this).data('id');
+            $(document).ready(function () {
+                var product_id;
 
-                Swal.fire({
-                    title: 'آیا مطمئن هستید؟',
-                    text: "این عملیات قابل بازگشت نیست!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'بله، حذف شود!',
-                    cancelButtonText: 'لغو'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '/panel/artin-products-destroy',
-                            type: 'post',
-                            data: { product_id },
-                            success: function (res) {
-                                $('#products_table tbody').html($(res).find('#products_table tbody').html());
-
-                                Swal.fire({
-                                    title: 'محصول با موفقیت حذف شد',
-                                    icon: 'success',
-                                    showConfirmButton: false,
-                                    toast: true,
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    position: 'top-start',
-                                    customClass: {
-                                        popup: 'my-toast',
-                                        icon: 'icon-center',
-                                        title: 'left-gap',
-                                        content: 'left-gap',
-                                    }
-                                });
-                            },
-                            error: function (xhr) {
-                                Swal.fire({
-                                    title: 'خطا در حذف محصول',
-                                    text: xhr.responseJSON.error,
-                                    icon: 'error',
-                                    showConfirmButton: true,
-                                });
-                            }
-                        });
+                // Set up CSRF token for all AJAX requests
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
+                });
+
+                // Delete product functionality
+                $(document).on('click', '.btn_delete', function () {
+                    product_id = $(this).data('id');
+
+                    Swal.fire({
+                        title: 'آیا مطمئن هستید؟',
+                        text: "این عملیات قابل بازگشت نیست!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'بله، حذف شود!',
+                        cancelButtonText: 'لغو'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/panel/artin-products-destroy/' + product_id,
+                                type: 'delete',
+                                data: {product_id},
+                                success: function (res) {
+                                    $('#products_table tbody').html($(res).find('#products_table tbody').html());
+
+                                    Swal.fire({
+                                        title: 'محصول با موفقیت حذف شد',
+                                        icon: 'success',
+                                        showConfirmButton: false,
+                                        toast: true,
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                        position: 'top-start',
+                                        customClass: {
+                                            popup: 'my-toast',
+                                            icon: 'icon-center',
+                                            title: 'left-gap',
+                                            content: 'left-gap',
+                                        },
+                                    });
+                                    window.location.reload();
+                                },
+                                error: function (xhr) {
+                                    Swal.fire({
+                                        title: 'خطا در حذف محصول',
+                                        text: xhr.responseJSON.error,
+                                        icon: 'error',
+                                        showConfirmButton: true,
+                                    });
+                                }
+                            });
+                        }
+                    });
                 });
             });
         });
