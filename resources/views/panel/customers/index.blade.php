@@ -48,6 +48,14 @@
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="type" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">
+                        <option value="all">نوع (همه)</option>
+                        @foreach(\App\Models\Customer::TYPE as $key => $value)
+                            <option value="{{ $key }}" {{ request()->type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
             </div>
