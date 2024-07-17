@@ -6,12 +6,14 @@
         <div class="modal fade" id="createProductModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
+                    @can('artin-products-create')
                     <div class="modal-header">
                         <h5 class="modal-title" id="createProductModalLabel">ایجاد محصول جدید</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
                             <i class="ti-close"></i>
                         </button>
                     </div>
+                    @endcan
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="create_title">عنوان</label>

@@ -21,7 +21,7 @@ class PriceController extends Controller
     {
         $this->authorize('prices-list');
 
-        if (auth()->user()->isCEO() || auth()->user()->isAdmin()){
+        if (auth()->user()->isCEO() || auth()->user()->isAdmin() || auth()->user()->isOrgan()){
             return view('panel.prices.other-list');
         }else{
             return view('panel.prices.other-list-printable');
@@ -57,25 +57,42 @@ class PriceController extends Controller
 
         return 'ok';
     }
+    public function updatePrice2(Request $request)
+    {
+        $this->authorize('price-list-mandegar');
 
+        $items = json_decode($request->items, true);
+        foreach ($items as $item) {
+            $price = trim(str_replace('-', null, $item['price']));
+            $price = trim(str_replace(',', null, $price));
+            $price = $price == '' ? null : $price;
+
+            if ($price) {
+                DB::table('products')->where('id', $item['id'])->update([$item['field'] => $price]);
+            }
+        }
+
+        return 'ok';
+    }
     public function priceList($type)
     {
         $this->authorize('prices-list');
 
         ini_set('memory_limit', '64M');
-
-        $backPath = public_path('/assets/media/image/prices/background.png');
+        $backPath = public_path('/public_html/assets/media/image/prices/background.png');
         $data = \App\Models\Product::all();
 
-        $pdf = PDF::loadView('panel.pdf.prices',['data' => $data, 'type' => $type],[], [
+        $pdf = PDF::loadView('panel.pdf.prices', ['data' => $data, 'type' => $type], [], [
             'margin_top' => 50,
             'margin_bottom' => 20,
             'watermark_image_alpha' => 1,
             'default_font_size' => 15,
             'show_watermark_image' => true,
             'watermarkImgBehind' => true,
-            'watermark_image_path' => $backPath
+            'watermark_image_path' => $backPath,
+            'default_font' => 'vazir' // specify the font here
         ]);
+
 
         $name = 'لیست '.Product::PRICE_TYPE[$type];
 

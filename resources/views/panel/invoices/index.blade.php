@@ -35,14 +35,10 @@
                         دریافت اکسل
                     </button>
 
-                    @can('invoices-create')
-                        @cannot('accountant')
                             <a href="{{ route('invoices.create') }}" class="btn btn-primary">
                                 <i class="fa fa-plus mr-2"></i>
                                 ایجاد سفارش
                             </a>
-                        @endcannot
-                    @endcan
                 </div>
 
             </div>
@@ -109,13 +105,13 @@
                         <th>مشاهده سفارش</th>
 {{--                        @endcanany--}}
                         <th>وضعیت سفارش</th>
-                        @can('warehouse-keeper')
+                        @canany('warehouse-keeper','partner-tehran')
                             <th>فاکتور</th>
                         @else
                             @canany(['sales-manager','accountant'])
                                 <th>اقدام</th>
                             @endcanany
-                        @endcan
+                        @endcanany
                         @cannot('accountant')
                             @can('invoices-edit')
                                 <th>ویرایش</th>
@@ -156,7 +152,7 @@
                                     <i class="fa fa-truck-fast"></i>
                                 </a>
                             </td>
-                            @can('warehouse-keeper')
+                            @canany('warehouse-keeper','partner-tehran')
                                 <td>
                                     <a href="{{ $invoice->action ? $invoice->action->factor_file ?? '#' : '#' }}" class="btn btn-primary btn-floating {{ $invoice->action ? $invoice->action->factor_file ? '' : 'disabled' : 'disabled' }}" target="_blank">
                                         <i class="fa fa-download"></i>

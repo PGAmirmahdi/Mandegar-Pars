@@ -74,18 +74,33 @@ class DeliveryDayController extends Controller
     }
 
     private function isSelected(string $date)
-    {
-        $this->authorize('delivery-day');
+{
+    $this->authorize('delivery-day');
 
-        $url = "https://app.mpsystem.ir/api/v1/delivery-day/is-selected?date=$date";
+    $url = "https://app.mpsystem.ir/api/v1/delivery-day/is-selected?date=$date";
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $res = json_decode(curl_exec($ch));
-        curl_close($ch);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
 
-        return $res->data;
+    $res = json_decode($response);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        // Handle JSON decode error
+        // Log the error or return a default value
+        return false;
     }
+
+    if (is_null($res) || !isset($res->data)) {
+        // Handle the case where the response is null or the data property is missing
+        // Log the error or return a default value
+        return false;
+    }
+
+    return $res->data;
+}
+
 }

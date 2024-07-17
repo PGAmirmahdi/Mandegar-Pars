@@ -50,7 +50,10 @@ class User extends Authenticatable
     {
         return $this->role->name == 'admin';
     }
-
+    public function isOrgan()
+    {
+        return $this->role->name == 'Organ';
+    }
     public function isWareHouseKeeper()
     {
         return $this->role->permissions->pluck('name')->contains('warehouse-keeper');
@@ -122,8 +125,16 @@ class User extends Authenticatable
     {
         $this->leavesUpdate();
         $leave_info = DB::table('leave_info')->where('user_id', $this->id)->first();
+
+        if (!$leave_info) {
+            // Handle the case where no leave_info is found for the user.
+            // For example, return a default count value or handle the error appropriately.
+            return 0; // Or any other default value or error handling
+        }
+
         return $leave_info->count;
     }
+
 
     public function reports()
     {
@@ -145,7 +156,11 @@ class User extends Authenticatable
 
     private function leavesUpdate()
     {
-        $leave_info = DB::table('leave_info')->where('user_id', $this->id);
+        $leave_info = DB::table('leave_info')->where('user_id', $this->id)->first();
+
+        if (!$leave_info) {
+            return;
+        }
 
         $last_month_leaves = Leave::where(['user_id' => auth()->id(), 'type' => 'daily', 'status' => 'accept'])->get();
         $last_month_leaves_days = 0; // تعداد روز مرخصی های ماه قبل
@@ -154,29 +169,29 @@ class User extends Authenticatable
             $form_date = Carbon::parse($leave->from_date);
             $to_date = Carbon::parse($leave->to_date);
 
-            if ($form_date->diff($to_date)->days){
+            if ($form_date->diff($to_date)->days) {
                 $last_month_leaves_days += $form_date->diff($to_date)->days;
-            }else{
+            } else {
                 $last_month_leaves_days += 1;
             }
         }
 
         // افزودن روزهای جدید به ماه بعد و بررسی اینکه چند روز از ماه قبل برایش باقی مانده
-        $month_updated = $leave_info->first()->month_updated;
+        $month_updated = $leave_info->month_updated;
         $current_month = verta()->month;
-        if ($month_updated != $current_month){
+        if ($month_updated != $current_month) {
             $new_month_count = 2;
             $remain = 0;
 
-            if ($last_month_leaves_days >= 2){
+            if ($last_month_leaves_days >= 2) {
                 $remain = 0;
-            }else{
+            } else {
                 $remain = 1;
             }
 
-            $leave_info->update([
+            DB::table('leave_info')->where('user_id', $this->id)->update([
                 'month_updated' => $current_month,
-                'count' => $leave_info->first()->count += ($new_month_count + $remain)
+                'count' => $leave_info->count + ($new_month_count + $remain)
             ]);
         }
     }

@@ -1,7 +1,7 @@
 @extends('panel.layouts.master')
 @section('title', 'درخواست مرخصی')
 @section('content')
-    {{--  leave Modal  --}}
+    {{--  Leave Modal  --}}
     <div class="modal fade" id="leaveModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -21,7 +21,7 @@
                     <p id="leave_date"></p>
                     <strong>توضیحات</strong>
                     <p id="leave_desc"></p>
-                    <div id="answer_sec">
+                    <div id="answer_sec" class="d-none">
                         <hr>
                         <h5>پاسخ درخواست</h5>
                         <p id="leave_answer"></p>
@@ -37,19 +37,17 @@
             </div>
         </div>
     </div>
-    {{--  end leave Modal  --}}
+    {{--  End Leave Modal  --}}
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>درخواست مرخصی</h6>
-                @cannot('ceo')
-                    @can('leaves-create')
-                        <a href="{{ route('leaves.create') }}" class="btn btn-primary">
-                            <i class="fa fa-plus mr-2"></i>
-                            درخواست مرخصی
-                        </a>
-                    @endcan
-                @endcannot
+                @can('leaves-create')
+                    <a href="{{ route('leaves.create') }}" class="btn btn-primary">
+                        <i class="fa fa-plus mr-2"></i>
+                        درخواست مرخصی
+                    </a>
+                @endcan
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
@@ -63,6 +61,9 @@
                         @endcan
                         <th>تاریخ مرخصی</th>
                         <th>وضعیت</th>
+                        @can('ceo')
+                            <th>تایید کننده</th>
+                        @endcan
                         <th>تاریخ ایجاد</th>
                         @cannot('ceo')
                             <th>مشاهده</th>
@@ -96,6 +97,9 @@
                                     <span class="badge badge-warning">{{ \App\Models\Leave::STATUS[$leave->status] }}</span>
                                 @endif
                             </td>
+                            @can('ceo')
+                                <td>{{ isset($leave->acceptor->name) && isset($leave->acceptor->family) ? $leave->acceptor->name . ' ' . $leave->acceptor->family : '' }}</td>
+                            @endcan
                             <td>{{ verta($leave->created_at)->format('H:i - Y/m/d') }}</td>
                             @cannot('ceo')
                                 <td>
@@ -114,7 +118,7 @@
                             @cannot('ceo')
                                 @can('leaves-delete')
                                     <td>
-                                        <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('leaves.destroy',$leave->id) }}" data-id="{{ $leave->id }}" {{ $leave->status != 'pending' ? 'disabled' : '' }}>
+                                        <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('leaves.destroy', $leave->id) }}" data-id="{{ $leave->id }}" {{ $leave->status != 'pending' ? 'disabled' : '' }}>
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </td>
@@ -137,36 +141,40 @@
     <script>
         $(document).ready(function () {
             $(document).on('click', '.btn_show', function () {
-                let leave_id = $(this).data('id')
+                let leave_id = $(this).data('id');
 
                 $.ajax({
                     url: '/panel/get-leave-info',
                     type: 'post',
                     data: {
-                        leave_id
+                        leave_id: leave_id,
+                        _token: '{{ csrf_token() }}'
                     },
                     success: function (res) {
-                        $('#leave_title').text(res.data.title)
-                        $('#leave_desc').text(res.data.desc)
-                        $('#leave_type').text(res.data.typeText)
+                        $('#leave_title').text(res.data.title);
+                        $('#leave_desc').text(res.data.desc);
+                        $('#leave_type').text(res.data.typeText);
 
-                        if (res.data.type == 'hourly'){
-                            $('#leave_date').text(res.data.to +' تا '+ res.data.from +' - '+ res.data.date)
-                        }else{
-                            $('#leave_date').text(res.data.date)
+                        if (res.data.type == 'hourly') {
+                            $('#leave_date').text(res.data.to + ' تا ' + res.data.from + ' - ' + res.data.date);
+                        } else {
+                            $('#leave_date').text(res.data.date);
                         }
 
-                        if (res.data.status != 'pending'){
-                            $('#answer_sec').removeClass('d-none')
-                            $('#leave_answer').text(`درخواست شما توسط "${res.data.acceptor}" به وضعیت "${res.data.statusText}" تغییر یافت`)
-                            $('#leave_answer_text').text(res.data.answer)
-                            $('#leave_answer_time').text(res.data.answer_time)
-                        }else{
-                            $('#answer_sec').addClass('d-none')
+                        if (res.data.status != 'pending') {
+                            $('#answer_sec').removeClass('d-none');
+                            $('#leave_answer').text(`درخواست شما توسط "${res.data.acceptor}" به وضعیت "${res.data.statusText}" تغییر یافت`);
+                            $('#leave_answer_text').text(res.data.answer);
+                            $('#leave_answer_time').text(res.data.answer_time);
+                        } else {
+                            $('#answer_sec').addClass('d-none');
                         }
+                    },
+                    error: function (err) {
+                        console.error('Error fetching leave info:', err);
                     }
-                })
-            })
-        })
+                });
+            });
+        });
     </script>
 @endsection

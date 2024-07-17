@@ -15,4 +15,12 @@ class Coupon extends Model
     {
         return $this->belongsToMany(Invoice::class);
     }
+    const  TYPE = [
+        'once' => 'یکبار مصرف',
+        'many' => 'چند بار مصرف',
+    ];
+    public function user()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }
