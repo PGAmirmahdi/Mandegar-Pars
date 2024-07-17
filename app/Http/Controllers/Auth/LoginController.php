@@ -49,9 +49,9 @@ class LoginController extends Controller
         $request->validate([
             $this->username() => 'required|string',
             'password' => 'required|string',
-            'captcha_code' => 'required|captcha',
+            // 'captcha_code' => 'required|captcha',
         ], [
-            'captcha_code.captcha' => 'کد امنیتی وارد شده صحیح نیست'
+            // 'captcha_code.captcha' => 'کد امنیتی وارد شده صحیح نیست'
         ]);
     }
 }

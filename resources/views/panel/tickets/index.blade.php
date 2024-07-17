@@ -5,12 +5,10 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>تیکت ها</h6>
-                @can('tickets-create')
                     <a href="{{ route('tickets.create') }}" class="btn btn-primary">
                         <i class="fa fa-plus mr-2"></i>
                         ثبت تیکت
                     </a>
-                @endcan
             </div>
 {{--            <form action="{{ route('tickets.search') }}" method="post" id="search_form">--}}
 {{--                @csrf--}}

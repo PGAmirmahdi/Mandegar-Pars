@@ -1,0 +1,1 @@
+<a href="intent://artintoner.com?authority=sfdfsf#Intent;scheme=https;package=com.example.artintoner;end">Tap me to launch directly into the Android app</a>

@@ -5,14 +5,12 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>لیست درخواست قیمت</h6>
-                @cannot('ceo')
                     @can('price-requests-create')
                         <a href="{{ route('price-requests.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
                             ثبت درخواست قیمت
                         </a>
                     @endcan
-                @endcannot
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">

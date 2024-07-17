@@ -78,7 +78,7 @@
             {!! captcha_img() !!}
             <input type="text" name="captcha_code" class="form-control text-left mt-2 mb-0" placeholder="کد امنیتی" dir="ltr" required autofocus>
             @error('captcha_code')
-                <span class="invalid-feedback d-block" role="alert">
+            <span class="invalid-feedback d-block" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
             @enderror

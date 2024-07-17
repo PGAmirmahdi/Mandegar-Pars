@@ -5,11 +5,12 @@
     <link rel="stylesheet" href="/vendors/lightbox/magnific-popup.css" type="text/css">
 
     <style>
-        .fa-check-double, .fa-check{
+        .fa-check-double, .fa-check {
             color: green !important;
         }
     </style>
 @endsection
+
 @section('content')
     <div class="card chat-app-wrapper">
         <div class="row chat-app">
@@ -31,7 +32,6 @@
                                 {{ $ticket->sender->fullName() }}
                             @endif
                         </h6>
-{{--                        <span class="small text-success">در حال نوشتن ...</span>--}}
                     </div>
                     <div class="ml-auto d-flex">
                         <div class="mr-4">
@@ -42,7 +42,7 @@
                             @endif
                         </div>
                         <div class="dropdown ml-2">
-                            <button type="button" data-toggle="dropdown" class="btn btn-sm  btn-warning btn-floating">
+                            <button type="button" data-toggle="dropdown" class="btn btn-sm btn-warning btn-floating">
                                 <i class="fa fa-cog"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
@@ -63,7 +63,7 @@
                 </div>
                 <div class="chat-body-messages">
                     <div class="message-items">
-                        @foreach($ticket->messages->whereNotBetween('created_at', [now()->startOfDay()->toDateTimeString(),now()->endOfDay()->toDateTimeString()]) as $message)
+                        @foreach($ticket->messages as $message)
                             @if($message->user_id == auth()->id())
                                 <div class="message-item {{ $message->file ? 'message-item-media' : '' }}">
                                     {{ $message->text }}
@@ -87,35 +87,6 @@
                                 </div>
                             @endif
                         @endforeach
-                        @if($ticket->messages->whereBetween('created_at', [now()->startOfDay()->toDateTimeString(),now()->endOfDay()->toDateTimeString()])->count())
-                            <div class="message-item message-item-date-border">
-                                <span class="badge">امروز</span>
-                            </div>
-                            @foreach($ticket->messages->whereBetween('created_at', [now()->startOfDay()->toDateTimeString(),now()->endOfDay()->toDateTimeString()]) as $message)
-                                @if($message->user_id == auth()->id())
-                                    <div class="message-item {{ $message->file ? 'message-item-media' : '' }}">
-                                        {{ $message->text }}
-                                        @includeWhen($message->file, 'panel.partials.file-message')
-                                        <small class="message-item-date text-muted">
-                                            {{ verta($message->created_at)->format('H:i') }}
-                                            @if($message->read_at)
-                                                <i class="fa fa-check-double"></i>
-                                            @else
-                                                <i class="fa fa-check"></i>
-                                            @endif
-                                        </small>
-                                    </div>
-                                @else
-                                    <div class="message-item outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
-                                        {{ $message->text }}
-                                        @includeWhen($message->file, 'panel.partials.file-message')
-                                        <small class="message-item-date text-muted">
-                                            {{ verta($message->created_at)->format('H:i') }}
-                                        </small>
-                                    </div>
-                                @endif
-                            @endforeach
-                        @endif
                     </div>
                 </div>
                 <div class="chat-body-footer">
@@ -152,6 +123,7 @@
         </div>
     </div>
 @endsection
+
 @section('scripts')
     <!-- begin::lightbox -->
     <script src="/vendors/lightbox/jquery.magnific-popup.min.js"></script>
@@ -161,7 +133,6 @@
         $(document).ready(function () {
             $('#file').on('change', function () {
                 $('#file_lbl').text(this.files[0].name)
-
                 $('input[name="text"]').removeAttr('required')
             })
         })

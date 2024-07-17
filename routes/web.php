@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\SendMessage as SendMessageEvent;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BotController;
@@ -73,6 +74,8 @@ Route::get('/', function () {
 });
 
 Route::get('test/{id?}', function ($id = null) {
+
+//    event(new SendMessageEvent(1, []));
 
 //     send sms to customers (install app)
 //    set_time_limit(1000000000000000000);
@@ -181,6 +184,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::get('prices-list', [PriceController::class, 'index'])->name('prices-list');
     Route::get('other-prices-list', [PriceController::class, 'otherList'])->name('other-prices-list');
     Route::post('update-price', [PriceController::class, 'updatePrice'])->name('updatePrice');
+    Route::post('update-price2', [PriceController::class, 'updatePrice2'])->name('updatePrice2');
     Route::post('add-model', [PriceController::class, 'addModel'])->name('addModel');
     Route::post('add-seller', [PriceController::class, 'addSeller'])->name('addSeller');
     Route::post('remove-seller', [PriceController::class, 'removeSeller'])->name('removeSeller');
