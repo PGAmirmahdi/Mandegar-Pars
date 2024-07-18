@@ -1,6 +1,5 @@
 <!-- Plugin scripts -->
 <script src="/vendors/bundle.js"></script>
-
 <!-- Chartjs -->
 <script src="/vendors/charts/chartjs/chart.min.js"></script>
 
@@ -71,13 +70,29 @@
 <script src="/vendors/dataTable/dataTables.responsive.min.js"></script>
 <script src="/assets/js/examples/datatable.js"></script>
 
+<script src="{{ mix('/js/app.js') }}"></script>
+
 @yield('scripts')
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
-<script src="{{ asset('/js/app.js') }}"></script>
+
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
-
 <script>
 
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('ac8ae105709d7299a673', {
+        cluster: 'ap1'
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+        alert(JSON.stringify(data));
+    });
+</script>
+<script>
     {{-- ajax setup --}}
         $.ajaxSetup({
             headers: {
@@ -164,35 +179,34 @@
         $('#network_sec span').tooltip();
     });
     // end network status
-
-    // realtime notification
+    console.log(window.Echo);
     var audio = new Audio('/audio/notification.wav');
-    let userId = "{{ auth()->id() }}"
-    Echo.channel('presence-notification.'+userId)
-        .listen('SendMessage', (e) =>{
-            $('#notification_sec a').addClass('nav-link-notify')
-            $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
+    let userId = "{{ auth()->id() }}";
+    window.Echo.channel('presence-notification.' + userId)
+        .listen('SendMessage', (e) => {
+            $('#notification_sec a').addClass('nav-link-notify');
+            $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
             $(".timeline").prepend(`<div class="timeline-item">
-                                        <div>
-                                            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-													<i class="fa fa-bell font-size-20"></i>
-												</span>
-                                            </figure>
-                                        </div>
-                                        <div>
-                                            <p class="m-b-5">
-                                                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-                                            </p>
-                                            <small class="text-muted">
-                                                <i class="fa fa-clock-o m-r-5"></i>الان
-                                                </small>
-                                            </div>
-                                        </div>`)
+                <div>
+                    <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+                        <span class="avatar-title bg-primary-bright text-primary rounded-circle">
+                            <i class="fa fa-bell font-size-20"></i>
+                        </span>
+                    </figure>
+                </div>
+                <div>
+                    <p class="m-b-5">
+                        <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                    </p>
+                    <small class="text-muted">
+                        <i class="fa fa-clock-o m-r-5"></i>الان
+                    </small>
+                </div>
+            </div>`);
             audio.play();
         });
-    // end realtime
-
+</script>
+<script>
     // firebase push notification
     var firebaseConfig = {
         apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",

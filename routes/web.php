@@ -284,7 +284,13 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Delivery Days
     Route::get('delivery-days', [DeliveryDayController::class, 'index'])->name('delivery-days.index');
     Route::post('select-day', [DeliveryDayController::class, 'toggleDay'])->name('select-day');
+    // In your routes/web.php
+    Route::get('/test-broadcast', function () {
+        event(new \App\Events\TestEvent('This is a test message!'));
+        return 'Event has been sent!';
+    });
 });
+
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
