@@ -182,7 +182,7 @@
     console.log(window.Echo);
     var audio = new Audio('/audio/notification.wav');
     let userId = "{{ auth()->id() }}";
-    window.Echo.channel('presence-notification.' + userId)
+    Echo.join('presence-notification.' + userId)
         .listen('SendMessage', (e) => {
             $('#notification_sec a').addClass('nav-link-notify');
             $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
