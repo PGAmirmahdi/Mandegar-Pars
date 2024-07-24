@@ -15,7 +15,11 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <?php header('Access-Control-Allow-Origin: *'); ?>
+    header('Access-Control-Allow-Origin: *');
+
+    header('Access-Control-Allow-Methods: GET, POST');
+
+    header("Access-Control-Allow-Headers: X-Requested-With");
     <!-- Plugin styles -->
     <link rel="stylesheet" href="/vendors/bundle.css" type="text/css">
 
