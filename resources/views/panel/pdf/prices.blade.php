@@ -23,6 +23,7 @@
     }
 </style>
 <body>
+    <image src="{{ asset('images/logo.png') }}" style="width: 100px; height: 100px;"></image>
     <table style="text-align: center; width: 100%; border-collapse: collapse;">
         <thead>
         <tr>
