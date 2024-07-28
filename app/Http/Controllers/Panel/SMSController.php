@@ -55,22 +55,12 @@ class SMSController extends Controller
         ];
 
         try {
-            $sms = new SoapClient("http://api.payamak-panel.com/post/Send.asmx?wsdl", array("encoding" => "UTF-8"));
+            $result=sendSMS(201523, $request->receiver_phone, [$request->message]);
 
-            $data = array(
-                "username" => "09038774351",
-                "password" => "MR3AC",
-                "text" => $request->message,
-                "to" => $request->receiver_phone,
-                "bodyId" => 201523
-            );
+            $status = array_key_exists($result, $errorMessages) ? $errorMessages[$result] : 'ارسال موفقیت‌آمیز';
 
-            $send_Result = $sms->SendByBaseNumber($data)->SendByBaseNumberResult;
-
-            $status = array_key_exists($send_Result, $errorMessages) ? $errorMessages[$send_Result] : 'ارسال موفقیت‌آمیز';
-
-            if (array_key_exists($send_Result, $errorMessages)) {
-                return response()->json(['failed' => $errorMessages[$send_Result]]);
+            if (array_key_exists($result, $errorMessages)) {
+                return response()->json(['failed' => $errorMessages[$result]]);
             } else {
                 // Create Sms record
                 Sms::create([
