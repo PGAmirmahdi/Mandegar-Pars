@@ -15,14 +15,11 @@ class CreateSmsTable extends Migration
     {
         Schema::create('sms', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->string('receiver_name');
             $table->string('receiver_phone');
             $table->string('status');
             $table->string('message');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

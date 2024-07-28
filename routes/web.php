@@ -235,7 +235,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('tickets', TicketController::class)->except('show');
     Route::get('change-status-ticket/{ticket}', [TicketController::class, 'changeStatus'])->name('ticket.changeStatus');
 
-    // SMS Histories
+    // Sms Histories
     Route::get('sms-histories', [SmsHistoryController::class, 'index'])->name('sms-histories.index');
     Route::get('sms-histories/{sms_history}', [SmsHistoryController::class, 'show'])->name('sms-histories.show');
 
@@ -291,9 +291,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
         return 'Event has been sent!';
     });
 
-    // SMS
-    Route::resource('sms.index', SMSController::class)->except('edit','update');
-    Route::match(['get', 'post'], 'sms.search', [SMSController::class, 'search'])->name('smssearch');
+    // Sms
+    Route::resource('sms', SMSController::class)->except('edit','update');
 
 });
 
