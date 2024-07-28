@@ -7,10 +7,6 @@
                 <div class="card-title d-flex justify-content-between align-items-center">
                     <h6>پیامک‌ها</h6>
                     <div>
-                        <form action="{{ route('sms.excel') }}" method="post" id="excel_form">
-                            @csrf
-                        </form>
-
                         @can('sms-create')
                             <a href="{{ route('sms.create') }}" class="btn btn-primary">
                                 <i class="fa fa-plus mr-2"></i>
@@ -18,7 +14,6 @@
                             </a>
                         @endcan
                     </div>
-
                 </div>
                 <form action="{{ route('sms.search') }}" method="get" id="search_form"></form>
                 <div class="row mb-3">
