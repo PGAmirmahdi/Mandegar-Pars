@@ -231,7 +231,7 @@
             @endcan
             @can('sms-list')
                 <li>
-                    <a class="{{ active_sidebar(['sms','sms/create','sms/{sms}/edit','sms.search']) ? 'active' : '' }}" href="{{ route('sms.index') }}">پنل پیامکی</a>
+                    <a class="{{ active_sidebar(['sms','sms/create','sms/{sms}/edit','sms.search']) ? 'active' : '' }}" href="{{ route('panel.sms.index') }}">پنل پیامکی</a>
                 </li>
             @endcan
         </ul>
