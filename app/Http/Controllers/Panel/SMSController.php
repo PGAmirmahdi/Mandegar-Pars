@@ -29,45 +29,56 @@ class SMSController extends Controller
     public function store(Request $request)
     {
         $this->authorize('sms-create');
+
         $request->validate([
             'receiver_name' => 'required',
             'receiver_phone' => 'required',
             'message' => 'required',
         ]);
 
-        ini_set("soap.wsdl_cache_enabled", "0");
-
         $errorMessages = [
-            '-7' => 'خطایی در شماره فرستنده رخ داده است با پشتیبانی تماس بگیرید',
-            '-6' => 'خطای داخلی رخ داده است با پشتیبانی تماس بگیرید',
-            '-5' => 'متن ارسالی باتوجه به متغیرهای مشخص شده در متن پیشفرض همخوانی ندارد',
-            '-4' => 'کد متن ارسالی صحیح نمی‌باشد و یا توسط مدیر سامانه تأیید نشده است',
-            '-3' => 'خط ارسالی در سیستم تعریف نشده است، با پشتیبانی سامانه تماس بگیرید',
-            '-2' => 'محدودیت تعداد شماره، محدودیت هربار ارسال یک شماره موبایل می‌باشد',
-            '-1' => 'دسترسی برای استفاده از این وبسرویس غیرفعال است. با پشتیبانی تماس بگیرید',
-            '0' => 'نام کاربری یا رمزعبور صحیح نمی‌باشد',
-            '2' => 'اعتبار کافی نمی‌باشد',
-            '6' => 'سامانه درحال بروزرسانی می‌باشد',
-            '7' => 'متن حاوی کلمه فیلتر شده می‌باشد، با واحد اداری تماس بگیرید',
-            '10' => 'کاربر موردنظر فعال نمی‌باشد',
-            '11' => 'ارسال نشده',
-            '12' => 'مدارک کاربر کامل نمی‌باشد',
+            null => 'غیر فعال بودن دسترسی گزارش تحویل برای کاربر',
+            -1 => 'ارسال نشده',
+            -3 => 'نام کاربری یا رمز عبور اشتباه است',
+            0 => 'ارسال شده به مخابرات',
+            1 => 'رسیده به گوشی',
+            2 => 'نرسیده به گوشی',
+            3 => 'خطای مخابراتی',
+            5 => 'خطای نامشخص',
+            8 => 'رسیده به مخابرات',
+            16 => 'نرسیده به مخابرات',
+            35 => 'لیست سایه',
+            100 => 'نامشخص',
+            200 => 'ارسال شده',
+            300 => 'فیلتر شده',
+            400 => 'در لیست ارسال',
+            500 => 'عدم پذیرش',
         ];
 
         try {
-            $sms = new SoapClient("http://api.payamak-panel.com/post/Send.asmx?wsdl", array("encoding" => "UTF-8"));
+            $data = [
+                'username' => '09038774351',
+                'password' => 'MR3AC',
+                'to' => $request->receiver_phone,
+                'from' => '50004000425053',
+                'text' => $request->message,
+            ];
 
-            $data = array(
-                "username" => "09038774351",
-                "password" => "MR3AC",
-                "text" => $request->message,
-                "to" => $request->receiver_phone,
-                "bodyId" => 201523
-            );
+            $post_data = http_build_query($data);
 
-            $send_Result = $sms->SendByBaseNumber($data)->SendByBaseNumberResult;
+            $handle = curl_init('https://rest.payamak-panel.com/api/SendSMS/SendSMS');
+            curl_setopt($handle, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+            curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($handle, CURLOPT_POST, true);
+            curl_setopt($handle, CURLOPT_POSTFIELDS, $post_data);
 
-            $status = array_key_exists($send_Result, $errorMessages) ? $errorMessages[$send_Result] : 'ارسال موفقیت‌آمیز';
+            $response = curl_exec($handle);
+            curl_close($handle);
+
+            $responseDecoded = json_decode($response, true);
+            $send_Result = $responseDecoded['RetStatus'] ?? null;
 
             if (array_key_exists($send_Result, $errorMessages)) {
                 return response()->json(['failed' => $errorMessages[$send_Result]]);
@@ -78,7 +89,7 @@ class SMSController extends Controller
                     'receiver_phone' => $request->receiver_phone,
                     'user_id' => Auth::id(),
                     'message' => $request->message,
-                    'status' => $status,
+                    'status' => $send_Result,
                 ]);
 
                 return response()->json(['success' => 'sms با موفقیت ارسال شد']);
@@ -87,6 +98,7 @@ class SMSController extends Controller
             return response()->json(['error' => 'خطایی در ارسال پیام رخ داده است: ' . $e->getMessage()]);
         }
     }
+
 
     public function show($id)
     {
