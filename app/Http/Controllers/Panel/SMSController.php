@@ -28,15 +28,20 @@ class SMSController extends Controller
 
     public function store(Request $request)
     {
+        // بررسی دسترسی کاربر
         $this->authorize('sms-create');
+
+        // اعتبارسنجی درخواست
         $request->validate([
             'receiver_name' => 'required',
             'receiver_phone' => 'required',
             'message' => 'required',
         ]);
 
+        // تنظیمات SOAP
         ini_set("soap.wsdl_cache_enabled", "0");
 
+        // پیام‌های خطا
         $errorMessages = [
             '-7' => 'خطایی در شماره فرستنده رخ داده است با پشتیبانی تماس بگیرید',
             '-6' => 'خطای داخلی رخ داده است با پشتیبانی تماس بگیرید',
@@ -55,14 +60,16 @@ class SMSController extends Controller
         ];
 
         try {
-            $result=sendSMS(201523, $request->receiver_phone, [$request->message]);
+            // ارسال پیامک
+            $result = sendSMS(201523, $request->receiver_phone, [$request->message]);
 
+            // بررسی نتیجه ارسال
             $status = array_key_exists($result, $errorMessages) ? $errorMessages[$result] : 'ارسال موفقیت‌آمیز';
 
             if (array_key_exists($result, $errorMessages)) {
                 return response()->json(['failed' => $errorMessages[$result]]);
             } else {
-                // Create Sms record
+                // ایجاد رکورد پیامک
                 Sms::create([
                     'receiver_name' => $request->receiver_name,
                     'receiver_phone' => $request->receiver_phone,
