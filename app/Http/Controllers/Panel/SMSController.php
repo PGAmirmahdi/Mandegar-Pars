@@ -36,12 +36,16 @@ class SMSController extends Controller
             'message' => 'required',
         ]);
 
+        $successMessages = [
+            1 => 'رسیده به گوشی',
+            200 => 'ارسال شده'
+        ];
+
         $errorMessages = [
             null => 'غیر فعال بودن دسترسی گزارش تحویل برای کاربر',
             -1 => 'ارسال نشده',
             -3 => 'نام کاربری یا رمز عبور اشتباه است',
             0 => 'ارسال شده به مخابرات',
-            1 => 'رسیده به گوشی',
             2 => 'نرسیده به گوشی',
             3 => 'خطای مخابراتی',
             5 => 'خطای نامشخص',
@@ -49,7 +53,6 @@ class SMSController extends Controller
             16 => 'نرسیده به مخابرات',
             35 => 'لیست سایه',
             100 => 'نامشخص',
-            200 => 'ارسال شده',
             300 => 'فیلتر شده',
             400 => 'در لیست ارسال',
             500 => 'عدم پذیرش',
@@ -75,32 +78,40 @@ class SMSController extends Controller
             curl_setopt($handle, CURLOPT_POSTFIELDS, $post_data);
 
             $response = curl_exec($handle);
-            curl_close($handle);
 
             if ($response === false) {
                 throw new Exception(curl_error($handle), curl_errno($handle));
             }
 
+            curl_close($handle);
+
             $responseDecoded = json_decode($response, true);
 
-            if (isset($responseDecoded['RetStatus']) && array_key_exists($responseDecoded['RetStatus'], $errorMessages)) {
-                return response()->json(['failed' => $errorMessages[$responseDecoded['RetStatus']]]);
-            } else {
-                // Create Sms record
-                Sms::create([
-                    'receiver_name' => $request->receiver_name,
-                    'receiver_phone' => $request->receiver_phone,
-                    'user_id' => Auth::id(),
-                    'message' => $request->message,
-                    'status' => $responseDecoded['RetStatus'] ?? 'unknown',
-                ]);
+            if (isset($responseDecoded['RetStatus'])) {
+                $status = $responseDecoded['RetStatus'];
 
-                return response()->json(['success' => 'sms با موفقیت ارسال شد']);
+                if (array_key_exists($status, $errorMessages)) {
+                    return response()->json(['failed' => $errorMessages[$status]]);
+                } elseif (array_key_exists($status, $successMessages)) {
+                    // Create Sms record
+                    Sms::create([
+                        'receiver_name' => $request->receiver_name,
+                        'receiver_phone' => $request->receiver_phone,
+                        'user_id' => Auth::id(),
+                        'message' => $request->message,
+                        'status' => $status,
+                    ]);
+
+                    return response()->json(['success' => $successMessages[$status]]);
+                }
             }
+
+            return response()->json(['error' => 'پاسخ نامشخص از سرور دریافت شد']);
         } catch (Exception $e) {
             return response()->json(['error' => 'خطایی در ارسال پیام رخ داده است: ' . $e->getMessage()]);
         }
     }
+
 
 
 
