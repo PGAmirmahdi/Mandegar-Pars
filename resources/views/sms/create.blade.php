@@ -25,7 +25,7 @@
                     </div>
                     <div class="col-12 mb-3">
                         <label for="message">متن پیام<span class="text-danger">*</span></label>
-                        <textarea type="text" id="message" name="message" class="form-control">{{ old('message') }}</textarea>
+                        <textarea id="message" name="message" class="form-control">{{ old('message') }}</textarea>
                         @error('message')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -50,13 +50,6 @@
     <style>
         .modal-content {
             width: 300px;
-        }
-        .textarea {
-            width: 100%;
-            min-height: 200px;
-            border-radius: 5px;
-            border: 1px solid gainsboro;
-            padding: 5px;
         }
         .modal {
             display: none;
@@ -101,8 +94,12 @@
                     },
                     success: function (response) {
                         modal.hide();
-                        alert(response.success);
-                        window.location.href = "{{ route('sms.index') }}";
+                        if (response.success) {
+                            alert(response.success);
+                            window.location.href = "{{ route('sms.index') }}";
+                        } else if (response.failed) {
+                            alert(response.failed);
+                        }
                     },
                     error: function (xhr) {
                         modal.hide();
