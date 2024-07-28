@@ -52,7 +52,7 @@
                                 <td>{{ $sms->receiver_name }}</td>
                                 <td>{{ $sms->receiver_phone }}</td>
                                 <td>{{ $sms->message }}</td>
-                                <td>{{ $sms->status }}</td>
+                                <td>@if($sms->status == 1) ارسال موفق @endif</td>
                                 <td>{{ verta($sms->created_at)->format('H:i - Y/m/d') }}</td>
                                 @can('sms-show')
                                     <td>

@@ -120,7 +120,7 @@ class SMSController extends Controller
         // یافتن پیامک با شناسه مورد نظر
         $sms = Sms::findOrFail($id);
         // ارسال اطلاعات پیامک به ویو
-        return view('show', ['sms' => $sms]);
+        return view('panel.sms.show', ['sms' => $sms]);
     }
 
 
