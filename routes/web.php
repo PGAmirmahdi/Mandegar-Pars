@@ -32,6 +32,7 @@ use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
 use App\Http\Controllers\Panel\ShopController;
+use App\Http\Controllers\Panel\SMSController;
 use App\Http\Controllers\Panel\SmsHistoryController;
 use App\Http\Controllers\Panel\SoftwareUpdateController;
 use App\Http\Controllers\Panel\TaskController;
@@ -289,6 +290,11 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
         event(new \App\Events\TestEvent('This is a test message!'));
         return 'Event has been sent!';
     });
+
+    // SMS
+    Route::resource('sms', SMSController::class)->except('edit','update');
+    Route::match(['get', 'post'], 'sms  ', [SMSController::class, 'search'])->name('sms.search');
+
 });
 
 
