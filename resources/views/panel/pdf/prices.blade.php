@@ -63,7 +63,7 @@
 </head>
 <body>
 <div class="No1">
-    <img src="{{asset('assets/media/image/icon1.png')}}" width="fit-content" height="100px" alt="logo">
+    <img src="{{asset('assets/media/image/icon1.png')}}" width="fit-content" height="100px" alt="logo" style="margin-bottom:10px;">
 </div>
 <table style="text-align: center; width: 100%; border-collapse: collapse;">
     <thead>
@@ -83,7 +83,7 @@
     @endforeach
     </tbody>
 </table>
-<img src="{{asset('assets/media/image/icon2.png')}}" alt="logo2" width="fit-content">
+<img src="{{asset('assets/media/image/icon2.png')}}" alt="logo2" width="fit-content" style="margin:auto;display:block !important;">
 <img src="{{asset('assets/media/image/icon3.png')}}" alt="logo3" width="fit-content">
 </body>
 
