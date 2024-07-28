@@ -28,20 +28,15 @@ class SMSController extends Controller
 
     public function store(Request $request)
     {
-        // بررسی دسترسی کاربر
         $this->authorize('sms-create');
-
-        // اعتبارسنجی درخواست
         $request->validate([
             'receiver_name' => 'required',
             'receiver_phone' => 'required',
             'message' => 'required',
         ]);
 
-        // تنظیمات SOAP
         ini_set("soap.wsdl_cache_enabled", "0");
 
-        // پیام‌های خطا
         $errorMessages = [
             '-7' => 'خطایی در شماره فرستنده رخ داده است با پشتیبانی تماس بگیرید',
             '-6' => 'خطای داخلی رخ داده است با پشتیبانی تماس بگیرید',
@@ -60,16 +55,24 @@ class SMSController extends Controller
         ];
 
         try {
-            // ارسال پیامک
-            $result = sendSMS(201523, $request->receiver_phone, [$request->message]);
+            $sms = new SoapClient("http://api.payamak-panel.com/post/Send.asmx?wsdl", array("encoding" => "UTF-8"));
 
-            // بررسی نتیجه ارسال
-            $status = array_key_exists($result, $errorMessages) ? $errorMessages[$result] : 'ارسال موفقیت‌آمیز';
+            $data = array(
+                "username" => "09038774351",
+                "password" => "MR3AC",
+                "text" => $request->message,
+                "to" => $request->receiver_phone,
+                "bodyId" => 201523
+            );
 
-            if (array_key_exists($result, $errorMessages)) {
-                return response()->json(['failed' => $errorMessages[$result]]);
+            $send_Result = $sms->SendByBaseNumber($data)->SendByBaseNumberResult;
+
+            $status = array_key_exists($send_Result, $errorMessages) ? $errorMessages[$send_Result] : 'ارسال موفقیت‌آمیز';
+
+            if (array_key_exists($send_Result, $errorMessages)) {
+                return response()->json(['failed' => $errorMessages[$send_Result]]);
             } else {
-                // ایجاد رکورد پیامک
+                // Create Sms record
                 Sms::create([
                     'receiver_name' => $request->receiver_name,
                     'receiver_phone' => $request->receiver_phone,
