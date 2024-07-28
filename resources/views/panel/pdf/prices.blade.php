@@ -83,7 +83,7 @@
     @endforeach
     </tbody>
 </table>
-<img src="{{asset('assets/media/image/icon2.png')}}" alt="logo2" width="fit-content" style="margin:auto;display:block !important;">
+<img src="{{asset('assets/media/image/icon2.png')}}" alt="logo2" width="fit-content" style="margin:auto;display:block !important;margin-left:50%;">
 <img src="{{asset('assets/media/image/icon3.png')}}" alt="logo3" width="fit-content">
 </body>
 
