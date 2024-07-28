@@ -97,7 +97,6 @@ class SMSController extends Controller
                     Sms::create([
                         'receiver_name' => $request->receiver_name,
                         'receiver_phone' => $request->receiver_phone,
-                        'user_id' => Auth::id(),
                         'message' => $request->message,
                         'status' => $status,
                     ]);
