@@ -17,7 +17,7 @@ class SMSController extends Controller
         $this->authorize('sms-list');
         $smsList = Sms::query()->paginate(10);
 
-        return view('sms.index', compact('smsList'));
+        return view('panel.sms.index', compact('smsList'));
     }
 
     public function create()
@@ -77,11 +77,14 @@ class SMSController extends Controller
             $response = curl_exec($handle);
             curl_close($handle);
 
-            $responseDecoded = json_decode($response, true);
-            $send_Result = $responseDecoded['RetStatus'] ?? null;
+            if ($response === false) {
+                throw new Exception(curl_error($handle), curl_errno($handle));
+            }
 
-            if (array_key_exists($send_Result, $errorMessages)) {
-                return response()->json(['failed' => $errorMessages[$send_Result]]);
+            $responseDecoded = json_decode($response, true);
+
+            if (isset($responseDecoded['RetStatus']) && array_key_exists($responseDecoded['RetStatus'], $errorMessages)) {
+                return response()->json(['failed' => $errorMessages[$responseDecoded['RetStatus']]]);
             } else {
                 // Create Sms record
                 Sms::create([
@@ -89,7 +92,7 @@ class SMSController extends Controller
                     'receiver_phone' => $request->receiver_phone,
                     'user_id' => Auth::id(),
                     'message' => $request->message,
-                    'status' => $send_Result,
+                    'status' => $responseDecoded['RetStatus'] ?? 'unknown',
                 ]);
 
                 return response()->json(['success' => 'sms با موفقیت ارسال شد']);
@@ -98,6 +101,7 @@ class SMSController extends Controller
             return response()->json(['error' => 'خطایی در ارسال پیام رخ داده است: ' . $e->getMessage()]);
         }
     }
+
 
 
     public function show($id)
