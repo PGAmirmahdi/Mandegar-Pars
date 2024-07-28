@@ -1,7 +1,7 @@
 @extends('panel.layouts.master')
 @section('title', 'ویرایش بسته ارسالی')
 @section('content')
-    {{--  Send SMS Modal  --}}
+    {{--  Send Sms Modal  --}}
     <div class="modal fade" id="smsModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
-    {{--  End Send SMS Modal  --}}
+    {{--  End Send Sms Modal  --}}
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">

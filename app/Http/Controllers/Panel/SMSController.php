@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Models\SMS;
+use App\Models\Sms;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class SMSController extends Controller
     public function index()
     {
         $this->authorize('sms-list');
-        $smsList = SMS::query()->paginate(10);
+        $smsList = Sms::query()->paginate(10);
 
         return view('sms.index', compact('smsList'));
     }
@@ -72,8 +72,8 @@ class SMSController extends Controller
             if (array_key_exists($send_Result, $errorMessages)) {
                 return response()->json(['failed' => $errorMessages[$send_Result]]);
             } else {
-                // Create SMS record
-                SMS::create([
+                // Create Sms record
+                Sms::create([
                     'receiver_name' => $request->receiver_name,
                     'receiver_phone' => $request->receiver_phone,
                     'user_id' => Auth::id(),
@@ -92,7 +92,7 @@ class SMSController extends Controller
     {
         $this->authorize('sms-show');
         // یافتن پیامک با شناسه مورد نظر
-        $sms = SMS::findOrFail($id);
+        $sms = Sms::findOrFail($id);
         // ارسال اطلاعات پیامک به ویو
         return view('show', ['sms' => $sms]);
     }
@@ -125,7 +125,7 @@ class SMSController extends Controller
     {
         $this->authorize('sms-delete');
         // یافتن پیامک با شناسه مورد نظر
-        $sms = SMS::findOrFail($id);
+        $sms = Sms::findOrFail($id);
 
         // حذف پیامک
         $sms->delete();
@@ -136,7 +136,7 @@ class SMSController extends Controller
 
     public function search(Request $request)
     {
-        $query = SMS::query();
+        $query = Sms::query();
 
         if ($request->filled('receiver_name')) {
             $query->where('receiver_name', 'like', '%' . $request->receiver_name . '%');
