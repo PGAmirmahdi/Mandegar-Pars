@@ -120,7 +120,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Leave::class);
     }
-
+    public function sms()
+    {
+        return $this->hasMany(SMS::class);
+    }
     public function leavesCount()
     {
         $this->leavesUpdate();

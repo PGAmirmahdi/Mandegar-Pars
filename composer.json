@@ -10,6 +10,8 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-libxml": "*",
+        "ext-pdo": "*",
+        "ext-soap": "*",
         "beyondcode/laravel-websockets": "^1.14",
         "carlos-meneses/laravel-mpdf": "^2.1",
         "fruitcake/laravel-cors": "^2.0",
@@ -23,8 +25,7 @@
         "melipayamak/laravel": "1.0.0",
         "mews/captcha": "^3.3",
         "pusher/pusher-php-server": "4.*",
-        "uxweb/sweet-alert": "^2.0",
-      "ext-pdo": "*"
+        "uxweb/sweet-alert": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
