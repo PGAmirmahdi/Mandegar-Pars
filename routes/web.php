@@ -292,8 +292,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     });
 
     // SMS
-    Route::resource('sms', SMSController::class)->except('edit','update');
-    Route::match(['get', 'post'], 'sms', [SMSController::class, 'search'])->name('sms.search');
+    Route::resource('sms.index', SMSController::class)->except('edit','update');
+    Route::match(['get', 'post'], 'sms.search', [SMSController::class, 'search'])->name('smssearch');
 
 });
 
