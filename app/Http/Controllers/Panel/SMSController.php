@@ -117,11 +117,14 @@ class SMSController extends Controller
 
     public function show($id)
     {
-        $this->authorize('sms-show');
-        // یافتن پیامک با شناسه مورد نظر
+        // فرض کنید داده‌های پیامک را از دیتابیس دریافت می‌کنید
         $sms = Sms::findOrFail($id);
-        // ارسال اطلاعات پیامک به ویو
-        return view('panel.sms.show', ['sms' => $sms]);
+
+        return view('panel.sms.show', [
+            'receiver_name' => $sms->receiver_name,
+            'receiver_phone' => $sms->receiver_phone,
+            'message' => $sms->message
+        ]);
     }
 
 
