@@ -28,7 +28,8 @@
                         <textarea id="message" name="message" class="form-control" rows="10">
 با سلام [نام مخاطب] عزیز،
 
-ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در رسانه و صفحات اجتماعی دنبال کنید:
+[پیام شما]
+ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
 سایت:
 artintoner.com
@@ -88,12 +89,14 @@ cafebazaar.ir/app/com.example.artintoner
             var modal = $('#uploadModal');
             var receiverNameInput = $('#receiver_name');
             var messageTextarea = $('#message');
+            var placeholder = '[نام مخاطب]';
 
-            receiverNameInput.on('change', function () {
+            receiverNameInput.on('input', function () {
                 var name = $(this).val();
                 var message = messageTextarea.val();
-                var updatedMessage = message.replace('[نام مخاطب]', name);
-                messageTextarea.val(updatedMessage);
+                var regex = new RegExp(placeholder + ' عزیز', 'g');
+                message = message.replace(regex, name + ' عزیز');
+                messageTextarea.val(message);
             });
 
             form.on('submit', function (event) {
