@@ -295,7 +295,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('sms', SMSController::class)->except('edit','update');
 
 });
-
+Route::get('Discover', function (Request $request) {
+    return view('panel.discover');
+})->name("BackToApp");
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
