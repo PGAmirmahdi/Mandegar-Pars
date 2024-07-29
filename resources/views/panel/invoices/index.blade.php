@@ -108,7 +108,7 @@
                         @canany('warehouse-keeper','partner-tehran')
                             <th>فاکتور</th>
                         @else
-                            @canany(['sales-manager','accountant'])
+                            @canany(['sales-manager','accountant','Organ'])
                                 <th>اقدام</th>
                             @endcanany
                         @endcanany

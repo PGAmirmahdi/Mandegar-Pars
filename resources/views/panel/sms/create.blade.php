@@ -26,22 +26,21 @@
                     <div class="col-12 mb-3">
                         <label for="message">متن پیام<span class="text-danger">*</span></label>
                         <textarea id="message" name="message" class="form-control" rows="10">
-با سلام [نام مخاطب] عزیز
-
+سلام [نام مخاطب] عزیز
 [پیام شما]
-ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
+خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
+
+دانلود کاتالوگ محصولات:
+https://artintoner.com/folder/Catalog-v1.3.10.pdf
 
 فروشگاه اینترنتی:
 https://artintoner.com
 
-اینستاگرام:
-www.instagram.com/artintoner
-
-لینک دانلود اپلیکیشن:
+اپلیکیشن:
 cafebazaar.ir/app/com.example.artintoner
 
-کاتالوگ محصولات
-https://artintoner.com/folder/Catalog-v1.3.10.pdf
+اینستاگرام:
+www.instagram.com/artintoner
 
 شماره تماس
 02165425052-54
@@ -99,21 +98,20 @@ https://artintoner.com/folder/Catalog-v1.3.10.pdf
             var modal = $('#uploadModal');
             var receiverNameInput = $('#receiver_name');
             var messageTextarea = $('#message');
-            var defaultMessage = `با سلام [نام مخاطب] عزیز
+            var defaultMessage = `سلام [نام مخاطب] عزیز
+خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
-ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
+دانلود کاتالوگ محصولات:
+https://artintoner.com/folder/Catalog-v1.3.10.pdf
 
 فروشگاه اینترنتی:
 https://artintoner.com
 
-اینستاگرام:
-www.instagram.com/artintoner
-
-لینک دانلود اپلیکیشن:
+اپلیکیشن:
 cafebazaar.ir/app/com.example.artintoner
 
-کاتالوگ محصولات
-https://artintoner.com/folder/Catalog-v1.3.10.pdf
+اینستاگرام:
+www.instagram.com/artintoner
 
 شماره تماس
 02165425052-54
