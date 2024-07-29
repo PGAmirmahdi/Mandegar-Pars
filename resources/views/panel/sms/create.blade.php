@@ -89,23 +89,26 @@ cafebazaar.ir/app/com.example.artintoner
             var modal = $('#uploadModal');
             var receiverNameInput = $('#receiver_name');
             var messageTextarea = $('#message');
-            var defaultMessage = `با سلام [نام مخاطب] عزیز،
+            var defaultMessage = `با سلام [نام مخاطب] عزیز
 
 ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
-سایت:
+فروشگاه اینترنتی:
 https://artintoner.com
+
 اینستاگرام:
 www.instagram.com/artintoner
+
 لینک دانلود اپلیکیشن:
 cafebazaar.ir/app/com.example.artintoner
+
 کاتالوگ محصولات
 https://artintoner.com/folder/Catalog-v1.3.10.pdf
 
 شماره تماس
-021-65425052-54
-0990-642-4827
-0901-466-7657
+02165425052-54
+09906424827
+09014667657
 
 با سپاس،
 ماندگارپارس`;
