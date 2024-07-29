@@ -94,11 +94,18 @@ cafebazaar.ir/app/com.example.artintoner
 ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
 سایت:
-artintoner.com
+https://artintoner.com
 اینستاگرام:
 www.instagram.com/artintoner
 لینک دانلود اپلیکیشن:
 cafebazaar.ir/app/com.example.artintoner
+کاتالوگ محصولات
+https://artintoner.com/folder/Catalog-v1.3.10.pdf
+
+شماره تماس
+021-65425052-54
+0990-642-4827
+0901-466-7657
 
 با سپاس،
 ماندگارپارس`;

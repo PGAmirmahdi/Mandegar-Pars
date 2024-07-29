@@ -35,7 +35,7 @@
                     </a>
                 </li>
             @endcanany
-            @canany(['tickets-list','sms-histories'])
+            @canany(['tickets-list','sms-histories','sms'])
                 <li class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}']) ? 'active' : '' }}" data-toggle="tooltip" title="پشتیبانی و تیکت">
                     <a href="#navigationTickets" title="پشتیبانی و تیکت">
                         <i class="icon ti-comment-alt"></i>
