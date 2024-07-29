@@ -91,7 +91,6 @@ cafebazaar.ir/app/com.example.artintoner
             var messageTextarea = $('#message');
             var defaultMessage = `با سلام [نام مخاطب] عزیز،
 
-[پیام شما]
 ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
 سایت:
