@@ -64,12 +64,15 @@ class SMSController extends Controller
                 'password' => 'MR3AC',
                 'to' => $request->receiver_phone,
                 'from' => '50004000425053',
-                'text' => 'با سلام ' . $request->receiver_name . ' عزیز،
-                ' . $request->message . 'ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
+                'text' => 'با سلام ' . $request->receiver_name . ' عزیز،' . '
+                ' . $request->message . ' ' . 'ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
-    سایت: artintoner.com
-    اینستاگرام: www.instagram.com/artintoner
-    لینک دانلود اپلیکیشن: cafebazaar.ir/app/com.example.artintoner
+    سایت:
+     artintoner.com
+    اینستاگرام:
+     www.instagram.com/artintoner
+    لینک دانلود اپلیکیشن:
+     cafebazaar.ir/app/com.example.artintoner
 
     ' . 'با سپاس،
     ' . 'ماندگارپارس',
