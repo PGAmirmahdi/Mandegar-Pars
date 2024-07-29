@@ -89,13 +89,24 @@ cafebazaar.ir/app/com.example.artintoner
             var modal = $('#uploadModal');
             var receiverNameInput = $('#receiver_name');
             var messageTextarea = $('#message');
-            var placeholder = '[نام مخاطب]';
+            var defaultMessage = `با سلام [نام مخاطب] عزیز،
+
+[پیام شما]
+ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
+
+سایت:
+artintoner.com
+اینستاگرام:
+www.instagram.com/artintoner
+لینک دانلود اپلیکیشن:
+cafebazaar.ir/app/com.example.artintoner
+
+با سپاس،
+ماندگارپارس`;
 
             receiverNameInput.on('input', function () {
                 var name = $(this).val();
-                var message = messageTextarea.val();
-                var regex = new RegExp(placeholder + ' عزیز', 'g');
-                message = message.replace(regex, name + ' عزیز');
+                var message = defaultMessage.replace('[نام مخاطب]', name);
                 messageTextarea.val(message);
             });
 
