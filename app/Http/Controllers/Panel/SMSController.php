@@ -98,16 +98,7 @@ class SMSController extends Controller
                     Sms::create([
                         'receiver_name' => $request->receiver_name,
                         'receiver_phone' => $request->receiver_phone,
-                        'message' => 'با سلام ' . $request->receiver_name . ' عزیز،' . "\n" .
-                            $request->message . "\n" . 'ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:' . "\n\n" .
-                            'سایت:' . "\n" .
-                            'artintoner.com' . "\n" .
-                            'اینستاگرام:' . "\n" .
-                            'www.instagram.com/artintoner' . "\n" .
-                            'لینک دانلود اپلیکیشن:' . "\n" .
-                            'cafebazaar.ir/app/com.example.artintoner' . "\n\n" .
-                            'با سپاس،' . "\n" .
-                            'ماندگارپارس',
+                        'message' => $request->message,
                         'status' => $status,
                     ]);
 
