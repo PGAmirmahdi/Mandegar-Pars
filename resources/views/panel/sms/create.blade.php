@@ -89,7 +89,7 @@ cafebazaar.ir/app/com.example.artintoner
             var receiverNameInput = $('#receiver_name');
             var messageTextarea = $('#message');
 
-            receiverNameInput.on('input', function () {
+            receiverNameInput.on('change', function () {
                 var name = $(this).val();
                 var message = messageTextarea.val();
                 var updatedMessage = message.replace('[نام مخاطب]', name);
