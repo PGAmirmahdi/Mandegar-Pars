@@ -29,7 +29,7 @@
                 </li>
             @endcanany
             @canany(['customers-list','foreign-customers-list'])
-                <li class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','sms','sms/create','sms/{sms}/edit','sms.search','sms/{sms}/show]) ? 'active' : '' }}" data-toggle="tooltip" title="مشتریان">
+                <li class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','sms','sms/create','sms/{sms}/edit','sms.search','sms/{sms}/show']) ? 'active' : '' }}" data-toggle="tooltip" title="مشتریان">
                     <a href="#navigationCustomers" title="مشتریان">
                         <i class="icon ti-user"></i>
                     </a>
@@ -217,7 +217,7 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationCustomers" class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','sms','sms/create','sms/{sms}/edit','sms.search','sms/{sms}/show]) ? 'navigation-active' : '' }}">
+        <ul id="navigationCustomers" class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','sms','sms/create','sms/{sms}/edit','sms.search','sms/{sms}/show']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">مشتریان</li>
             @can('customers-list')
                 <li>
