@@ -26,20 +26,30 @@
                     <div class="col-12 mb-3">
                         <label for="message">متن پیام<span class="text-danger">*</span></label>
                         <textarea id="message" name="message" class="form-control" rows="10">
-با سلام [نام مخاطب] عزیز،
+با سلام [نام مخاطب] عزیز
 
 [پیام شما]
 ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
-سایت:
-artintoner.com
+فروشگاه اینترنتی:
+https://artintoner.com
+
 اینستاگرام:
 www.instagram.com/artintoner
+
 لینک دانلود اپلیکیشن:
 cafebazaar.ir/app/com.example.artintoner
 
+کاتالوگ محصولات
+https://artintoner.com/folder/Catalog-v1.3.10.pdf
+
+شماره تماس
+02165425052-54
+09906424827
+09014667657
+
 با سپاس،
-ماندگارپارس</textarea>
+ماندگارپارس`</textarea>
                         @error('message')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
