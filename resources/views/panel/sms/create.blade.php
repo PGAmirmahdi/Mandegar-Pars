@@ -25,7 +25,20 @@
                     </div>
                     <div class="col-12 mb-3">
                         <label for="message">متن پیام<span class="text-danger">*</span></label>
-                        <textarea id="message" name="message" class="form-control">{{ old('message') }}</textarea>
+                        <textarea id="message" name="message" class="form-control" rows="10">
+با سلام [نام مخاطب] عزیز،
+
+ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در رسانه و صفحات اجتماعی دنبال کنید:
+
+سایت:
+artintoner.com
+اینستاگرام:
+www.instagram.com/artintoner
+لینک دانلود اپلیکیشن:
+cafebazaar.ir/app/com.example.artintoner
+
+با سپاس،
+ماندگارپارس</textarea>
                         @error('message')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -73,12 +86,21 @@
         $(document).ready(function () {
             var form = $('#sms-form');
             var modal = $('#uploadModal');
+            var receiverNameInput = $('#receiver_name');
+            var messageTextarea = $('#message');
+
+            receiverNameInput.on('input', function () {
+                var name = $(this).val();
+                var message = messageTextarea.val();
+                var updatedMessage = message.replace('[نام مخاطب]', name);
+                messageTextarea.val(updatedMessage);
+            });
 
             form.on('submit', function (event) {
                 event.preventDefault();
 
                 var formData = new FormData(this);
-                var messageContent = $('#message').val();
+                var messageContent = messageTextarea.val();
                 formData.set('message', messageContent);
 
                 modal.css('display', 'flex');

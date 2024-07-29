@@ -33,7 +33,7 @@ class SMSController extends Controller
         $request->validate([
             'receiver_name' => 'required',
             'receiver_phone' => 'required',
-            'message' => 'required',
+            'message' => 'nullable',
         ]);
 
         $successMessages = [
@@ -64,19 +64,9 @@ class SMSController extends Controller
                 'password' => 'MR3AC',
                 'to' => $request->receiver_phone,
                 'from' => '50004000425053',
-                'text' => 'با سلام ' . $request->receiver_name . ' عزیز،' . '
-                ' . $request->message . ' ' . 'ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
-
-    سایت:
-     artintoner.com
-    اینستاگرام:
-     www.instagram.com/artintoner
-    لینک دانلود اپلیکیشن:
-     cafebazaar.ir/app/com.example.artintoner
-
-    ' . 'با سپاس،
-    ' . 'ماندگارپارس',
+                'text' => $request->message,
             ];
+
 
             $post_data = http_build_query($data);
 
@@ -108,7 +98,16 @@ class SMSController extends Controller
                     Sms::create([
                         'receiver_name' => $request->receiver_name,
                         'receiver_phone' => $request->receiver_phone,
-                        'message' => $request->message,
+                        'message' => 'با سلام ' . $request->receiver_name . ' عزیز،' . "\n" .
+                            $request->message . "\n" . 'ما خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:' . "\n\n" .
+                            'سایت:' . "\n" .
+                            'artintoner.com' . "\n" .
+                            'اینستاگرام:' . "\n" .
+                            'www.instagram.com/artintoner' . "\n" .
+                            'لینک دانلود اپلیکیشن:' . "\n" .
+                            'cafebazaar.ir/app/com.example.artintoner' . "\n\n" .
+                            'با سپاس،' . "\n" .
+                            'ماندگارپارس',
                         'status' => $status,
                     ]);
 
