@@ -75,20 +75,35 @@
                 "macOS": /Macintosh/i,
                 "Windows": /IEMobile|Windows/i,
                 "Zebra": /TC70|TC55/i,
-            }
-            Object.keys(ua).map(v => navigator.userAgent.match(ua[v]) && (device = v));
+            };
+            Object.keys(ua).forEach(v => {
+                if (navigator.userAgent.match(ua[v])) {
+                    device = v;
+                }
+            });
             return device;
-        }
+        };
 
         const redirectURL = (device) => {
             if (device === "iPhone" || device === "iPad" || device === "iPod" || device === "macOS") {
-                setTimeout(() =>{ window.location.href = "https://app.mpsystem.ir/pwa"},3000);
+                setTimeout(() => {
+                    window.location.href = "https://app.mpsystem.ir/pwa";
+                }, 3000);
             } else if (device === "Android") {
-                // Attempt to open the intent URL
-                setTimeout(() =>{window.location.href = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end"},3000);
-                // Fallback URL will be handled by Android intent system
+                const intentUrl = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end";
+                const fallbackUrl = "https://app.mpsystem.ir/pwa";
+
+                // Set a timeout to redirect to the fallback URL if the app does not open
+                setTimeout(() => {
+                    window.location.href = fallbackUrl;
+                }, 3000);
+
+                // Try to open the intent URL
+                setTimeout(() => {window.location.href = intentUrl},1000);
             } else {
-                    setTimeout(() =>{window.location.href = "https://app.mpsystem.ir/pwa"},3000);
+                setTimeout(() => {
+                    window.location.href = "https://app.mpsystem.ir/pwa";
+                }, 3000);
             }
         };
 
@@ -96,6 +111,8 @@
         const userDevice = getUA();
         redirectURL(userDevice);
     </script>
+
+
 
 
 </body>
