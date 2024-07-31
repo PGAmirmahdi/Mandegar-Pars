@@ -58,7 +58,6 @@
     }
 </style>
 {{--Link JS--}}
-<script src="{{asset('assets/js/BackToApp.js')}}"></script>
     <script>
         const getUA = () => {
             let device = "Unknown";
@@ -81,32 +80,23 @@
             return device;
         }
 
-        const device = getUA();
-
         const redirectURL = (device) => {
             if (device === "iPhone" || device === "iPad" || device === "iPod" || device === "macOS") {
                 window.location.href = "https://app.mpsystem.ir/pwa";
             } else if (device === "Android") {
-                try {
-                    // Attempt to open the intent URL
-                    window.location.href = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end";
-                } catch (e) {
-                    // If it fails, redirect to the fallback URL
-                    window.location.href = "https://cafebazaar.ir/app/com.example.artintoner";
-                }
+                // Attempt to open the intent URL
+                window.location.href = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end";
+                // Fallback URL will be handled by Android intent system
             } else {
                 window.location.href = "https://app.mpsystem.ir/pwa";
             }
         };
 
-        // You need to detect the device type and then call the function
-        const userDevice = getUserDevice(); // Implement getUserDevice to detect device type
+        // Detect the device and redirect accordingly
+        const userDevice = getUA();
         redirectURL(userDevice);
-
-        setTimeout(() => {
-            location.href = url;
-        }, 3000);
     </script>
+
 
 </body>
 </html>
