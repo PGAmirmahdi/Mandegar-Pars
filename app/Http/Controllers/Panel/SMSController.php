@@ -15,7 +15,7 @@ class SMSController extends Controller
     public function index()
     {
         $this->authorize('sms-list');
-        $smsList = Sms::query()->orderby('id')->paginate(10);
+        $smsList = Sms::query()->orderByDesc('id')->paginate(10);
 
         return view('panel.sms.index', compact('smsList'));
     }
