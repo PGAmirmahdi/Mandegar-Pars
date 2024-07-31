@@ -297,7 +297,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 });
 Route::get('Discover', function (Request $request) {
     return view('panel.discover');
-})->name("BackToApp");
+})->name("Discover");
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
