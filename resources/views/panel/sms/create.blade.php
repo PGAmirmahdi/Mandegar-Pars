@@ -48,7 +48,7 @@ www.instagram.com/artintoner
 09014667657
 
 با سپاس،
-ماندگارپارس`</textarea>
+ماندگارپارس</textarea>
                         @error('message')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
