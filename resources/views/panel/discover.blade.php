@@ -89,7 +89,7 @@
             } else if (device === "Android") {
                 try {
                     // Attempt to open the intent URL
-                    window.location.href = "intent://artintoner.com?Authority={{ $authority }}#Intent;scheme=https;package=com.example.artintoner;end";
+                    window.location.href = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end";
                 } catch (e) {
                     // If it fails, redirect to the fallback URL
                     window.location.href = "https://cafebazaar.ir/app/com.example.artintoner";
