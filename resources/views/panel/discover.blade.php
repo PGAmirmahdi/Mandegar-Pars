@@ -91,7 +91,7 @@
                 }, 3000);
             } else if (device === "Android") {
                 const intentUrl = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end";
-                const fallbackUrl = "https://app.mpsystem.ir/pwa";
+                const fallbackUrl = "https://cafebazaar.ir/app/com.example.artintoner";
 
                 // Set a timeout to redirect to the fallback URL if the app does not open
                 setTimeout(() => {
