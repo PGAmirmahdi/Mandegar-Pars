@@ -37,7 +37,7 @@ class SMSController extends Controller
         ]);
 
         $successMessages = [
-            1 => 'رسیده به گوشی',
+            1 => 'پیام با موفقیت ارسال شد',
             200 => 'ارسال شده'
         ];
 
