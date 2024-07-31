@@ -1,5 +1,28 @@
 @extends('panel.layouts.master')
 @section('title', 'پیامک‌ها')
+<?php
+$successMessages = [
+    1 => 'پیام با موفقیت ارسال شد',
+    200 => 'ارسال شده'
+];
+
+$errorMessages = [
+    null => 'غیر فعال بودن دسترسی گزارش تحویل برای کاربر',
+    -1 => 'ارسال نشده',
+    -3 => 'نام کاربری یا رمز عبور اشتباه است',
+    0 => 'ارسال شده به مخابرات',
+    2 => 'نرسیده به گوشی',
+    3 => 'خطای مخابراتی',
+    5 => 'خطای نامشخص',
+    8 => 'رسیده به مخابرات',
+    16 => 'نرسیده به مخابرات',
+    35 => 'لیست سایه',
+    100 => 'نامشخص',
+    300 => 'فیلتر شده',
+    400 => 'در لیست ارسال',
+    500 => 'عدم پذیرش',
+];
+?>
 @section('content')
     @can('sms-list')
         <div class="card">
@@ -52,7 +75,15 @@
                                 <td>{{ $sms->receiver_name }}</td>
                                 <td>{{ $sms->receiver_phone }}</td>
                                 <td>{{ Str::limit($sms->message, 60) }}</td>
-                                <td>@if($sms->status == 1) ارسال موفق @endif</td>
+                                <td>
+                                    @if(array_key_exists($sms->status, $successMessages))
+                                        {{ $successMessages[$sms->status] }}
+                                    @elseif(array_key_exists($sms->status, $errorMessages))
+                                        {{ $errorMessages[$sms->status] }}
+                                    @else
+                                        وضعیت نامشخص
+                                    @endif
+                                </td>
                                 <td>{{ verta($sms->created_at)->format('H:i - Y/m/d') }}</td>
                                 @can('sms-show')
                                     <td>
