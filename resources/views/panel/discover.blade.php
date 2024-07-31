@@ -82,13 +82,13 @@
 
         const redirectURL = (device) => {
             if (device === "iPhone" || device === "iPad" || device === "iPod" || device === "macOS") {
-                setTimeout(() =>{ window.location.href = "https://app.mpsystem.ir/pwa"},1000);
+                setTimeout(() =>{ window.location.href = "https://app.mpsystem.ir/pwa"},3000);
             } else if (device === "Android") {
                 // Attempt to open the intent URL
-                setTimeout(() =>{window.location.href = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end"},1000);
+                setTimeout(() =>{window.location.href = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end"},3000);
                 // Fallback URL will be handled by Android intent system
             } else {
-                    setTimeout(() =>{window.location.href = "https://app.mpsystem.ir/pwa"},1000);
+                    setTimeout(() =>{window.location.href = "https://app.mpsystem.ir/pwa"},3000);
             }
         };
 
