@@ -85,15 +85,23 @@
 
         const redirectURL = (device) => {
             if (device === "iPhone" || device === "iPad" || device === "iPod" || device === "macOS") {
-                return "https://app.mpsystem.ir/pwa";
+                window.location.href = "https://app.mpsystem.ir/pwa";
             } else if (device === "Android") {
-                return "https://cafebazaar.ir/app/com.example.artintoner";
+                try {
+                    // Attempt to open the intent URL
+                    window.location.href = "intent://artintoner.com?Authority={{ $authority }}#Intent;scheme=https;package=com.example.artintoner;end";
+                } catch (e) {
+                    // If it fails, redirect to the fallback URL
+                    window.location.href = "https://cafebazaar.ir/app/com.example.artintoner";
+                }
             } else {
-                return "https://app.mpsystem.ir/pwa";
+                window.location.href = "https://app.mpsystem.ir/pwa";
             }
-        }
+        };
 
-        const url = redirectURL(device);
+        // You need to detect the device type and then call the function
+        const userDevice = getUserDevice(); // Implement getUserDevice to detect device type
+        redirectURL(userDevice);
 
         setTimeout(() => {
             location.href = url;

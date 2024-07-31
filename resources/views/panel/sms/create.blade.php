@@ -37,7 +37,7 @@ https://artintoner.com/folder/Catalog-v1.3.10.pdf
 https://artintoner.com
 
 اپلیکیشن:
-cafebazaar.ir/app/com.example.artintoner
+https://mpsystem.ir/Discover
 
 اینستاگرام:
 www.instagram.com/artintoner
@@ -108,7 +108,7 @@ https://artintoner.com/folder/Catalog-v1.3.10.pdf
 https://artintoner.com
 
 اپلیکیشن:
-cafebazaar.ir/app/com.example.artintoner
+https://mpsystem.ir/Discover
 
 اینستاگرام:
 www.instagram.com/artintoner
