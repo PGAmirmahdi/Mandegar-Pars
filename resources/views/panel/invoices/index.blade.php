@@ -35,11 +35,12 @@
                         دریافت اکسل
                     </button>
 
-                    <a href="{{ route('invoices.create') }}" class="btn btn-primary">
-                        <i class="fa fa-plus mr-2"></i>
-                        ایجاد سفارش
-                    </a>
+                            <a href="{{ route('invoices.create') }}" class="btn btn-primary">
+                                <i class="fa fa-plus mr-2"></i>
+                                ایجاد سفارش
+                            </a>
                 </div>
+
             </div>
             <form action="{{ route('invoices.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3 mt-5">
@@ -100,14 +101,14 @@
                             <th>همکار</th>
                         @endcanany
                         <th>تاریخ ایجاد</th>
+{{--                        @canany(['accountant','admin','ceo'])--}}
                         <th>مشاهده سفارش</th>
+{{--                        @endcanany--}}
                         <th>وضعیت سفارش</th>
-                        @canany(['warehouse-keeper','partner-tehran'])
+                        @canany('warehouse-keeper','partner-tehran')
                             <th>فاکتور</th>
                         @else
-                            @canany(['sales-manager','accountant','Organ'])
                                 <th>اقدام</th>
-                            @endcanany
                         @endcanany
                         @cannot('accountant')
                             @can('invoices-edit')
@@ -136,31 +137,31 @@
                                 <td>{{ $invoice->user->fullName() }}</td>
                             @endcanany
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
-                            <td>
-                                <a class="btn btn-info btn-floating" href="{{ route('invoices.show', $invoice->id) }}">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            </td>
+{{--                            @canany(['accountant','admin','ceo'])--}}
+                                <td>
+                                    <a class="btn btn-info btn-floating" href="{{ route('invoices.show', $invoice->id) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+{{--                            @endcanany--}}
                             <td>
                                 {{-- invoices before 2024-02-03 order-status disabled --}}
                                 <a href="{{ route('orders-status.index', $invoice->id) }}" class="btn btn-gradient-warning btn-floating {{ $invoice->created_at < verta('2024-02-03 00:00:00') ? 'disabled' : '' }}" target="_blank">
                                     <i class="fa fa-truck-fast"></i>
                                 </a>
                             </td>
-                            @canany(['warehouse-keeper','partner-tehran'])
+                            @canany('warehouse-keeper','partner-tehran')
                                 <td>
                                     <a href="{{ $invoice->action ? $invoice->action->factor_file ?? '#' : '#' }}" class="btn btn-primary btn-floating {{ $invoice->action ? $invoice->action->factor_file ? '' : 'disabled' : 'disabled' }}" target="_blank">
                                         <i class="fa fa-download"></i>
                                     </a>
                                 </td>
                             @else
-                                @canany(['sales-manager','accountant','Organ'])
                                     <td>
                                         <a class="btn btn-primary btn-floating @cannot('accountant') {{ $invoice->action ? '' : 'disabled' }} @endcannot" href="{{ route('invoice.action', $invoice->id) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                     </td>
-                                @endcanany
                             @endcan
                             @cannot('accountant')
                                 @can('sales-manager')
@@ -204,7 +205,9 @@
                     </tfoot>
                 </table>
             </div>
-                <div class="d-flex justify-content-center">{{ $invoices->appends(request()->all())->links() }}</div>
+            <div class="d-flex justify-content-center">{{ $invoices->appends(request()->all())->links() }}</div>
         </div>
     </div>
 @endsection
+
+
