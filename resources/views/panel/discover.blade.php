@@ -90,6 +90,7 @@
                 }, 3000);
             } else if (device === "Android") {
                 const intentUrl = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;S.browser_fallback_url=https%3A%2F%2Fcafebazaar.ir%2Fapp%2Fcom.example.artintoner;end";
+                const fallbackUrl = "https://cafebazaar.ir/app/com.example.artintoner";
 
                 // Try to open the intent URL
                 setTimeout(() => {
@@ -98,7 +99,7 @@
 
                 // Set a timeout to redirect to the fallback URL if the app does not open
                 setTimeout(() => {
-                    window.location.replace("https://cafebazaar.ir/app/com.example.artintoner");
+                    window.location.replace(fallbackUrl);
                 }, 3000);
             } else {
                 setTimeout(() => {
