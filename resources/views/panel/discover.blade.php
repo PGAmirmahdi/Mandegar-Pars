@@ -83,15 +83,13 @@
             });
             return device;
         };
-
         const redirectURL = (device) => {
             if (device === "iPhone" || device === "iPad" || device === "iPod" || device === "macOS") {
                 setTimeout(() => {
                     window.location.href = "https://app.mpsystem.ir/pwa";
                 }, 3000);
             } else if (device === "Android") {
-                const intentUrl = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end";
-                const fallbackUrl = "https://cafebazaar.ir/app/com.example.artintoner";
+                const intentUrl = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;S.browser_fallback_url=https%3A%2F%2Fcafebazaar.ir%2Fapp%2Fcom.example.artintoner;end";
 
                 // Try to open the intent URL
                 setTimeout(() => {
@@ -100,7 +98,7 @@
 
                 // Set a timeout to redirect to the fallback URL if the app does not open
                 setTimeout(() => {
-                    window.location.replace(fallbackUrl);
+                    window.location.replace("https://cafebazaar.ir/app/com.example.artintoner");
                 }, 3000);
             } else {
                 setTimeout(() => {
@@ -108,14 +106,9 @@
                 }, 3000);
             }
         };
-
         // Detect the device and redirect accordingly
         const userDevice = getUA();
         redirectURL(userDevice);
     </script>
-
-
-
-
 </body>
 </html>
