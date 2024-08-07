@@ -93,13 +93,15 @@
                 const intentUrl = "intent://artintoner.com#Intent;scheme=https;package=com.example.artintoner;end";
                 const fallbackUrl = "https://cafebazaar.ir/app/com.example.artintoner";
 
+                // Try to open the intent URL
+                setTimeout(() => {
+                    window.location.replace(intentUrl);
+                }, 1000);
+
                 // Set a timeout to redirect to the fallback URL if the app does not open
                 setTimeout(() => {
-                    window.location.href = fallbackUrl;
+                    window.location.replace(fallbackUrl);
                 }, 3000);
-
-                // Try to open the intent URL
-                setTimeout(() => {window.location.href = intentUrl},1000);
             } else {
                 setTimeout(() => {
                     window.location.href = "https://app.mpsystem.ir/pwa";
