@@ -25,6 +25,9 @@
         font-style: normal;
     }
     body{
+        min-height: 100vh;
+        width:100%;
+        background-color: #f5f5f5;
         font-family: 'Estedad';
         display: flex;
         flex-direction:column;
