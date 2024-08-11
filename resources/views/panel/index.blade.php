@@ -253,6 +253,10 @@
 @endsection
 @section('scripts')
     <script>
+        var visits_provinces = {!! json_encode($visits->pluck('province')) !!};
+        var visits_counts = {!! json_encode($visits->pluck('count')) !!};
+    </script>
+    <script>
         // sales bar chart
         var invoices_provinces = {!! json_encode($invoices->pluck('province')) !!};
         var invoices_amounts = {!! json_encode($invoices->pluck('amount')) !!};
@@ -615,9 +619,9 @@
                         {
                             label: "مجموع فروش",
                             backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            fill: false,
                             data: factors_monthly_amounts,
                             borderColor: '#5d4a9c',
-                            fill: false,
                             cubicInterpolationMode: 'monotone',
                             tension: 0.4
                         }
@@ -672,53 +676,71 @@
                 },
             });
         }
-        // end sales line chart
-
-        // setTimeout(function () {
-        //     $('#line_chart_sale1').removeClass('d-none')
-        //     // console.log($('#line_chart_sale1'))
-        // },2000)
-        $(document).on('change', '#change_line_chart3', function () {
-            if(this.value == 'bar'){
-                $('#line_chart_sale3_sec').removeClass('d-block').addClass('d-none')
-                $('#bar_chart_sale3_sec').removeClass('d-none')
-            }else{
-                $('#bar_chart_sale3_sec').addClass('d-none')
-                $('#line_chart_sale3_sec').removeClass('d-none')
-            }
-        });
-
-        // user visits bar chart
-        var ctx = document.getElementById('bar_chart_user_visits').getContext('2d');
-        var userVisits = @json($userVisits);
-
-        var labels = userVisits.map(function(visit) {
-            return visit.date;
-        });
-
-        var data = userVisits.map(function(visit) {
-            return visit.visits;
-        });
-
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'تعداد بازدید',
-                    data: data,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+        if ($('#bar_chart_visits').length) {
+            var elementVisits = document.getElementById("bar_chart_visits");
+            elementVisits.height = 146;
+            new Chart(elementVisits, {
+                type: 'bar',
+                data: {
+                    labels: visits_provinces,
+                    datasets: [
+                        {
+                            label: "تعداد بازدیدها",
+                            backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            data: visits_counts,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'تعداد',
+                                fontSize: 18
+                            },
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function(value, index, values) {
+                                    const options = { style: 'decimal', useGrouping: true };
+                                    const formattedNumber = value.toLocaleString('en-US', options);
+                                    return formattedNumber;
+                                }
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return formattedValue + ' بازدید ';
+                            }
+                        }
                     }
-                }
-            }
-        });
+                },
+            });
+        }
+
     </script>
+
 @endsection
