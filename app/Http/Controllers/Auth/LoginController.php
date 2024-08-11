@@ -1,39 +1,18 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use App\Models\UserVisit; // وارد کردن مدل UserVisit
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected $redirectTo = '/panel';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
@@ -52,6 +31,23 @@ class LoginController extends Controller
             // 'captcha_code' => 'required|captcha',
         ], [
             // 'captcha_code.captcha' => 'کد امنیتی وارد شده صحیح نیست'
+        ]);
+    }
+
+    /**
+     * این متد پس از لاگین موفقیت‌آمیز اجرا می‌شود
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return void
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        // ثبت بازدید جدید
+        UserVisit::create([
+            'user_id' => $user->id,
+            'ip_address' => $request->ip(),
+            'created_at' => now(),
         ]);
     }
 }
