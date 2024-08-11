@@ -16,8 +16,8 @@ class CreateUserVisitsTable extends Migration
         Schema::create('user_visits', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent(); // ایجاد به صورت دستی
+            $table->timestamp('updated_at')->useCurrent()->nullable(); // ایجاد به صورت دستی
         });
     }
     /**
