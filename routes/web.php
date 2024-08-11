@@ -44,6 +44,7 @@ use App\Http\Controllers\testController;
 use App\Models\Invoice;
 use App\Models\Packet;
 use App\Models\User;
+use App\Models\UserVisit;
 use App\Notifications\SendMessage;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -294,6 +295,13 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Sms
     Route::resource('sms', SMSController::class)->except('edit','update');
 
+});
+Route::get('/user-visits', function() {
+    $userVisits = UserVisit::selectRaw('DATE(created_at) as date, COUNT(*) as visits')
+        ->groupBy('date')
+        ->get();
+
+    return response()->json($userVisits);
 });
 Route::get('Discover', function (Request $request) {
     return view('panel.discover');
