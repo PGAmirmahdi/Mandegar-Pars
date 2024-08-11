@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserVisit;
+use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -127,6 +128,15 @@ class PanelController extends Controller
             ->groupBy(DB::raw("DATE(created_at)"))
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as visits'))
             ->get();
+        // تبدیل تاریخ‌ها به شمسی
+        $userVisits = $userVisits->map(function ($visit) {
+            $gregorianDate = new Carbon($visit->date);
+            $shamsiDate = Verta::instance($gregorianDate)->format('Y/m/d');
+            return [
+                'date' => $shamsiDate,
+                'visits' => $visit->visits
+            ];
+        });
 
         $totalVisits = $userVisits->sum('visits');
 
