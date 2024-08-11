@@ -222,6 +222,17 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
+                            <h6 class="card-title m-b-20">آمار بازدید کاربران</h6>
+                            <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits) }}</h6>
+                        </div>
+                        <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
                             <h6 class="card-title m-b-20">گزارشات ماهیانه (فاکتور)</h6>
                             <select class="form-control mr-4" style="width: 140px" id="change_line_chart3">
                                 <option value="line">نمودار خطی</option>
@@ -316,7 +327,7 @@
                         }
                     }
                 },
-            })
+            });
         }
         // end invoices
 
@@ -367,7 +378,6 @@
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
-
                             },
                             gridLines: {
                                 color: '#e8e8e8',
@@ -384,7 +394,7 @@
                         }
                     }
                 },
-            })
+            });
         }
         //end factors
 
@@ -436,7 +446,6 @@
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
-
                             },
                             gridLines: {
                                 color: '#e8e8e8',
@@ -453,7 +462,7 @@
                         }
                     }
                 },
-            })
+            });
         }
         //end factors - monthly
         // end sales bar chart
@@ -525,7 +534,7 @@
                         }
                     }
                 },
-            })
+            });
         }
         if ($('#line_chart_sale2').length) {
             var element5 = document.getElementById("line_chart_sale2");
@@ -577,7 +586,6 @@
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
-
                             },
                             gridLines: {
                                 color: '#e8e8e8',
@@ -594,7 +602,7 @@
                         }
                     }
                 },
-            })
+            });
         }
         if ($('#line_chart_sale3').length) {
             var element6 = document.getElementById("line_chart_sale3");
@@ -646,7 +654,6 @@
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
-
                             },
                             gridLines: {
                                 color: '#e8e8e8',
@@ -663,7 +670,7 @@
                         }
                     }
                 },
-            })
+            });
         }
         // end sales line chart
 
@@ -679,7 +686,40 @@
                 $('#bar_chart_sale3_sec').addClass('d-none')
                 $('#line_chart_sale3_sec').removeClass('d-none')
             }
-        })
+        });
+
+        // user visits bar chart
+        var ctx = document.getElementById('bar_chart_user_visits').getContext('2d');
+        var userVisits = @json($userVisits);
+
+        var labels = userVisits.map(function(visit) {
+            return visit.date;
+        });
+
+        var data = userVisits.map(function(visit) {
+            return visit.visits;
+        });
+
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'تعداد بازدید',
+                    data: data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     </script>
 @endsection
 
