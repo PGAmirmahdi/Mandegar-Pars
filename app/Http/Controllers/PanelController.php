@@ -14,13 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class PanelController extends Controller
 {
-    public function recordVisit(User $user)
-    {
-        UserVisit::create([
-            'user_id' => $user->id,
-            'created_at' => now(),
-        ]);
-    }
     public function index(Request $request)
     {
         $from_date = $request->from_date
