@@ -253,10 +253,6 @@
 @endsection
 @section('scripts')
     <script>
-        var visits_provinces = {!! json_encode($visits->pluck('province')) !!};
-        var visits_counts = {!! json_encode($visits->pluck('count')) !!};
-    </script>
-    <script>
         // sales bar chart
         var invoices_provinces = {!! json_encode($invoices->pluck('province')) !!};
         var invoices_amounts = {!! json_encode($invoices->pluck('amount')) !!};
@@ -676,6 +672,8 @@
                 },
             });
         }
+            var visits_provinces = {!! json_encode($visits->pluck('province')) !!};
+            var visits_counts = {!! json_encode($visits->pluck('count')) !!};
         if ($('#bar_chart_visits').length) {
             var elementVisits = document.getElementById("bar_chart_visits");
             elementVisits.height = 146;
