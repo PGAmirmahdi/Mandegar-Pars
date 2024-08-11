@@ -672,9 +672,9 @@
                 },
             });
         }
-            var visits_provinces = {!! json_encode($visits->pluck('province')) !!};
-            var visits_counts = {!! json_encode($visits->pluck('count')) !!};
         if ($('#bar_chart_visits').length) {
+            var visits_provinces = {!! json_encode($userVisits->pluck('province')) !!};
+            var visits_counts = {!! json_encode($userVisits->pluck('count')) !!};
             var elementVisits = document.getElementById("bar_chart_visits");
             elementVisits.height = 146;
             new Chart(elementVisits, {
