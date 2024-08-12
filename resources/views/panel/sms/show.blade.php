@@ -9,6 +9,10 @@
             <form id="sms-form">
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="user_id">نام ارسال کننده</label>
+                        <input type="text" class="form-control" id="user_id" value="{{ $user_id->name . ' ' . $user_id->family }}" readonly>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="receiver_name">نام گیرنده</label>
                         <input type="text" class="form-control" id="receiver_name" value="{{ $receiver_name }}" readonly>
                     </div>

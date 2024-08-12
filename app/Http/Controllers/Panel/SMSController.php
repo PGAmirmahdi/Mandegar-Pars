@@ -113,9 +113,6 @@ class SMSController extends Controller
         }
     }
 
-
-
-
     public function show($id)
     {
         // فرض کنید داده‌های پیامک را از دیتابیس دریافت می‌کنید
@@ -176,6 +173,15 @@ class SMSController extends Controller
         if ($request->filled('receiver_phone')) {
             $query->where('receiver_phone', 'like', '%' . $request->receiver_phone . '%');
         }
+
+        if ($request->filled('user_name')) {
+            // جستجو در جدول users بر اساس نام و نام خانوادگی
+            $query->whereHas('user', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->user_name . '%')
+                    ->orWhere('family', 'like', '%' . $request->user_name . '%');
+            });
+        }
+
         $smsList = $query->paginate(10);
 
         return view('panel.sms.index', compact('smsList'));
