@@ -142,8 +142,8 @@ class PanelController extends Controller
         });
 
         $totalVisits = $userVisits->sum('visits');
-
-        return view('panel.index', compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits'));
+        $users = UserVisit::latest()->paginate(10);
+        return view('panel.index', compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits','users'));
     }
 
 

@@ -4,10 +4,11 @@
 @section('styles')
     <link rel="stylesheet" href="/assets/css/notes-styles.css">
     <style>
-        #app_updates ul:not(.list-unstyled) li{
+        #app_updates ul:not(.list-unstyled) li {
             list-style-type: disclosure-closed
         }
-        #app_updates ul{
+
+        #app_updates ul {
             line-height: 2rem;
         }
     </style>
@@ -20,7 +21,8 @@
         <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
             <div>
                 <i class="ti-announcement d-inline m-r-10"></i>
-                <h5 class="alert-heading d-inline">بروزرسانی نرم افزار - تاریخ انتشار {{ verta($update->date)->format('Y/m/d') }} - نسخه{{ $update->version }}</h5>
+                <h5 class="alert-heading d-inline">بروزرسانی نرم افزار - تاریخ
+                    انتشار {{ verta($update->date)->format('Y/m/d') }} - نسخه{{ $update->version }}</h5>
             </div>
             <ul>
                 @foreach(explode(',',$update->description) as $item)
@@ -154,8 +156,10 @@
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mt-3">
                         <div class="paper">
                             <div class="lines">
-                                <input type="text" name="note-title" class="title" value="{{ $note->title }}" maxlength="30" placeholder="عنوان یادداشت" disabled>
-                                <textarea class="text" name="note-text" spellcheck="false" placeholder="متن یادداشت..." disabled>{{ $note->text }}</textarea>
+                                <input type="text" name="note-title" class="title" value="{{ $note->title }}"
+                                       maxlength="30" placeholder="عنوان یادداشت" disabled>
+                                <textarea class="text" name="note-text" spellcheck="false" placeholder="متن یادداشت..."
+                                          disabled>{{ $note->text }}</textarea>
                             </div>
                             <div class="holes hole-top"></div>
                             <div class="holes hole-middle"></div>
@@ -179,11 +183,13 @@
                         <div class="row">
                             <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
                                 <label for="from_date">از تاریخ</label>
-                                <input type="text" name="from_date" class="form-control date-picker-shamsi-list" id="from_date" value="{{ request()->from_date }}" form="search_form">
+                                <input type="text" name="from_date" class="form-control date-picker-shamsi-list"
+                                       id="from_date" value="{{ request()->from_date }}" form="search_form">
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
                                 <label for="to_date">تا تاریخ</label>
-                                <input type="text" name="to_date" class="form-control date-picker-shamsi-list" id="to_date" value="{{ request()->to_date }}" form="search_form">
+                                <input type="text" name="to_date" class="form-control date-picker-shamsi-list"
+                                       id="to_date" value="{{ request()->to_date }}" form="search_form">
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
                                 <div style="height: 36px"></div>
@@ -249,6 +255,46 @@
                 </div>
             </div>
         </div>
+        @can('UserVisit')
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title d-flex justify-content-between align-items-center">
+                        <h6>لیست بازدید کاربران</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>نام کاربر</th>
+                                <th>آیپی کاربر</th>
+                                <th>شماره تلفن کاربر</th>
+                                <th>سمت کاربر</th>
+                                <th>زمان ورود</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($users as $key => $user)
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $user->user->fullName() }}</td>
+                                    <td>{{ $user->ip_address }}</td>
+                                    <td>{{ $user->user->phone }}</td>
+                                    <td>{{ $user->user->role->label }}</td>
+                                    <td>{{ verta($user->created_at)->format('H:i - Y/m/d') }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
+                </div>
+            </div>
+        @endcan
     @endcan
 @endsection
 @section('scripts')
@@ -309,8 +355,8 @@
                                 min: 0,
                                 fontSize: 15,
                                 fontColor: '#999',
-                                callback: function(value, index, values) {
-                                    const options = { style: 'decimal', useGrouping: true };
+                                callback: function (value, index, values) {
+                                    const options = {style: 'decimal', useGrouping: true};
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
@@ -322,7 +368,7 @@
                     },
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                 var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 return formattedValue + ' ریال ';
@@ -376,8 +422,8 @@
                                 min: 0,
                                 fontSize: 15,
                                 fontColor: '#999',
-                                callback: function(value, index, values) {
-                                    const options = { style: 'decimal', useGrouping: true };
+                                callback: function (value, index, values) {
+                                    const options = {style: 'decimal', useGrouping: true};
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
@@ -389,7 +435,7 @@
                     },
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                 var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 return formattedValue + ' ریال ';
@@ -444,8 +490,8 @@
                                 min: 0,
                                 fontSize: 15,
                                 fontColor: '#999',
-                                callback: function(value, index, values) {
-                                    const options = { style: 'decimal', useGrouping: true };
+                                callback: function (value, index, values) {
+                                    const options = {style: 'decimal', useGrouping: true};
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
@@ -457,7 +503,7 @@
                     },
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                 var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 return formattedValue + ' ریال ';
@@ -516,8 +562,8 @@
                                 min: 0,
                                 fontSize: 15,
                                 fontColor: '#999',
-                                callback: function(value, index, values) {
-                                    const options = { style: 'decimal', useGrouping: true };
+                                callback: function (value, index, values) {
+                                    const options = {style: 'decimal', useGrouping: true};
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
@@ -529,7 +575,7 @@
                     },
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                 var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 return formattedValue + ' ریال ';
@@ -584,8 +630,8 @@
                                 min: 0,
                                 fontSize: 15,
                                 fontColor: '#999',
-                                callback: function(value, index, values) {
-                                    const options = { style: 'decimal', useGrouping: true };
+                                callback: function (value, index, values) {
+                                    const options = {style: 'decimal', useGrouping: true};
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
@@ -597,7 +643,7 @@
                     },
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                 var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 return formattedValue + ' ریال ';
@@ -652,8 +698,8 @@
                                 min: 0,
                                 fontSize: 15,
                                 fontColor: '#999',
-                                callback: function(value, index, values) {
-                                    const options = { style: 'decimal', useGrouping: true };
+                                callback: function (value, index, values) {
+                                    const options = {style: 'decimal', useGrouping: true};
                                     const formattedNumber = value.toLocaleString('en-US', options);
                                     return formattedNumber;
                                 }
@@ -665,7 +711,7 @@
                     },
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                 var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 return formattedValue + ' ریال ';
@@ -719,7 +765,7 @@
                                 min: 0,
                                 fontSize: 15,
                                 fontColor: '#999',
-                                callback: function(value, index, values) {
+                                callback: function (value, index, values) {
                                     // فرمت‌بندی اعداد به صورت سه‌رقمی
                                     return value.toLocaleString('fa-IR');
                                 }
@@ -731,7 +777,7 @@
                     },
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 // فرمت‌بندی اعداد در توضیحات
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                 return value.toLocaleString('fa-IR') + ' بازدید ';
