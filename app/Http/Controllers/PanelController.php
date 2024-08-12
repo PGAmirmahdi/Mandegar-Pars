@@ -117,15 +117,24 @@ class PanelController extends Controller
         $factors_monthly = $this->getFactorsMonthly();
 
         // آمار بازدید کاربران
-        $userVisits = UserVisit::whereBetween('created_at', [$from_date, $to_date])
+        $from_date2 = $request->from_date
+            ? Verta::parse($request->from_date)->toCarbon()->startOfDay()
+            : UserVisit::orderBy('created_at')->first()->created_at;
+
+        $to_date2 = $request->to_date
+            ? Verta::parse($request->to_date)->toCarbon()->endOfDay()
+            : UserVisit::orderBy('created_at', 'desc')->first()->created_at;
+
+// آمار بازدید کاربران به صورت روزانه
+        $userVisits = UserVisit::whereBetween('created_at', [$from_date2, $to_date2])
             ->groupBy(DB::raw("DATE(created_at)"))
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as visits'))
+            ->orderBy('date', 'asc')
             ->get();
 
-        // تبدیل تاریخ‌ها به شمسی
+// تبدیل تاریخ‌ها به شمسی
         $userVisits = $userVisits->map(function ($visit) {
-            $gregorianDate = new Carbon($visit->date);
-            $shamsiDate = Verta::instance($gregorianDate)->format('Y/m/d');
+            $shamsiDate = Verta::instance($visit->date)->format('Y/m/d');
             return [
                 'date' => $shamsiDate,
                 'visits' => $visit->visits
