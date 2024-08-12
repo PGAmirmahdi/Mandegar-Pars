@@ -263,6 +263,9 @@
         var factors_monthly_month = {!! json_encode($factors_monthly->keys()) !!};
         var factors_monthly_amounts = {!! json_encode($factors_monthly->values()) !!};
 
+        var visits_dates = {!! json_encode($userVisits->pluck('date')) !!};
+        var visits_counts = {!! json_encode($userVisits->pluck('visits')) !!};
+
         // bar chart
         // invoices
         if ($('#bar_chart_sale1').length) {
@@ -673,26 +676,27 @@
             });
         }
         if ($('#bar_chart_user_visits').length) {
-            var visits_dates = {!! json_encode($userVisits->pluck('date')) !!};
-            var visits_counts = {!! json_encode($userVisits->pluck('visits')) !!};
+            // تنظیمات نمودار
             var elementVisits = document.getElementById("bar_chart_user_visits");
             elementVisits.height = 146;
+
+            // ایجاد نمودار
             new Chart(elementVisits, {
                 type: 'bar',
                 data: {
-                    labels: visits_dates,
+                    labels: visits_dates,  // تاریخ‌ها به عنوان برچسب محور X
                     datasets: [
                         {
                             label: "تعداد بازدیدها",
                             backgroundColor: $('.colors .bg-primary').css('background-color'),
-                            data: visits_counts,
+                            data: visits_counts,  // تعداد بازدیدها به عنوان داده‌های محور Y
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     legend: {
-                        display: false
+                        display: false  // عدم نمایش لژند
                     },
                     scales: {
                         xAxes: [{
@@ -716,9 +720,8 @@
                                 fontSize: 15,
                                 fontColor: '#999',
                                 callback: function(value, index, values) {
-                                    const options = { style: 'decimal', useGrouping: true };
-                                    const formattedNumber = value.toLocaleString('en-US', options);
-                                    return formattedNumber;
+                                    // فرمت‌بندی اعداد به صورت سه‌رقمی
+                                    return value.toLocaleString('fa-IR');
                                 }
                             },
                             gridLines: {
@@ -729,15 +732,16 @@
                     tooltips: {
                         callbacks: {
                             label: function(tooltipItem, data) {
+                                // فرمت‌بندی اعداد در توضیحات
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                return formattedValue + ' بازدید ';
+                                return value.toLocaleString('fa-IR') + ' بازدید ';
                             }
                         }
                     }
                 },
             });
         }
+
     </script>
 
 @endsection
