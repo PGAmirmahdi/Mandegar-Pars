@@ -55,6 +55,7 @@ $errorMessages = [
                         <thead>
                         <tr>
                             <th>#</th>
+                            <th>نام ارسال کننده</th>
                             <th>نام گیرنده</th>
                             <th>شماره گیرنده</th>
                             <th>پیام</th>
@@ -72,6 +73,9 @@ $errorMessages = [
                         @foreach($smsList as $key => $sms)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
+                                <td>
+                                    {{ $sms->user ? $sms->user->name . ' ' . $sms->user->family : 'نامشخص' }}
+                                </td>
                                 <td>{{ $sms->receiver_name }}</td>
                                 <td>{{ $sms->receiver_phone }}</td>
                                 <td>{{ Str::limit($sms->message, 60) }}</td>

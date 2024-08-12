@@ -31,6 +31,7 @@ class SMSController extends Controller
         $this->authorize('sms-create');
 
         $request->validate([
+            'user_id'=> 'required',
             'receiver_name' => 'required',
             'receiver_phone' => 'required',
             'message' => 'nullable',
@@ -96,6 +97,7 @@ class SMSController extends Controller
                 } elseif (array_key_exists($status, $successMessages)) {
                     // Create Sms record
                     Sms::create([
+                        'user_id' => auth()->id(),
                         'receiver_name' => $request->receiver_name,
                         'receiver_phone' => $request->receiver_phone,
                         'message' => $request->message,
