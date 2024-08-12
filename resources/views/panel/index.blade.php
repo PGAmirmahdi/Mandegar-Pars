@@ -672,15 +672,15 @@
                 },
             });
         }
-        if ($('#bar_chart_visits').length) {
-            var visits_provinces = {!! json_encode($userVisits->pluck('province')) !!};
-            var visits_counts = {!! json_encode($userVisits->pluck('count')) !!};
-            var elementVisits = document.getElementById("bar_chart_visits");
+        if ($('#bar_chart_user_visits').length) {
+            var visits_dates = {!! json_encode($userVisits->pluck('date')) !!};
+            var visits_counts = {!! json_encode($userVisits->pluck('visits')) !!};
+            var elementVisits = document.getElementById("bar_chart_user_visits");
             elementVisits.height = 146;
             new Chart(elementVisits, {
                 type: 'bar',
                 data: {
-                    labels: visits_provinces,
+                    labels: visits_dates,
                     datasets: [
                         {
                             label: "تعداد بازدیدها",
@@ -738,7 +738,6 @@
                 },
             });
         }
-
     </script>
 
 @endsection

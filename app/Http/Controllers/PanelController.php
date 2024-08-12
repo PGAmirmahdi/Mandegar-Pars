@@ -121,6 +121,7 @@ class PanelController extends Controller
             ->groupBy(DB::raw("DATE(created_at)"))
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as visits'))
             ->get();
+
         // تبدیل تاریخ‌ها به شمسی
         $userVisits = $userVisits->map(function ($visit) {
             $gregorianDate = new Carbon($visit->date);
