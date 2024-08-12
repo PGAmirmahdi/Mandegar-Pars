@@ -41,6 +41,9 @@ $errorMessages = [
                 <form action="{{ route('sms.search') }}" method="get" id="search_form"></form>
                 <div class="row mb-3">
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <input type="text" name="user_name" class="form-control" placeholder="نام ارسال کننده" value="{{ request()->user_name ?? '' }}" form="search_form">
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                         <input type="text" name="receiver_name" class="form-control" placeholder="نام گیرنده" value="{{ request()->receiver_name ?? '' }}" form="search_form">
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12">
