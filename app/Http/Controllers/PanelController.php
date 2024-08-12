@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\Role;
+use App\Models\Sms;
 use App\Models\User;
 use App\Models\UserVisit;
 use Carbon\Carbon;
@@ -143,7 +144,36 @@ class PanelController extends Controller
 
         $totalVisits = $userVisits->sum('visits');
         $users = UserVisit::latest()->paginate(10);
-        return view('panel.index', compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits','users'));
+
+        $from_date3 = $request->from_date
+            ? Verta::parse($request->from_date)->toCarbon()->startOfDay()
+            : Sms::orderBy('created_at')->first()->created_at;
+
+        $to_date3 = $request->to_date
+            ? Verta::parse($request->to_date)->toCarbon()->endOfDay()
+            : Sms::orderBy('created_at', 'desc')->first()->created_at;
+
+// آمار SMS‌های ارسال شده به صورت روزانه
+        $smsData = Sms::whereBetween('created_at', [$from_date3, $to_date3])
+            ->groupBy(DB::raw("DATE(created_at)"))
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as sms_count'))
+            ->orderBy('date', 'asc')
+            ->get();
+
+// تبدیل تاریخ‌ها به شمسی
+        $smsData = $smsData->map(function ($sms) {
+            $shamsiDate = Verta::instance($sms->date)->format('Y/m/d');
+            return [
+                'date' => $shamsiDate,
+                'sms_count' => $sms->sms_count
+            ];
+        });
+
+        $sms_dates = $smsData->pluck('date');
+        $sms_counts = $smsData->pluck('sms_count');
+        $totalSmsSent = $smsData->sum('sms_count');
+
+        return view('panel.index', compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent'));
     }
 
 

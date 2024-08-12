@@ -255,6 +255,17 @@
                 </div>
             </div>
         </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">گزارشات SMS</h6>
+                        <h6 class="card-title m-b-20">مجموع SMS‌های ارسال شده: {{ number_format($totalSmsSent) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_sms_sent" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
         @can('UserVisit')
             <div class="card">
                 <div class="card-body">
@@ -311,6 +322,10 @@
 
         var visits_dates = {!! json_encode($userVisits->pluck('date')) !!};
         var visits_counts = {!! json_encode($userVisits->pluck('visits')) !!};
+
+        // مقادیر مربوط به SMS‌ها
+        var sms_dates = {!! json_encode($sms_dates) !!};
+        var sms_counts = {!! json_encode($sms_counts) !!};
 
         // bar chart
         // invoices
@@ -781,6 +796,72 @@
                                 // فرمت‌بندی اعداد در توضیحات
                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                 return value.toLocaleString('fa-IR') + ' بازدید ';
+                            }
+                        }
+                    }
+                },
+            });
+        }
+        if ($('#bar_chart_sms_sent').length) {
+            // تنظیمات نمودار
+            var elementSms = document.getElementById("bar_chart_sms_sent");
+            elementSms.height = 146;
+
+            // ایجاد نمودار
+            new Chart(elementSms, {
+                type: 'bar',
+                data: {
+                    labels: sms_dates,  // تاریخ‌ها به عنوان برچسب محور X
+                    datasets: [
+                        {
+                            label: "تعداد SMS‌های ارسال شده",
+                            backgroundColor: $('.colors .bg-primary').css('background-color'),
+                            data: sms_counts,  // تعداد SMS‌های ارسال شده به عنوان داده‌های محور Y
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false  // عدم نمایش لژند
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'تعداد',
+                                fontSize: 18
+                            },
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function (value, index, values) {
+                                    // فرمت‌بندی اعداد به صورت سه‌رقمی
+                                    return value.toLocaleString('fa-IR');
+                                }
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                // فرمت‌بندی اعداد در توضیحات
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                return value.toLocaleString('fa-IR') + ' SMS ';
                             }
                         }
                     }
