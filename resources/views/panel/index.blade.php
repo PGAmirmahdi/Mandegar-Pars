@@ -814,7 +814,7 @@
                     labels: sms_dates,  // تاریخ‌ها به عنوان برچسب محور X
                     datasets: [
                         {
-                            label: "تعداد SMS‌های ارسال شده",
+                            label: "تعداد SMS ‌های ارسال شده",
                             backgroundColor: $('.colors .bg-primary').css('background-color'),
                             data: sms_counts,  // تعداد SMS‌های ارسال شده به عنوان داده‌های محور Y
                         }
