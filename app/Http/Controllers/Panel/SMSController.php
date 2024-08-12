@@ -31,7 +31,6 @@ class SMSController extends Controller
         $this->authorize('sms-create');
 
         $request->validate([
-            'user_id'=> 'required',
             'receiver_name' => 'required',
             'receiver_phone' => 'required',
             'message' => 'nullable',
