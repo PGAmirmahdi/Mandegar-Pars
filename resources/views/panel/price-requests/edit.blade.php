@@ -25,17 +25,24 @@
                                 <th>عنوان کالا</th>
                                 <th>تعداد</th>
                                 <th>قیمت (تومان)</th>
+                                <th>شامل ارزش افزوده</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach(json_decode($priceRequest->items) as $item)
+                            @foreach(json_decode($priceRequest->items) as $index => $item)
                                 <tr>
                                     <td>{{ $item->product }}</td>
                                     <td>{{ $item->count }}</td>
-                                    <td class="d-flex justify-content-center"><input type="text" class="form-control" name="prices[]" value="{{ isset($item->price) ? number_format($item->price) : 0 }}" required></td>
+                                    <td class="d-flex justify-content-center">
+                                        <input type="text" class="form-control" name="prices[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->price) : 0 }}" required>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="vat_included[{{ $index }}]" {{ isset($item->vat_included) && $item->vat_included ? 'checked' : '' }}>
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
+
                             <tfoot>
                             <tr></tr>
                             </tfoot>
@@ -86,4 +93,3 @@
         }
     </script>
 @endsection
-
