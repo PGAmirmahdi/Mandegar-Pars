@@ -82,11 +82,12 @@ class PriceRequestController extends Controller
         $this->authorize('ceo');
 
         $items = [];
-        foreach (json_decode($priceRequest->items) as $key => $item){
+        foreach (json_decode($priceRequest->items, true) as $key => $item) {
             $items[] = [
-                'product' => $item->product,
-                'count' => $item->count,
-                'price' => str_replace(',','',$request->prices[$key]),
+                'product' => $item['product'],
+                'count' => $item['count'],
+                'price' => str_replace(',', '', $request->prices[$key]),
+                'vat_included' => isset($request->vat_included[$key]) ? true : false,
             ];
         }
 
@@ -96,7 +97,7 @@ class PriceRequestController extends Controller
         ]);
 
         // notification sent to ceo
-        $notifiables = User::whereHas('role' , function ($role) {
+        $notifiables = User::whereHas('role', function ($role) {
             $role->whereHas('permissions', function ($q) {
                 $q->where('name', 'sales-manager');
             });
@@ -106,11 +107,11 @@ class PriceRequestController extends Controller
         $url = route('price-requests.index');
         Notification::send($notifiables, new SendMessage($notif_message, $url));
         Notification::send($priceRequest->user, new SendMessage($notif_message, $url));
-        // end notification sent to ceo
 
-        alert()->success(' قیمت ها با موفقیت ثبت شدند','ثبت قیمت');
+        alert()->success('قیمت ها با موفقیت ثبت شدند', 'ثبت قیمت');
         return redirect()->route('price-requests.index');
     }
+
 
     public function destroy(PriceRequest $priceRequest)
     {

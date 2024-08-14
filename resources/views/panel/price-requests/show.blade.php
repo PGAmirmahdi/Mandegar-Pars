@@ -22,14 +22,22 @@
                             <th>عنوان کالا</th>
                             <th>تعداد</th>
                             <th>قیمت (تومان)</th>
+                            <th>ارزش افزوده</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach(json_decode($priceRequest->items) as $item)
+                        @foreach(json_decode($priceRequest->items, true) as $index => $item)
                             <tr>
-                                <td>{{ $item->product }}</td>
-                                <td>{{ $item->count }}</td>
-                                <td>{{ isset($item->price) ? $item->price ? number_format($item->price) : '---' : '---' }}</td>
+                                <td>{{ $item['product'] }}</td>
+                                <td>{{ $item['count'] }}</td>
+                                <td>{{ isset($item['price']) ? number_format($item['price']) : '---' }}</td>
+                                <td>
+                                    @if(isset($item['vat_included']) && $item['vat_included'])
+                                        <i class="fa fa-check text-success"></i>
+                                    @else
+                                        <i class="fa fa-times text-danger"></i>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
