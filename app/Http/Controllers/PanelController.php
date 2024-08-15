@@ -12,6 +12,8 @@ use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Morilog\Jalali\Jalalian;
+use Morilog\Jalali\CalendarUtils;
 
 class PanelController extends Controller
 {
@@ -173,20 +175,16 @@ class PanelController extends Controller
         $sms_counts = $smsData->pluck('sms_count');
         $totalSmsSent = $smsData->sum('sms_count');
 
-        // تبدیل تاریخ ورودی به شمسی
+        // دریافت تاریخ‌های شروع و پایان از درخواست
         $from_date4 = $request->from_date
-            ? Verta::parse($request->from_date)->toCarbon()->startOfDay()
+            ? Carbon::parse($request->from_date)->startOfDay()
             : Sms::orderBy('created_at')->first()->created_at;
 
         $to_date4 = $request->to_date
-            ? Verta::parse($request->to_date)->toCarbon()->endOfDay()
-            : Sms::orderBy('created_at', 'desc')->first()->created_at;
+            ? Carbon::parse($request->to_date)->endOfDay()
+            : Carbon::now()->endOfDay();  // تنظیم به تاریخ و زمان حال
 
-        // تبدیل تاریخ‌ها به شمسی برای استفاده در نمودار
-        $from_date4 = Verta::instance($from_date4)->format('Y-m-d');
-        $to_date4 = Verta::instance($to_date4)->format('Y-m-d');
-
-        // دریافت آمار ارسال SMS برای هر کاربر
+// دریافت آمار پیامک‌های ارسال شده بر اساس تاریخ و کاربر
         $smsData = Sms::whereBetween('created_at', [$from_date4, $to_date4])
             ->groupBy('user_id', DB::raw('DATE(created_at)'))
             ->select('user_id', DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as sms_count'))
@@ -194,24 +192,23 @@ class PanelController extends Controller
             ->orderBy('date')
             ->get();
 
-        // ایجاد آرایه‌ای از تمام تاریخ‌ها بین from_date و to_date به شمسی
+// ایجاد آرایه‌ای از تمام تاریخ‌ها بین from_date و to_date به فرمت میلادی
         $allDates = [];
-        $currentDate = Verta::parse($from_date4);
-        $to_date4 = Verta::parse($to_date4);
-
-        while ($currentDate->lte($to_date4)) {
-            $allDates[] = $currentDate->format('Y-m-d');
+        $currentDate = $from_date4->copy();
+        $endDate4 = $to_date4;
+        while ($currentDate->lte($endDate4)) {
+            $allDates[] = $currentDate->format('Y-m-d'); // تاریخ میلادی
             $currentDate->addDay();
         }
 
-        // گروه‌بندی داده‌های SMS بر اساس کاربر
+// گروه‌بندی داده‌های SMS بر اساس کاربر
         $userSmsData = $smsData->groupBy('user_id');
 
-        // آماده‌سازی داده‌ها برای نمودار
+// آماده‌سازی داده‌ها برای نمودار
         $datasets = [];
-        $labels = $allDates;
+        $labels = $allDates; // تاریخ‌ها به فرمت میلادی
 
-        // تابعی برای تولید رنگ ثابت بر اساس id کاربر
+// تابعی برای تولید رنگ ثابت بر اساس id کاربر
         function generateColor($id) {
             srand($id);  // استفاده از ID کاربر برای تولید رنگ یکتا
             return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
@@ -220,7 +217,7 @@ class PanelController extends Controller
         foreach ($userSmsData as $userId => $userData) {
             $user = User::find($userId);
             if ($user) {
-                $userLabel = $user->fullName();
+                $userLabel = $user->name . ' ' . $user->family;
 
                 // پر کردن داده‌ها برای تاریخ‌هایی که مقدار ندارند
                 $data = [];
@@ -237,13 +234,44 @@ class PanelController extends Controller
                 ];
             }
         }
-        return view('panel.index', compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent', 'datasets', 'labels'));
-    }
-    private function getRandomColor()
-    {
-        return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
-    }
-    public function readNotification($notification = null)
+// دریافت تاریخ‌های شروع و پایان از درخواست
+        $from_date5 = $request->from_date
+            ? Carbon::parse($request->from_date)->startOfDay()
+            : Sms::orderBy('created_at')->first()->created_at;
+
+        $to_date5 = $request->to_date
+            ? Carbon::parse($request->to_date)->endOfDay()
+            : Carbon::now()->endOfDay();  // تنظیم به تاریخ و زمان حال
+
+// دریافت آمار پیامک‌های ارسال شده بر اساس تاریخ و کاربر
+        $smsData = Sms::whereBetween('created_at', [$from_date5, $to_date5])
+            ->groupBy('user_id')
+            ->select('user_id', DB::raw('COUNT(*) as sms_count'), DB::raw('MAX(created_at) as last_sent_at'))
+            ->paginate(10); // اضافه کردن صفحه‌بندی
+
+// تبدیل تاریخ‌ها به شمسی
+        $smsData->getCollection()->transform(function ($item) {
+            $lastSentDate = Carbon::parse($item->last_sent_at);
+            return [
+                'user_id' => $item->user_id,
+                'sms_count' => $item->sms_count,
+                'last_sent_at' => Jalalian::fromCarbon($lastSentDate)->format('Y/m/d') // تبدیل تاریخ آخرین ارسال به شمسی
+            ];
+        });
+
+// دریافت اطلاعات کاربران
+        $userIds = $smsData->pluck('user_id');
+        $users = User::whereIn('id', $userIds)->get();
+
+// داده‌های نمودار را به نمای (view) ارسال کنید
+        return view('panel.index', [
+            'labels' => $labels,
+            'datasets' => $datasets,
+            'smsData' => $smsData,
+            'users' => $users
+        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent'));
+        }
+        public function readNotification($notification = null)
     {
         if ($notification == null) {
             auth()->user()->unreadNotifications->markAsRead();
