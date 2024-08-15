@@ -254,17 +254,30 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">گزارشات SMS</h6>
-                        <h6 class="card-title m-b-20">مجموع SMS‌های ارسال شده: {{ number_format($totalSmsSent) }}</h6>
+            @can('sms-list')
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="card-title m-b-20">آمار SMS‌های ارسال شده به تفکیک کاربر</h6>
+                            </div>
+                            <canvas id="sms_chart" style="width: auto;"></canvas>
+                        </div>
                     </div>
-                    <canvas id="bar_chart_sms_sent" style="width: auto"></canvas>
                 </div>
-            </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="card-title m-b-20">گزارشات SMS</h6>
+                                <h6 class="card-title m-b-20">مجموع SMS‌های ارسال
+                                    شده: {{ number_format($totalSmsSent) }}</h6>
+                            </div>
+                            <canvas id="bar_chart_sms_sent" style="width: auto"></canvas>
+                        </div>
+                    </div>
+                </div>
+            @endcan
         </div>
         @can('UserVisit')
             <div class="card">
@@ -309,6 +322,7 @@
     @endcan
 @endsection
 @section('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jalaali-js/1.1.2/jalaali.min.js"></script>
     <script>
         // sales bar chart
         var invoices_provinces = {!! json_encode($invoices->pluck('province')) !!};
@@ -868,6 +882,68 @@
                 },
             });
         }
+            document.addEventListener('DOMContentLoaded', function() {
+                var ctx = document.getElementById('sms_chart').getContext('2d');
+
+                var data = {
+                    labels: @json($labels), // تاریخ‌ها
+                    datasets: @json($datasets) // داده‌ها برای هر کاربر
+                };
+
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        var label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y.toLocaleString('fa-IR') + ' SMS';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'تاریخ'
+                                },
+                                ticks: {
+                                    autoSkip: false, // برای نمایش تمامی برچسب‌ها در محور X
+                                    maxRotation: 90, // چرخش برچسب‌ها برای جلوگیری از همپوشانی
+                                    minRotation: 45  // تنظیم چرخش حداقل برچسب‌ها
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'تعداد SMS'
+                                },
+                                ticks: {
+                                    beginAtZero: true, // برای اطمینان از اینکه محور Y از صفر شروع می‌شود
+                                    callback: function(value) {
+                                        return value.toLocaleString('fa-IR');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
 
     </script>
 

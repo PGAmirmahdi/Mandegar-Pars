@@ -173,19 +173,85 @@ class PanelController extends Controller
         $sms_counts = $smsData->pluck('sms_count');
         $totalSmsSent = $smsData->sum('sms_count');
 
-        return view('panel.index', compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent'));
+        // تبدیل تاریخ ورودی به شمسی
+        $from_date4 = $request->from_date
+            ? Verta::parse($request->from_date)->toCarbon()->startOfDay()
+            : Sms::orderBy('created_at')->first()->created_at;
+
+        $to_date4 = $request->to_date
+            ? Verta::parse($request->to_date)->toCarbon()->endOfDay()
+            : Sms::orderBy('created_at', 'desc')->first()->created_at;
+
+        // تبدیل تاریخ‌ها به شمسی برای استفاده در نمودار
+        $from_date4 = Verta::instance($from_date4)->format('Y-m-d');
+        $to_date4 = Verta::instance($to_date4)->format('Y-m-d');
+
+        // دریافت آمار ارسال SMS برای هر کاربر
+        $smsData = Sms::whereBetween('created_at', [$from_date4, $to_date4])
+            ->groupBy('user_id', DB::raw('DATE(created_at)'))
+            ->select('user_id', DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as sms_count'))
+            ->orderBy('user_id')
+            ->orderBy('date')
+            ->get();
+
+        // ایجاد آرایه‌ای از تمام تاریخ‌ها بین from_date و to_date به شمسی
+        $allDates = [];
+        $currentDate = Verta::parse($from_date4);
+        $to_date4 = Verta::parse($to_date4);
+
+        while ($currentDate->lte($to_date4)) {
+            $allDates[] = $currentDate->format('Y-m-d');
+            $currentDate->addDay();
+        }
+
+        // گروه‌بندی داده‌های SMS بر اساس کاربر
+        $userSmsData = $smsData->groupBy('user_id');
+
+        // آماده‌سازی داده‌ها برای نمودار
+        $datasets = [];
+        $labels = $allDates;
+
+        // تابعی برای تولید رنگ ثابت بر اساس id کاربر
+        function generateColor($id) {
+            srand($id);  // استفاده از ID کاربر برای تولید رنگ یکتا
+            return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+        }
+
+        foreach ($userSmsData as $userId => $userData) {
+            $user = User::find($userId);
+            if ($user) {
+                $userLabel = $user->fullName();
+
+                // پر کردن داده‌ها برای تاریخ‌هایی که مقدار ندارند
+                $data = [];
+                foreach ($allDates as $date) {
+                    $data[] = isset($userData->where('date', $date)->first()->sms_count) ? $userData->where('date', $date)->first()->sms_count : 0;
+                }
+
+                $datasets[] = [
+                    'label' => $userLabel,
+                    'data' => $data,
+                    'backgroundColor' => generateColor($userId),
+                    'borderColor' => generateColor($userId),
+                    'borderWidth' => 1
+                ];
+            }
+        }
+        return view('panel.index', compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent', 'datasets', 'labels'));
     }
-
-
+    private function getRandomColor()
+    {
+        return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+    }
     public function readNotification($notification = null)
     {
-        if ($notification == null){
+        if ($notification == null) {
             auth()->user()->unreadNotifications->markAsRead();
             return back();
         }
 
         $notif = auth()->user()->unreadNotifications()->whereId($notification)->first();
-        if (!$notif){
+        if (!$notif) {
             return back();
         }
 
@@ -195,8 +261,8 @@ class PanelController extends Controller
 
     public function login(Request $request)
     {
-        if ($request->method() == 'GET'){
-            $users = User::where('id', '!=', auth()->id())->whereIn('id', [3, 4, 152])->get(['id','name','family']);
+        if ($request->method() == 'GET') {
+            $users = User::where('id', '!=', auth()->id())->whereIn('id', [3, 4, 152])->get(['id', 'name', 'family']);
 
             return view('panel.login', compact('users'));
         }
@@ -217,7 +283,7 @@ class PanelController extends Controller
             'najva_token' => $request->najva_user_token
         ]);
 
-        return response()->json(['data' => 'your token stored: '. $request->najva_user_token]);
+        return response()->json(['data' => 'your token stored: ' . $request->najva_user_token]);
     }
 
     public function saveFCMToken(Request $request)
@@ -243,15 +309,14 @@ class PanelController extends Controller
             'اسفند' => 0,
         ];
 
-        for ($i = 1; $i <= 12; $i++)
-        {
+        for ($i = 1; $i <= 12; $i++) {
             $from_date = \verta()->month($i)->startMonth()->toCarbon()->toDateTimeString();
             $to_date = \verta()->month($i)->endMonth()->toCarbon()->toDateTimeString();
 
             // factors
             $factors1 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('products', function ($query) {
                 $query->select('products.id', 'invoice_product.invoice_net');
-            })->where('status','invoiced')
+            })->where('status', 'invoiced')
                 ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
                 ->groupBy('province')
                 ->select('province', DB::raw('SUM(invoice_product.invoice_net) as amount'))
@@ -260,7 +325,7 @@ class PanelController extends Controller
             // factors
             $factors2 = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->whereHas('other_products', function ($query) {
                 $query->select('other_products.invoice_net');
-            })->where('status','invoiced')
+            })->where('status', 'invoiced')
                 ->join('other_products', 'invoices.id', '=', 'other_products.invoice_id')
                 ->groupBy('province')
                 ->select('province', DB::raw('SUM(other_products.invoice_net) as amount'))
@@ -268,14 +333,14 @@ class PanelController extends Controller
 
             $month = \verta()->month($i)->format('%B');
 
-            foreach ($factors1 as $item){
+            foreach ($factors1 as $item) {
                 $factors[$month] += $item->amount;
             }
-            foreach ($factors2 as $item){
+            foreach ($factors2 as $item) {
                 $factors[$month] += $item->amount;
             }
 
-            $factors_discounts_amount = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->where('status','invoiced')->sum('discount');
+            $factors_discounts_amount = Invoice::whereBetween('invoices.created_at', [$from_date, $to_date])->where('status', 'invoiced')->sum('discount');
             $factors[$month] -= $factors_discounts_amount;
         }
 
