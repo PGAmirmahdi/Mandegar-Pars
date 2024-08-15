@@ -40,7 +40,7 @@ https://artintoner.com
 https://mpsystem.ir/Discover
 
 اینستاگرام:
-www.instagram.com/artintoner
+www.instagram.com/artintoner.c
 
 شماره تماس
 02165425052-54
@@ -111,7 +111,7 @@ https://artintoner.com
 https://mpsystem.ir/Discover
 
 اینستاگرام:
-www.instagram.com/artintoner
+www.instagram.com/artintoner.c
 
 شماره تماس
 02165425052-54
