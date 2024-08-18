@@ -62,18 +62,34 @@ class PriceController extends Controller
         $this->authorize('price-list-mandegar');
 
         $items = json_decode($request->items, true);
+
         foreach ($items as $item) {
             $price = trim(str_replace('-', null, $item['price']));
             $price = trim(str_replace(',', null, $price));
             $price = $price == '' ? null : $price;
 
             if ($price) {
+                // به‌روزرسانی قیمت‌ها در جدول محصولات
                 DB::table('products')->where('id', $item['id'])->update([$item['field'] => $price]);
+
+                // ذخیره تغییرات در تاریخچه قیمت‌ها
+                \App\Models\PriceHistory::updateOrCreate(
+                    [
+                        'product_id' => $item['id'],
+                        'price_field' => $item['field'],
+                    ],
+                    [
+                        'price_amount_from' => $price,  // تغییر این قسمت با توجه به نیاز
+                        'price_amount_to' => $price,    // تغییر این قسمت با توجه به نیاز
+                    ]
+                );
             }
         }
 
-        return 'ok';
+        return response()->json(['status' => 'ok']);
     }
+
+
     public function priceList($type)
     {
         $this->authorize('prices-list');
