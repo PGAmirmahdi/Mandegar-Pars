@@ -229,6 +229,27 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
+                            <h6 class="card-title m-b-20">آمار سفارشات محصولات</h6>
+                            <h6 class="card-title m-b-20">تعداد کل سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
+                        </div>
+                        <canvas id="bar_chart_product_orders" style="width: auto"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title m-b-20">تعداد سفارشات هر مشتری</h6>
+                        </div>
+                        <canvas id="pie_chart_customer_orders" style="width: auto; height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
                             <h6 class="card-title m-b-20">آمار بازدید کاربران</h6>
                             <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits) }}</h6>
                         </div>
@@ -981,6 +1002,121 @@
                                 beginAtZero: true, // برای اطمینان از اینکه محور Y از صفر شروع می‌شود
                                 callback: function(value) {
                                     return value.toLocaleString('fa-IR');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        $(document).ready(function () {
+            if ($('#bar_chart_product_orders').length) {
+                var ctx = document.getElementById("bar_chart_product_orders").getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: @json($productNames),  // نام محصولات به عنوان برچسب محور X
+                        datasets: [{
+                            label: "تعداد سفارشات",
+                            backgroundColor: '#007bff',  // رنگ پس‌زمینه
+                            data: @json($orderCounts),  // تعداد سفارشات به عنوان داده‌های محور Y
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    fontSize: 15,
+                                    color: '#999'
+                                },
+                                grid: {
+                                    display: false,
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'تعداد',
+                                    fontSize: 18
+                                },
+                                ticks: {
+                                    beginAtZero: true,
+                                    fontSize: 15,
+                                    color: '#999',
+                                    callback: function(value) {
+                                        return value.toLocaleString('fa-IR');
+                                    }
+                                },
+                                grid: {
+                                    color: '#e8e8e8',
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        var value = context.raw;
+                                        return value.toLocaleString('fa-IR') + ' سفارش';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('pie_chart_customer_orders').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: @json($customerNames),
+                    datasets: [{
+                        label: 'تعداد سفارشات',
+                        data: @json($orderCounts),
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 205, 86, 0.2)',
+                            // اضافه کردن رنگ‌های دیگر به تعداد نیاز
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 205, 86, 1)',
+                            // اضافه کردن رنگ‌های دیگر به تعداد نیاز
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.raw !== null) {
+                                        label += context.raw.toLocaleString('fa-IR') + ' سفارش';
+                                    }
+                                    return label;
                                 }
                             }
                         }

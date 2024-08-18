@@ -318,13 +318,60 @@ class PanelController extends Controller
         $userNames = $users2->keyBy('id')->map(function ($user2) {
             return $user2->fullName(); // یا $user->name
         })->toArray();
+        $from_date6 = $request->from_date
+            ? Verta::parse($request->from_date)->toCarbon()->startOfDay()
+            : \Carbon\Carbon::minValue();
 
+        $to_date6 = $request->to_date
+            ? Verta::parse($request->to_date)->toCarbon()->endOfDay()
+            : \Carbon\Carbon::maxValue();
+
+        // دریافت داده‌ها از جدول invoice_product با استفاده از رابطه belongsToMany
+        $productOrders = \App\Models\Invoice::whereBetween('created_at', [$from_date6, $to_date6])
+            ->with('products')  // بارگذاری محصولات مرتبط
+            ->get()
+            ->flatMap(function ($invoice) {
+                return $invoice->products;
+            })
+            ->groupBy('id')
+            ->map(function ($products) {
+                return $products->sum('pivot.count');
+            });
+
+        // آماده‌سازی داده‌ها برای نمودار
+        $productNames = \App\Models\Product::whereIn('id', $productOrders->keys())->pluck('title');  // نام محصولات
+        $orderCounts = $productOrders->values();  // تعداد سفارشات
+
+        $from_date7 = $request->from_date
+            ? Verta::parse($request->from_date)->toCarbon()->startOfDay()
+            : \Carbon\Carbon::minValue();
+
+        $to_date7 = $request->to_date
+            ? Verta::parse($request->to_date)->toCarbon()->endOfDay()
+            : \Carbon\Carbon::maxValue();
+
+        // دریافت داده‌ها از جدول invoices با استفاده از رابطه belongsTo
+        $customerOrders = \App\Models\Invoice::whereBetween('created_at', [$from_date7, $to_date7])
+            ->with('customer')  // بارگذاری مشتریان مرتبط
+            ->get()
+            ->groupBy('customer_id')
+            ->map(function ($invoices) {
+                return $invoices->count();
+            });
+
+        // آماده‌سازی داده‌ها برای نمودار
+        $customerNames = \App\Models\Customer::whereIn('id', $customerOrders->keys())->pluck('name');  // نام مشتریان
+        $orderCounts2 = $customerOrders->values();  // تعداد سفارشات
 // داده‌های نمودار را به نمای (view) ارسال کنید
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
             'smsData' => $smsData,
-            'userNames' => $userNames // ارسال نام کاربران به نمای
+            'userNames' => $userNames,
+            'productNames' => $productNames,
+            'orderCounts' => $orderCounts,
+            'customerNames' => $customerNames,
+            'orderCounts2' => $orderCounts2,
         ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2'));
 
 
