@@ -1083,7 +1083,7 @@
                         datasets: [{
                             label: "تعداد سفارشات",
                             backgroundColor: '#28a745',  // رنگ پس‌زمینه
-                            data: @json($orderCounts),  // تعداد سفارشات به عنوان داده‌های محور Y
+                            data: @json($orderCounts2),  // تعداد سفارشات به عنوان داده‌های محور Y
                         }]
                     },
                     options: {
@@ -1130,6 +1130,7 @@
                                 }
                             }
                         }
+
                     }
                 });
             }
