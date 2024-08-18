@@ -208,7 +208,8 @@ class PanelController extends Controller
         $labels = $allDates; // تاریخ‌ها به فرمت میلادی
 
 // تابعی برای تولید رنگ ثابت بر اساس id کاربر
-        function generateColor($id) {
+        function generateColor($id)
+        {
             srand($id);  // استفاده از ID کاربر برای تولید رنگ یکتا
             return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
         }
@@ -269,7 +270,7 @@ class PanelController extends Controller
             'smsData' => $smsData,
             'users' => $users
         ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent'));
-        }
+    }
         public function readNotification($notification = null)
     {
         if ($notification == null) {
