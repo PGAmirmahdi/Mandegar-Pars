@@ -64,26 +64,25 @@ class PriceController extends Controller
         $items = json_decode($request->items, true);
 
         foreach ($items as $item) {
-            $price = trim(str_replace('-', null, $item['price']));
-            $price = trim(str_replace(',', null, $price));
-            $price = $price == '' ? null : $price;
+            $price = trim(str_replace(['-', ','], '', $item['price']));
 
-            if ($price) {
-                // به‌روزرسانی قیمت‌ها در جدول محصولات
-                DB::table('products')->where('id', $item['id'])->update([$item['field'] => $price]);
+            // در نظر گرفتن مقدار 0 به عنوان مقدار معتبر
+            $price = is_numeric($price) ? (float)$price : null;
 
-                // ذخیره تغییرات در تاریخچه قیمت‌ها
-                \App\Models\PriceHistory::updateOrCreate(
-                    [
-                        'product_id' => $item['id'],
-                        'price_field' => $item['field'],
-                    ],
-                    [
-                        'price_amount_from' => $price,  // تغییر این قسمت با توجه به نیاز
-                        'price_amount_to' => $price,    // تغییر این قسمت با توجه به نیاز
-                    ]
-                );
-            }
+            // به‌روزرسانی قیمت‌ها در جدول محصولات
+            DB::table('products')->where('id', $item['id'])->update([$item['field'] => $price]);
+
+            // ذخیره تغییرات در تاریخچه قیمت‌ها
+            \App\Models\PriceHistory::updateOrCreate(
+                [
+                    'product_id' => $item['id'],
+                    'price_field' => $item['field'],
+                ],
+                [
+                    'price_amount_from' => $price,  // تغییر این قسمت با توجه به نیاز
+                    'price_amount_to' => $price,    // تغییر این قسمت با توجه به نیاز
+                ]
+            );
         }
 
         return response()->json(['status' => 'ok']);
