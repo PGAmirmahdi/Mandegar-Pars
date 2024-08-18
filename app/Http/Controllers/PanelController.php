@@ -241,7 +241,7 @@ class PanelController extends Controller
 
         $to_date5 = $request->to_date
             ? Carbon::parse($request->to_date)->endOfDay()
-            : Carbon::now()->endOfDay();  // تنظیم به تاریخ و زمان حال
+            : Carbon::now()->endOfDay();
 
 // دریافت آمار پیامک‌های ارسال شده بر اساس تاریخ و کاربر
         $smsData = Sms::whereBetween('created_at', [$from_date5, $to_date5])
@@ -252,10 +252,14 @@ class PanelController extends Controller
 // تبدیل تاریخ‌ها به شمسی
         $smsData->getCollection()->transform(function ($item) {
             $lastSentDate = Carbon::parse($item->last_sent_at);
+
+            // تبدیل تاریخ به شمسی به صورت دستی
+            $persianDate = \Morilog\Jalali\CalendarUtils::strftime('Y/m/d', strtotime($lastSentDate));
+
             return [
                 'user_id' => $item->user_id,
                 'sms_count' => $item->sms_count,
-                'last_sent_at' => Jalalian::fromCarbon($lastSentDate)->format('Y/m/d') // تبدیل تاریخ آخرین ارسال به شمسی
+                'last_sent_at' => $persianDate // تاریخ آخرین ارسال به شمسی
             ];
         });
 
@@ -270,6 +274,7 @@ class PanelController extends Controller
             'smsData' => $smsData,
             'users' => $users
         ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent'));
+
     }
         public function readNotification($notification = null)
     {
