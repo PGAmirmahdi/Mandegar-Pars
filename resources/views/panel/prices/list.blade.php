@@ -2,7 +2,7 @@
 @section('title', 'لیست قیمت ها')
 
 @php
-    $products = \App\Models\Product::all(['id', 'title', 'system_price', 'partner_price_tehran', 'partner_price_other', 'single_price']);
+    $products = \App\Models\Product::all(['id', 'title', 'system_price', 'partner_price_tehran', 'partner_price_other', 'single_price', 'market_price', 'domestic_price']);
 @endphp
 
 @section('styles')
@@ -76,6 +76,14 @@
                             <a href="{{ route('prices-list-pdf', ['type' => 'single_price']) }}"><i class="fa fa-download text-info"></i></a>
                             تک فروشی
                         </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'market_price']) }}"><i class="fa fa-download text-info"></i></a>
+                            قیمت بازار
+                        </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'domestic_price']) }}"><i class="fa fa-download text-info"></i></a>
+                            قیمت داخلی
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -94,16 +102,22 @@
                             <td>
                                 <input type="text" class="item" data-id="{{ $product->id }}" data-field="single_price" value="{{ number_format($product->single_price) }}">
                             </td>
+                            <td>
+                                <input type="text" class="item" data-id="{{ $product->id }}" data-field="market_price" value="{{ number_format($product->market_price) }}">
+                            </td>
+                            <td>
+                                <input type="text" class="item" data-id="{{ $product->id }}" data-field="domestic_price" value="{{ number_format($product->domestic_price) }}">
+                            </td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
             </div>
             @can('price-list-mandegar')
-            <button class="btn btn-primary my-3 mx-1" id="btn_save">
-                <i class="fa fa-check mr-2"></i>
-                <span>ذخیره</span>
-            </button>
+                <button class="btn btn-primary my-3 mx-1" id="btn_save">
+                    <i class="fa fa-check mr-2"></i>
+                    <span>ذخیره</span>
+                </button>
             @endcan
         </div>
     </div>
