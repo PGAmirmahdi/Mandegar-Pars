@@ -294,7 +294,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Sms
     Route::resource('sms', SMSController::class)->except('edit','update');
-    Route::match(['get', 'post'], 'search/sms', [InventoryController::class, 'search'])->name('sms.search');
+    Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
 
 });
 Route::get('/user-visits', function() {
