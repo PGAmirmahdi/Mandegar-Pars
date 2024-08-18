@@ -234,7 +234,6 @@ class PanelController extends Controller
                 ];
             }
         }
-// دریافت تاریخ‌های شروع و پایان از درخواست
         $from_date5 = $request->from_date
             ? Carbon::parse($request->from_date)->startOfDay()
             : Sms::orderBy('created_at')->first()->created_at;
@@ -249,12 +248,58 @@ class PanelController extends Controller
             ->select('user_id', DB::raw('COUNT(*) as sms_count'), DB::raw('MAX(created_at) as last_sent_at'))
             ->paginate(10); // اضافه کردن صفحه‌بندی
 
+// تابع دستی برای تبدیل تاریخ میلادی به شمسی
+        function gregorianToJalali($g_y, $g_m, $g_d) {
+            $g_days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            $j_days_in_month = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+
+            $gy = $g_y - 1600;
+            $gm = $g_m - 1;
+            $gd = $g_d - 1;
+
+            $g_day_no = 365 * $gy + intdiv($gy + 3, 4) - intdiv($gy + 99, 100) + intdiv($gy + 399, 400);
+
+            for ($i = 0; $i < $gm; ++$i) {
+                $g_day_no += $g_days_in_month[$i];
+            }
+
+            if ($gm > 1 && (($gy % 4 == 0 && $gy % 100 != 0) || ($gy % 400 == 0))) {
+                $g_day_no++;
+            }
+
+            $g_day_no += $gd;
+
+            $j_day_no = $g_day_no - 79;
+
+            $j_np = intdiv($j_day_no, 12053);
+            $j_day_no %= 12053;
+
+            $jy = 979 + 33 * $j_np + 4 * intdiv($j_day_no, 1461);
+
+            $j_day_no %= 1461;
+
+            if ($j_day_no >= 366) {
+                $jy += intdiv($j_day_no - 1, 365);
+                $j_day_no = ($j_day_no - 1) % 365;
+            }
+
+            for ($i = 0; $i < 11 && $j_day_no >= $j_days_in_month[$i]; ++$i) {
+                $j_day_no -= $j_days_in_month[$i];
+            }
+
+            $jm = $i + 1;
+            $jd = $j_day_no + 1;
+
+            return [$jy, $jm, $jd];
+        }
+
 // تبدیل تاریخ‌ها به شمسی
         $smsData->getCollection()->transform(function ($item) {
             $lastSentDate = Carbon::parse($item->last_sent_at);
 
-            // تبدیل تاریخ به شمسی به صورت دستی
-            $persianDate = \Morilog\Jalali\CalendarUtils::strftime('Y/m/d', strtotime($lastSentDate));
+            // تبدیل تاریخ میلادی به شمسی
+            list($jy, $jm, $jd) = gregorianToJalali($lastSentDate->year, $lastSentDate->month, $lastSentDate->day);
+            $persianDate = $jy . '/' . str_pad($jm, 2, '0', STR_PAD_LEFT) . '/' . str_pad($jd, 2, '0', STR_PAD_LEFT);
 
             return [
                 'user_id' => $item->user_id,
