@@ -173,7 +173,7 @@
             @endif
         </div>
     </div>
-    @can('accountant','Organ')
+    @canany('accountant','Organ')
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -360,7 +360,7 @@
                 </div>
             </div>
         @endcan
-    @endcan
+    @endcanany
 @endsection
 @section('scripts')
     <script>
