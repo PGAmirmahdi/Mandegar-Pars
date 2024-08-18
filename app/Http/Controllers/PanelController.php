@@ -12,7 +12,6 @@ use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Morilog\Jalali\Jalalian;
 
 class PanelController extends Controller
 {
@@ -217,23 +216,26 @@ class PanelController extends Controller
         foreach ($userSmsData as $userId => $userData) {
             $user = User::find($userId);
             if ($user) {
-                $userLabel = $user->name . ' ' . $user->family;
-
-                // پر کردن داده‌ها برای تاریخ‌هایی که مقدار ندارند
-                $data = [];
-                foreach ($allDates as $date) {
-                    $data[] = isset($userData->where('date', $date)->first()->sms_count) ? $userData->where('date', $date)->first()->sms_count : 0;
-                }
-
-                $datasets[] = [
-                    'label' => $userLabel,
-                    'data' => $data,
-                    'backgroundColor' => generateColor($userId),
-                    'borderColor' => generateColor($userId),
-                    'borderWidth' => 1
-                ];
+                $userLabel = $user->fullName(); // تغییر به name یا family در صورت نیاز
+            } else {
+                $userLabel = "ناشناس"; // یا هر مقدار پیش‌فرض دیگری
             }
+
+            // پر کردن داده‌ها برای تاریخ‌هایی که مقدار ندارند
+            $data = [];
+            foreach ($allDates as $date) {
+                $data[] = isset($userData->where('date', $date)->first()->sms_count) ? $userData->where('date', $date)->first()->sms_count : 0;
+            }
+
+            $datasets[] = [
+                'label' => $userLabel,
+                'data' => $data,
+                'backgroundColor' => generateColor($userId),
+                'borderColor' => generateColor($userId),
+                'borderWidth' => 1
+            ];
         }
+
         $from_date5 = $request->from_date
             ? Carbon::parse($request->from_date)->startOfDay()
             : Sms::orderBy('created_at')->first()->created_at;
@@ -308,17 +310,23 @@ class PanelController extends Controller
             ];
         });
 
-// دریافت اطلاعات کاربران
+        // دریافت اطلاعات کاربران
         $userIds = $smsData->pluck('user_id');
-        $users = User::whereIn('id', $userIds)->get();
+        $users2 = User::whereIn('id', $userIds)->get();
+
+// ایجاد آرایه‌ای برای نام کاربران برای استفاده در ویو
+        $userNames = $users2->keyBy('id')->map(function ($user2) {
+            return $user2->fullName(); // یا $user->name
+        })->toArray();
 
 // داده‌های نمودار را به نمای (view) ارسال کنید
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
             'smsData' => $smsData,
-            'users' => $users
-        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent'));
+            'userNames' => $userNames // ارسال نام کاربران به نمای
+        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2'));
+
 
     }
         public function readNotification($notification = null)
