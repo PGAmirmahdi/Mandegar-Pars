@@ -24,6 +24,8 @@ class Product extends Model
         'partner_price_tehran' => 'قیمت همکار - تهران',
         'partner_price_other' => 'قیمت همکار - شهرستان',
         'single_price' => 'قیمت تک فروشی',
+        'market_price' => 'قیمت بازار',
+        'domestic_price' => 'قیمت داخلی',
     ];
 
     public function category()
