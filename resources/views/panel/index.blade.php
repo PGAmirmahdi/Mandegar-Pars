@@ -947,12 +947,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             var ctx = document.getElementById('sms_chart').getContext('2d');
 
-            // چاپ داده‌ها برای بررسی
-            console.log('Labels:', @json($labels));
-            console.log('Datasets:', @json($datasets));
-
             var data = {
-                labels: @json($labels), // تاریخ‌ها
+                labels: @json($labels), // تاریخ‌های شمسی
                 datasets: @json($datasets) // داده‌ها برای هر کاربر
             };
 
@@ -1004,7 +1000,8 @@
                                 callback: function(value) {
                                     return value.toLocaleString('fa-IR');
                                 }
-                            }
+                            },
+                            min: 0 // شروع محور Y از صفر
                         }
                     }
                 }
