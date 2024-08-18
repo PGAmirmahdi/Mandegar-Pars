@@ -173,7 +173,7 @@
             @endif
         </div>
     </div>
-    @canany('accountant','Organ')
+    @canany(['accountant','Organ'])
         <div class="row">
             <div class="col-12">
                 <div class="card">
