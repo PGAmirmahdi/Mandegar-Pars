@@ -340,11 +340,11 @@
                     <tbody>
                     @foreach($smsData as $key => $data)
                         @php
-                            $user = $users->find($data['user_id']);
+                            $user2 = $users2->find($data['user_id']);
                         @endphp
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $user ? $user->fullName() : 'نامشخص' }}</td>
+                            <td>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</td>
                             <td>{{ $data['sms_count'] }}</td>
                             <td>{{ $data['last_sent_at'] }}</td>
                         </tr>
