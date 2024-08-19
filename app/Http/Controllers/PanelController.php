@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inventory;
 use App\Models\Invoice;
 use App\Models\Role;
 use App\Models\Sms;
@@ -367,6 +368,22 @@ class PanelController extends Controller
         $labels = collect($labels)->map(function ($label) {
             return Verta::parse($label)->format('Y/m/d');
         });
+        // دریافت اطلاعات مربوط به موجودی هر انبار
+        $inventories = Inventory::select('warehouse_id', DB::raw('SUM(current_count) as total_inventory'))
+            ->groupBy('warehouse_id')
+            ->with('warehouse') // فرض بر این است که مدل Inventory به مدل Warehouse رابطه دارد
+            ->get();
+
+        // محاسبه کل موجودی
+        $totalInventory = $inventories->sum('total_inventory');
+
+        // محاسبه درصد هر انبار
+        $inventories = $inventories->map(function ($inventory) use ($totalInventory) {
+            return [
+                'warehouse_name' => $inventory->warehouse->name, // نام انبار
+                'percentage' => ($inventory->total_inventory / $totalInventory) * 100, // درصد موجودی
+            ];
+        });
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
@@ -376,7 +393,7 @@ class PanelController extends Controller
             'orderCounts' => $orderCounts,
             'customerNames' => $customerNames,
             'orderCounts2' => $orderCounts2,
-        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2'));
+        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories'));
     }
         public function readNotification($notification = null)
     {
