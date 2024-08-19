@@ -412,11 +412,10 @@
         var sms_counts = {!! json_encode($sms_counts) !!};
 
         // bar chart
-        // invoices
         if ($('#pie_chart_inventory').length) {
             // داده‌های موجودی انبارها
-            var inventory_labels = @json($inventories->pluck('warehouse_name'));
-            var inventory_data = @json($inventories->pluck('percentage'));
+            var inventory_labels = @json($inventories->pluck('warehouse.name'));
+            var inventory_data = @json($inventories->pluck('total_inventory'));
 
             // تنظیمات نمودار
             var elementInventory = document.getElementById("pie_chart_inventory");
@@ -426,10 +425,10 @@
             new Chart(elementInventory, {
                 type: 'pie',
                 data: {
-                    labels: inventory_labels,  // نام انبارها به عنوان برچسب محور X
+                    labels: inventory_labels,  // نام انبارها به عنوان برچسب‌ها
                     datasets: [
                         {
-                            label: "درصد موجودی",
+                            label: "تعداد موجودی",
                             backgroundColor: [
                                 '#FF6384',
                                 '#36A2EB',
@@ -438,7 +437,7 @@
                                 '#9966FF',
                                 '#FF9F40'
                             ], // رنگ‌ها برای هر بخش
-                            data: inventory_data,  // درصد موجودی انبارها به عنوان داده‌ها
+                            data: inventory_data,  // تعداد موجودی هر انبار
                         }
                     ]
                 },
@@ -448,6 +447,14 @@
                         display: true,  // نمایش لژند
                         position: 'right',
                     },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                return value.toLocaleString('fa-IR') + ' عدد';
+                            }
+                        }
+                    }
                 },
             });
         }
