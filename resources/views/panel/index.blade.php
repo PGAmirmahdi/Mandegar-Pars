@@ -236,6 +236,14 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title m-b-20">نمودار موجودی انبارها</h6>
+                        <canvas id="pie_chart_inventory" style="width: auto"></canvas>
+                    </div>
+                </div>
+            </div>
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                 <div class="card">
                     <div class="card-body">
@@ -405,6 +413,44 @@
 
         // bar chart
         // invoices
+        if ($('#pie_chart_inventory').length) {
+            // داده‌های موجودی انبارها
+            var inventory_labels = @json($inventories->pluck('warehouse_name'));
+            var inventory_data = @json($inventories->pluck('percentage'));
+
+            // تنظیمات نمودار
+            var elementInventory = document.getElementById("pie_chart_inventory");
+            elementInventory.height = 146;
+
+            // ایجاد نمودار
+            new Chart(elementInventory, {
+                type: 'pie',
+                data: {
+                    labels: inventory_labels,  // نام انبارها به عنوان برچسب محور X
+                    datasets: [
+                        {
+                            label: "درصد موجودی",
+                            backgroundColor: [
+                                '#FF6384',
+                                '#36A2EB',
+                                '#FFCE56',
+                                '#4BC0C0',
+                                '#9966FF',
+                                '#FF9F40'
+                            ], // رنگ‌ها برای هر بخش
+                            data: inventory_data,  // درصد موجودی انبارها به عنوان داده‌ها
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: true,  // نمایش لژند
+                        position: 'right',
+                    },
+                },
+            });
+        }
         if ($('#bar_chart_sale1').length) {
             var element1 = document.getElementById("bar_chart_sale1");
             element1.height = 146;
