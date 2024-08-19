@@ -440,15 +440,6 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        datalabels: {
-                            color: '#fff',
-                            formatter: (value, ctx) => {
-                                let percentage = (value / ctx.chart._metasets[0].total) * 100;
-                                return value.toLocaleString('fa-IR') + ' (' + percentage.toFixed(1) + '%)';
-                            }
-                        }
-                    },
                     legend: {
                         display: true,
                         position: 'right',
@@ -462,7 +453,6 @@
                         }
                     }
                 },
-                plugins: [ChartDataLabels],
             });
         }
         if ($('#bar_chart_sale1').length) {
