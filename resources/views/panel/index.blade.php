@@ -413,19 +413,16 @@
 
         // bar chart
         if ($('#pie_chart_inventory').length) {
-            // داده‌های موجودی انبارها
-            var inventory_labels = @json($inventories->pluck('warehouse.name'));
+            var inventory_labels = @json($inventories->pluck('warehouse_name'));
             var inventory_data = @json($inventories->pluck('total_inventory'));
 
-            // تنظیمات نمودار
             var elementInventory = document.getElementById("pie_chart_inventory");
             elementInventory.height = 146;
 
-            // ایجاد نمودار
             new Chart(elementInventory, {
                 type: 'pie',
                 data: {
-                    labels: inventory_labels,  // نام انبارها به عنوان برچسب‌ها
+                    labels: inventory_labels,
                     datasets: [
                         {
                             label: "تعداد موجودی",
@@ -436,15 +433,15 @@
                                 '#4BC0C0',
                                 '#9966FF',
                                 '#FF9F40'
-                            ], // رنگ‌ها برای هر بخش
-                            data: inventory_data,  // تعداد موجودی هر انبار
+                            ],
+                            data: inventory_data,
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     legend: {
-                        display: true,  // نمایش لژند
+                        display: true,
                         position: 'right',
                     },
                     tooltips: {

@@ -369,11 +369,11 @@ class PanelController extends Controller
             return Verta::parse($label)->format('Y/m/d');
         });
         // دریافت اطلاعات مربوط به موجودی هر انبار
-        // دریافت اطلاعات مربوط به موجودی هر انبار
-        $inventories = Inventory::select('warehouse_id', DB::raw('SUM(current_count) as total_inventory'))
-            ->groupBy('warehouse_id')
-            ->with('warehouse') // فرض بر این است که مدل Inventory به مدل Warehouse رابطه دارد
-            ->get();
+    $inventories = Inventory::rightJoin('warehouses', 'inventories.warehouse_id', '=', 'warehouses.id')
+        ->select('warehouses.name as warehouse_name', DB::raw('COALESCE(SUM(inventories.current_count), 0) as total_inventory'))
+        ->groupBy('warehouses.id', 'warehouses.name')
+        ->get();
+
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
