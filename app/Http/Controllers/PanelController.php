@@ -369,21 +369,11 @@ class PanelController extends Controller
             return Verta::parse($label)->format('Y/m/d');
         });
         // دریافت اطلاعات مربوط به موجودی هر انبار
+        // دریافت اطلاعات مربوط به موجودی هر انبار
         $inventories = Inventory::select('warehouse_id', DB::raw('SUM(current_count) as total_inventory'))
             ->groupBy('warehouse_id')
             ->with('warehouse') // فرض بر این است که مدل Inventory به مدل Warehouse رابطه دارد
             ->get();
-
-        // محاسبه کل موجودی
-        $totalInventory = $inventories->sum('total_inventory');
-
-        // محاسبه درصد هر انبار
-        $inventories = $inventories->map(function ($inventory) use ($totalInventory) {
-            return [
-                'warehouse_name' => $inventory->warehouse->name, // نام انبار
-                'percentage' => ($inventory->total_inventory / $totalInventory) * 100, // درصد موجودی
-            ];
-        });
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
