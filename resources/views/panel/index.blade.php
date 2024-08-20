@@ -432,7 +432,7 @@
                         labels: @json($productNames),  // نام محصولات به عنوان برچسب محور X
                         datasets: [{
                             label: "مقدار موجودی",
-                            backgroundColor: '#28a745',  // رنگ پس‌زمینه
+                            backgroundColor: '#d3ae00',  // رنگ پس‌زمینه
                             data: @json($productCounts),  // مقدار موجودی به عنوان داده‌های محور Y
                         }]
                     },
