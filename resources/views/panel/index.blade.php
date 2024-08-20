@@ -309,7 +309,7 @@
                     </div>
                 </div>
             @endcan
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
