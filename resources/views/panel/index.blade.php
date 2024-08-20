@@ -308,9 +308,20 @@
                         </div>
                     </div>
                 </div>
-
+            @endcan
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title m-b-20">موجودی محصولات در انبار</h6>
+                            <h6 class="card-title m-b-20">تعداد کل موجودی: {{ number_format($productCounts->sum()) }}</h6>
+                        </div>
+                        <canvas id="bar_chart_product_inventory" style="width: auto"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
-        @endcan
+
         @can('sms-list')
             <div class="card">
                 <div class="card-body">
@@ -411,6 +422,68 @@
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
 
+        $(document).ready(function () {
+            if ($('#bar_chart_product_inventory').length) {
+                var ctx = document.getElementById("bar_chart_product_inventory").getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: @json($productNames),  // نام محصولات به عنوان برچسب محور X
+                        datasets: [{
+                            label: "مقدار موجودی",
+                            backgroundColor: '#28a745',  // رنگ پس‌زمینه
+                            data: @json($productCounts),  // مقدار موجودی به عنوان داده‌های محور Y
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    fontSize: 15,
+                                    color: '#999'
+                                },
+                                grid: {
+                                    display: false,
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'تعداد',
+                                    fontSize: 18
+                                },
+                                ticks: {
+                                    beginAtZero: true,
+                                    fontSize: 15,
+                                    color: '#999',
+                                    callback: function(value) {
+                                        return value.toLocaleString('fa-IR');
+                                    }
+                                },
+                                grid: {
+                                    color: '#e8e8e8',
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        var value = context.raw;
+                                        return value.toLocaleString('fa-IR') + ' عدد';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
         // bar chart
         if ($('#pie_chart_inventory').length) {
             var inventory_labels = @json($inventories->pluck('warehouse_name'));

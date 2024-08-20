@@ -374,6 +374,11 @@ class PanelController extends Controller
         ->groupBy('warehouses.id', 'warehouses.name')
         ->get();
 
+        $products = \App\Models\Product::all();  // دریافت تمامی محصولات
+
+// آماده‌سازی داده‌ها برای نمودار
+        $productNames = $products->pluck('title');  // نام محصولات
+        $productCounts = $products->pluck('total_count');  // مقدار موجودی هر محصول
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
@@ -383,7 +388,7 @@ class PanelController extends Controller
             'orderCounts' => $orderCounts,
             'customerNames' => $customerNames,
             'orderCounts2' => $orderCounts2,
-        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories'));
+        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts'));
     }
         public function readNotification($notification = null)
     {
