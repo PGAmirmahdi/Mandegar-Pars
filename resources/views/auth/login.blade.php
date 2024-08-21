@@ -55,7 +55,9 @@
 @include('panel.layouts.loader')
 <!-- end::page loader -->
 
-<div class="form-wrapper">
+<div class="form-wrapper" style="background-color: rgba(255,255,255,0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(2px);box-shadow:0px 2px 5px 2px gainsboro">
 
     <!-- logo -->
     <div class="logo">
