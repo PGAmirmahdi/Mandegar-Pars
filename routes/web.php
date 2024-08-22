@@ -50,7 +50,6 @@ use App\Notifications\SendMessage;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -306,39 +305,85 @@ Route::get('/user-visits', function() {
 
     return response()->json($userVisits);
 });
-$userAgent = $request->userAgent();
-Log::info("User Agent: " . $userAgent);
-// شناسایی برند دستگاه و نسخه اندروید
-$deviceBrand = "Unknown";
-$androidVersion = null;
 
-if (preg_match('/\bAndroid\b/i', $userAgent)) {
-    if (preg_match('/\bSamsung\b/i', $userAgent)) {
-        $deviceBrand = "Samsung";
-    } elseif (preg_match('/\bHuawei\b/i', $userAgent)) {
-        $deviceBrand = "Huawei";
-    } elseif (preg_match('/\bXiaomi\b/i', $userAgent)) {
-        $deviceBrand = "Xiaomi";
-    } elseif (preg_match('/\bSony\b/i', $userAgent)) {
-        $deviceBrand = "Sony";
-    } elseif (preg_match('/\bHTC\b/i', $userAgent)) {
-        $deviceBrand = "HTC";
-    } else {
-        // بررسی برندهای دیگر
-        if (preg_match('/\bOnePlus\b/i', $userAgent)) {
-            $deviceBrand = "OnePlus";
-        } elseif (preg_match('/\bOppo\b/i', $userAgent)) {
-            $deviceBrand = "Oppo";
-        } elseif (preg_match('/\bVivo\b/i', $userAgent)) {
-            $deviceBrand = "Vivo";
+Route::get('Discover', function (Request $request) {
+    // دریافت اطلاعات مرورگر و پلتفرم
+    $userAgent = $request->userAgent();
+
+    // شناسایی پلتفرم
+    $platform = "Unknown";
+    if (preg_match('/Windows/i', $userAgent)) {
+        $platform = "Windows";
+    } elseif (preg_match('/Macintosh|Mac OS X/i', $userAgent)) {
+        $platform = "macOS";
+    } elseif (preg_match('/Linux/i', $userAgent)) {
+        $platform = "Android"; // لینوکس به عنوان اندروید ذخیره می‌شود
+    } elseif (preg_match('/Android/i', $userAgent)) {
+        $platform = "Android";
+    } elseif (preg_match('/iPhone|iPad|iPod/i', $userAgent)) {
+        $platform = "iOS";
+    }
+
+    // شناسایی مرورگر
+    $browser = "Unknown";
+    if (preg_match('/MSIE|Trident/i', $userAgent)) {
+        $browser = "Internet Explorer";
+    } elseif (preg_match('/Edge/i', $userAgent)) {
+        $browser = "Microsoft Edge";
+    } elseif (preg_match('/Firefox/i', $userAgent)) {
+        $browser = "Mozilla Firefox";
+    } elseif (preg_match('/Chrome/i', $userAgent)) {
+        $browser = "Google Chrome";
+    } elseif (preg_match('/Safari/i', $userAgent)) {
+        $browser = "Safari";
+    }
+
+    // استخراج برند دستگاه و نسخه اندروید
+    $deviceBrand = "Unknown";
+    $androidVersion = null;
+
+    if ($platform == "Android") {
+        if (preg_match('/\bSamsung\b/i', $userAgent)) {
+            $deviceBrand = "Samsung";
+        } elseif (preg_match('/\bHuawei\b/i', $userAgent)) {
+            $deviceBrand = "Huawei";
+        } elseif (preg_match('/\bXiaomi\b/i', $userAgent)) {
+            $deviceBrand = "Xiaomi";
+        } elseif (preg_match('/\bSony\b/i', $userAgent)) {
+            $deviceBrand = "Sony";
+        } elseif (preg_match('/\bHTC\b/i', $userAgent)) {
+            $deviceBrand = "HTC";
+        } else {
+            // بررسی برندهای دیگر
+            if (preg_match('/\bOnePlus\b/i', $userAgent)) {
+                $deviceBrand = "OnePlus";
+            } elseif (preg_match('/\bOppo\b/i', $userAgent)) {
+                $deviceBrand = "Oppo";
+            } elseif (preg_match('/\bVivo\b/i', $userAgent)) {
+                $deviceBrand = "Vivo";
+            }
+        }
+
+        if (preg_match('/Android\s([0-9\.]+)/i', $userAgent, $matches)) {
+            $androidVersion = $matches[1];
         }
     }
 
-    if (preg_match('/Android\s([0-9\.]+)/i', $userAgent, $matches)) {
-        $androidVersion = $matches[1];
-    }
-}
+    // دریافت آی‌پی کاربر
+    $ipAddress = $request->ip();
 
+    // ذخیره اطلاعات در دیتابیس
+    Visitor::create([
+        'ip_address' => $ipAddress,
+        'browser' => $browser,
+        'platform' => $platform,
+        'device_brand' => $deviceBrand,
+        'android_version' => $androidVersion,
+    ]);
+
+    // بازگشت به ویو
+    return view('panel.discover');
+})->name("Discover");
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
