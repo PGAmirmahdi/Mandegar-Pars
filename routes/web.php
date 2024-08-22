@@ -55,6 +55,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Panel\ChequeController;
+use Jenssegers\Agent\Agent;
 use PDF as PDF;
 
 
