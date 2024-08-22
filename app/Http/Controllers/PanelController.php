@@ -436,6 +436,11 @@ class PanelController extends Controller
             }
         }
 
+        // تبدیل تاریخ‌ها به شمسی
+        $formattedDates3 = array_map(function($date) {
+            return Jalalian::fromDateTime($date)->format('Y/m/d');  // تبدیل تاریخ میلادی به شمسی
+        }, $dates3);
+
         $totalVisits3 = $visitsData3->sum('visits');
         return view('panel.index', [
             'labels' => $labels,
@@ -447,7 +452,7 @@ class PanelController extends Controller
             'customerNames' => $customerNames,
             'orderCounts2' => $orderCounts2,
             'citiesData3' => $citiesData3,
-            'dates3' => $dates3,
+            'dates3' => $formattedDates3,
             'totalVisits3' => $totalVisits3
         ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData'));
     }
