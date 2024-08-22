@@ -428,10 +428,12 @@ class PanelController extends Controller
         // تبدیل تاریخ‌ها به شمسی
         $userVisits8 = $userVisits8->map(function ($visit8) {
             $shamsiDate8 = Verta::instance($visit8->date)->format('Y/m/d');
+            $city = $visit8->city ?: 'unknown'; // دسته‌بندی ناشناخته
+            $isp = $visit8->isp ?: 'unknown'; // دسته‌بندی ناشناخته
             return [
                 'date' => $shamsiDate8,
-                'city' => $visit8->city,
-                'isp' => $visit8->isp,
+                'city' => $city,
+                'isp' => $isp,
                 'visits' => $visit8->visits
             ];
         });
