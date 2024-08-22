@@ -388,11 +388,12 @@ class PanelController extends Controller
         // دریافت تعداد بازدیدها به ازای هر روز در 15 روز اخیر
         $visitsData = Visitor::whereBetween('created_at', [$fifteenDaysAgo, Carbon::now()])
             ->groupBy(DB::raw('DATE(created_at)'))
-            ->orderBy('created_at', 'asc')
+            ->orderBy(DB::raw('DATE(created_at)'), 'asc')
             ->get([
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('COUNT(*) as visits')
             ]);
+
 
         // تبدیل تاریخ‌ها و داده‌ها به فرمت مناسب برای استفاده در ویو
         $visitsDates = [];
