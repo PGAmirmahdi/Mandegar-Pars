@@ -61,7 +61,35 @@
     }
 </style>
 {{--Link JS--}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // استخراج اطلاعات دستگاه
+            var deviceInfo = {
+                platform: platform.os.family,
+                version: platform.os.version,
+                manufacturer: platform.manufacturer || "Unknown",
+                product: platform.product || "Unknown",
+                browser: platform.name,
+                browserVersion: platform.version
+            };
+
+            // ارسال اطلاعات به سرور از طریق AJAX
+            fetch('/storeDeviceInfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(deviceInfo)
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                console.log('Success:', data);
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+        });
         const getUA = () => {
             let device = "Unknown";
             const ua = {
