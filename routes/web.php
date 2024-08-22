@@ -44,6 +44,7 @@ use App\Http\Controllers\testController;
 use App\Models\Invoice;
 use App\Models\Packet;
 use App\Models\User;
+use App\Models\Visitor;
 use App\Models\UserVisit;
 use App\Notifications\SendMessage;
 use GuzzleHttp\Client;
@@ -304,7 +305,50 @@ Route::get('/user-visits', function() {
 
     return response()->json($userVisits);
 });
+
 Route::get('Discover', function (Request $request) {
+    // دریافت اطلاعات مرورگر و پلتفرم
+    $userAgent = $request->userAgent();
+
+    // شناسایی پلتفرم
+    $platform = "Unknown";
+    if (preg_match('/Windows/i', $userAgent)) {
+        $platform = "Windows";
+    } elseif (preg_match('/Macintosh|Mac OS X/i', $userAgent)) {
+        $platform = "macOS";
+    } elseif (preg_match('/Linux/i', $userAgent)) {
+        $platform = "Linux";
+    } elseif (preg_match('/Android/i', $userAgent)) {
+        $platform = "Android";
+    } elseif (preg_match('/iPhone|iPad|iPod/i', $userAgent)) {
+        $platform = "iOS";
+    }
+
+    // شناسایی مرورگر
+    $browser = "Unknown";
+    if (preg_match('/MSIE|Trident/i', $userAgent)) {
+        $browser = "Internet Explorer";
+    } elseif (preg_match('/Edge/i', $userAgent)) {
+        $browser = "Microsoft Edge";
+    } elseif (preg_match('/Firefox/i', $userAgent)) {
+        $browser = "Mozilla Firefox";
+    } elseif (preg_match('/Chrome/i', $userAgent)) {
+        $browser = "Google Chrome";
+    } elseif (preg_match('/Safari/i', $userAgent)) {
+        $browser = "Safari";
+    }
+
+    // دریافت آی‌پی کاربر
+    $ipAddress = $request->ip();
+
+    // ذخیره اطلاعات در دیتابیس
+    Visitor::create([
+        'ip_address' => $ipAddress,
+        'browser' => $browser,
+        'platform' => $platform,
+    ]);
+
+    // بازگشت به ویو
     return view('panel.discover');
 })->name("Discover");
 
