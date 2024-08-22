@@ -313,13 +313,10 @@ Route::get('Discover', function () {
 Route::post('/storeDeviceInfo', function (Request $request) {
     $data = $request->all();
 
-    // ذخیره اطلاعات در دیتابیس
     Visitor::create([
         'ip_address' => $request->ip(),
         'platform' => $data['platform'] . ' ' . $data['version'],
         'browser' => $data['browser'] . ' ' . $data['browserVersion'],
-        'device_brand' => $data['manufacturer'],
-        'device_model' => $data['product']
     ]);
 
     return response()->json(['message' => 'Device info stored successfully']);
