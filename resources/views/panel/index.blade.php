@@ -259,7 +259,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار بازدید کاربران</h6>
+                            <h6 class="card-title m-b-20">آمار بازدید کاربران از MPSystem</h6>
                             <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits) }}</h6>
                         </div>
                         <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
@@ -321,7 +321,17 @@
                 </div>
             </div>
         </div>
-
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار کلیک کاربران بر روی لینک ارسالی</h6>
+                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
         @can('sms-list')
             <div class="card">
                 <div class="card-body">
@@ -421,7 +431,71 @@
         // مقادیر مربوط به SMS‌ها
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
+        document.addEventListener("DOMContentLoaded", function() {
+            var visitsDates = @json($visitsDates);  // دریافت تاریخ‌ها از کنترلر
+            var visitsCounts = @json($visitsCounts);  // دریافت تعداد بازدیدها از کنترلر
 
+            if (document.getElementById('bar_chart_user_visits')) {
+                var ctx = document.getElementById('bar_chart_user_visits').getContext('2d');
+                ctx.canvas.height = 146;
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: visitsDates,  // تاریخ‌ها به عنوان برچسب محور X
+                        datasets: [{
+                            label: "تعداد بازدیدها",
+                            backgroundColor: '#3aff55',  // رنگ نوارها
+                            data: visitsCounts,  // تعداد بازدیدها به عنوان داده‌های محور Y
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false  // عدم نمایش لژند
+                        },
+                        scales: {
+                            xAxes: [{
+                                barPercentage: 0.3,
+                                ticks: {
+                                    fontSize: 15,
+                                    fontColor: '#999'
+                                },
+                                gridLines: {
+                                    display: false,
+                                }
+                            }],
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'تعداد',
+                                    fontSize: 18
+                                },
+                                ticks: {
+                                    min: 0,
+                                    fontSize: 15,
+                                    fontColor: '#999',
+                                    callback: function(value) {
+                                        return value.toLocaleString('fa-IR');  // فرمت‌بندی اعداد به صورت سه‌رقمی
+                                    }
+                                },
+                                gridLines: {
+                                    color: '#e8e8e8',
+                                }
+                            }],
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                    return value.toLocaleString('fa-IR') + ' بازدید ';
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
         $(document).ready(function () {
             if ($('#bar_chart_product_inventory').length) {
                 var ctx = document.getElementById("bar_chart_product_inventory").getContext('2d');

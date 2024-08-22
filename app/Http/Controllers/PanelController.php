@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Sms;
 use App\Models\User;
 use App\Models\UserVisit;
+use App\Models\Visitor;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
@@ -379,6 +380,31 @@ class PanelController extends Controller
 // آماده‌سازی داده‌ها برای نمودار
         $productNames = $products->pluck('title');  // نام محصولات
         $productCounts = $products->pluck('total_count');  // مقدار موجودی هر محصول
+        // تاریخ امروز
+        $today = Carbon::today();
+        // تاریخ 15 روز پیش
+        $fifteenDaysAgo = $today->subDays(15);
+
+        // دریافت تعداد بازدیدها به ازای هر روز در 15 روز اخیر
+        $visitsData = Visitor::whereBetween('created_at', [$fifteenDaysAgo, Carbon::now()])
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('created_at', 'asc')
+            ->get([
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as visits')
+            ]);
+
+        // تبدیل تاریخ‌ها و داده‌ها به فرمت مناسب برای استفاده در ویو
+        $visitsDates = [];
+        $visitsCounts = [];
+
+        foreach ($visitsData as $data) {
+            $visitsDates[] = Verta::instance($data->date)->format('Y/m/d'); // تبدیل تاریخ میلادی به شمسی
+            $visitsCounts[] = $data->visits;
+        }
+
+        // مجموع بازدیدها
+            $totalVisits2 = array_sum($visitsCounts);
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
@@ -388,7 +414,7 @@ class PanelController extends Controller
             'orderCounts' => $orderCounts,
             'customerNames' => $customerNames,
             'orderCounts2' => $orderCounts2,
-        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts'));
+        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits'));
     }
         public function readNotification($notification = null)
     {
