@@ -313,33 +313,28 @@ Route::get('Discover', function () {
 })->name("Discover");
 Route::post('/storeDeviceInfo', function (Request $request) {
     $data = $request->all();
-
-    // دریافت اطلاعات IP از ipinfo.io
     $ip = $request->ip();
-    $accessToken = 'YOUR_IPINFO_ACCESS_TOKEN'; // کلید دسترسی به ipinfo.io
 
-    $response = Http::get("http://ipinfo.io/{$ip}/json?token={$accessToken}");
+    // استفاده از API IPStack برای دریافت اطلاعات شهر و ISP
+    $apiKey = 'ad94235570426087e0a0cea2caf60280'; // کلید API شما
+    $response = Http::get("http://api.ipstack.com/{$ip}?access_key={$apiKey}");
 
-    // بررسی اینکه آیا درخواست موفقیت‌آمیز بود
+    // بررسی اینکه درخواست موفق بوده باشد
     if ($response->successful()) {
-        $ipInfo = $response->json();
-        $city = $ipInfo['city'] ?? 'Unknown';
-        $isp = $ipInfo['org'] ?? 'Unknown'; // اطلاعات ارائه‌دهنده اینترنت (ISP)
+        $locationData = $response->json();
+
+        Visitor::create([
+            'ip_address' => $ip,
+            'platform' => $data['platform'],
+            'browser' => $data['browser'],
+            'city' => $locationData['city'] ?? null,
+            'isp' => $locationData['connection']['isp'] ?? null,
+        ]);
+
+        return response()->json(['message' => 'Device info stored successfully']);
     } else {
-        $city = 'Unknown';
-        $isp = 'Unknown';
+        return response()->json(['message' => 'Failed to retrieve location info'], 500);
     }
-
-    // ذخیره اطلاعات در پایگاه داده
-    Visitor::create([
-        'ip_address' => $ip,
-        'platform' => $data['platform'],
-        'browser' => $data['browser'],
-        'city' => $city,          // اضافه کردن شهر
-        'isp' => $isp,            // اضافه کردن ارائه‌دهنده اینترنت
-    ]);
-
-    return response()->json(['message' => 'Device info stored successfully']);
 });
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
