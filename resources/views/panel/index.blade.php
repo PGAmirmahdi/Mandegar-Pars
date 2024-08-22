@@ -328,7 +328,7 @@
                         <h6 class="card-title m-b-20">آمار کلیک کاربران بر روی لینک ارسالی</h6>
                         <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits) }}</h6>
                     </div>
-                    <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
+                    <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
@@ -435,8 +435,8 @@
             var visitsDates = @json($visitsDates);  // دریافت تاریخ‌ها از کنترلر
             var visitsCounts = @json($visitsCounts);  // دریافت تعداد بازدیدها از کنترلر
 
-            if (document.getElementById('bar_chart_user_visits')) {
-                var ctx = document.getElementById('bar_chart_user_visits').getContext('2d');
+            if (document.getElementById('bar_chart_user_visits2')) {
+                var ctx = document.getElementById('bar_chart_user_visits2').getContext('2d');
                 ctx.canvas.height = 146;
 
                 new Chart(ctx, {
