@@ -414,7 +414,7 @@ class PanelController extends Controller
         $fifteenDaysAgo2 = $today2->subDays(15);
 
         // دریافت تعداد بازدیدها به ازای هر روز در 15 روز اخیر
-        $visitsData2 = Visitor::whereBetween('created_at', [$fifteenDaysAgo2, Carbon::now()])
+        $visitsData3 = Visitor::whereBetween('created_at', [$fifteenDaysAgo2, Carbon::now()])
             ->groupBy(DB::raw('DATE(created_at)'), 'city')
             ->orderBy(DB::raw('DATE(created_at)'), 'asc')
             ->get([
@@ -424,11 +424,11 @@ class PanelController extends Controller
             ]);
 
         // گروه‌بندی بر اساس شهرها
-        $cities = $visitsData2->groupBy('city');
+        $cities = $visitsData3->groupBy('city');
 
         // آماده‌سازی داده‌ها برای نمودار
         $citiesData = [];
-        $dates2 = array_unique($visitsData2->pluck('date')->toArray());
+        $dates2 = array_unique($visitsData3->pluck('date')->toArray());
         foreach ($cities as $city => $data) {
             $citiesData[$city] = array_fill_keys($dates2, 0);
             foreach ($data as $item) {
@@ -436,7 +436,7 @@ class PanelController extends Controller
             }
         }
 
-        $totalVisits2 = $visitsData2->sum('visits');
+        $totalVisits3 = $visitsData3->sum('visits');
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
@@ -448,7 +448,7 @@ class PanelController extends Controller
             'orderCounts2' => $orderCounts2,
             'citiesData' => $citiesData,
             'dates' => $dates2,
-            'totalVisits' => $totalVisits2
+            'totalVisits' => $totalVisits3
         ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData'));
     }
         public function readNotification($notification = null)
