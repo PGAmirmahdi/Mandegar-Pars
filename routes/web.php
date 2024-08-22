@@ -315,8 +315,8 @@ Route::post('/storeDeviceInfo', function (Request $request) {
 
     Visitor::create([
         'ip_address' => $request->ip(),
-        'platform' => $data['platform'] . ' ' . $data['version'],
-        'browser' => $data['browser'] . ' ' . $data['browserVersion'],
+        'platform' => $data['platform'],
+        'browser' => $data['browser'],
     ]);
 
     return response()->json(['message' => 'Device info stored successfully']);
