@@ -406,6 +406,10 @@ class PanelController extends Controller
 
         // مجموع بازدیدها
             $totalVisits2 = array_sum($visitsCounts);
+        $visitsData2 = Visitor::selectRaw('city, DATE(created_at) as date, COUNT(*) as visits')
+            ->groupBy('city', 'date')
+            ->orderBy('date', 'asc')
+            ->get();
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
@@ -415,7 +419,7 @@ class PanelController extends Controller
             'orderCounts' => $orderCounts,
             'customerNames' => $customerNames,
             'orderCounts2' => $orderCounts2,
-        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2'));
+        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData2'));
     }
         public function readNotification($notification = null)
     {

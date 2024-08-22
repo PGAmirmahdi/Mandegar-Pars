@@ -332,6 +332,14 @@
                 </div>
             </div>
         </div>
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title m-b-20">آمار کلیک به تفکیک شهرها</h6>
+                    <canvas id="city_visits_chart" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
         @can('sms-list')
             <div class="card">
                 <div class="card-body">
@@ -431,6 +439,89 @@
         // مقادیر مربوط به SMS‌ها
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/getCityVisitsData')
+                .then(response => response.json())
+                .then(data => {
+                    let cities = {};
+
+                    data.forEach(item => {
+                        if (!cities[item.city]) {
+                            cities[item.city] = {};
+                        }
+                        cities[item.city][item.date] = item.visits;
+                    });
+
+                    let labels = [...new Set(data.map(item => item.date))]; // استخراج تاریخ‌ها
+                    let datasets = [];
+
+                    Object.keys(cities).forEach(city => {
+                        datasets.push({
+                            label: city,
+                            data: labels.map(date => cities[city][date] || 0),
+                            backgroundColor: getRandomColor(),
+                        });
+                    });
+
+                    new Chart(document.getElementById('city_visits_chart'), {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: datasets,
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                xAxes: [{
+                                    barPercentage: 0.3,
+                                    ticks: {
+                                        fontSize: 15,
+                                        fontColor: '#999'
+                                    },
+                                    gridLines: {
+                                        display: false,
+                                    }
+                                }],
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'تعداد بازدیدها',
+                                        fontSize: 18
+                                    },
+                                    ticks: {
+                                        min: 0,
+                                        fontSize: 15,
+                                        fontColor: '#999',
+                                        callback: function (value) {
+                                            return value.toLocaleString('fa-IR');
+                                        }
+                                    },
+                                    gridLines: {
+                                        color: '#e8e8e8',
+                                    }
+                                }],
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                        return value.toLocaleString('fa-IR') + ' بازدید ';
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+
+            function getRandomColor() {
+                let letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        });
         document.addEventListener("DOMContentLoaded", function() {
             var visitsDates = @json($visitsDates);  // دریافت تاریخ‌ها از کنترلر
             var visitsCounts = @json($visitsCounts);  // دریافت تعداد بازدیدها از کنترلر
