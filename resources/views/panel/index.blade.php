@@ -332,10 +332,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title m-b-20">آمار کلیک به تفکیک شهرها</h6>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار بازدید به تفکیک شهرها و تاریخ‌ها</h6>
+                        <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits) }}</h6>
+                    </div>
                     <canvas id="city_visits_chart" style="width: auto"></canvas>
                 </div>
             </div>
@@ -440,36 +443,26 @@
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
         document.addEventListener("DOMContentLoaded", function() {
-            let cityVisits = @json($cityVisits);
+            let citiesData = @json($citiesData);  // دریافت داده‌های بازدیدها از کنترلر
+            let dates = @json($dates);  // دریافت تاریخ‌ها از کنترلر
 
-            let cities = {};
+            let datasets = Object.keys(citiesData).map(city => ({
+                label: city,
+                data: dates.map(date => citiesData[city][date]),
+                backgroundColor: getRandomColor(),
+            }));
 
-            cityVisits.forEach(function(item) {
-                if (!cities[item.city]) {
-                    cities[item.city] = {};
-                }
-                cities[item.city][item.date] = item.visits;
-            });
-
-            let labels = [...new Set(cityVisits.map(item => item.date))]; // استخراج تاریخ‌ها
-            let datasets = [];
-
-            Object.keys(cities).forEach(city => {
-                datasets.push({
-                    label: city,
-                    data: labels.map(date => cities[city][date] || 0),
-                    backgroundColor: getRandomColor(),
-                });
-            });
-
-            new Chart(document.getElementById('city_visits_chart'), {
+            new Chart(document.getElementById('city_visits_chart').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: dates,  // تاریخ‌ها به عنوان برچسب محور X
                     datasets: datasets,
                 },
                 options: {
                     responsive: true,
+                    legend: {
+                        display: true  // نمایش لژند برای نام شهرها
+                    },
                     scales: {
                         xAxes: [{
                             barPercentage: 0.3,
@@ -492,7 +485,7 @@
                                 fontSize: 15,
                                 fontColor: '#999',
                                 callback: function(value) {
-                                    return value.toLocaleString('fa-IR');
+                                    return value.toLocaleString('fa-IR');  // فرمت‌بندی اعداد به صورت سه‌رقمی
                                 }
                             },
                             gridLines: {
@@ -510,6 +503,16 @@
                     }
                 }
             });
+
+            function getRandomColor() {
+                let letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        });
         document.addEventListener("DOMContentLoaded", function() {
             var visitsDates = @json($visitsDates);  // دریافت تاریخ‌ها از کنترلر
             var visitsCounts = @json($visitsCounts);  // دریافت تعداد بازدیدها از کنترلر
