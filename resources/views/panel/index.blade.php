@@ -325,10 +325,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">آمار کلیک کاربران بر روی لینک ارسالی</h6>
-                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits2) }}</h6>
+                        <h6 class="card-title m-b-20">آمار بازدید کاربران از MPSystem</h6>
+                        <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits8) }}</h6>
                     </div>
-                    <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
+                    <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
@@ -336,10 +336,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">آمار کلیک به تفکیک شهرها و تاریخ‌ها</h6>
-                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits3) }}</h6>
+                        <h6 class="card-title m-b-20">آمار کلیک کاربران بر روی لینک ارسالی</h6>
+                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits2) }}</h6>
                     </div>
-                    <canvas id="city_visits_chart" style="width: auto"></canvas>
+                    <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
@@ -442,20 +442,100 @@
         // مقادیر مربوط به SMS‌ها
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
-        document.addEventListener("DOMContentLoaded", function() {
-            let citiesData3 = @json($citiesData3);  // دریافت داده‌های بازدیدها از کنترلر
-            let dates3 = @json($dates3);  // دریافت تاریخ‌ها از کنترلر
+        document.addEventListener('DOMContentLoaded', function () {
+            if (document.getElementById('bar_chart_user_visits')) {
+                var ctx = document.getElementById('bar_chart_user_visits').getContext('2d');
+                var dates = @json($dates8);
+                var visitsData = @json($visitsData8);
 
-            let datasets = Object.keys(citiesData3).map(city => ({
+                // Create datasets for each city and ISP combination
+                var datasets = [];
+                for (const [city, isps] of Object.entries(visitsData)) {
+                    for (const [isp, data] of Object.entries(isps)) {
+                        datasets.push({
+                            label: `${city} - ${isp}`,
+                            backgroundColor: getRandomColor(),
+                            data: dates.map(date => data[date] || 0),
+                        });
+                    }
+                }
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: dates,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: true
+                        },
+                        scales: {
+                            x: {
+                                barPercentage: 0.3,
+                                ticks: {
+                                    fontSize: 15,
+                                    fontColor: '#999'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'تعداد',
+                                    fontSize: 18
+                                },
+                                ticks: {
+                                    min: 0,
+                                    fontSize: 15,
+                                    fontColor: '#999',
+                                    callback: function (value) {
+                                        return value.toLocaleString('fa-IR');
+                                    }
+                                },
+                                grid: {
+                                    color: '#e8e8e8'
+                                }
+                            }
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                    return value.toLocaleString('fa-IR') + ' بازدید';
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+            let citiesData = @json($citiesData);  // دریافت داده‌های بازدیدها از کنترلر
+            let dates = @json($dates2);  // دریافت تاریخ‌ها از کنترلر
+
+            let datasets = Object.keys(citiesData).map(city => ({
                 label: city,
-                data: dates3.map(date => citiesData3[city][date]),
+                data: dates.map(date => citiesData[city][date]),
                 backgroundColor: getRandomColor(),
             }));
 
-            new Chart(document.getElementById('city_visits_chart3').getContext('2d'), {
+            new Chart(document.getElementById('city_visits_chart').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: dates3,  // تاریخ‌ها به عنوان برچسب محور X
+                    labels: dates,  // تاریخ‌ها به عنوان برچسب محور X
                     datasets: datasets,
                 },
                 options: {
