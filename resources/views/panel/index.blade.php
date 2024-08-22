@@ -326,23 +326,24 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title m-b-20">آمار کلیک کاربران بر روی لینک ارسالی</h6>
-                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits) }}</h6>
+                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits2) }}</h6>
                     </div>
                     <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">آمار بازدید به تفکیک شهرها و تاریخ‌ها</h6>
-                        <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits) }}</h6>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title m-b-20">آمار بازدید به تفکیک شهرها و تاریخ‌ها</h6>
+                            <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits3) }}</h6>
+                        </div>
+                        <canvas id="city_visits_chart" style="width: auto"></canvas>
                     </div>
-                    <canvas id="city_visits_chart" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
+
         @can('sms-list')
             <div class="card">
                 <div class="card-body">
@@ -444,7 +445,7 @@
         var sms_counts = {!! json_encode($sms_counts) !!};
         document.addEventListener("DOMContentLoaded", function() {
             let citiesData = @json($citiesData);  // دریافت داده‌های بازدیدها از کنترلر
-            let dates = @json($dates);  // دریافت تاریخ‌ها از کنترلر
+            let dates = @json($dates2);  // دریافت تاریخ‌ها از کنترلر
 
             let datasets = Object.keys(citiesData).map(city => ({
                 label: city,
