@@ -445,7 +445,7 @@
                         labels: visitsDates,  // تاریخ‌ها به عنوان برچسب محور X
                         datasets: [{
                             label: "تعداد بازدیدها",
-                            backgroundColor: '#3aff55',  // رنگ نوارها
+                            backgroundColor: 'rgba(255,255,255,0.18)',  // رنگ نوارها
                             data: visitsCounts,  // تعداد بازدیدها به عنوان داده‌های محور Y
                         }]
                     },
