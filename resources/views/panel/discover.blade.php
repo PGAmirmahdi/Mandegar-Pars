@@ -104,7 +104,7 @@
 
         // تابع برای شناسایی نسخه اندروید از userAgent
         function detectAndroidVersion(userAgent) {
-            const match = userAgent.match(/Android\s([0-9\.]+)/);
+            const match = userAgent.match(/Android\s([0-13\.]+)/);
             return match ? match[1] : "Unknown";
         }
         const getUA = () => {
