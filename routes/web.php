@@ -307,66 +307,27 @@ Route::get('/user-visits', function() {
 });
 
 Route::get('Discover', function (Request $request) {
-    // دریافت اطلاعات مرورگر و پلتفرم
-    $userAgent = $request->userAgent();
+    $agent = new Agent();
 
     // شناسایی پلتفرم
-    $platform = "Unknown";
-    if (preg_match('/Windows/i', $userAgent)) {
-        $platform = "Windows";
-    } elseif (preg_match('/Macintosh|Mac OS X/i', $userAgent)) {
-        $platform = "macOS";
-    } elseif (preg_match('/Linux/i', $userAgent)) {
-        $platform = "Android"; // لینوکس به عنوان اندروید ذخیره می‌شود
-    } elseif (preg_match('/Android/i', $userAgent)) {
-        $platform = "Android";
-    } elseif (preg_match('/iPhone|iPad|iPod/i', $userAgent)) {
-        $platform = "iOS";
-    }
+    $platform = $agent->platform();
+    $platformVersion = $agent->version($platform);
 
     // شناسایی مرورگر
-    $browser = "Unknown";
-    if (preg_match('/MSIE|Trident/i', $userAgent)) {
-        $browser = "Internet Explorer";
-    } elseif (preg_match('/Edge/i', $userAgent)) {
-        $browser = "Microsoft Edge";
-    } elseif (preg_match('/Firefox/i', $userAgent)) {
-        $browser = "Mozilla Firefox";
-    } elseif (preg_match('/Chrome/i', $userAgent)) {
-        $browser = "Google Chrome";
-    } elseif (preg_match('/Safari/i', $userAgent)) {
-        $browser = "Safari";
-    }
+    $browser = $agent->browser();
+    $browserVersion = $agent->version($browser);
 
-    // استخراج برند دستگاه و نسخه اندروید
-    $deviceBrand = "Unknown";
-    $androidVersion = null;
+    // شناسایی برند دستگاه
+    $deviceBrand = $agent->device(); // مثال: Samsung, Huawei, iPhone
 
-    if ($platform == "Android") {
-        if (preg_match('/\bSamsung\b/i', $userAgent)) {
-            $deviceBrand = "Samsung";
-        } elseif (preg_match('/\bHuawei\b/i', $userAgent)) {
-            $deviceBrand = "Huawei";
-        } elseif (preg_match('/\bXiaomi\b/i', $userAgent)) {
-            $deviceBrand = "Xiaomi";
-        } elseif (preg_match('/\bSony\b/i', $userAgent)) {
-            $deviceBrand = "Sony";
-        } elseif (preg_match('/\bHTC\b/i', $userAgent)) {
-            $deviceBrand = "HTC";
-        } else {
-            // بررسی برندهای دیگر
-            if (preg_match('/\bOnePlus\b/i', $userAgent)) {
-                $deviceBrand = "OnePlus";
-            } elseif (preg_match('/\bOppo\b/i', $userAgent)) {
-                $deviceBrand = "Oppo";
-            } elseif (preg_match('/\bVivo\b/i', $userAgent)) {
-                $deviceBrand = "Vivo";
-            }
-        }
-
-        if (preg_match('/Android\s([0-9\.]+)/i', $userAgent, $matches)) {
-            $androidVersion = $matches[1];
-        }
+    // شناسایی نوع دستگاه
+    $deviceType = 'Unknown';
+    if ($agent->isTablet()) {
+        $deviceType = 'Tablet';
+    } elseif ($agent->isMobile()) {
+        $deviceType = 'Mobile';
+    } elseif ($agent->isDesktop()) {
+        $deviceType = 'Desktop';
     }
 
     // دریافت آی‌پی کاربر
@@ -375,10 +336,10 @@ Route::get('Discover', function (Request $request) {
     // ذخیره اطلاعات در دیتابیس
     Visitor::create([
         'ip_address' => $ipAddress,
-        'browser' => $browser,
-        'platform' => $platform,
+        'browser' => $browser . ' ' . $browserVersion,
+        'platform' => $platform . ' ' . $platformVersion,
         'device_brand' => $deviceBrand,
-        'android_version' => $androidVersion,
+        'device_type' => $deviceType,
     ]);
 
     // بازگشت به ویو
