@@ -323,12 +323,17 @@ Route::post('/storeDeviceInfo', function (Request $request) {
     if ($response->successful()) {
         $locationData = $response->json();
 
+        // بررسی و استخراج اطلاعات شهر و ISP
+        $city = $locationData['city'] ?? null;
+        $isp = $locationData['connection']['isp'] ?? null;
+
+        // ذخیره اطلاعات در دیتابیس
         Visitor::create([
             'ip_address' => $ip,
             'platform' => $data['platform'],
             'browser' => $data['browser'],
-            'city' => $locationData['city'] ?? null,
-            'isp' => $locationData['connection']['isp'] ?? null,
+            'city' => $city,
+            'isp' => $isp,
         ]);
 
         return response()->json(['message' => 'Device info stored successfully']);
