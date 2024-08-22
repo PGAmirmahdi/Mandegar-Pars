@@ -410,38 +410,47 @@ class PanelController extends Controller
             ->groupBy('city', 'date')
             ->orderBy('date', 'asc')
             ->get();
-        $today = Carbon::today();
-        $fifteenDaysAgo = $today->subDays(15);
+        $from_date8 = $request->from_date
+            ? Verta::parse($request->from_date)->toCarbon()->startOfDay()
+            : now()->subDays(15)->startOfDay(); // 15 روز گذشته
 
-        // دریافت تعداد بازدیدها به ازای هر روز در 15 روز اخیر
-        $visitsData3 = Visitor::whereBetween('created_at', [$fifteenDaysAgo, Carbon::now()])
-            ->groupBy(DB::raw('DATE(created_at)'), 'city')
-            ->orderBy(DB::raw('DATE(created_at)'), 'asc')
-            ->get([
-                DB::raw('DATE(created_at) as date'),
-                'city',
-                DB::raw('COUNT(*) as visits')
-            ]);
+        $to_date8 = $request->to_date
+            ? Verta::parse($request->to_date)->toCarbon()->endOfDay()
+            : now()->endOfDay(); // امروز
 
-        // گروه‌بندی بر اساس شهرها
-        $cities3 = $visitsData3->groupBy('city');
+        // آمار بازدید کاربران به صورت روزانه و بر اساس شهر و ISP
+        $userVisits8 = UserVisit::whereBetween('created_at', [$from_date8, $to_date8])
+            ->select(DB::raw('DATE(created_at) as date'), 'city', 'isp', DB::raw('COUNT(*) as visits'))
+            ->groupBy('date', 'city', 'isp')
+            ->orderBy('date', 'asc')
+            ->get();
 
-        // آماده‌سازی داده‌ها برای نمودار
-        $citiesData3 = [];
-        $dates3 = array_unique($visitsData3->pluck('date')->toArray());
-        foreach ($cities3 as $city => $data) {
-            $citiesData3[$city] = array_fill_keys($dates3, 0);
-            foreach ($data as $item) {
-                $citiesData3[$city][$item->date] = $item->visits;
+        // تبدیل تاریخ‌ها به شمسی
+        $userVisits8 = $userVisits8->map(function ($visit8) {
+            $shamsiDate8 = Verta::instance($visit8->date)->format('Y/m/d');
+            return [
+                'date' => $shamsiDate8,
+                'city' => $visit8->city,
+                'isp' => $visit8->isp,
+                'visits' => $visit8->visits
+            ];
+        });
+
+        // دسته‌بندی بازدیدها بر اساس شهر و ISP
+        $cities8 = $userVisits8->pluck('city')->unique();
+        $isps8 = $userVisits8->pluck('isp')->unique();
+        $visitsData8 = [];
+        foreach ($cities8 as $city) {
+            foreach ($isps8 as $isp) {
+                $visitsData8[$city][$isp] = $userVisits8->where('city', $city)
+                    ->where('isp', $isp)
+                    ->pluck('visits', 'date')->all();
             }
         }
 
-        // تبدیل تاریخ‌ها به شمسی
-        $formattedDates3 = array_map(function($date) {
-            return Jalalian::fromDateTime($date)->format('Y/m/d');  // تبدیل تاریخ میلادی به شمسی
-        }, $dates3);
+        $dates8 = $userVisits8->pluck('date')->unique();
 
-        $totalVisits3 = $visitsData3->sum('visits');
+        $totalVisits8 = $userVisits8->sum('visits');
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
@@ -451,10 +460,7 @@ class PanelController extends Controller
             'orderCounts' => $orderCounts,
             'customerNames' => $customerNames,
             'orderCounts2' => $orderCounts2,
-            'citiesData3' => $citiesData3,
-            'dates3' => $formattedDates3,
-            'totalVisits3' => $totalVisits3
-        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData'));
+        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData','dates8', 'visitsData8', 'totalVisits8'));
     }
         public function readNotification($notification = null)
     {
