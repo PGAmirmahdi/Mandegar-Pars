@@ -307,45 +307,23 @@ Route::get('/user-visits', function() {
     return response()->json($userVisits);
 });
 
-Route::get('Discover', function (Request $request) {
-    $agent = new Agent();
-
-    // شناسایی پلتفرم
-    $platform = $agent->platform();
-    $platformVersion = $agent->version($platform);
-
-    // شناسایی مرورگر
-    $browser = $agent->browser();
-    $browserVersion = $agent->version($browser);
-
-    // شناسایی برند دستگاه
-    $deviceBrand = $agent->device(); // مثال: Samsung, Huawei, iPhone
-
-    // شناسایی نوع دستگاه
-    $deviceType = 'Unknown';
-    if ($agent->isTablet()) {
-        $deviceType = 'Tablet';
-    } elseif ($agent->isMobile()) {
-        $deviceType = 'Mobile';
-    } elseif ($agent->isDesktop()) {
-        $deviceType = 'Desktop';
-    }
-
-    // دریافت آی‌پی کاربر
-    $ipAddress = $request->ip();
+Route::get('Discover', function () {
+    return view('panel.discover');
+})->name("Discover");
+Route::post('/storeDeviceInfo', function (Request $request) {
+    $data = $request->all();
 
     // ذخیره اطلاعات در دیتابیس
     Visitor::create([
-        'ip_address' => $ipAddress,
-        'browser' => $browser . ' ' . $browserVersion,
-        'platform' => $platform . ' ' . $platformVersion,
-        'device_brand' => $deviceBrand,
-        'device_type' => $deviceType,
+        'ip_address' => $request->ip(),
+        'platform' => $data['platform'] . ' ' . $data['version'],
+        'browser' => $data['browser'] . ' ' . $data['browserVersion'],
+        'device_brand' => $data['manufacturer'],
+        'device_model' => $data['product']
     ]);
 
-    // بازگشت به ویو
-    return view('panel.discover');
-})->name("Discover");
+    return response()->json(['message' => 'Device info stored successfully']);
+});
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
