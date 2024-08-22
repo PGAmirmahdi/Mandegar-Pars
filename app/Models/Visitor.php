@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Visitor extends Model
 {
     use HasFactory;
-    protected $fillable = ['ip_address', 'browser', 'platform'];
+    protected $fillable = ['ip_address', 'browser', 'platform', 'city', 'isp'];
+
 }
