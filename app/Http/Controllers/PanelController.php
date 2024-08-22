@@ -419,7 +419,7 @@ class PanelController extends Controller
             : now()->endOfDay(); // امروز
 
         // آمار بازدید کاربران به صورت روزانه و بر اساس شهر و ISP
-        $userVisits8 = UserVisit::whereBetween('created_at', [$from_date8, $to_date8])
+        $userVisits8 = Visitor::whereBetween('created_at', [$from_date8, $to_date8])
             ->select(DB::raw('DATE(created_at) as date'), 'city', 'isp', DB::raw('COUNT(*) as visits'))
             ->groupBy('date', 'city', 'isp')
             ->orderBy('date', 'asc')
