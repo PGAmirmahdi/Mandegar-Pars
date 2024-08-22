@@ -328,7 +328,7 @@
                         <h6 class="card-title m-b-20">آمار بازدید کاربران از MPSystem</h6>
                         <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits8) }}</h6>
                     </div>
-                    <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
+                    <canvas id="bar_chart_user_visits3" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
@@ -443,8 +443,8 @@
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
         document.addEventListener('DOMContentLoaded', function () {
-            if (document.getElementById('bar_chart_user_visits')) {
-                var ctx = document.getElementById('bar_chart_user_visits').getContext('2d');
+            if (document.getElementById('bar_chart_user_visits3')) {
+                var ctx = document.getElementById('bar_chart_user_visits3').getContext('2d');
                 var dates = @json($dates8);
                 var visitsData = @json($visitsData8);
 
