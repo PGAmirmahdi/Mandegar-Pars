@@ -331,19 +331,18 @@
                     <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
                 </div>
             </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار بازدید به تفکیک شهرها و تاریخ‌ها</h6>
-                            <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits3) }}</h6>
-                        </div>
-                        <canvas id="city_visits_chart" style="width: auto"></canvas>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار کلیک به تفکیک شهرها و تاریخ‌ها</h6>
+                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits3) }}</h6>
                     </div>
+                    <canvas id="city_visits_chart" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
-
         @can('sms-list')
             <div class="card">
                 <div class="card-body">
@@ -444,19 +443,32 @@
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
         document.addEventListener("DOMContentLoaded", function() {
-            let citiesData = @json($citiesData);  // دریافت داده‌های بازدیدها از کنترلر
-            let dates = @json($dates2);  // دریافت تاریخ‌ها از کنترلر
+            let citiesData3 = @json($citiesData3);  // دریافت داده‌های بازدیدها از کنترلر
+            let dates3 = @json($dates3);  // دریافت تاریخ‌ها از کنترلر
 
-            let datasets = Object.keys(citiesData).map(city => ({
+            // تبدیل تاریخ‌ها به شمسی
+            function convertToShamsi(date) {
+                let parts = date.split('-');
+                let gDate = new Date(parts[0], parts[1] - 1, parts[2]);
+                return new Intl.DateTimeFormat('fa-IR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).format(gDate);
+            }
+
+            let formattedDates3 = dates3.map(date => convertToShamsi(date));
+
+            let datasets = Object.keys(citiesData3).map(city => ({
                 label: city,
-                data: dates.map(date => citiesData[city][date]),
+                data: formattedDates3.map(date => citiesData3[city][date]),
                 backgroundColor: getRandomColor(),
             }));
 
-            new Chart(document.getElementById('city_visits_chart').getContext('2d'), {
+            new Chart(document.getElementById('city_visits_chart3').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: dates,  // تاریخ‌ها به عنوان برچسب محور X
+                    labels: formattedDates3,  // تاریخ‌ها به عنوان برچسب محور X
                     datasets: datasets,
                 },
                 options: {
