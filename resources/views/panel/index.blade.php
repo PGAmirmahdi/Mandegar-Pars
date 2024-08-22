@@ -440,7 +440,7 @@
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
         document.addEventListener("DOMContentLoaded", function() {
-            let cityVisits = @json($visitsData2);
+            let cityVisits = @json($cityVisits);
 
             let cities = {};
 
