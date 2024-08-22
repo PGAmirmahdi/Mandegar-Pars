@@ -68,8 +68,6 @@
             var deviceInfo = {
                 platform: platform.os.family,
                 version: platform.os.version,
-                manufacturer: platform.manufacturer || detectAndroidBrand(navigator.userAgent) || "Unknown",
-                product: platform.product || "Unknown",
                 browser: platform.name,
                 browserVersion: platform.version
             };
@@ -90,23 +88,6 @@
                 console.error('Error:', error);
             });
         });
-
-        // تابع برای شناسایی برند دستگاه در اندروید از userAgent
-        function detectAndroidBrand(userAgent) {
-            const brands = ["Samsung", "Huawei", "Xiaomi", "OnePlus", "Sony", "LG", "HTC", "Motorola", "Nokia"];
-            for (let brand of brands) {
-                if (userAgent.includes(brand)) {
-                    return brand;
-                }
-            }
-            return null;
-        }
-
-        // تابع برای شناسایی نسخه اندروید از userAgent
-        function detectAndroidVersion(userAgent) {
-            const match = userAgent.match(/Android\s([0-13\.]+)/);
-            return match ? match[1] : "Unknown";
-        }
         const getUA = () => {
             let device = "Unknown";
             const ua = {
