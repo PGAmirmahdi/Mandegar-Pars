@@ -447,8 +447,8 @@ class PanelController extends Controller
             'customerNames' => $customerNames,
             'orderCounts2' => $orderCounts2,
             'citiesData' => $citiesData,
-            'dates' => $dates2,
-            'totalVisits' => $totalVisits3
+            'dates2' => $dates2,
+            'totalVisits3' => $totalVisits3
         ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData'));
     }
         public function readNotification($notification = null)
