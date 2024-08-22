@@ -440,78 +440,86 @@
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
         document.addEventListener("DOMContentLoaded", function() {
-            fetch('/getCityVisitsData')
-                .then(response => response.json())
-                .then(data => {
-                    let cities = {};
+            let cityVisits = @json($visitsData2);
 
-                    data.forEach(item => {
-                        if (!cities[item.city]) {
-                            cities[item.city] = {};
-                        }
-                        cities[item.city][item.date] = item.visits;
-                    });
+            let cities = {};
 
-                    let labels = [...new Set(data.map(item => item.date))]; // استخراج تاریخ‌ها
-                    let datasets = [];
+            cityVisits.forEach(function(item) {
+                if (!cities[item.city]) {
+                    cities[item.city] = {};
+                }
+                cities[item.city][item.date] = item.visits;
+            });
 
-                    Object.keys(cities).forEach(city => {
-                        datasets.push({
-                            label: city,
-                            data: labels.map(date => cities[city][date] || 0),
-                            backgroundColor: getRandomColor(),
-                        });
-                    });
+            let labels = [...new Set(cityVisits.map(item => item.date))]; // استخراج تاریخ‌ها
+            let datasets = [];
 
-                    new Chart(document.getElementById('city_visits_chart'), {
-                        type: 'bar',
-                        data: {
-                            labels: labels,
-                            datasets: datasets,
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                xAxes: [{
-                                    barPercentage: 0.3,
-                                    ticks: {
-                                        fontSize: 15,
-                                        fontColor: '#999'
-                                    },
-                                    gridLines: {
-                                        display: false,
-                                    }
-                                }],
-                                yAxes: [{
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'تعداد بازدیدها',
-                                        fontSize: 18
-                                    },
-                                    ticks: {
-                                        min: 0,
-                                        fontSize: 15,
-                                        fontColor: '#999',
-                                        callback: function (value) {
-                                            return value.toLocaleString('fa-IR');
-                                        }
-                                    },
-                                    gridLines: {
-                                        color: '#e8e8e8',
-                                    }
-                                }],
+            Object.keys(cities).forEach(city => {
+                datasets.push({
+                    label: city,
+                    data: labels.map(date => cities[city][date] || 0),
+                    backgroundColor: getRandomColor(),
+                });
+            });
+
+            new Chart(document.getElementById('city_visits_chart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: datasets,
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
                             },
-                            tooltips: {
-                                callbacks: {
-                                    label: function(tooltipItem, data) {
-                                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                                        return value.toLocaleString('fa-IR') + ' بازدید ';
-                                    }
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'تعداد بازدیدها',
+                                fontSize: 18
+                            },
+                            ticks: {
+                                min: 0,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function(value) {
+                                    return value.toLocaleString('fa-IR');
                                 }
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                return value.toLocaleString('fa-IR') + ' بازدید ';
                             }
                         }
-                    });
-                });
+                    }
+                }
+            });
+
+            function getRandomColor() {
+                let letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        });
 
             function getRandomColor() {
                 let letters = '0123456789ABCDEF';
