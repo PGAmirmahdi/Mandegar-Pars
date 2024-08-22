@@ -446,29 +446,16 @@
             let citiesData3 = @json($citiesData3);  // دریافت داده‌های بازدیدها از کنترلر
             let dates3 = @json($dates3);  // دریافت تاریخ‌ها از کنترلر
 
-            // تبدیل تاریخ‌ها به شمسی
-            function convertToShamsi(date) {
-                let parts = date.split('-');
-                let gDate = new Date(parts[0], parts[1] - 1, parts[2]);
-                return new Intl.DateTimeFormat('fa-IR', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                }).format(gDate);
-            }
-
-            let formattedDates3 = dates3.map(date => convertToShamsi(date));
-
             let datasets = Object.keys(citiesData3).map(city => ({
                 label: city,
-                data: formattedDates3.map(date => citiesData3[city][date]),
+                data: dates3.map(date => citiesData3[city][date]),
                 backgroundColor: getRandomColor(),
             }));
 
             new Chart(document.getElementById('city_visits_chart3').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: formattedDates3,  // تاریخ‌ها به عنوان برچسب محور X
+                    labels: dates3,  // تاریخ‌ها به عنوان برچسب محور X
                     datasets: datasets,
                 },
                 options: {
