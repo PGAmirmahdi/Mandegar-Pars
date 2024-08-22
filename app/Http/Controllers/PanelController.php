@@ -410,11 +410,11 @@ class PanelController extends Controller
             ->groupBy('city', 'date')
             ->orderBy('date', 'asc')
             ->get();
-        $today2 = Carbon::today();
-        $fifteenDaysAgo2 = $today2->subDays(15);
+        $today = Carbon::today();
+        $fifteenDaysAgo = $today->subDays(15);
 
         // دریافت تعداد بازدیدها به ازای هر روز در 15 روز اخیر
-        $visitsData3 = Visitor::whereBetween('created_at', [$fifteenDaysAgo2, Carbon::now()])
+        $visitsData3 = Visitor::whereBetween('created_at', [$fifteenDaysAgo, Carbon::now()])
             ->groupBy(DB::raw('DATE(created_at)'), 'city')
             ->orderBy(DB::raw('DATE(created_at)'), 'asc')
             ->get([
@@ -424,15 +424,15 @@ class PanelController extends Controller
             ]);
 
         // گروه‌بندی بر اساس شهرها
-        $cities = $visitsData3->groupBy('city');
+        $cities3 = $visitsData3->groupBy('city');
 
         // آماده‌سازی داده‌ها برای نمودار
-        $citiesData = [];
-        $dates2 = array_unique($visitsData3->pluck('date')->toArray());
-        foreach ($cities as $city => $data) {
-            $citiesData[$city] = array_fill_keys($dates2, 0);
+        $citiesData3 = [];
+        $dates3 = array_unique($visitsData3->pluck('date')->toArray());
+        foreach ($cities3 as $city => $data) {
+            $citiesData3[$city] = array_fill_keys($dates3, 0);
             foreach ($data as $item) {
-                $citiesData[$city][$item->date] = $item->visits;
+                $citiesData3[$city][$item->date] = $item->visits;
             }
         }
 
