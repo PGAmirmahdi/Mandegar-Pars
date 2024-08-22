@@ -317,7 +317,7 @@ Route::get('Discover', function (Request $request) {
     } elseif (preg_match('/Macintosh|Mac OS X/i', $userAgent)) {
         $platform = "macOS";
     } elseif (preg_match('/Linux/i', $userAgent)) {
-        $platform = "Linux";
+        $platform = "Android"; // لینوکس به عنوان اندروید ذخیره می‌شود
     } elseif (preg_match('/Android/i', $userAgent)) {
         $platform = "Android";
     } elseif (preg_match('/iPhone|iPad|iPod/i', $userAgent)) {
@@ -338,6 +338,27 @@ Route::get('Discover', function (Request $request) {
         $browser = "Safari";
     }
 
+    // استخراج برند دستگاه و نسخه اندروید
+    $deviceBrand = "Unknown";
+    $androidVersion = null;
+
+    if ($platform == "Android") {
+        if (preg_match('/\bSamsung\b/i', $userAgent)) {
+            $deviceBrand = "Samsung";
+        } elseif (preg_match('/\bHuawei\b/i', $userAgent)) {
+            $deviceBrand = "Huawei";
+        } elseif (preg_match('/\bXiaomi\b/i', $userAgent)) {
+            $deviceBrand = "Xiaomi";
+        } elseif (preg_match('/\bSony\b/i', $userAgent)) {
+            $deviceBrand = "Sony";
+        } elseif (preg_match('/\bHTC\b/i', $userAgent)) {
+            $deviceBrand = "HTC";
+        }
+        if (preg_match('/Android\s([0-9\.]+)/i', $userAgent, $matches)) {
+            $androidVersion = $matches[1];
+        }
+    }
+
     // دریافت آی‌پی کاربر
     $ipAddress = $request->ip();
 
@@ -346,11 +367,14 @@ Route::get('Discover', function (Request $request) {
         'ip_address' => $ipAddress,
         'browser' => $browser,
         'platform' => $platform,
+        'device_brand' => $deviceBrand,
+        'android_version' => $androidVersion,
     ]);
 
     // بازگشت به ویو
     return view('panel.discover');
 })->name("Discover");
+
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
