@@ -313,10 +313,29 @@ Route::get('Discover', function () {
 Route::post('/storeDeviceInfo', function (Request $request) {
     $data = $request->all();
 
+    // دریافت اطلاعات IP از ipinfo.io
+    $ip = $request->ip();
+    $accessToken = 'YOUR_IPINFO_ACCESS_TOKEN'; // کلید دسترسی به ipinfo.io
+
+    $response = Http::get("http://ipinfo.io/{$ip}/json?token={$accessToken}");
+
+    // بررسی اینکه آیا درخواست موفقیت‌آمیز بود
+    if ($response->successful()) {
+        $ipInfo = $response->json();
+        $city = $ipInfo['city'] ?? 'Unknown';
+        $isp = $ipInfo['org'] ?? 'Unknown'; // اطلاعات ارائه‌دهنده اینترنت (ISP)
+    } else {
+        $city = 'Unknown';
+        $isp = 'Unknown';
+    }
+
+    // ذخیره اطلاعات در پایگاه داده
     Visitor::create([
-        'ip_address' => $request->ip(),
+        'ip_address' => $ip,
         'platform' => $data['platform'],
         'browser' => $data['browser'],
+        'city' => $city,          // اضافه کردن شهر
+        'isp' => $isp,            // اضافه کردن ارائه‌دهنده اینترنت
     ]);
 
     return response()->json(['message' => 'Device info stored successfully']);
