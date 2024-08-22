@@ -510,26 +510,6 @@
                     }
                 }
             });
-
-            function getRandomColor() {
-                let letters = '0123456789ABCDEF';
-                let color = '#';
-                for (let i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            }
-        });
-
-            function getRandomColor() {
-                let letters = '0123456789ABCDEF';
-                let color = '#';
-                for (let i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            }
-        });
         document.addEventListener("DOMContentLoaded", function() {
             var visitsDates = @json($visitsDates);  // دریافت تاریخ‌ها از کنترلر
             var visitsCounts = @json($visitsCounts);  // دریافت تعداد بازدیدها از کنترلر
