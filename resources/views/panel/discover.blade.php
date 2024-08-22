@@ -67,9 +67,7 @@
             // استخراج اطلاعات دستگاه با استفاده از platform.js
             var deviceInfo = {
                 platform: platform.os.family,
-                version: platform.os.version,
-                browser: platform.name,
-                browserVersion: platform.version
+                browser: platform.name
             };
 
             // ارسال اطلاعات به سرور از طریق AJAX
