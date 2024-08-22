@@ -315,7 +315,7 @@ Route::post('/storeDeviceInfo', function (Request $request) {
     $data = $request->all();
     $ip = $request->ip();
 
-    // استفاده از API IPStack برای دریافت اطلاعات شهر و ISP
+    // استفاده از API IPStack برای دریافت اطلاعات مکان
     $apiKey = 'ad94235570426087e0a0cea2caf60280'; // کلید API شما
     $response = Http::get("http://api.ipstack.com/{$ip}?access_key={$apiKey}");
 
@@ -323,8 +323,8 @@ Route::post('/storeDeviceInfo', function (Request $request) {
     if ($response->successful()) {
         $locationData = $response->json();
 
-        // بررسی و استخراج اطلاعات شهر و ISP
-        $city = $locationData['city'] ?? null;
+        // بررسی و استخراج اطلاعات مکان (شهر)
+        $city = $locationData['location']['capital'] ?? null;
         $isp = $locationData['connection']['isp'] ?? null;
 
         // ذخیره اطلاعات در دیتابیس
@@ -332,8 +332,8 @@ Route::post('/storeDeviceInfo', function (Request $request) {
             'ip_address' => $ip,
             'platform' => $data['platform'],
             'browser' => $data['browser'],
-            'city' => $city,
-            'isp' => $isp,
+            'city' => $city, // نام شهری که کاربر در آن قرار دارد
+            'isp' => $isp, // ارائه‌دهنده اینترنت کاربر
         ]);
 
         return response()->json(['message' => 'Device info stored successfully']);
