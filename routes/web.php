@@ -324,7 +324,7 @@ Route::post('/storeDeviceInfo', function (Request $request) {
         $locationData = $response->json();
 
         // بررسی و استخراج اطلاعات مکان (شهر)
-        $city = $locationData['location']['capital'] ?? null;
+        $city = $locationData['city'] ?? null;
         $isp = $locationData['connection']['isp'] ?? null;
 
         // ذخیره اطلاعات در دیتابیس
