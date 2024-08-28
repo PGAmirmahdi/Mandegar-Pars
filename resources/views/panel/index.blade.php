@@ -324,7 +324,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار بازدید کاربران از MPSystem</h6>
+                            <h6 class="card-title m-b-20">آمار شهر بازدیدکنندگان لینک ارسالی</h6>
                             <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits8) }}</h6>
                         </div>
                         <canvas id="bar_chart_user_visits3" style="width: auto"></canvas>
@@ -448,16 +448,14 @@
                 var dates = @json($dates8);
                 var visitsData = @json($visitsData8);
 
-                // Create datasets for each city and ISP combination
+                // Create datasets for each city
                 var datasets = [];
-                for (const [city, isps] of Object.entries(visitsData)) {
-                    for (const [isp, data] of Object.entries(isps)) {
-                        datasets.push({
-                            label: `${city} - ${isp}`,
-                            backgroundColor: getRandomColor(),
-                            data: dates.map(date => data[date] || 0),
-                        });
-                    }
+                for (const [city, data] of Object.entries(visitsData)) {
+                    datasets.push({
+                        label: `${city}`,
+                        backgroundColor: getRandomColor(),
+                        data: dates.map(date => data[date] || 0),
+                    });
                 }
 
                 new Chart(ctx, {
