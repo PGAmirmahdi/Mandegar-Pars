@@ -448,14 +448,16 @@
                 var dates = @json($dates8);
                 var visitsData = @json($visitsData8);
 
-                // Create datasets for each city
+                // Create datasets for each city and ISP combination
                 var datasets = [];
-                for (const [city, data] of Object.entries(visitsData)) {
-                    datasets.push({
-                        label: `${city}`,
-                        backgroundColor: getRandomColor(),
-                        data: dates.map(date => data[date] || 0),
-                    });
+                for (const [city, isps] of Object.entries(visitsData)) {
+                    for (const [isp, data] of Object.entries(isps)) {
+                        datasets.push({
+                            label: `${city}`,
+                            backgroundColor: getRandomColor(),
+                            data: dates.map(date => data[date] || 0),
+                        });
+                    }
                 }
 
                 new Chart(ctx, {
