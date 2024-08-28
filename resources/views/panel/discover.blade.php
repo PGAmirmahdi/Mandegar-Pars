@@ -64,50 +64,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    // ارسال مختصات به سرور
-                    sendLocation(position.coords.latitude, position.coords.longitude);
-                }, function(error) {
-                    console.error("Error getting location: ", error);
-                });
-            } else {
-                console.error("Geolocation is not supported by this browser.");
-            }
-        });
-
-        function sendLocation(latitude, longitude) {
-            // ایجاد یک فرم به صورت داینامیک و ارسال آن به سرور
-            var form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/store-visitor-data';
-
-            // اضافه کردن CSRF Token به فرم
-            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            var csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = csrfToken;
-            form.appendChild(csrfInput);
-
-            // اضافه کردن مختصات به فرم
-            var latInput = document.createElement('input');
-            latInput.type = 'hidden';
-            latInput.name = 'latitude';
-            latInput.value = latitude;
-            form.appendChild(latInput);
-
-            var lonInput = document.createElement('input');
-            lonInput.type = 'hidden';
-            lonInput.name = 'longitude';
-            lonInput.value = longitude;
-            form.appendChild(lonInput);
-
-            // ارسال فرم به سرور
-            document.body.appendChild(form);
-            form.submit();
-        }
-        document.addEventListener("DOMContentLoaded", function() {
             // استخراج اطلاعات دستگاه با استفاده از platform.js
             var deviceInfo = {
                 platform: platform.os.family,
