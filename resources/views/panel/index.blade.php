@@ -343,6 +343,44 @@
                 </div>
             </div>
         </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <h6>لیست شهرهای کلیک کرده</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نام شهر</th>
+                            <th>آیپی کاربر</th>
+                            <th>زمان ورود</th>
+                            <th>پلتفرم کاربر</th>
+                            <th>مرورگر کاربر</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($bazdid as $key => $baz)
+                            <tr>
+                                <td>{{ ++$key }}</td>
+                                <td>{{ $baz->city}}</td>
+                                <td>{{ $baz->ip_address }}</td>
+                                <td>{{ verta($baz->created_at)->format('H:i - Y/m/d') }}</td>
+                                <td>{{ $baz->platform }}</td>
+                                <td>{{ $baz->browser }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-center">{{ $bazdid->appends(request()->all())->links() }}</div>
+            </div>
+        </div>
         @can('sms-list')
             <div class="card">
                 <div class="card-body">
