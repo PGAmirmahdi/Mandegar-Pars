@@ -63,6 +63,20 @@
 {{--Link JS--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"></script>
     <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lon;
+        }
         document.addEventListener("DOMContentLoaded", function() {
             // استخراج اطلاعات دستگاه با استفاده از platform.js
             var deviceInfo = {

@@ -312,6 +312,7 @@ Route::get('Discover', function () {
     return view('panel.discover');
 })->name("Discover");
 Route::post('/storeDeviceInfo', function (Request $request) {
+
     $data = $request->all();
     $ip = $request->ip();
 
@@ -322,10 +323,33 @@ Route::post('/storeDeviceInfo', function (Request $request) {
     // بررسی اینکه درخواست موفق بوده باشد
     if ($response->successful()) {
         $locationData = $response->json();
-
-        // بررسی و استخراج اطلاعات مکان (شهر)
-        $city = $locationData['city'] ?? null;
+        $longitude = $locationData['longitude'] ?? null;
+        $latitude = $locationData['latitude'] ?? null;
         $isp = $locationData['connection']['isp'] ?? null;
+
+        // استفاده از OpenStreetMap Nominatim برای پیدا کردن شهر از مختصات
+        if ($latitude && $longitude) {
+            $nominatimResponse = Http::get("https://nominatim.openstreetmap.org/reverse", [
+                'format' => 'json',
+                'lat' => $latitude,
+                'lon' => $longitude,
+                'zoom' => 10, // میزان دقت اطلاعات جغرافیایی (10 برای شهرها و شهرستان‌ها مناسب است)
+                'addressdetails' => 1
+            ]);
+
+            if ($nominatimResponse->successful()) {
+                $nominatimData = $nominatimResponse->json();
+                $city = $nominatimData['address']['city'] ??
+                    $nominatimData['address']['town'] ??
+                    $nominatimData['address']['village'] ??
+                    $nominatimData['address']['county'] ??
+                    'Unknown';
+            } else {
+                $city = 'Unknown';
+            }
+        } else {
+            $city = 'Unknown';
+        }
 
         // ذخیره اطلاعات در دیتابیس
         Visitor::create([
