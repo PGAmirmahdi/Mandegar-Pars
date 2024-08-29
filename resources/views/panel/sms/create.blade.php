@@ -148,7 +148,6 @@ www.instagram.com/artintoner.ir
                     success: function (response) {
                         modal.hide();
                         if (response.success) {
-                            alert(response.success);
                             window.location.href = "{{ route('sms.index') }}";
                         } else if (response.failed) {
                             alert(response.failed);
