@@ -483,7 +483,7 @@
                             <span class="price_with_grouping text-primary"></span>
                         </td>
                         <td>
-                            <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0" readonly>
+                            <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0">
                         </td>
                         <td>
                             <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
