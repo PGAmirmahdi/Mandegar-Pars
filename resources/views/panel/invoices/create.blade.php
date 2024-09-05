@@ -363,43 +363,9 @@
         </div>
     </div>
 @endsection
+
 @section('scripts')
     <script>
-        function CalcOtherProductInvoice(changeable) {
-            var index = $(changeable).parent().parent().index();
-            let price =  $('#other_products_table input[name="other_prices[]"]')[index].value;
-            let count =  $('#other_products_table input[name="other_counts[]"]')[index].value;
-            let discount_amount =  $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
-
-            $.ajax({
-                url: "{{ route('calcOtherProductsInvoice') }}",
-                type: 'post',
-                data: {
-                    'price': price,
-                    'count': count,
-                    'discount_amount': discount_amount,
-                    'unofficial': unofficials,
-                },
-                success: function (res) {
-                    let total_price_with_off = parseFloat(res.data.total_price_with_off);
-                    if (!isNaN(total_price_with_off)) {
-                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = total_price_with_off;
-                    }
-
-                    $('#other_products_table input[name="other_prices[]"]')[index].value = parseFloat(res.data.price);
-                    $('#other_products_table input[name="other_total_prices[]"]')[index].value = parseFloat(res.data.total_price);
-                    $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = parseFloat(res.data.discount_amount);
-                    $('#other_products_table input[name="other_extra_amounts[]"]')[index].value = parseFloat(res.data.extra_amount);
-                    $('#other_products_table input[name="other_taxes[]"]')[index].value = parseFloat(res.data.tax);
-                    $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
-
-                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
-                },
-                error: function (request, status, error) {
-                    //
-                }
-            });
-        }
         var products = [];
         var colors = [];
         var unofficials = "{{ \Illuminate\Support\Facades\Gate::allows('unofficial-sales') }}";
@@ -586,17 +552,6 @@
                 CalcOtherProductInvoice(this);
             });
 
-            // اضافه کردن رویداد برای تغییرات در فیلد other_extra_amounts[]
-            $(document).on('keyup', '#other_products_table input[name="other_extra_amounts[]"]', function (e) {
-                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value) {
-                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
-                }
-            });
-
-            $(document).on('change', '#other_products_table input[name="other_extra_amounts[]"]', function () {
-                CalcOtherProductInvoice(this);
-            });
-
             $(document).on('change', 'select[name="buyer_name"]', function () {
                 let customer_id = this.value;
 
@@ -605,20 +560,86 @@
                     type: 'post',
                     success: function(res) {
                         $('#economical_number').val(res.data.economical_number);
-                        $('#national_identity_number').val(res.data.national_identity_number);
-                        $('#register_number').val(res.data.register_number);
-                        $('#phone').val(res.data.phone);
-                        $('#address').val(res.data.address);
+                        $('#national_number').val(res.data.national_number);
+                        $('#postal_code').val(res.data.postal_code);
+                        $('#phone').val(res.data.phone1);
+                        $('#address').val(res.data.address1);
+                        $('#province').val(res.data.province).trigger('change');
+                        $('#city').val(res.data.city);
                     }
                 });
             });
         });
-    </script>
-@endsection
 
-@section('scripts')
-    <script>
+        function CalcProductInvoice(changeable) {
+            var index = $(changeable).parent().parent().index();
+            let product_id =  $('#products_table select[name="products[]"]')[index].value;
+            let count =  $('#products_table input[name="counts[]"]')[index].value;
 
+            $.ajax({
+                url: "{{ route('calcProductsInvoice') }}",
+                type: 'post',
+                data: {
+                    'product_id': product_id,
+                    'count': count,
+                    'unofficial': unofficials,
+                },
+                success: function (res) {
+                    $('#products_table input[name="prices[]"]')[index].value = parseFloat(res.data.price);
+                    $('#products_table input[name="total_prices[]"]')[index].value = parseFloat(res.data.total_price);
+                    $('#products_table input[name="discount_amounts[]"]')[index].value = parseFloat(res.data.discount_amount);
+                    $('#products_table input[name="extra_amounts[]"]')[index].value = parseFloat(res.data.extra_amount);
+                    $('#products_table input[name="total_prices_with_off[]"]')[index].value = parseFloat(res.data.total_price_with_off);
+                    $('#products_table input[name="taxes[]"]')[index].value = parseFloat(res.data.tax);
+                    $('#products_table input[name="invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
+
+                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                },
+                error: function (request, status, error) {
+                    //
+                }
+            });
+        }
+
+        function CalcOtherProductInvoice(changeable) {
+            var index = $(changeable).parent().parent().index();
+            let price = $('#other_products_table input[name="other_prices[]"]')[index].value;
+            let count = $('#other_products_table input[name="other_counts[]"]')[index].value;
+            let discount_amount = $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
+            let extra_amount = $('#other_products_table input[name="other_extra_amounts[]"]')[index].value; // اضافه کردن مقدار extra_amount
+
+            $.ajax({
+                url: "{{ route('calcOtherProductsInvoice') }}",
+                type: 'post',
+                data: {
+                    'price': price,
+                    'count': count,
+                    'discount_amount': discount_amount,
+                    'unofficial': unofficials,
+                },
+                success: function (res) {
+                    let total_price_with_off = parseFloat(res.data.total_price_with_off);
+                    let extra_amount = parseFloat($('#other_products_table input[name="other_extra_amounts[]"]')[index].value); // گرفتن مقدار extra_amount از فرم
+
+                    if (!isNaN(total_price_with_off)) {
+                        total_price_with_off += isNaN(extra_amount) ? 0 : extra_amount; // اضافه کردن extra_amount به total_price_with_off
+                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = total_price_with_off;
+                    }
+
+                    $('#other_products_table input[name="other_prices[]"]')[index].value = parseFloat(res.data.price);
+                    $('#other_products_table input[name="other_total_prices[]"]')[index].value = parseFloat(res.data.total_price);
+                    $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = parseFloat(res.data.discount_amount);
+                    $('#other_products_table input[name="other_extra_amounts[]"]')[index].value = parseFloat(res.data.extra_amount);
+                    $('#other_products_table input[name="other_taxes[]"]')[index].value = parseFloat(res.data.tax);
+                    $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
+
+                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                },
+                error: function (request, status, error) {
+                    //
+                }
+            });
+        }
     </script>
 @endsection
 
