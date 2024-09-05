@@ -403,243 +403,188 @@
         });
 
         $(document).ready(function () {
+            // اضافه کردن محصول به جدول محصولات
             $('#btn_add').on('click', function () {
                 $('#products_table tbody').append(`
-                    <tr>
-                        <td>
-                            <select class="js-example-basic-single" name="products[]" style="width: 300px !important;" required>
-                                <option value="" disabled selected>..................... انتخاب کنید .....................</option>
-                                ${products_options_html}
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control" name="colors[]" required>
-                                ${colors_options_html}
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" name="counts[]" class="form-control" min="1" value="1" required>
-                        </td>
-                        <td>
-                            <select class="form-control" name="units[]">
-                                <option value="number">عدد</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" name="prices[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <input type="number" name="total_prices[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <input type="number" name="discount_amounts[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <input type="number" name="extra_amounts[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <input type="number" name="taxes[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <input type="number" name="invoice_nets[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `);
-                $('.js-example-basic-single').select2();
+                <tr>
+                    <td>
+                        <select class="js-example-basic-single" name="products[]" style="width: 300px !important;" required>
+                            <option value="" disabled selected>..................... انتخاب کنید .....................</option>
+                            ${products_options_html}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="colors[]" required>
+                            ${colors_options_html}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="counts[]" class="form-control" min="1" value="1" required>
+                    </td>
+                    <td>
+                        <select class="form-control" name="units[]">
+                            <option value="number">عدد</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="prices[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="total_prices[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="discount_amounts[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="extra_amounts[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="taxes[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="invoice_nets[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            `);
+                $('.js-example-basic-single').select2(); // تنظیم انتخابگر select2 برای انتخاب محصولات
             });
 
+            // اضافه کردن محصولات دیگر به جدول
             $('#btn_other_add').on('click', function () {
                 $('#other_products_table tbody').append(`
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control" name="other_products[]" placeholder="عنوان کالا" required>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control" name="other_colors[]" placeholder="نام رنگ" required>
-                        </td>
-                        <td>
-                            <input type="number" name="other_counts[]" class="form-control" min="1" value="1" required>
-                        </td>
-                        <td>
-                            <select class="form-control" name="other_units[]">
-                                <option value="number">عدد</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" name="other_prices[]" class="form-control" min="0" value="0" required>
-                            <span class="price_with_grouping text-primary"></span>
-                        </td>
-                        <td>
-                            <input type="number" name="other_total_prices[]" class="form-control" min="0" value="0">
-                        </td>
-                        <td>
-                            <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="0" required>
-                            <span class="price_with_grouping text-primary"></span>
-                        </td>
-                        <td>
-                            <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0">
-                        </td>
-                        <td>
-                            <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <input type="number" name="other_taxes[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="0" readonly>
-                        </td>
-                        <td>
-                            <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `);
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="other_products[]" placeholder="عنوان کالا" required>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="other_colors[]" placeholder="نام رنگ" required>
+                    </td>
+                    <td>
+                        <input type="number" name="other_counts[]" class="form-control" min="1" value="1" required>
+                    </td>
+                    <td>
+                        <select class="form-control" name="other_units[]">
+                            <option value="number">عدد</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="other_prices[]" class="form-control" min="0" value="0" required>
+                        <span class="price_with_grouping text-primary"></span>
+                    </td>
+                    <td>
+                        <input type="number" name="other_total_prices[]" class="form-control" min="0" value="0">
+                    </td>
+                    <td>
+                        <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="0" required>
+                        <span class="price_with_grouping text-primary"></span>
+                    </td>
+                    <td>
+                        <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0">
+                    </td>
+                    <td>
+                        <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="other_taxes[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="0" readonly>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            `);
             });
 
+            // حذف محصول از جدول
             $(document).on('click','.btn_remove', function () {
                 $(this).parent().parent().remove();
             });
 
-            $(document).on('change', '#products_table select[name="products[]"]', function () {
+            // محاسبه فاکتور محصول
+            $(document).on('change', '#products_table select[name="products[]"], #products_table input[name="counts[]"], #products_table input[name="extra_amounts[]"]', function () {
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this);
             });
 
-            $(document).on('keyup', '#products_table input[name="counts[]"]', function (e) {
-                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value) {
-                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
-                }
-            });
-
-            $(document).on('change', '#products_table input[name="counts[]"]', function () {
-                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
-                CalcProductInvoice(this);
-            });
-
-            $(document).on('keyup', '#other_products_table input[name="other_counts[]"]', function (e) {
-                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value) {
-                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
-                }
-            });
-
-            $(document).on('change', '#other_products_table input[name="other_counts[]"]', function () {
+            // محاسبه فاکتور محصول دیگر
+            $(document).on('change', '#other_products_table input[name="other_counts[]"], #other_products_table input[name="other_prices[]"], #other_products_table input[name="other_discount_amounts[]"], #other_products_table input[name="other_extra_amounts[]"]', function () {
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcOtherProductInvoice(this);
             });
 
-            $(document).on('keyup', '#other_products_table input[name="other_prices[]"]', function (e) {
-                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value) {
-                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
-                }
-            });
-
-            $(document).on('change', '#other_products_table input[name="other_prices[]"]', function () {
-                CalcOtherProductInvoice(this);
-            });
-
-            $(document).on('keyup', '#other_products_table input[name="other_discount_amounts[]"]', function (e) {
-                if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value) {
-                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
-                }
-            });
-
-            $(document).on('change', '#other_products_table input[name="other_discount_amounts[]"]', function () {
-                CalcOtherProductInvoice(this);
-            });
-
-            $(document).on('change', 'select[name="buyer_name"]', function () {
-                let customer_id = this.value;
+            // محاسبه فاکتور برای محصولات
+            function CalcProductInvoice(changeable) {
+                var index = $(changeable).parent().parent().index();
+                let product_id =  $('#products_table select[name="products[]"]')[index].value;
+                let count =  $('#products_table input[name="counts[]"]')[index].value;
 
                 $.ajax({
-                    url: '/panel/get-customer-info/'+customer_id,
+                    url: "{{ route('calcProductsInvoice') }}",
                     type: 'post',
-                    success: function(res) {
-                        $('#economical_number').val(res.data.economical_number);
-                        $('#national_number').val(res.data.national_number);
-                        $('#postal_code').val(res.data.postal_code);
-                        $('#phone').val(res.data.phone1);
-                        $('#address').val(res.data.address1);
-                        $('#province').val(res.data.province).trigger('change');
-                        $('#city').val(res.data.city);
+                    data: {
+                        'product_id': product_id,
+                        'count': count,
+                        'unofficial': unofficials,
+                    },
+                    success: function (res) {
+                        $('#products_table input[name="prices[]"]')[index].value = parseFloat(res.data.price);
+                        $('#products_table input[name="total_prices[]"]')[index].value = parseFloat(res.data.total_price);
+                        $('#products_table input[name="discount_amounts[]"]')[index].value = parseFloat(res.data.discount_amount);
+                        $('#products_table input[name="extra_amounts[]"]')[index].value = parseFloat(res.data.extra_amount);
+                        $('#products_table input[name="total_prices_with_off[]"]')[index].value = parseFloat(res.data.total_price_with_off);
+                        $('#products_table input[name="taxes[]"]')[index].value = parseFloat(res.data.tax);
+                        $('#products_table input[name="invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
+
+                        $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                    },
+                    error: function (request, status, error) {
+                        console.log(error);
                     }
                 });
-            });
-        });
+            }
 
-        function CalcProductInvoice(changeable) {
-            var index = $(changeable).parent().parent().index();
-            let product_id =  $('#products_table select[name="products[]"]')[index].value;
-            let count =  $('#products_table input[name="counts[]"]')[index].value;
+            // محاسبه فاکتور برای محصولات دیگر
+            function CalcOtherProductInvoice(changeable) {
+                var index = $(changeable).parent().parent().index();
+                let price = $('#other_products_table input[name="other_prices[]"]')[index].value;
+                let count = $('#other_products_table input[name="other_counts[]"]')[index].value;
+                let discount_amount = $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
+                let extra_amount = parseFloat($('#other_products_table input[name="other_extra_amounts[]"]')[index].value) || 0;
 
-            $.ajax({
-                url: "{{ route('calcProductsInvoice') }}",
-                type: 'post',
-                data: {
-                    'product_id': product_id,
-                    'count': count,
-                    'unofficial': unofficials,
-                },
-                success: function (res) {
-                    $('#products_table input[name="prices[]"]')[index].value = parseFloat(res.data.price);
-                    $('#products_table input[name="total_prices[]"]')[index].value = parseFloat(res.data.total_price);
-                    $('#products_table input[name="discount_amounts[]"]')[index].value = parseFloat(res.data.discount_amount);
-                    $('#products_table input[name="extra_amounts[]"]')[index].value = parseFloat(res.data.extra_amount);
-                    $('#products_table input[name="total_prices_with_off[]"]')[index].value = parseFloat(res.data.total_price_with_off);
-                    $('#products_table input[name="taxes[]"]')[index].value = parseFloat(res.data.tax);
-                    $('#products_table input[name="invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
+                $.ajax({
+                    url: "{{ route('calcOtherProductsInvoice') }}",
+                    type: 'post',
+                    data: {
+                        'price': price,
+                        'count': count,
+                        'discount_amount': discount_amount,
+                        'extra_amount': extra_amount,
+                        'unofficial': unofficials,
+                    },
+                    success: function (res) {
+                        $('#other_products_table input[name="other_total_prices[]"]')[index].value = parseFloat(res.data.total_price);
+                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = parseFloat(res.data.total_price_with_off) + extra_amount;
+                        $('#other_products_table input[name="other_taxes[]"]')[index].value = parseFloat(res.data.tax);
+                        $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
 
-                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
-                },
-                error: function (request, status, error) {
-                    //
-                }
-            });
-        }
-
-        function CalcOtherProductInvoice(changeable) {
-            var index = $(changeable).parent().parent().index();
-            let price = $('#other_products_table input[name="other_prices[]"]')[index].value;
-            let count = $('#other_products_table input[name="other_counts[]"]')[index].value;
-            let discount_amount = $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
-            let extra_amount = $('#other_products_table input[name="other_extra_amounts[]"]')[index].value; // اضافه کردن مقدار extra_amount
-
-            $.ajax({
-                url: "{{ route('calcOtherProductsInvoice') }}",
-                type: 'post',
-                data: {
-                    'price': price,
-                    'count': count,
-                    'discount_amount': discount_amount,
-                    'unofficial': unofficials,
-                },
-                success: function (res) {
-                    let total_price_with_off = parseFloat(res.data.total_price_with_off);
-                    let extra_amount = parseFloat($('#other_products_table input[name="other_extra_amounts[]"]')[index].value); // گرفتن مقدار extra_amount از فرم
-
-                    if (!isNaN(total_price_with_off)) {
-                        total_price_with_off += isNaN(extra_amount) ? 0 : extra_amount; // اضافه کردن extra_amount به total_price_with_off
-                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = total_price_with_off;
+                        $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                    },
+                    error: function (request, status, error) {
+                        console.log(error);
                     }
+                });
+            }
+        });
+    </script>
 
-                    $('#other_products_table input[name="other_prices[]"]')[index].value = parseFloat(res.data.price);
-                    $('#other_products_table input[name="other_total_prices[]"]')[index].value = parseFloat(res.data.total_price);
-                    $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = parseFloat(res.data.discount_amount);
-                    $('#other_products_table input[name="other_extra_amounts[]"]')[index].value = parseFloat(res.data.extra_amount);
-                    $('#other_products_table input[name="other_taxes[]"]')[index].value = parseFloat(res.data.tax);
-                    $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
-
-                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
-                },
-                error: function (request, status, error) {
-                    //
-                }
-            });
-        }
     </script>
 @endsection
 
