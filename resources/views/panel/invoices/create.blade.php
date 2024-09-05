@@ -365,6 +365,41 @@
 @endsection
 @section('scripts')
     <script>
+        function CalcOtherProductInvoice(changeable) {
+            var index = $(changeable).parent().parent().index();
+            let price =  $('#other_products_table input[name="other_prices[]"]')[index].value;
+            let count =  $('#other_products_table input[name="other_counts[]"]')[index].value;
+            let discount_amount =  $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
+
+            $.ajax({
+                url: "{{ route('calcOtherProductsInvoice') }}",
+                type: 'post',
+                data: {
+                    'price': price,
+                    'count': count,
+                    'discount_amount': discount_amount,
+                    'unofficial': unofficials,
+                },
+                success: function (res) {
+                    let total_price_with_off = parseFloat(res.data.total_price_with_off);
+                    if (!isNaN(total_price_with_off)) {
+                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = total_price_with_off;
+                    }
+
+                    $('#other_products_table input[name="other_prices[]"]')[index].value = parseFloat(res.data.price);
+                    $('#other_products_table input[name="other_total_prices[]"]')[index].value = parseFloat(res.data.total_price);
+                    $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = parseFloat(res.data.discount_amount);
+                    $('#other_products_table input[name="other_extra_amounts[]"]')[index].value = parseFloat(res.data.extra_amount);
+                    $('#other_products_table input[name="other_taxes[]"]')[index].value = parseFloat(res.data.tax);
+                    $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
+
+                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                },
+                error: function (request, status, error) {
+                    //
+                }
+            });
+        }
         var products = [];
         var colors = [];
         var unofficials = "{{ \Illuminate\Support\Facades\Gate::allows('unofficial-sales') }}";
@@ -583,41 +618,7 @@
 
 @section('scripts')
     <script>
-        function CalcOtherProductInvoice(changeable) {
-            var index = $(changeable).parent().parent().index();
-            let price =  $('#other_products_table input[name="other_prices[]"]')[index].value;
-            let count =  $('#other_products_table input[name="other_counts[]"]')[index].value;
-            let discount_amount =  $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
 
-            $.ajax({
-                url: "{{ route('calcOtherProductsInvoice') }}",
-                type: 'post',
-                data: {
-                    'price': price,
-                    'count': count,
-                    'discount_amount': discount_amount,
-                    'unofficial': unofficials,
-                },
-                success: function (res) {
-                    let total_price_with_off = parseFloat(res.data.total_price_with_off);
-                    if (!isNaN(total_price_with_off)) {
-                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = total_price_with_off;
-                    }
-
-                    $('#other_products_table input[name="other_prices[]"]')[index].value = parseFloat(res.data.price);
-                    $('#other_products_table input[name="other_total_prices[]"]')[index].value = parseFloat(res.data.total_price);
-                    $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = parseFloat(res.data.discount_amount);
-                    $('#other_products_table input[name="other_extra_amounts[]"]')[index].value = parseFloat(res.data.extra_amount);
-                    $('#other_products_table input[name="other_taxes[]"]')[index].value = parseFloat(res.data.tax);
-                    $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
-
-                    $('#btn_form').removeAttr('disabled').text('ثبت فرم');
-                },
-                error: function (request, status, error) {
-                    //
-                }
-            });
-        }
     </script>
 @endsection
 
