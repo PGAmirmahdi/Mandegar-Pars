@@ -454,7 +454,23 @@
             `);
                 $('.js-example-basic-single').select2(); // تنظیم انتخابگر select2 برای انتخاب محصولات
             });
+            $(document).on('change', 'select[name="buyer_name"]', function () {
+                let customer_id = this.value;
 
+                $.ajax({
+                    url: '/panel/get-customer-info/'+customer_id,
+                    type: 'post',
+                    success: function(res) {
+                        $('#economical_number').val(res.data.economical_number);
+                        $('#national_number').val(res.data.national_number);
+                        $('#postal_code').val(res.data.postal_code);
+                        $('#phone').val(res.data.phone1);
+                        $('#address').val(res.data.address1);
+                        $('#province').val(res.data.province).trigger('change');
+                        $('#city').val(res.data.city);
+                    }
+                });
+            });
             // اضافه کردن محصولات دیگر به جدول
             $('#btn_other_add').on('click', function () {
                 $('#other_products_table tbody').append(`
@@ -583,8 +599,6 @@
                 });
             }
         });
-    </script>
-
     </script>
 @endsection
 
