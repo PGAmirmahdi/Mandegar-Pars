@@ -2,11 +2,11 @@
 @section('title', 'ثبت سفارش')
 @section('styles')
     <style>
-        #products_table input, #products_table select{
+        #products_table input, #products_table select {
             width: auto;
         }
 
-        #other_products_table input, #other_products_table select{
+        #other_products_table input, #other_products_table select {
             width: auto;
         }
     </style>
@@ -18,42 +18,53 @@
                 <div class="w-100">
                     <h6>ثبت سفارش</h6>
                     @can('unofficial-sales')
-{{--                        <div class="col-12 mb-4 text-center">--}}
-{{--                            <h4>--}}
-{{--                                @can('accountants')--}}
-{{--                                    نوع فاکتور--}}
-{{--                                @else--}}
-{{--                                    نوع سفارش--}}
-{{--                                @endcan--}}
-{{--                            </h4>--}}
-{{--                        </div>--}}
-{{--                        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">--}}
-{{--                            <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'official' || old('type') == null ? 'active' : '' }}">--}}
-{{--                                <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ old('type') == 'official' || old('type') == null ? 'checked' : '' }}>رسمی--}}
-{{--                            </label>--}}
-{{--                            <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'unofficial' ? 'active' : '' }}">--}}
-{{--                                <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی--}}
-{{--                            </label>--}}
-{{--                        </div>--}}
-                            <input type="hidden" name="type" value="unofficial" form="invoice_form">
-                            <input type="hidden" name="req_for" value="invoice" form="invoice_form">
+                        {{--                        <div class="col-12 mb-4 text-center">--}}
+                        {{--                            <h4>--}}
+                        {{--                                @can('accountants')--}}
+                        {{--                                    نوع فاکتور--}}
+                        {{--                                @else--}}
+                        {{--                                    نوع سفارش--}}
+                        {{--                                @endcan--}}
+                        {{--                            </h4>--}}
+                        {{--                        </div>--}}
+                        {{--                        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">--}}
+                        {{--                            <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'official' || old('type') == null ? 'active' : '' }}">--}}
+                        {{--                                <input type="radio" id="type1" name="type" class="custom-control-input" value="official" form="invoice_form" {{ old('type') == 'official' || old('type') == null ? 'checked' : '' }}>رسمی--}}
+                        {{--                            </label>--}}
+                        {{--                            <label class="btn btn-outline-primary justify-content-center {{ old('type') == 'unofficial' ? 'active' : '' }}">--}}
+                        {{--                                <input type="radio" id="type2" name="type" class="custom-control-input" value="unofficial" form="invoice_form" {{ old('type') == 'unofficial' ? 'checked' : '' }}>غیر رسمی--}}
+                        {{--                            </label>--}}
+                        {{--                        </div>--}}
+                        <input type="hidden" name="type" value="unofficial" form="invoice_form">
+                        <input type="hidden" name="req_for" value="invoice" form="invoice_form">
                     @else
-                            <div class="col-12 mb-4 text-center mt-5">
-                                <h4>درخواست برای</h4>
-                            </div>
-                            <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-                                <label class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'active' : '' }}">
-                                    <input type="radio" id="req_for1" name="req_for" class="custom-control-input" value="pre-invoice" form="invoice_form" {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'checked' : '' }}>پیش فاکتور
-                                </label>
-                                <label class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'invoice' ? 'active' : '' }}">
-                                    <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="invoice" form="invoice_form" {{ old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
-                                </label>
-                                <label class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'amani-invoice' ? 'active' : '' }}">
-                                    <input type="radio" id="req_for2" name="req_for" class="custom-control-input" value="amani-invoice" form="invoice_form" {{ old('req_for') == 'amani-invoice' ? 'checked' : '' }}>فاکتور امانی
-                                </label>
-                            </div>
+                        <div class="col-12 mb-4 text-center mt-5">
+                            <h4>درخواست برای</h4>
+                        </div>
+                        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                            <label
+                                class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'active' : '' }}">
+                                <input type="radio" id="req_for1" name="req_for" class="custom-control-input"
+                                       value="pre-invoice"
+                                       form="invoice_form" {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'checked' : '' }}>پیش
+                                فاکتور
+                            </label>
+                            <label
+                                class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'invoice' ? 'active' : '' }}">
+                                <input type="radio" id="req_for2" name="req_for" class="custom-control-input"
+                                       value="invoice"
+                                       form="invoice_form" {{ old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
+                            </label>
+                            <label
+                                class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'amani-invoice' ? 'active' : '' }}">
+                                <input type="radio" id="req_for2" name="req_for" class="custom-control-input"
+                                       value="amani-invoice"
+                                       form="invoice_form" {{ old('req_for') == 'amani-invoice' ? 'checked' : '' }}>فاکتور
+                                امانی
+                            </label>
+                        </div>
 
-                            <input type="hidden" name="type" value="official" form="invoice_form">
+                        <input type="hidden" name="type" value="official" form="invoice_form">
                     @endcan
                 </div>
             </div>
@@ -63,42 +74,52 @@
                     <div class="col-12 mb-4 text-center {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec">
                         <h4>مشخصات فروشنده</h4>
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                    <div
+                        class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_name">فروشنده <span class="text-danger">*</span></label>
-                        <input type="text" name="seller_name" class="form-control" id="seller_name" value="{{ $seller->name }}" readonly>
+                        <input type="text" name="seller_name" class="form-control" id="seller_name"
+                               value="{{ $seller->name }}" readonly>
                         @error('seller_name')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                    <div
+                        class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_phone">شماره تماس<span class="text-danger">*</span></label>
-                        <input type="text" name="seller_phone" class="form-control" id="seller_phone" value="{{ $seller->phone }}" readonly>
+                        <input type="text" name="seller_phone" class="form-control" id="seller_phone"
+                               value="{{ $seller->phone }}" readonly>
                         @error('seller_phone')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                    <div
+                        class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_province">استان <span class="text-danger">*</span></label>
-                        <select name="seller_province" id="seller_province" class="form-control" readonly style="pointer-events: none">
+                        <select name="seller_province" id="seller_province" class="form-control" readonly
+                                style="pointer-events: none">
                             <option value="{{ $seller->province }}">{{ $seller->province }}</option>
-{{--                            @foreach(\App\Models\Province::all() as $province)--}}
-{{--                                <option value="{{ $province->name }}" {{ old('seller_province') == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>--}}
-{{--                            @endforeach--}}
+                            {{--                            @foreach(\App\Models\Province::all() as $province)--}}
+                            {{--                                <option value="{{ $province->name }}" {{ old('seller_province') == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>--}}
+                            {{--                            @endforeach--}}
                         </select>
                         @error('seller_province')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                    <div
+                        class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_city">شهر<span class="text-danger">*</span></label>
-                        <input type="text" name="seller_city" class="form-control" id="seller_city" value="{{ $seller->city }}" readonly>
+                        <input type="text" name="seller_city" class="form-control" id="seller_city"
+                               value="{{ $seller->city }}" readonly>
                         @error('seller_city')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
+                    <div
+                        class="col-xl-3 col-lg-3 col-md-3 {{ old('type') == 'unofficial' ? '' : 'd-none' }} seller_sec mb-3">
                         <label for="seller_address">نشانی<span class="text-danger">*</span></label>
-                        <textarea name="seller_address" id="seller_address" class="form-control" readonly>{{ $seller->address }}</textarea>
+                        <textarea name="seller_address" id="seller_address" class="form-control"
+                                  readonly>{{ $seller->address }}</textarea>
                         @error('seller_address')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -109,81 +130,93 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="buyer_name">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
-                        <select name="buyer_name" id="buyer_name" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5" tabindex="-2" aria-hidden="true">
+                        <select name="buyer_name" id="buyer_name"
+                                class="js-example-basic-single select2-hidden-accessible" data-select2-id="5"
+                                tabindex="-2" aria-hidden="true">
                             <option value="" disabled selected>انتخاب کنید...</option>
                             @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
-                                <option value="{{ $customer->id }}" {{ old('buyer_name') == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
+                                <option
+                                    value="{{ $customer->id }}" {{ old('buyer_name') == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
                             @endforeach
                         </select>
                         @error('buyer_name')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="economical_number">شماره اقتصادی @can('system-user')<span class="text-danger">*</span>@endcan</label>
-                        <input type="text" name="economical_number" class="form-control" id="economical_number" value="{{ old('economical_number') }}">
+                        <label for="economical_number">شماره اقتصادی @can('system-user')
+                                <span class="text-danger">*</span>
+                            @endcan</label>
+                        <input type="text" name="economical_number" class="form-control" id="economical_number"
+                               value="{{ old('economical_number') }}">
                         @error('economical_number')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="national_number">شماره ثبت/ملی<span class="text-danger">*</span></label>
-                        <input type="text" name="national_number" class="form-control" id="national_number" value="{{ old('national_number') }}">
+                        <input type="text" name="national_number" class="form-control" id="national_number"
+                               value="{{ old('national_number') }}">
                         @error('national_number')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="need_no">شماره نیاز</label>
-                        <input type="text" name="need_no" class="form-control" id="need_no" value="{{ old('need_no') }}">
+                        <input type="text" name="need_no" class="form-control" id="need_no"
+                               value="{{ old('need_no') }}">
                         @error('need_no')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="postal_code">کد پستی<span class="text-danger">*</span></label>
-                        <input type="text" name="postal_code" class="form-control" id="postal_code" value="{{ old('postal_code') }}">
+                        <input type="text" name="postal_code" class="form-control" id="postal_code"
+                               value="{{ old('postal_code') }}">
                         @error('postal_code')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="phone">شماره تماس<span class="text-danger">*</span></label>
                         <input type="text" name="phone" class="form-control" id="phone" value="{{ old('phone') }}">
                         @error('phone')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="province">استان <span class="text-danger">*</span></label>
-                        <select name="province" id="province" class="js-example-basic-single select2-hidden-accessible" data-select2-id="15" tabindex="-1" aria-hidden="true">
+                        <select name="province" id="province" class="js-example-basic-single select2-hidden-accessible"
+                                data-select2-id="15" tabindex="-1" aria-hidden="true">
                             @foreach(\App\Models\Province::all() as $province)
-                                <option value="{{ $province->name }}" {{ old('province') == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
+                                <option
+                                    value="{{ $province->name }}" {{ old('province') == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
                             @endforeach
                         </select>
                         @error('province')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="city">شهر<span class="text-danger">*</span></label>
                         <input type="text" name="city" class="form-control" id="city" value="{{ old('city') }}">
                         @error('city')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="address">نشانی<span class="text-danger">*</span></label>
                         <textarea name="address" id="address" class="form-control">{{ old('address') }}</textarea>
                         @error('address')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="description">توضیحات</label>
-                        <textarea name="description" id="description" class="form-control">{{ old('description') }}</textarea>
+                        <textarea name="description" id="description"
+                                  class="form-control">{{ old('description') }}</textarea>
                         @error('description')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-12 mb-4 mt-2 text-center">
@@ -195,81 +228,96 @@
                     </div>
                     <div class="col-12 mb-3">
                         <div class="d-flex justify-content-between mb-3">
-                            <button class="btn btn-outline-success" type="button" id="btn_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
+                            <button class="btn btn-outline-success" type="button" id="btn_add"><i
+                                    class="fa fa-plus mr-2"></i> افزودن کالا
+                            </button>
                         </div>
                         <div class="overflow-auto">
                             <table class="table table-bordered table-striped text-center" id="products_table">
                                 <thead>
-                                    <tr>
-                                        <th>کالا</th>
-                                        <th>رنگ</th>
-                                        <th>تعداد</th>
-                                        <th>واحد اندازه گیری</th>
-                                        <th>مبلغ واحد</th>
-                                        <th>مبلغ کل</th>
-                                        <th>مبلغ تخفیف</th>
-                                        <th>مبلغ اضافات</th>
-                                        <th>مبلغ کل پس از تخفیف و اضافات</th>
-                                        <th>جمع مالیات و عوارض</th>
-                                        <th>خالص فاکتور</th>
-                                        <th>حذف</th>
-                                    </tr>
+                                <tr>
+                                    <th>کالا</th>
+                                    <th>رنگ</th>
+                                    <th>تعداد</th>
+                                    <th>واحد اندازه گیری</th>
+                                    <th>مبلغ واحد</th>
+                                    <th>مبلغ کل</th>
+                                    <th>مبلغ تخفیف</th>
+                                    <th>مبلغ اضافات</th>
+                                    <th>مبلغ کل پس از تخفیف و اضافات</th>
+                                    <th>جمع مالیات و عوارض</th>
+                                    <th>خالص فاکتور</th>
+                                    <th>حذف</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    @if(old('products'))
-                                        @foreach(old('products') as $i => $productId)
-                                            <tr>
-                                                <td>
-                                                    <select class="js-example-basic-single" name="products[]" required>
-                                                        <option value="" disabled selected>..................... انتخاب کنید .....................</option>
-                                                        @foreach(\App\Models\Product::all(['id','title','code']) as $item)
-                                                            <option value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control" name="colors[]" required>
-                                                        @foreach(\App\Models\Product::COLORS as $key => $value)
-                                                            <option value="{{ $key }}" {{ $key == old('colors')[$i] ? 'selected' : '' }}>{{ $value }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="counts[]" class="form-control" min="1" value="{{ old('counts')[$i] }}" required>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control" name="units[]">
-                                                        <option value="number">عدد</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="prices[]" class="form-control" min="0" value="{{ old('prices')[$i] }}" readonly>
-                                                    <div id="formatted-price-{{ $i }}" class="formatted-price"></div>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="total_prices[]" class="form-control" min="0" value="{{ old('total_prices')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="discount_amounts[]" class="form-control" min="0" value="{{ old('discount_amounts')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="extra_amounts[]" class="form-control" min="0" value="{{ old('extra_amounts')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="{{ old('total_prices_with_off')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="taxes[]" class="form-control" min="0" value="{{ old('taxes')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="invoice_nets[]" class="form-control" min="0" value="{{ old('invoice_nets')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                @if(old('products'))
+                                    @foreach(old('products') as $i => $productId)
+                                        <tr>
+                                            <td>
+                                                <select class="js-example-basic-single" name="products[]" required>
+                                                    <option value="" disabled selected>..................... انتخاب کنید
+                                                        .....................
+                                                    </option>
+                                                    @foreach(\App\Models\Product::all(['id','title','code']) as $item)
+                                                        <option
+                                                            value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" name="colors[]" required>
+                                                    @foreach(\App\Models\Product::COLORS as $key => $value)
+                                                        <option
+                                                            value="{{ $key }}" {{ $key == old('colors')[$i] ? 'selected' : '' }}>{{ $value }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="counts[]" class="form-control" min="1"
+                                                       value="{{ old('counts')[$i] }}" required>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" name="units[]">
+                                                    <option value="number">عدد</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="prices[]" class="form-control" min="0"
+                                                       value="{{ old('prices')[$i] }}" readonly>
+                                                <div id="formatted-price-{{ $i }}" class="formatted-price"></div>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="total_prices[]" class="form-control" min="0"
+                                                       value="{{ old('total_prices')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="discount_amounts[]" class="form-control"
+                                                       min="0" value="{{ old('discount_amounts')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="extra_amounts[]" class="form-control" min="0"
+                                                       value="{{ old('extra_amounts')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="total_prices_with_off[]" class="form-control"
+                                                       min="0" value="{{ old('total_prices_with_off')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="taxes[]" class="form-control" min="0"
+                                                       value="{{ old('taxes')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="invoice_nets[]" class="form-control" min="0"
+                                                       value="{{ old('invoice_nets')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i
+                                                        class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 </tbody>
                             </table>
                         </div>
@@ -279,73 +327,90 @@
                     </div>
                     <div class="col-12 mb-3">
                         <div class="d-flex justify-content-between mb-3">
-                            <button class="btn btn-outline-success" type="button" id="btn_other_add"><i class="fa fa-plus mr-2"></i> افزودن کالا</button>
+                            <button class="btn btn-outline-success" type="button" id="btn_other_add"><i
+                                    class="fa fa-plus mr-2"></i> افزودن کالا
+                            </button>
                         </div>
                         <div class="overflow-auto">
                             <table class="table table-bordered table-striped text-center" id="other_products_table">
                                 <thead>
-                                    <tr>
-                                        <th>کالا</th>
-                                        <th>رنگ</th>
-                                        <th>تعداد</th>
-                                        <th>واحد اندازه گیری</th>
-                                        <th>مبلغ واحد</th>
-                                        <th>مبلغ کل</th>
-                                        <th>مبلغ تخفیف</th>
-                                        <th>مبلغ اضافات</th>
-                                        <th>مبلغ کل پس از تخفیف و اضافات</th>
-                                        <th>جمع مالیات و عوارض</th>
-                                        <th>خالص فاکتور</th>
-                                        <th>حذف</th>
-                                    </tr>
+                                <tr>
+                                    <th>کالا</th>
+                                    <th>رنگ</th>
+                                    <th>تعداد</th>
+                                    <th>واحد اندازه گیری</th>
+                                    <th>مبلغ واحد</th>
+                                    <th>مبلغ کل</th>
+                                    <th>مبلغ تخفیف</th>
+                                    <th>مبلغ اضافات</th>
+                                    <th>مبلغ کل پس از تخفیف و اضافات</th>
+                                    <th>جمع مالیات و عوارض</th>
+                                    <th>خالص فاکتور</th>
+                                    <th>حذف</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    @if(old('other_products'))
-                                        @foreach(old('other_products') as $i => $otherProduct)
-                                            <tr>
-                                                <td>
-                                                    <input type="text" class="form-control" name="other_products[]" placeholder="عنوان کالا" value="{{ $otherProduct }}" required>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" name="other_colors[]" placeholder="نام رنگ" value="{{ old('other_colors')[$i] }}" required>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="other_counts[]" class="form-control" min="1" value="{{ old('other_counts')[$i] }}" required>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control" name="other_units[]">
-                                                        <option value="number">عدد</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ old('other_prices')[$i] }}" required oninput="formatPrice(this)">
-                                                    <span class="price_with_grouping text-primary"></span>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="other_total_prices[]" class="form-control" min="0" value="{{ old('other_total_prices')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="{{ old('other_discount_amounts')[$i] }}" required>
-                                                    <span class="price_with_grouping text-primary"></span>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="{{ old('other_extra_amounts')[$i] }}">
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="{{ old('other_total_prices_with_off')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="other_taxes[]" class="form-control" min="0" value="{{ old('other_taxes')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="other_invoice_nets[]" class="form-control" min="0" value="{{ old('other_invoice_nets')[$i] }}" readonly>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                @if(old('other_products'))
+                                    @foreach(old('other_products') as $i => $otherProduct)
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" name="other_products[]"
+                                                       placeholder="عنوان کالا" value="{{ $otherProduct }}" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="other_colors[]"
+                                                       placeholder="نام رنگ" value="{{ old('other_colors')[$i] }}"
+                                                       required>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_counts[]" class="form-control" min="1"
+                                                       value="{{ old('other_counts')[$i] }}" required>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" name="other_units[]">
+                                                    <option value="number">عدد</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_prices[]" class="form-control" min="0"
+                                                       value="{{ old('other_prices')[$i] }}" required
+                                                       oninput="formatPrice(this)">
+                                                <span class="price_with_grouping text-primary"></span>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_total_prices[]" class="form-control"
+                                                       min="0" value="{{ old('other_total_prices')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_discount_amounts[]"
+                                                       class="form-control" min="0"
+                                                       value="{{ old('other_discount_amounts')[$i] }}" required>
+                                                <span class="price_with_grouping text-primary"></span>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_extra_amounts[]" class="form-control"
+                                                       min="0" value="{{ old('other_extra_amounts')[$i] }}">
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_total_prices_with_off[]"
+                                                       class="form-control" min="0"
+                                                       value="{{ old('other_total_prices_with_off')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_taxes[]" class="form-control" min="0"
+                                                       value="{{ old('other_taxes')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="other_invoice_nets[]" class="form-control"
+                                                       min="0" value="{{ old('other_invoice_nets')[$i] }}" readonly>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i
+                                                        class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 </tbody>
                             </table>
                         </div>
@@ -356,7 +421,8 @@
                     </div>
                     <div class="form-group">
                         <label for="final_discount">مبلغ تخفیف</label>
-                        <input type="text" class="form-control" name="final_discount" id="final_discount" value="{{ old('final_discount') ?? 0 }}" required>
+                        <input type="text" class="form-control" name="final_discount" id="final_discount"
+                               value="{{ old('final_discount') ?? 0 }}" required>
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
@@ -372,7 +438,7 @@
         var unofficials = "{{ \Illuminate\Support\Facades\Gate::allows('unofficial-sales') }}";
 
         var form = document.getElementById('invoice_form');
-        form.addEventListener('keypress', function(e) {
+        form.addEventListener('keypress', function (e) {
             if (e.keyCode === 13) {
                 e.preventDefault();
             }
@@ -398,22 +464,23 @@
         $.each(products, function (i, item) {
             products_options_html += `<option value="${item.id}">${item.code} - ${item.title}</option>`;
         });
-            function formatPrice(input) {
+
+        function formatPrice(input) {
             let value = input.value;
-            let formattedValue = Number(value).toLocaleString(); // تبدیل به فرمت سه‌رقمی
-            input.nextElementSibling.textContent = formattedValue; // قرار دادن مقدار فرمت شده در span
+            let formattedValue = Number(value).toLocaleString(); // Format the number with three-digit grouping
+            input.nextElementSibling.textContent = formattedValue; // Display the formatted value in the span next to the input
         }
 
-    $.each(colors, function (i, item) {
+        $.each(colors, function (i, item) {
             colors_options_html += `<option value="${item.key}">${item.value}</option>`;
         });
         document.addEventListener('DOMContentLoaded', function () {
             // برای هر ورودی یک تابع ایجاد کنید
 
             // تابعی برای جدا کردن عدد به صورت ۳ رقم ۳ رقم
-            function formatNumber(num) {
-                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
+            // function formatNumber(num) {
+            //     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            // }
         });
         $(document).ready(function () {
             // اضافه کردن محصول به جدول محصولات
@@ -471,9 +538,9 @@
                 let customer_id = this.value;
 
                 $.ajax({
-                    url: '/panel/get-customer-info/'+customer_id,
+                    url: '/panel/get-customer-info/' + customer_id,
                     type: 'post',
-                    success: function(res) {
+                    success: function (res) {
                         $('#economical_number').val(res.data.economical_number);
                         $('#national_number').val(res.data.national_number);
                         $('#postal_code').val(res.data.postal_code);
@@ -533,7 +600,7 @@
             });
 
             // حذف محصول از جدول
-            $(document).on('click','.btn_remove', function () {
+            $(document).on('click', '.btn_remove', function () {
                 $(this).parent().parent().remove();
             });
 
@@ -552,8 +619,8 @@
             // محاسبه فاکتور برای محصولات
             function CalcProductInvoice(changeable) {
                 var index = $(changeable).parent().parent().index();
-                let product_id =  $('#products_table select[name="products[]"]')[index].value;
-                let count =  $('#products_table input[name="counts[]"]')[index].value;
+                let product_id = $('#products_table select[name="products[]"]')[index].value;
+                let count = $('#products_table input[name="counts[]"]')[index].value;
 
                 $.ajax({
                     url: "{{ route('calcProductsInvoice') }}",
