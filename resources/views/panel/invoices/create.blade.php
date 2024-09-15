@@ -443,7 +443,6 @@
                     </td>
                     <td>
                         <input type="number" name="prices[]" class="form-control" min="0" value="0" readonly>
-                        <div id="formatted-price-{{ $i }}" class="formatted-price"></div>
                     </td>
                     <td>
                         <input type="number" name="total_prices[]" class="form-control" min="0" value="0" readonly>
