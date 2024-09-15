@@ -433,6 +433,18 @@
 
 @section('scripts')
     <script>
+        function formatPrice(input) {
+            let value = input.value.replace(/,/g, '');  // حذف کاماها قبل از تبدیل
+            if (!isNaN(value) && value !== '') {
+                let formattedValue = Number(value).toLocaleString();  // تبدیل به فرمت سه‌رقمی
+                $(input).next('.price_with_grouping').text(formattedValue);  // نمایش مقدار فرمت شده در span کنار ورودی
+            }
+        }
+
+        // این رویداد برای هر ورودی جدید اعمال می‌شود
+        $(document).on('input', 'input[name="other_prices[]"]', function() {
+            formatPrice(this);
+        });
         var products = [];
         var colors = [];
         var unofficials = "{{ \Illuminate\Support\Facades\Gate::allows('unofficial-sales') }}";
@@ -464,12 +476,6 @@
         $.each(products, function (i, item) {
             products_options_html += `<option value="${item.id}">${item.code} - ${item.title}</option>`;
         });
-
-        function formatPrice(input) {
-            let value = input.value;
-            let formattedValue = Number(value).toLocaleString(); // Format the number with three-digit grouping
-            input.nextElementSibling.textContent = formattedValue; // Display the formatted value in the span next to the input
-        }
 
         $.each(colors, function (i, item) {
             colors_options_html += `<option value="${item.key}">${item.value}</option>`;
@@ -571,7 +577,7 @@
                     </td>
                     <td>
                         <input type="number" name="other_prices[]" class="form-control" min="0" value="0" required>
-                        <span class="price_with_grouping text-primary"></span>
+                <span class="price_with_grouping text-primary"></span>
                     </td>
                     <td>
                         <input type="number" name="other_total_prices[]" class="form-control" min="0" value="0">
