@@ -318,7 +318,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ old('other_prices')[$i] }}" required>
+                                                    <input type="number" name="other_prices[]" class="form-control" min="0" value="{{ old('other_prices')[$i] }}" required oninput="formatPrice(this)">
                                                     <span class="price_with_grouping text-primary"></span>
                                                 </td>
                                                 <td>
@@ -398,19 +398,17 @@
         $.each(products, function (i, item) {
             products_options_html += `<option value="${item.id}">${item.code} - ${item.title}</option>`;
         });
+            function formatPrice(input) {
+            let value = input.value;
+            let formattedValue = Number(value).toLocaleString(); // تبدیل به فرمت سه‌رقمی
+            input.nextElementSibling.textContent = formattedValue; // قرار دادن مقدار فرمت شده در span
+        }
 
-        $.each(colors, function (i, item) {
+    $.each(colors, function (i, item) {
             colors_options_html += `<option value="${item.key}">${item.value}</option>`;
         });
         document.addEventListener('DOMContentLoaded', function () {
             // برای هر ورودی یک تابع ایجاد کنید
-            document.querySelectorAll('input[name="prices[]"]').forEach(function (input, index) {
-                input.addEventListener('input', function () {
-                    let inputId = 'formatted-price-' + index;
-                    let formattedNumber = formatNumber(this.value);
-                    document.getElementById(inputId).innerText = formattedNumber;
-                });
-            });
 
             // تابعی برای جدا کردن عدد به صورت ۳ رقم ۳ رقم
             function formatNumber(num) {
