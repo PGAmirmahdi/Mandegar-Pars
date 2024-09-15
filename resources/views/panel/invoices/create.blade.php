@@ -244,6 +244,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="number" name="prices[]" class="form-control" min="0" value="{{ old('prices')[$i] }}" readonly>
+                                                    <div id="formatted-price-{{ $i }}" class="formatted-price"></div>
                                                 </td>
                                                 <td>
                                                     <input type="number" name="total_prices[]" class="form-control" min="0" value="{{ old('total_prices')[$i] }}" readonly>
@@ -401,7 +402,21 @@
         $.each(colors, function (i, item) {
             colors_options_html += `<option value="${item.key}">${item.value}</option>`;
         });
+        document.addEventListener('DOMContentLoaded', function () {
+            // برای هر ورودی یک تابع ایجاد کنید
+            document.querySelectorAll('input[name="prices[]"]').forEach(function (input, index) {
+                input.addEventListener('input', function () {
+                    let inputId = 'formatted-price-' + index;
+                    let formattedNumber = formatNumber(this.value);
+                    document.getElementById(inputId).innerText = formattedNumber;
+                });
+            });
 
+            // تابعی برای جدا کردن عدد به صورت ۳ رقم ۳ رقم
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        });
         $(document).ready(function () {
             // اضافه کردن محصول به جدول محصولات
             $('#btn_add').on('click', function () {
@@ -428,6 +443,7 @@
                     </td>
                     <td>
                         <input type="number" name="prices[]" class="form-control" min="0" value="0" readonly>
+                        <div id="formatted-price-{{ $i }}" class="formatted-price"></div>
                     </td>
                     <td>
                         <input type="number" name="total_prices[]" class="form-control" min="0" value="0" readonly>
