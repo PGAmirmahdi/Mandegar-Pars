@@ -580,7 +580,7 @@
                 <span class="price_with_grouping text-primary"></span>
                     </td>
                     <td>
-                        <input type="number" name="other_total_prices[]" class="form-control" min="0" value="0">
+                        <input type="number" name="other_total_prices[]" class="form-control" min="0" value="0" readonly>
                     </td>
                     <td>
                         <input type="number" name="other_discount_amounts[]" class="form-control" min="0" value="0" required>
