@@ -253,7 +253,7 @@ class InvoiceController extends Controller
 
         $data = [
             'price' => $price,
-            'total_price' => $total_price,
+            'total_price' => $total_price + $extra_amount,
             'discount_amount' => $discount_amount,
             'extra_amount' => $extra_amount,
             'total_price_with_off' => $total_price_with_off,
