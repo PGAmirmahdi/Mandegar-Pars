@@ -673,7 +673,7 @@
                     },
                     success: function (res) {
                         $('#other_products_table input[name="other_total_prices[]"]')[index].value = parseFloat(res.data.total_price);
-                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = parseFloat(res.data.total_price_with_off) + extra_amount;
+                        $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = parseFloat(res.data.total_price_with_off);
                         $('#other_products_table input[name="other_taxes[]"]')[index].value = parseFloat(res.data.tax);
                         $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
 
