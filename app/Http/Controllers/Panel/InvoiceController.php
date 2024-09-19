@@ -248,7 +248,7 @@ class InvoiceController extends Controller
 
         $extra_amount = 0;
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
-        $tax = $unofficial ? 0 : (int) ($total_price_with_off * self::TAX_AMOUNT);
+        $tax = (int) ($total_price_with_off * 0.1);
         $invoice_net = $tax + $total_price_with_off;
 
         $data = [
