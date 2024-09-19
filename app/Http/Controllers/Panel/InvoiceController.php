@@ -257,7 +257,7 @@ class InvoiceController extends Controller
             'discount_amount' => $discount_amount,
             'extra_amount' => $extra_amount,
             'total_price_with_off' => $total_price_with_off,
-            'tax' => $tax,
+            'tax' => $total_price_with_off * self::TAX_AMOUNT,
             'invoice_net' => $invoice_net,
         ];
 
