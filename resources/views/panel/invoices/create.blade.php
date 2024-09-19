@@ -670,13 +670,16 @@
                         'discount_amount': discount_amount,
                         'extra_amount': extra_amount,
                         'unofficial': unofficials,
+                        '_token': '{{ csrf_token() }}' // افزودن CSRF Token در صورت نیاز
                     },
                     success: function (res) {
+                        // به‌روزرسانی مقادیر جدول با استفاده از نتایج از سرور
                         $('#other_products_table input[name="other_total_prices[]"]')[index].value = parseFloat(res.data.total_price) + extra_amount;
                         $('#other_products_table input[name="other_total_prices_with_off[]"]')[index].value = parseFloat(res.data.total_price_with_off) + extra_amount;
                         $('#other_products_table input[name="other_taxes[]"]')[index].value = parseFloat(res.data.tax);
                         $('#other_products_table input[name="other_invoice_nets[]"]')[index].value = parseFloat(res.data.invoice_net);
 
+                        // فعال کردن دکمه فرم بعد از به‌روزرسانی
                         $('#btn_form').removeAttr('disabled').text('ثبت فرم');
                     },
                     error: function (request, status, error) {
