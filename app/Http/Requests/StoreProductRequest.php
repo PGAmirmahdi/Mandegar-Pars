@@ -32,7 +32,7 @@ class StoreProductRequest extends FormRequest
             'partner_price_tehran' => 'required',
             'partner_price_other' => 'required',
             'single_price' => 'required',
-            'image' => 'required|mimes:jpg,png,jpeg|max:5000',
+            'image' => 'nullable|mimes:jpg,png,jpeg|max:5000',
         ];
     }
 }

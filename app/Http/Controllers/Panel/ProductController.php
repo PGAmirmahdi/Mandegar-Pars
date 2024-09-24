@@ -34,7 +34,11 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $this->authorize('products-create');
-        $image = upload_file($request->image, 'Products');
+
+        if ($request->has('image'))
+        {
+            $image = upload_file($request->image, 'Products');
+        }
 
         // product properties
         $properties = $this->json_properties($request);
@@ -43,7 +47,7 @@ class ProductController extends Controller
         // create product
         Product::create([
             'title' => $request->title,
-//            'slug' => make_slug($request->slug),
+            'slug' => make_slug($request->title), // اگر نیاز به slug دارید
             'code' => $request->code,
             'image' => $image,
             'category_id' => $request->category,
@@ -57,9 +61,10 @@ class ProductController extends Controller
             'total_count' => $total_count,
         ]);
 
-        alert()->success('محصول مورد نظر با موفقیت ایجاد شد','ایجاد محصول');
+        alert()->success('محصول مورد نظر با موفقیت ایجاد شد', 'ایجاد محصول');
         return redirect()->route('products.index');
     }
+
 
     public function show(Product $product)
     {

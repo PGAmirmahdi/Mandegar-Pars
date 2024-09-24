@@ -59,9 +59,13 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>
+                                @if($product->image)
                                 <a href="{{ $product->image }}" target="_blank">
                                     <img data-src="{{ $product->image }}" class="lazyload" width="40px">
                                 </a>
+                                    @else
+                                    عکس ندارد
+                                @endif
                             </td>
                             <td>{{ $product->title }}</td>
                             <td>{{ $product->code }}</td>
