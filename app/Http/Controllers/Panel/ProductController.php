@@ -48,7 +48,7 @@ class ProductController extends Controller
         // create product
         Product::create([
             'title' => $request->title,
-            'slug' => make_slug($request->title), // اگر نیاز به slug دارید
+//            'slug' => make_slug($request->title)
             'code' => $request->code,
             'image' => $image,
             'category_id' => $request->category,
