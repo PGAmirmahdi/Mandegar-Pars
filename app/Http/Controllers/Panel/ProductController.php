@@ -35,6 +35,7 @@ class ProductController extends Controller
     {
         $this->authorize('products-create');
 
+        $image = null; // مقدار پیش‌فرض برای تصویر
         if ($request->has('image'))
         {
             $image = upload_file($request->image, 'Products');
@@ -81,6 +82,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $this->authorize('products-edit');
+        $image = null; // مقدار پیش‌فرض برای تصویر
         if ($request->has('image'))
         {
             $image = upload_file($request->image, 'Products');
