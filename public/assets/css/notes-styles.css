@@ -1,0 +1,83 @@
+.paper {
+    position: relative;
+    height: 340px;
+    width: 300px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0px 0px 5px 0px #888;
+}
+.paper::before {
+    content: '';
+    position: absolute;
+    right: 45px;
+    height: 100%;
+    width: 2px;
+    background: rgba(255,0,0,0.4);
+}
+.lines {
+    height: calc(100% - 40px);
+    width: 100%;
+    background-image: repeating-linear-gradient(white 0px, white 24px, steelblue 25px);
+}
+.title {
+    text-align: center;
+    font-size: large;
+    width: 100%;
+    background: transparent;
+    border: none;
+}
+.text {
+    position: absolute;
+    top: 75px;
+    right: 55px;
+    bottom: 10px;
+    width: 83%;
+    /*right: 10px;*/
+    line-height: 1.8rem;
+    overflow: auto;
+    outline: none;
+    text-align: justify;
+    padding-left: 30px;
+    background: transparent;
+    border: none;
+    height: 265px;
+    resize: none;
+}
+.holes {
+    position: absolute;
+    right: 10px;
+    height: 25px;
+    width: 25px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: inset 0px 0px 2px 0px #888;
+}
+.hole-top {
+    top: 10%;
+}
+.hole-middle {
+    top: 50%;
+}
+.hole-bottom {
+    bottom: 10%;
+}
+.loading{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding-left: 1rem;
+    color: #5d4a9c;
+}
+
+.btn-remove{
+    background: #ff898e;
+    color: #fff;
+    width: 30px;
+    display: block;
+    text-align: center;
+    border-radius: 15px 0 0 15px;
+    cursor: pointer;
+}
+
+.btn-remove:hover{
+    background: #ff0009;
+}
