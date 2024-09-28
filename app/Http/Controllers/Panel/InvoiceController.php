@@ -258,7 +258,7 @@ class InvoiceController extends Controller
             'extra_amount' => $extra_amount,
             'total_price_with_off' => $total_price_with_off,
             'tax' => $tax,
-            'invoice_net' => $invoice_net + $extra_amount,
+            'invoice_net' => $invoice_net,
         ];
 
         return response()->json(['data' => $data]);
