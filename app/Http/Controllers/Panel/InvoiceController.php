@@ -249,7 +249,7 @@ class InvoiceController extends Controller
         $extra_amount = 0;
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
         $tax = (int) ($total_price_with_off);
-        $invoice_net = $tax + $total_price_with_off;
+        $invoice_net =  $total_price_with_off;
 
         $data = [
             'price' => $price,
@@ -258,7 +258,7 @@ class InvoiceController extends Controller
             'extra_amount' => $extra_amount,
             'total_price_with_off' => $total_price_with_off,
             'tax' => $tax,
-            'invoice_net' => $invoice_net,
+            'invoice_net' => $invoice_net + $extra_amount,
         ];
 
         return response()->json(['data' => $data]);
