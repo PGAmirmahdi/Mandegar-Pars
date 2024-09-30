@@ -4,6 +4,9 @@
 <script src="/vendors/charts/chartjs/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2"></script>
 
+{{--platform--}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"></script>
+
 <!-- Circle progress -->
 <script src="/vendors/circle-progress/circle-progress.min.js"></script>
 
@@ -62,7 +65,7 @@
 <script src="/vendors/clockpicker/bootstrap-clockpicker.min.js"></script>
 <script src="/assets/js/examples/clockpicker.js"></script>
 
-<!-- FontAwesome -->
+<!-- fontawesome -->
 <script src="/assets/js/fontawesome.min.js"></script>
 
 <!-- DataTable -->
@@ -71,33 +74,35 @@
 <script src="/vendors/dataTable/dataTables.responsive.min.js"></script>
 <script src="/assets/js/examples/datatable.js"></script>
 
-<script src="{{ asset('/js/app.js') }}"></script>
+<script src="{{ mix('/js/app.js') }}"></script>
 
 @yield('scripts')
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
+
+<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 <script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
     var pusher = new Pusher('53c462fd26886b32ea45', {
         cluster: 'us2'
     });
 
-    var userId = '{{ auth()->id() }}';
-    var channel = pusher.subscribe('notifications.' + userId);
-
-    channel.bind('SendMessage', function(data) {
-        alert('تیکت جدید: ' + data.message); // اینجا می‌توانی کد سفارشی‌سازی برای نمایش نوتیفیکیشن اضافه کنی
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+        alert(JSON.stringify(data));
     });
 </script>
-
 <script>
-
     {{-- ajax setup --}}
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     {{-- end ajax setup --}}
 
     {{-- delete tables row --}}
@@ -178,32 +183,84 @@
         $('#network_sec span').tooltip();
     });
     // end network status
-
-    // realtime notification
+    console.log(window.Echo);
     var audio = new Audio('/audio/notification.wav');
-    let userId = "{{ auth()->id() }}"
-    Echo.channel('presence-notification.' + userId)
+    let userId = "{{ auth()->id() }}";
+    Echo.join('presence-notification.' + userId)
         .listen('SendMessage', (e) => {
-            $('#notification_sec a').addClass('nav-link-notify')
-            $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
+            $('#notification_sec a').addClass('nav-link-notify');
+            $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
             $(".timeline").prepend(`<div class="timeline-item">
-                                        <div>
-                                            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-													<i class="fa fa-bell font-size-20"></i>
-												</span>
-                                            </figure>
-                                        </div>
-                                        <div>
-                                            <p class="m-b-5">
-                                                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-                                            </p>
-                                            <small class="text-muted">
-                                                <i class="fa fa-clock-o m-r-5"></i>الان
-                                                </small>
-                                            </div>
-                                        </div>`)
+                <div>
+                    <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+                        <span class="avatar-title bg-primary-bright text-primary rounded-circle">
+                            <i class="fa fa-bell font-size-20"></i>
+                        </span>
+                    </figure>
+                </div>
+                <div>
+                    <p class="m-b-5">
+                        <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                    </p>
+                    <small class="text-muted">
+                        <i class="fa fa-clock-o m-r-5"></i>الان
+                    </small>
+                </div>
+            </div>`);
             audio.play();
         });
-    // end realtime
+</script>
+<script>
+    // firebase push notification
+    var firebaseConfig = {
+        apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
+        authDomain: "mandegarpars-5e075.firebaseapp.com",
+        projectId: "mandegarpars-5e075",
+        storageBucket: "mandegarpars-5e075.appspot.com",
+        messagingSenderId: "11452789862",
+        appId: "1:11452789862:web:8ee1465cf4e374fcbde9a7"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    function initFirebaseMessagingRegistration() {
+        messaging
+            .requestPermission()
+            .then(function () {
+                return messaging.getToken()
+            })
+            .then(function(token) {
+                // console.log(token);
+
+                $.ajax({
+                    url: '/panel/saveFcmToken',
+                    type: 'POST',
+                    data: {
+                        token: token
+                    },
+                    dataType: 'JSON',
+                    success: function (response) {
+                        console.log('Token saved successfully.');
+                    },
+                    error: function (err) {
+                        console.log('User Chat Token Error'+ err);
+                    },
+                });
+
+            }).catch(function (err) {
+            console.log('User Chat Token Error'+ err);
+        });
+    }
+
+    initFirebaseMessagingRegistration();
+
+    messaging.onMessage(function(payload) {
+        const noteTitle = payload.notification.title;
+        const noteOptions = {
+            body: payload.notification.body,
+            icon: payload.notification.icon,
+        };
+        new Notification(noteTitle, noteOptions);
+    });
 </script>
