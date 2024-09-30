@@ -452,7 +452,7 @@ class PanelController extends Controller
 
         $dates8 = $userVisits8->pluck('date')->unique();
 
-        $totalVisits8 = array_sum($userVisits8);
+        $totalVisits8 = $userVisits8->sum('visits');
 
         $bazdid= Visitor::latest()->paginate(10);
         return view('panel.index', [
