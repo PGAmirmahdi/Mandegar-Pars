@@ -78,19 +78,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
 <script>
-    Pusher.logToConsole = true;
-
     var pusher = new Pusher('ac8ae105709d7299a673', {
         cluster: 'ap1'
     });
 
-    var userId = '{{ auth()->id() }}'; // Get the authenticated user's ID
-
+    var userId = '{{ auth()->id() }}';
     var channel = pusher.subscribe('notifications.' + userId);
+
     channel.bind('SendMessage', function(data) {
-        // Display the notification without redirecting
-        alert(data.message); // You can replace this with your custom notification display logic
-        console.log(data);
+        alert('تیکت جدید: ' + data.message); // اینجا می‌توانی کد سفارشی‌سازی برای نمایش نوتیفیکیشن اضافه کنی
     });
 </script>
 
