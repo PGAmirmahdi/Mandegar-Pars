@@ -78,8 +78,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
 <script>
-    var pusher = new Pusher('ac8ae105709d7299a673', {
-        cluster: 'ap1'
+    var pusher = new Pusher('53c462fd26886b32ea45', {
+        cluster: 'us2'
     });
 
     var userId = '{{ auth()->id() }}';
