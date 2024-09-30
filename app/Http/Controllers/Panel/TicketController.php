@@ -44,7 +44,7 @@ class TicketController extends Controller
             'code' => $this->generateCode(),
         ]);
 
-        if ($request->file){
+        if ($request->file) {
             $file_info = [
                 'name' => $request->file('file')->getClientOriginalName(),
                 'type' => $request->file('file')->getClientOriginalExtension(),
@@ -65,9 +65,10 @@ class TicketController extends Controller
         $message = 'تیکتی با عنوان "'.$ticket->title.'" به شما ارسال شده است';
         $url = route('tickets.edit', $ticket->id);
 
-        Notification::send($ticket->receiver, new SendMessage($message, $url));
+        // Dispatch the event
+        event(new SendMessage($ticket->receiver, ['message' => $message, 'url' => $url]));
 
-        return redirect()->route('tickets.edit', $ticket->id);
+        return response()->json(['status' => 'success']);
     }
 
     public function show(Ticket $ticket)

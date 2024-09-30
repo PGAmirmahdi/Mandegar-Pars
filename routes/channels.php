@@ -20,3 +20,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('notification.{userId}', function ($user, $userId){
     return $user->id == $userId ? $user : false;
 });
+Broadcast::channel('private-notifications.{userId}', function ($userId) {
+    return auth()->id() === (int) $userId;
+});
