@@ -84,11 +84,10 @@
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 <script>
 
-
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
 
-    var pusher = new Pusher("53c462fd26886b32ea45", {
+    var pusher = new Pusher('53c462fd26886b32ea45', {
         cluster: 'us2'
     });
 
@@ -96,6 +95,15 @@
     channel.bind('my-event', function(data) {
         alert(JSON.stringify(data));
     });
+</script>
+<script>
+    {{-- ajax setup --}}
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    {{-- end ajax setup --}}
 
     {{-- delete tables row --}}
     $(document).on('click','.trashRow', function() {
