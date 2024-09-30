@@ -84,20 +84,6 @@
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 <script>
 
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
-
-    var pusher = new Pusher('53c462fd26886b32ea45', {
-        cluster: 'us2'
-    });
-
-    var channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function(data) {
-        alert(JSON.stringify(data));
-    });
-</script>
-<script>
-
 
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
