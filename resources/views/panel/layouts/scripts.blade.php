@@ -1,3 +1,82 @@
+<!-- Plugin scripts -->
+<script src="/vendors/bundle.js"></script>
+<!-- Chartjs -->
+<script src="/vendors/charts/chartjs/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2"></script>
+
+{{--platform--}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"></script>
+
+<!-- Circle progress -->
+<script src="/vendors/circle-progress/circle-progress.min.js"></script>
+
+<!-- Peity -->
+<script src="/vendors/charts/peity/jquery.peity.min.js"></script>
+<script src="/assets/js/examples/charts/peity.js"></script>
+
+<!-- Datepicker -->
+<script src="/vendors/datepicker/daterangepicker.js"></script>
+
+<!-- Slick -->
+<script src="/vendors/slick/slick.min.js"></script>
+
+<!-- Vamp -->
+<script src="/vendors/vmap/jquery.vmap.min.js"></script>
+<script src="/vendors/vmap/maps/jquery.vmap.iran.js"></script>
+<script src="/assets/js/examples/vmap.js"></script>
+
+<!-- CKEditor -->
+<script src="/vendors/ckeditor/ckeditor.js"></script>
+<script src="/assets/js/examples/ckeditor.js"></script>
+
+<!-- Dashboard scripts -->
+<script src="/assets/js/examples/dashboard.js"></script>
+<div class="colors">
+    <!-- To use theme colors with Javascript -->
+    <div class="bg-primary"></div>
+    <div class="bg-primary-bright"></div>
+    <div class="bg-secondary"></div>
+    <div class="bg-secondary-bright"></div>
+    <div class="bg-info"></div>
+    <div class="bg-info-bright"></div>
+    <div class="bg-success"></div>
+    <div class="bg-success-bright"></div>
+    <div class="bg-danger"></div>
+    <div class="bg-danger-bright"></div>
+    <div class="bg-warning"></div>
+    <div class="bg-warning-bright"></div>
+</div>
+
+<!-- App scripts -->
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/sweetalert2@11"></script>
+
+<!-- Select2 -->
+<script src="/vendors/select2/js/select2.min.js"></script>
+<script src="/assets/js/examples/select2.js"></script>
+
+<!-- Datepicker -->
+<script src="/vendors/datepicker-jalali/bootstrap-datepicker.min.js"></script>
+<script src="/vendors/datepicker-jalali/bootstrap-datepicker.fa.min.js"></script>
+<script src="/vendors/datepicker/daterangepicker.js"></script>
+<script src="/assets/js/examples/datepicker.js"></script>
+
+<!-- Clockpicker -->
+<script src="/vendors/clockpicker/bootstrap-clockpicker.min.js"></script>
+<script src="/assets/js/examples/clockpicker.js"></script>
+
+<!-- fontawesome -->
+<script src="/assets/js/fontawesome.min.js"></script>
+
+<!-- DataTable -->
+<script src="/vendors/dataTable/jquery.dataTables.min.js"></script>
+<script src="/vendors/dataTable/dataTables.bootstrap4.min.js"></script>
+<script src="/vendors/dataTable/dataTables.responsive.min.js"></script>
+<script src="/assets/js/examples/datatable.js"></script>
+
+<script src="{{ mix('/js/app.js') }}"></script>
+
+@yield('scripts')
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
@@ -8,7 +87,7 @@
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
 
-    var pusher = new Pusher("ac8ae105709d7299a673", {
+    var pusher = new Pusher('ac8ae105709d7299a673', {
         cluster: 'ap1'
     });
 
@@ -19,11 +98,11 @@
 </script>
 <script>
     {{-- ajax setup --}}
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     {{-- end ajax setup --}}
 
     {{-- delete tables row --}}
@@ -185,82 +264,3 @@
         new Notification(noteTitle, noteOptions);
     });
 </script>
-<!-- Plugin scripts -->
-<script src="/vendors/bundle.js"></script>
-<!-- Chartjs -->
-<script src="/vendors/charts/chartjs/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2"></script>
-
-{{--platform--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"></script>
-
-<!-- Circle progress -->
-<script src="/vendors/circle-progress/circle-progress.min.js"></script>
-
-<!-- Peity -->
-<script src="/vendors/charts/peity/jquery.peity.min.js"></script>
-<script src="/assets/js/examples/charts/peity.js"></script>
-
-<!-- Datepicker -->
-<script src="/vendors/datepicker/daterangepicker.js"></script>
-
-<!-- Slick -->
-<script src="/vendors/slick/slick.min.js"></script>
-
-<!-- Vamp -->
-<script src="/vendors/vmap/jquery.vmap.min.js"></script>
-<script src="/vendors/vmap/maps/jquery.vmap.iran.js"></script>
-<script src="/assets/js/examples/vmap.js"></script>
-
-<!-- CKEditor -->
-<script src="/vendors/ckeditor/ckeditor.js"></script>
-<script src="/assets/js/examples/ckeditor.js"></script>
-
-<!-- Dashboard scripts -->
-<script src="/assets/js/examples/dashboard.js"></script>
-<div class="colors">
-    <!-- To use theme colors with Javascript -->
-    <div class="bg-primary"></div>
-    <div class="bg-primary-bright"></div>
-    <div class="bg-secondary"></div>
-    <div class="bg-secondary-bright"></div>
-    <div class="bg-info"></div>
-    <div class="bg-info-bright"></div>
-    <div class="bg-success"></div>
-    <div class="bg-success-bright"></div>
-    <div class="bg-danger"></div>
-    <div class="bg-danger-bright"></div>
-    <div class="bg-warning"></div>
-    <div class="bg-warning-bright"></div>
-</div>
-
-<!-- App scripts -->
-<script src="/assets/js/app.js"></script>
-<script src="/assets/js/sweetalert2@11"></script>
-
-<!-- Select2 -->
-<script src="/vendors/select2/js/select2.min.js"></script>
-<script src="/assets/js/examples/select2.js"></script>
-
-<!-- Datepicker -->
-<script src="/vendors/datepicker-jalali/bootstrap-datepicker.min.js"></script>
-<script src="/vendors/datepicker-jalali/bootstrap-datepicker.fa.min.js"></script>
-<script src="/vendors/datepicker/daterangepicker.js"></script>
-<script src="/assets/js/examples/datepicker.js"></script>
-
-<!-- Clockpicker -->
-<script src="/vendors/clockpicker/bootstrap-clockpicker.min.js"></script>
-<script src="/assets/js/examples/clockpicker.js"></script>
-
-<!-- fontawesome -->
-<script src="/assets/js/fontawesome.min.js"></script>
-
-<!-- DataTable -->
-<script src="/vendors/dataTable/jquery.dataTables.min.js"></script>
-<script src="/vendors/dataTable/dataTables.bootstrap4.min.js"></script>
-<script src="/vendors/dataTable/dataTables.responsive.min.js"></script>
-<script src="/assets/js/examples/datatable.js"></script>
-
-<script src="{{ mix('/js/app.js') }}"></script>
-
-@yield('scripts')
