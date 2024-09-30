@@ -336,7 +336,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <h6 class="card-title m-b-20">آمار کلیک کاربران بر روی لینک ارسالی</h6>
-                            <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalVisits2) }}</h6>
+                            <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalRows) }}</h6>
                         </div>
                         <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
                     </div>
