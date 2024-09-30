@@ -419,14 +419,14 @@ class PanelController extends Controller
             : now()->endOfDay(); // امروز
 
         // آمار بازدید کاربران به صورت روزانه و بر اساس شهر و ISP
-        $userVisits8 = Visitor::whereBetween('created_at', [$from_date8, $to_date8])
+        $userVisits9 = Visitor::whereBetween('created_at', [$from_date8, $to_date8])
             ->select(DB::raw('DATE(created_at) as date'), 'city', 'isp', DB::raw('COUNT(*) as visits'))
             ->groupBy('date', 'city', 'isp')
             ->orderBy('date', 'asc')
             ->get();
 
         // تبدیل تاریخ‌ها به شمسی
-        $userVisits8 = $userVisits8->map(function ($visit8) {
+        $userVisits8 = $userVisits9->map(function ($visit8) {
             $shamsiDate8 = Verta::instance($visit8->date)->format('Y/m/d');
             $city = $visit8->city ?: 'unknown'; // دسته‌بندی ناشناخته
             $isp = $visit8->isp ?: 'unknown'; // دسته‌بندی ناشناخته
@@ -464,6 +464,7 @@ class PanelController extends Controller
             'orderCounts' => $orderCounts,
             'customerNames' => $customerNames,
             'orderCounts2' => $orderCounts2,
+            'userVisits9' => $userVisits9,
         ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData','dates8', 'visitsData8', 'totalVisits8','bazdid'));
     }
         public function readNotification($notification = null)
