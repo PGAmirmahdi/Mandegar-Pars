@@ -145,7 +145,7 @@ class PanelController extends Controller
             ];
         });
 
-        $totalVisits = $userVisits->count('visits');
+        $totalVisits = $userVisits->sum('visits');
         $users = UserVisit::latest()->paginate(10);
 
         $from_date3 = $request->from_date
@@ -405,7 +405,7 @@ class PanelController extends Controller
         }
 
         // مجموع بازدیدها
-            $totalVisits2 = count($visitsCounts);
+            $totalVisits2 = array_sum($visitsCounts);
         $visitsData = Visitor::selectRaw('city, DATE(created_at) as date, COUNT(*) as visits')
             ->groupBy('city', 'date')
             ->orderBy('date', 'asc')
@@ -452,7 +452,7 @@ class PanelController extends Controller
 
         $dates8 = $userVisits8->pluck('date')->unique();
 
-        $totalVisits8 = $userVisits8->count('visits');
+        $totalVisits8 = array_sum($userVisits8);
 
         $bazdid= Visitor::latest()->paginate(10);
         return view('panel.index', [
