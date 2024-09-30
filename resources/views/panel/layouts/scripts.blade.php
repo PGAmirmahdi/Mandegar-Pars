@@ -97,13 +97,19 @@
     });
 </script>
 <script>
-    {{-- ajax setup --}}
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    {{-- end ajax setup --}}
+
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher("53c462fd26886b32ea45", {
+        cluster: 'us2'
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+        alert(JSON.stringify(data));
+    });
 
     {{-- delete tables row --}}
     $(document).on('click','.trashRow', function() {
