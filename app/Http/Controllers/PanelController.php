@@ -393,7 +393,7 @@ class PanelController extends Controller
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('COUNT(*) as visits')
             ]);
-        $totalRows = $visitsData->count();
+        $totalRows =  Visitor::count();
 
         // تبدیل تاریخ‌ها و داده‌ها به فرمت مناسب برای استفاده در ویو
         $visitsDates = [];
