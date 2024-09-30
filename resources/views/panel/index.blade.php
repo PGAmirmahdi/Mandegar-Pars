@@ -325,7 +325,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <h6 class="card-title m-b-20">آمار شهر بازدیدکنندگان لینک ارسالی</h6>
-                            <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($userVisits9) }}</h6>
+                            <h6 class="card-title m-b-20">مجموع بازدیدها: {{ $userVisits9->count() }}</h6>
                         </div>
                         <canvas id="bar_chart_user_visits3" style="width: auto"></canvas>
                     </div>
