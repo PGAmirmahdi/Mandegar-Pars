@@ -16,7 +16,6 @@ class SendMessage implements ShouldBroadcast
 
     public $userId;
     public $data;
-
     /**
      * Create a new event instance.
      *
@@ -35,6 +34,6 @@ class SendMessage implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('notification.'.$this->userId);
+        return new PrivateChannel('notifications.' . $this->userId);
     }
 }
