@@ -83,7 +83,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 <script>
-    // firebase push notification
+    // Firebase push notification setup
     var firebaseConfig = {
         apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
         authDomain: "mandegarpars-5e075.firebaseapp.com",
@@ -93,6 +93,7 @@
         appId: "1:11452789862:web:8ee1465cf4e374fcbde9a7"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
@@ -100,11 +101,13 @@
         messaging
             .requestPermission()
             .then(function () {
-                return messaging.getToken()
+                console.log('Permission granted.');
+                return messaging.getToken();
             })
             .then(function(token) {
-                // console.log(token);
+                console.log('Token received: ', token);
 
+                // ارسال توکن به سرور شما
                 $.ajax({
                     url: '/panel/saveFcmToken',
                     type: 'POST',
@@ -113,21 +116,23 @@
                     },
                     dataType: 'JSON',
                     success: function (response) {
-                        console.log('Token saved successfully.');
+                        console.log('Token saved successfully on the server.');
                     },
                     error: function (err) {
-                        console.log('User Chat Token Error'+ err);
+                        console.log('Error saving token on the server:', err);
                     },
                 });
 
             }).catch(function (err) {
-            console.log('User Chat Token Error'+ err);
+            console.error('Permission denied or error occurred:', err);
         });
     }
 
     initFirebaseMessagingRegistration();
 
+    // Handle incoming messages
     messaging.onMessage(function(payload) {
+        console.log('Message received. ', payload);
         const noteTitle = payload.notification.title;
         const noteOptions = {
             body: payload.notification.body,
@@ -135,6 +140,7 @@
         };
         new Notification(noteTitle, noteOptions);
     });
+
 </script>
 
 <script>
