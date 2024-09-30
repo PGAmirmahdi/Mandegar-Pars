@@ -4,9 +4,6 @@
 <script src="/vendors/charts/chartjs/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2"></script>
 
-{{--platform--}}
-{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"></script>--}}
-
 <!-- Circle progress -->
 <script src="/vendors/circle-progress/circle-progress.min.js"></script>
 
@@ -65,7 +62,7 @@
 <script src="/vendors/clockpicker/bootstrap-clockpicker.min.js"></script>
 <script src="/assets/js/examples/clockpicker.js"></script>
 
-<!-- fontawesome -->
+<!-- FontAwesome -->
 <script src="/assets/js/fontawesome.min.js"></script>
 
 <!-- DataTable -->
@@ -96,7 +93,6 @@
         console.log(data);
     });
 </script>
-<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 
 <script>
 
@@ -190,8 +186,8 @@
     // realtime notification
     var audio = new Audio('/audio/notification.wav');
     let userId = "{{ auth()->id() }}"
-    Echo.channel('presence-notification.'+userId)
-        .listen('SendMessage', (e) =>{
+    Echo.channel('presence-notification.' + userId)
+        .listen('SendMessage', (e) => {
             $('#notification_sec a').addClass('nav-link-notify')
             $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
             $(".timeline").prepend(`<div class="timeline-item">
@@ -214,57 +210,4 @@
             audio.play();
         });
     // end realtime
-
-    // firebase push notification
-    var firebaseConfig = {
-        apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
-        authDomain: "mandegarpars-5e075.firebaseapp.com",
-        projectId: "mandegarpars-5e075",
-        storageBucket: "mandegarpars-5e075.appspot.com",
-        messagingSenderId: "11452789862",
-        appId: "1:11452789862:web:8ee1465cf4e374fcbde9a7"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
-
-    function initFirebaseMessagingRegistration() {
-        messaging
-            .requestPermission()
-            .then(function () {
-                return messaging.getToken()
-            })
-            .then(function(token) {
-                // console.log(token);
-
-                $.ajax({
-                    url: '/panel/saveFcmToken',
-                    type: 'POST',
-                    data: {
-                        token: token
-                    },
-                    dataType: 'JSON',
-                    success: function (response) {
-                        console.log('Token saved successfully.');
-                    },
-                    error: function (err) {
-                        console.log('User Chat Token Error'+ err);
-                    },
-                });
-
-            }).catch(function (err) {
-            console.log('User Chat Token Error'+ err);
-        });
-    }
-
-    initFirebaseMessagingRegistration();
-
-    messaging.onMessage(function(payload) {
-        const noteTitle = payload.notification.title;
-        const noteOptions = {
-            body: payload.notification.body,
-            icon: payload.notification.icon,
-        };
-        new Notification(noteTitle, noteOptions);
-    });
 </script>
