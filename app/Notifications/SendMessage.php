@@ -32,7 +32,6 @@ class SendMessage extends Notification
             'url' => $this->url,
         ];
 
-        // اینجا باید دو آرگومان message و url را ارسال کنید
         event(new SendMessageEvent($notifiable->id, $this->message, $this->url));
 
         return $data;
