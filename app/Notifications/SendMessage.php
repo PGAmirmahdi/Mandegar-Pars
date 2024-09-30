@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use BeyondCode\LaravelWebSockets\WebSockets\Channels\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -29,7 +30,6 @@ class SendMessage extends Notification
         $this->message = $message;
         $this->url = $url;
     }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -55,11 +55,15 @@ class SendMessage extends Notification
             'url' => $this->url,
         ];
 
-        if ($notifiable->fcm_token){
-            $this->send_firebase_notification($this->message, $this->url, $notifiable->fcm_token);
-        }
-
-        event(new SendMessageEvent($notifiable->id, $data));
+//        if ($notifiable->fcm_token){
+//            $this->send_firebase_notification($this->message, $this->url, $notifiable->fcm_token);
+//        }
+//
+//        event(new SendMessageEvent($notifiable->id, $data));
+//
+//        return $data;
+        // ارسال نوتیفیکیشن با Pusher
+        event(new SendMessageEvent($notifiable->id, $data)); // پشتیبانی از Pusher
 
         return $data;
     }
