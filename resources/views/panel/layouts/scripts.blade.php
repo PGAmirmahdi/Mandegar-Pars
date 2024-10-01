@@ -82,28 +82,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
 <script>
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
-
-    // Initialize Pusher with your app key and cluster
     var pusher = new Pusher('ac8ae105709d7299a673', {
         cluster: 'ap1',
-        authEndpoint: '/pusher/auth', // Specify the auth endpoint
-        auth: {
-            headers: {
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') // Include CSRF token if needed
-            }
-        }
+        encrypted: true
     });
 
     // Subscribe to the channel
-    var channel = pusher.subscribe('private-notifications.{{ auth()->id() }}'); // تغییر به کانال خصوصی
+    var channel = pusher.subscribe('private-notifications.' + userId);
 
     // Bind to the event
     channel.bind('SendMessageEvent', function(data) {
         // نمایش نوتیفیکیشن
-        alert(JSON.stringify(data));
+        alert('New Notification: ' + data.message);
+
         // می‌توانید به جای alert از یک روش بهتر برای نمایش نوتیفیکیشن استفاده کنید
+        new Notification(data.message, {
+            body: "Click to view",
+            icon: "path_to_icon.png"
+        }).onclick = function() {
+            window.open(data.url);
+        };
     });
 </script>
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>

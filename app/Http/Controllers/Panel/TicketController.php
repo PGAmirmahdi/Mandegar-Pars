@@ -10,6 +10,7 @@ use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Pusher\Pusher;
 
 class TicketController extends Controller
 {
@@ -65,16 +66,12 @@ class TicketController extends Controller
         $message = 'تیکتی با عنوان "'.$ticket->title.'" به شما ارسال شده است';
         $url = route('tickets.edit', $ticket->id);
 
-        // ارسال نوتیفیکیشن با استفاده از Guzzle
+        // پیدا کردن کاربر دریافت کننده
         $user = User::find($ticket->receiver);
 
         if ($user) {
-            if (!empty($user->fcm_token)) {
-                $this->send_firebase_notification($message, $url, $user->fcm_token);
-            }
-            if (!empty($user->najva_token)) {
-                $this->send_najva_notification($message, $url, $user->najva_token);
-            }
+            // ارسال نوتیفیکیشن به کاربر فقط از طریق Pusher
+            $user->notify(new SendMessage($message, $url));
         }
 
         return redirect()->route('tickets.edit', $ticket->id);
