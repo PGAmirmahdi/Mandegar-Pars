@@ -69,17 +69,16 @@ class TicketController extends Controller
         $message = 'تیکتی با عنوان "'.$ticket->title.'" به شما ارسال شده است';
         $url = route('tickets.edit', $ticket->id);
 
-        // پیدا کردن کاربر دریافت کننده (یک یا چند کاربر)
-        $users = User::where('id', $ticket->receiver)->get(); // اگر ممکن است چندین کاربر را پیدا کنید، از get() استفاده کنید
+        // پیدا کردن کاربر دریافت کننده
+        $user = User::find($ticket->receiver);
 
-        // ارسال نوتیفیکیشن به هر کاربر
-        $users->each(function($user) use ($message, $url) {
-            $user->notify(new \App\Notifications\SendMessage($message, $url));
-        });
+        if ($user) {
+            // ارسال نوتیفیکیشن به کاربر دریافت کننده
+            $user->notify(new SendMessage($message, $url));
+        }
 
         return redirect()->route('tickets.edit', $ticket->id);
     }
-
 
 
     public function show(Ticket $ticket)

@@ -197,7 +197,7 @@
 
     // realtime notification
     var audio = new Audio('/audio/notification.wav');
-    let userId = "{{ auth()->id() }}"
+    let userId = "{{ auth()->user()->id }}"
     Echo.channel('presence-notification.'+userId)
         .listen('SendMessage', (e) =>{
             $('#notification_sec a').addClass('nav-link-notify')
