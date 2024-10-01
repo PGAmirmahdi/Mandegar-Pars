@@ -78,7 +78,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('test/{id?}', function ($id = null) {
+//Route::get('test/{id?}', function ($id = null) {
 
 //    event(new SendMessageEvent(1, []));
 
@@ -95,12 +95,12 @@ Route::get('test/{id?}', function ($id = null) {
 //    }
 //     END send sms to customers (install app)
 
-    return \auth()->loginUsingId($id);
+//    return \auth()->loginUsingId($id);
 
 //    foreach (\App\Models\InventoryReport::where('factor_id', '!=', null)->get() as $item){
 //        $item->update(['invoice_id' => $item->factor->invoice_id]);
 //    }
-});
+//});
 
 // import excel
 //Route::match(['get','post'],'import-excel', function (Request $request){
