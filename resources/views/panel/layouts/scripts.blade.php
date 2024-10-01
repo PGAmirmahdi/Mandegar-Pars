@@ -86,8 +86,8 @@
     Pusher.logToConsole = true;
 
     // Initialize Pusher with your app key and cluster
-    var pusher = new Pusher('YOUR_PUSHER_APP_KEY', {
-        cluster: 'YOUR_PUSHER_APP_CLUSTER',
+    var pusher = new Pusher('ac8ae105709d7299a673', {
+        cluster: 'ap1',
         authEndpoint: '/pusher/auth', // Specify the auth endpoint
         auth: {
             headers: {
