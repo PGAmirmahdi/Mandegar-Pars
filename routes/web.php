@@ -1,6 +1,8 @@
 <?php
 
 use App\Events\SendMessage as SendMessageEvent;
+use App\Events\TestEvent;
+use App\Http\Controllers\Auth\PusherAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BotController;
@@ -291,14 +293,14 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('select-day', [DeliveryDayController::class, 'toggleDay'])->name('select-day');
     // In your routes/web.php
     Route::get('/test-broadcast', function () {
-        event(new \App\Events\TestEvent('This is a test message!'));
+        event(new TestEvent('This is a test message!'));
         return 'Event has been sent!';
     });
 
     // Sms
     Route::resource('sms', SMSController::class)->except('edit','update');
     Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
-
+    Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
 });
 Route::get('/user-visits', function() {
     $userVisits = UserVisit::selectRaw('DATE(created_at) as date, COUNT(*) as visits')
