@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
 use App\Models\Ticket;
+use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -44,7 +45,7 @@ class TicketController extends Controller
             'code' => $this->generateCode(),
         ]);
 
-        if ($request->file){
+        if ($request->file) {
             $file_info = [
                 'name' => $request->file('file')->getClientOriginalName(),
                 'type' => $request->file('file')->getClientOriginalExtension(),
@@ -52,7 +53,6 @@ class TicketController extends Controller
             ];
 
             $file = upload_file($request->file, 'Messages');
-
             $file_info['path'] = $file;
         }
 
@@ -65,10 +65,17 @@ class TicketController extends Controller
         $message = 'تیکتی با عنوان "'.$ticket->title.'" به شما ارسال شده است';
         $url = route('tickets.edit', $ticket->id);
 
-        Notification::send($ticket->receiver, new SendMessage($message, $url));
+        // ارسال نوتیفیکیشن با استفاده از Guzzle
+        $user = User::find($ticket->receiver);
+
+        if ($user) {
+            $this->send_firebase_notification($message, $url, $user->fcm_token);
+            $this->send_najva_notification($message, $url, $user->najva_token);
+        }
 
         return redirect()->route('tickets.edit', $ticket->id);
     }
+
 
     public function show(Ticket $ticket)
     {
