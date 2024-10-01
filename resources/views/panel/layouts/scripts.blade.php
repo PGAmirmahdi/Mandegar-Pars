@@ -84,7 +84,7 @@
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 <script>
     // Firebase push notification setup
-    var firebaseConfig = {
+    const firebaseConfig = {
         apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
         authDomain: "mandegarpars-5e075.firebaseapp.com",
         projectId: "mandegarpars-5e075",
@@ -97,22 +97,15 @@
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
+    // Initialize Firebase Messaging Registration
     function initFirebaseMessagingRegistration() {
-        messaging
-            .requestPermission()
-            .then(function () {
-                console.log('Permission granted.');
-                return messaging.getToken();
-            })
-            .then(function(token) {
-                console.log('Token received: ', token);
-
-                // ارسال توکن به سرور شما
+        messaging.getToken({ vapidKey: 'BBFX0uQct6LXsTN8v4BIu6U1rAFvrpErc-DRjgGT4_Hnmr-Y5X9rP98mjsS4fOAAryKzo44P-M0NWQqKH8xbpq0' }).then((currentToken) => {
+            if (currentToken) {
                 $.ajax({
                     url: '/panel/saveFcmToken',
                     type: 'POST',
                     data: {
-                        token: token
+                        token: currentToken
                     },
                     dataType: 'JSON',
                     success: function (response) {
@@ -122,9 +115,11 @@
                         console.log('Error saving token on the server:', err);
                     },
                 });
-
-            }).catch(function (err) {
-            console.error('Permission denied or error occurred:', err);
+            } else {
+                console.log('No registration token available.');
+            }
+        }).catch((err) => {
+            console.error('An error occurred while retrieving token. ', err);
         });
     }
 
@@ -141,34 +136,26 @@
         new Notification(noteTitle, noteOptions);
     });
 
-</script>
-
-<script>
-
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
-
-    var pusher = new Pusher('ac8ae105709d7299a673', {
+    // Pusher initialization and event handling
+    const pusher = new Pusher('ac8ae105709d7299a673', {
         cluster: 'ap1'
     });
 
-    var channel = pusher.subscribe('my-channel');
+    const channel = pusher.subscribe('my-channel');
     channel.bind('my-event', function(data) {
-        alert(JSON.stringify(data));
+        alert(JSON.stringify(data)); // Handle the event as needed
     });
-</script>
-<script>
-    {{-- ajax setup --}}
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    {{-- end ajax setup --}}
 
-    {{-- delete tables row --}}
-    $(document).on('click','.trashRow', function() {
-        let self = $(this)
+    // AJAX setup for CSRF token
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    // Delete tables row
+    $(document).on('click', '.trashRow', function() {
+        let self = $(this);
         Swal.fire({
             title: 'حذف شود؟',
             icon: 'warning',
@@ -201,7 +188,7 @@
                                 title: 'left-gap',
                                 content: 'left-gap',
                             }
-                        })
+                        });
                     },
                     error: function (jqXHR, exception) {
                         Swal.fire({
@@ -218,56 +205,54 @@
                                 title: 'left-gap',
                                 content: 'left-gap',
                             }
-                        })
+                        });
                     }
-                })
-
+                });
             }
-        })
-    })
-    {{-- end delete tables row --}}
+        });
+    });
 
-    //  network status
+    // Network status
     window.addEventListener("offline", (event) => {
         $('#network_sec').html(`
-                <span data-toggle="tooltip" data-placement="bottom" data-original-title="connecting">
-                    <i class="fa fa-wifi text-danger zoom-in-out"></i>
-                </span>`)
+        <span data-toggle="tooltip" data-placement="bottom" data-original-title="connecting">
+            <i class="fa fa-wifi text-danger zoom-in-out"></i>
+        </span>`);
         $('#network_sec span').tooltip();
     });
 
     window.addEventListener("online", (event) => {
         $('#network_sec').html(`
-                <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
-                    <i class="fa fa-wifi text-success"></i>
-                </span>`)
+        <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
+            <i class="fa fa-wifi text-success"></i>
+        </span>`);
         $('#network_sec span').tooltip();
     });
-    // end network status
-    console.log(window.Echo);
-    var audio = new Audio('/audio/notification.wav');
+
+    // Handle notifications via Laravel Echo
+    let audio = new Audio('/audio/notification.wav');
     let userId = "{{ auth()->id() }}";
     Echo.join('presence-notification.' + userId)
         .listen('SendMessage', (e) => {
             $('#notification_sec a').addClass('nav-link-notify');
             $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
             $(".timeline").prepend(`<div class="timeline-item">
-                <div>
-                    <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-                        <span class="avatar-title bg-primary-bright text-primary rounded-circle">
-                            <i class="fa fa-bell font-size-20"></i>
-                        </span>
-                    </figure>
-                </div>
-                <div>
-                    <p class="m-b-5">
-                        <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-                    </p>
-                    <small class="text-muted">
-                        <i class="fa fa-clock-o m-r-5"></i>الان
-                    </small>
-                </div>
-            </div>`);
+            <div>
+                <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+                    <span class="avatar-title bg-primary-bright text-primary rounded-circle">
+                        <i class="fa fa-bell font-size-20"></i>
+                    </span>
+                </figure>
+            </div>
+            <div>
+                <p class="m-b-5">
+                    <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                </p>
+                <small class="text-muted">
+                    <i class="fa fa-clock-o m-r-5"></i>الان
+                </small>
+            </div>
+        </div>`);
             audio.play();
         });
 </script>
