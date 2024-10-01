@@ -20,8 +20,7 @@ class SendMessage implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param int $userId
-     * @param array $data
+     * @return void
      */
     public function __construct($userId, $data)
     {
@@ -29,9 +28,13 @@ class SendMessage implements ShouldBroadcast
         $this->data = $data;
     }
 
-
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
     public function broadcastOn()
     {
-        return new PrivateChannel('user.' . $this->userId);
+        return new PresenceChannel('notification.'.$this->userId);
     }
 }
