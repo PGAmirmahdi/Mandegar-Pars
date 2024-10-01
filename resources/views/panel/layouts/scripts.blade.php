@@ -85,7 +85,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-messaging-compat.js"></script>
 <script>
     // Firebase push notification setup
-    var firebaseConfig = {
+    const firebaseConfig = {
         apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
         authDomain: "mandegarpars-5e075.firebaseapp.com",
         projectId: "mandegarpars-5e075",
@@ -99,21 +99,16 @@
     const messaging = firebase.messaging();
 
     function initFirebaseMessagingRegistration() {
-        messaging
-            .requestPermission()
-            .then(function () {
-                console.log('Permission granted.');
-                return messaging.getToken();
-            })
-            .then(function(token) {
-                console.log('Token received: ', token);
+        messaging.getToken({ vapidKey: '<YOUR_PUBLIC_VAPID_KEY>' }).then((currentToken) => {
+            if (currentToken) {
+                console.log('Token received: ', currentToken);
 
                 // ارسال توکن به سرور شما
                 $.ajax({
                     url: '/panel/saveFcmToken',
                     type: 'POST',
                     data: {
-                        token: token
+                        token: currentToken
                     },
                     dataType: 'JSON',
                     success: function (response) {
@@ -123,9 +118,11 @@
                         console.log('Error saving token on the server:', err);
                     },
                 });
-
-            }).catch(function (err) {
-            console.error('Permission denied or error occurred:', err);
+            } else {
+                console.log('No registration token available. Request permission to generate one.');
+            }
+        }).catch((err) => {
+            console.error('An error occurred while retrieving token. ', err);
         });
     }
 
@@ -253,13 +250,6 @@
                 </span>`)
         $('#network_sec span').tooltip();
     });
-    messaging.requestPermission()
-        .then(() => {
-            console.log('Notification permission granted.');
-        })
-        .catch((err) => {
-            console.error('Unable to get permission to notify.', err);
-        });
     // end network status
     console.log(window.Echo);
     var audio = new Audio('/audio/notification.wav');
