@@ -2,7 +2,6 @@
 <script src="/vendors/bundle.js"></script>
 <!-- Chartjs -->
 <script src="/vendors/charts/chartjs/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2"></script>
 
 {{--platform--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"></script>
