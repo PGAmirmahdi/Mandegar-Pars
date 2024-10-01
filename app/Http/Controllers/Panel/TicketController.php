@@ -39,7 +39,6 @@ class TicketController extends Controller
     {
         $this->authorize('tickets-create');
 
-        // ایجاد تیکت
         $ticket = Ticket::create([
             'sender_id' => auth()->id(),
             'receiver_id' => $request->receiver,
@@ -47,8 +46,7 @@ class TicketController extends Controller
             'code' => $this->generateCode(),
         ]);
 
-        // اگر فایل ضمیمه شده باشد
-        if ($request->file) {
+        if ($request->file){
             $file_info = [
                 'name' => $request->file('file')->getClientOriginalName(),
                 'type' => $request->file('file')->getClientOriginalExtension(),
@@ -56,10 +54,10 @@ class TicketController extends Controller
             ];
 
             $file = upload_file($request->file, 'Messages');
+
             $file_info['path'] = $file;
         }
 
-        // ایجاد پیام در ارتباط با تیکت
         $ticket->messages()->create([
             'user_id' => auth()->id(),
             'text' => $request->text,
@@ -69,13 +67,7 @@ class TicketController extends Controller
         $message = 'تیکتی با عنوان "'.$ticket->title.'" به شما ارسال شده است';
         $url = route('tickets.edit', $ticket->id);
 
-        // پیدا کردن کاربر دریافت کننده
-        $user = User::find($ticket->receiver_id);
-
-        if ($user) {
-            // ارسال نوتیفیکیشن به کاربر دریافت کننده
-            $user->notify(new SendMessage($message, $url));
-        }
+        Notification::send($ticket->receiver, new SendMessage($message, $url));
 
         return redirect()->route('tickets.edit', $ticket->id);
     }

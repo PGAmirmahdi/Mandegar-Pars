@@ -122,8 +122,6 @@
             alert('Notification received: ' + e.data.message);
         });
 </script>
-<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
-
 <script>
 
     {{-- ajax setup --}}
@@ -215,8 +213,8 @@
 
     // realtime notification
     var audio = new Audio('/audio/notification.wav');
-    let userId = "{{ auth()->user()->id }}"
-    Echo.channel('presence-notification.'+ userId)
+    let userId = "{{ auth()->id() }}"
+    Echo.channel('presence-notification.'+userId)
         .listen('SendMessage', (e) =>{
             $('#notification_sec a').addClass('nav-link-notify')
             $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
