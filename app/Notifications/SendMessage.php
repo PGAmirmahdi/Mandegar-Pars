@@ -55,17 +55,17 @@ class SendMessage extends Notification
             'url' => $this->url,
         ];
 
-        if ($notifiable->fcm_token){
-            $this->send_firebase_notification($this->message, $this->url, $notifiable->fcm_token);
-        }
-
-        event(new SendMessageEvent($notifiable->id, $data));
-
-        return $data;
-        // ارسال نوتیفیکیشن با Pusher
-//        event(new SendMessageEvent($notifiable->id, $data)); // پشتیبانی از Pusher
+//        if ($notifiable->fcm_token){
+//            $this->send_firebase_notification($this->message, $this->url, $notifiable->fcm_token);
+//        }
+//
+//        event(new SendMessageEvent($notifiable->id, $data));
 //
 //        return $data;
+        // ارسال نوتیفیکیشن با Pusher
+        event(new SendMessageEvent($notifiable->id, $data)); // پشتیبانی از Pusher
+
+        return $data;
     }
 
     private function send_firebase_notification($message, $url, $token)
