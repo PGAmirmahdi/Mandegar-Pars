@@ -81,10 +81,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
 
-<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 <script>
-    const firebaseConfig = {
+    // Firebase push notification setup
+    var firebaseConfig = {
         apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
         authDomain: "mandegarpars-5e075.firebaseapp.com",
         projectId: "mandegarpars-5e075",
@@ -97,15 +97,22 @@
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
-    // Initialize Firebase Messaging Registration
     function initFirebaseMessagingRegistration() {
-        messaging.getToken({vapidKey: '<YOUR_PUBLIC_VAPID_KEY>'}).then((currentToken) => {
-            if (currentToken) {
+        messaging
+            .requestPermission()
+            .then(function () {
+                console.log('Permission granted.');
+                return messaging.getToken();
+            })
+            .then(function(token) {
+                console.log('Token received: ', token);
+
+                // ارسال توکن به سرور شما
                 $.ajax({
                     url: '/panel/saveFcmToken',
                     type: 'POST',
                     data: {
-                        token: currentToken
+                        token: token
                     },
                     dataType: 'JSON',
                     success: function (response) {
@@ -115,18 +122,16 @@
                         console.log('Error saving token on the server:', err);
                     },
                 });
-            } else {
-                console.log('No registration token available.');
-            }
-        }).catch((err) => {
-            console.error('An error occurred while retrieving token. ', err);
+
+            }).catch(function (err) {
+            console.error('Permission denied or error occurred:', err);
         });
     }
 
     initFirebaseMessagingRegistration();
 
     // Handle incoming messages
-    messaging.onMessage(function (payload) {
+    messaging.onMessage(function(payload) {
         console.log('Message received. ', payload);
         const noteTitle = payload.notification.title;
         const noteOptions = {
@@ -136,26 +141,34 @@
         new Notification(noteTitle, noteOptions);
     });
 
-    // Pusher initialization and event handling
-    const pusher = new Pusher('ac8ae105709d7299a673', {
+</script>
+
+<script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('ac8ae105709d7299a673', {
         cluster: 'ap1'
     });
 
-    const channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function (data) {
-        alert(JSON.stringify(data)); // Handle the event as needed
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+        alert(JSON.stringify(data));
     });
+</script>
+<script>
+    {{-- ajax setup --}}
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    {{-- end ajax setup --}}
 
-    // AJAX setup for CSRF token
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    // Delete tables row
-    $(document).on('click', '.trashRow', function () {
-        let self = $(this);
+    {{-- delete tables row --}}
+    $(document).on('click','.trashRow', function() {
+        let self = $(this)
         Swal.fire({
             title: 'حذف شود؟',
             icon: 'warning',
@@ -172,7 +185,7 @@
                         id: self.data('id'),
                         _method: 'delete'
                     },
-                    success: function (res) {
+                    success: function(res) {
                         $('tbody:not(.internal_tels)').html($(res).find('tbody:not(.internal_tels)').html());
                         Swal.fire({
                             title: 'با موفقیت حذف شد',
@@ -188,7 +201,7 @@
                                 title: 'left-gap',
                                 content: 'left-gap',
                             }
-                        });
+                        })
                     },
                     error: function (jqXHR, exception) {
                         Swal.fire({
@@ -205,54 +218,56 @@
                                 title: 'left-gap',
                                 content: 'left-gap',
                             }
-                        });
+                        })
                     }
-                });
-            }
-        });
-    });
+                })
 
-    // Network status
+            }
+        })
+    })
+    {{-- end delete tables row --}}
+
+    //  network status
     window.addEventListener("offline", (event) => {
         $('#network_sec').html(`
-    <span data-toggle="tooltip" data-placement="bottom" data-original-title="connecting">
-            <i class="fa fa-wifi text-danger zoom-in-out"></i>
-        </span>`);
+                <span data-toggle="tooltip" data-placement="bottom" data-original-title="connecting">
+                    <i class="fa fa-wifi text-danger zoom-in-out"></i>
+                </span>`)
         $('#network_sec span').tooltip();
     });
 
     window.addEventListener("online", (event) => {
         $('#network_sec').html(`
-    <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
-            <i class="fa fa-wifi text-success"></i>
-        </span>`);
+                <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
+                    <i class="fa fa-wifi text-success"></i>
+                </span>`)
         $('#network_sec span').tooltip();
     });
-
-    // Handle notifications via Laravel Echo
-    let audio = new Audio('/audio/notification.wav');
+    // end network status
+    console.log(window.Echo);
+    var audio = new Audio('/audio/notification.wav');
     let userId = "{{ auth()->id() }}";
     Echo.join('presence-notification.' + userId)
         .listen('SendMessage', (e) => {
             $('#notification_sec a').addClass('nav-link-notify');
             $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
             $(".timeline").prepend(`<div class="timeline-item">
-        <div>
-            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-                    <span class="avatar-title bg-primary-bright text-primary rounded-circle">
-                        <i class="fa fa-bell font-size-20"></i>
-                    </span>
-            </figure>
-        </div>
-        <div>
-            <p class="m-b-5">
-                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-            </p>
-            <small class="text-muted">
-                <i class="fa fa-clock-o m-r-5"></i>الان
-            </small>
-        </div>
-    </div>`);
+                <div>
+                    <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+                        <span class="avatar-title bg-primary-bright text-primary rounded-circle">
+                            <i class="fa fa-bell font-size-20"></i>
+                        </span>
+                    </figure>
+                </div>
+                <div>
+                    <p class="m-b-5">
+                        <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                    </p>
+                    <small class="text-muted">
+                        <i class="fa fa-clock-o m-r-5"></i>الان
+                    </small>
+                </div>
+            </div>`);
             audio.play();
         });
 </script>
