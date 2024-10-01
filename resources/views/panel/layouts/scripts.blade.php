@@ -198,7 +198,7 @@
     // realtime notification
     var audio = new Audio('/audio/notification.wav');
     let userId = "{{ auth()->user()->id }}"
-    Echo.channel('presence-notification.'+userId)
+    Echo.channel('presence-notification.'+ userId)
         .listen('SendMessage', (e) =>{
             $('#notification_sec a').addClass('nav-link-notify')
             $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
