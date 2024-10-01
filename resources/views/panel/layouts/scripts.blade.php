@@ -97,6 +97,17 @@
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
+    messaging.getToken({ vapidKey: 'YOUR_PUBLIC_VAPID_KEY' }).then((currentToken) => {
+        if (currentToken) {
+            console.log('Token received:', currentToken);
+            // ارسال توکن به سرور برای ذخیره‌سازی
+        } else {
+            console.log('No registration token available. Request permission to generate one.');
+        }
+    }).catch((err) => {
+        console.error('An error occurred while retrieving token. ', err);
+    });
+
     // Initialize Firebase Messaging Registration
     function initFirebaseMessagingRegistration() {
         messaging.getToken({ vapidKey: 'BBFX0uQct6LXsTN8v4BIu6U1rAFvrpErc-DRjgGT4_Hnmr-Y5X9rP98mjsS4fOAAryKzo44P-M0NWQqKH8xbpq0' }).then((currentToken) => {
@@ -124,7 +135,6 @@
     }
 
     initFirebaseMessagingRegistration();
-
     // Handle incoming messages
     messaging.onMessage(function(payload) {
         console.log('Message received. ', payload);
