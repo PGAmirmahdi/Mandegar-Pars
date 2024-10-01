@@ -69,12 +69,17 @@ class TicketController extends Controller
         $user = User::find($ticket->receiver);
 
         if ($user) {
-            $this->send_firebase_notification($message, $url, $user->fcm_token);
-            $this->send_najva_notification($message, $url, $user->najva_token);
+            if (!empty($user->fcm_token)) {
+                $this->send_firebase_notification($message, $url, $user->fcm_token);
+            }
+            if (!empty($user->najva_token)) {
+                $this->send_najva_notification($message, $url, $user->najva_token);
+            }
         }
 
         return redirect()->route('tickets.edit', $ticket->id);
     }
+
 
 
     public function show(Ticket $ticket)
