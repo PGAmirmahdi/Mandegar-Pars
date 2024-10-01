@@ -300,7 +300,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Sms
     Route::resource('sms', SMSController::class)->except('edit','update');
     Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
-    Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
+    Route::get('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
 
 });
 Route::get('/user-visits', function() {
