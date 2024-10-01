@@ -78,50 +78,7 @@
 <script src="{{ asset('/js/app.js') }}"></script>
 
 @yield('scripts')
-<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
-<script>
-    var pusher = new Pusher('ac8ae105709d7299a673', {
-        cluster: 'ap1',
-        encrypted: true
-    });
-
-    // Subscribe to the channel
-    var channel = pusher.subscribe('private-notifications.' + userId);
-
-    // Bind to the event
-    channel.bind('SendMessageEvent', function(data) {
-        // نمایش نوتیفیکیشن
-        alert('New Notification: ' + data.message);
-
-        // می‌توانید به جای alert از یک روش بهتر برای نمایش نوتیفیکیشن استفاده کنید
-        new Notification(data.message, {
-            body: "Click to view",
-            icon: "path_to_icon.png"
-        }).onclick = function() {
-            window.open(data.url);
-        };
-    });
-    const socket = new WebSocket('wss://ws-ap1.pusher.com/app/ac8ae105709d7299a673?protocol=7&client=js&version=8.2.0&flash=false');
-
-    socket.onopen = function(event) {
-        console.log('WebSocket is connected.');
-    };
-
-    socket.onclose = function(event) {
-        console.log('WebSocket is closed.');
-    };
-
-    socket.onerror = function(error) {
-        console.error('WebSocket Error: ', error);
-    };
-    Echo.private(`notification.${userId}`)
-        .listen('SendMessage', (e) => {
-            console.log('Notification received: ', e.data.message);
-            alert('Notification received: ' + e.data.message);
-        });
-</script>
 <script>
 
     {{-- ajax setup --}}
