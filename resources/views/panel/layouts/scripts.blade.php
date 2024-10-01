@@ -103,6 +103,19 @@
             window.open(data.url);
         };
     });
+    const socket = new WebSocket('wss://ws-ap1.pusher.com/app/ac8ae105709d7299a673?protocol=7&client=js&version=8.2.0&flash=false');
+
+    socket.onopen = function(event) {
+        console.log('WebSocket is connected.');
+    };
+
+    socket.onclose = function(event) {
+        console.log('WebSocket is closed.');
+    };
+
+    socket.onerror = function(error) {
+        console.error('WebSocket Error: ', error);
+    };
     Echo.private(`notification.${userId}`)
         .listen('SendMessage', (e) => {
             console.log('Notification received: ', e.data.message);
