@@ -141,9 +141,18 @@
 
 <script>
 
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
+    // Handle incoming messages
+    messaging.onMessage(function(payload) {
+        console.log('Message received. ', payload);
+        const noteTitle = payload.notification.title;
+        const noteOptions = {
+            body: payload.notification.body,
+            icon: payload.notification.icon,
+        };
+        new Notification(noteTitle, noteOptions);
+    });
 
+    // Pusher initialization and event handling
     var pusher = new Pusher('ac8ae105709d7299a673', {
         cluster: 'ap1'
     });

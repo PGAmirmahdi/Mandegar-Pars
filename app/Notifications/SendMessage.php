@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\User;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -76,8 +77,8 @@ class SendMessage extends Notification
 
     private function send_firebase_notification($message, $url, $token)
     {
+        $client = new Client();
         $firebaseToken = [$token];
-
         $SERVER_API_KEY = 'AAAAAqqjtGY:APA91bGqBtuYddBnAnliS0HOL1PBuf8cbWgdkNWMpOJCMFuWPVq2nCZoLTZIcxDQMJf8OwAsWRYYan5BpXC6qFdoIpyWW91OCUOu-eDOggSmBv-Oi5ebT2FWdSRid7OV1iP02_9rGftS';
 
         $data = [
@@ -95,7 +96,6 @@ class SendMessage extends Notification
         ];
 
         try {
-            $client = new Client();
             $response = $client->post('https://fcm.googleapis.com/fcm/send', [
                 'headers' => [
                     'Authorization' => 'key=' . $SERVER_API_KEY,
@@ -103,14 +103,18 @@ class SendMessage extends Notification
                 ],
                 'json' => $data,
             ]);
-            $body = $response->getBody();
-            Log::info('Firebase notification response: ' . $body);
-        } catch (Exception $e) {
+
+            $responseBody = json_decode($response->getBody(), true);
+            Log::info($responseBody); // برای ثبت اطلاعات در لاگ
+        } catch (RequestException $e) {
             Log::error('Error sending Firebase notification: ' . $e->getMessage());
         }
     }
+
     private function send_najva_notification($message, $url, $token)
     {
+        $client = new Client();
+
         $data = [
             "title" => $message,
             "body" => ".",
@@ -128,19 +132,18 @@ class SendMessage extends Notification
         ];
 
         try {
-            $client = new Client();
             $response = $client->post('https://app.najva.com/api/v2/notification/management/send-campaign/', [
                 'headers' => [
                     'Authorization' => 'Token f565da417ab6ef8ec57bab4a2a090955d5ee227e',
                     'X-Api-Key' => '1faec3c1-6f27-4881-b219-5f5b5737f31b',
-                    'Cache-Control' => 'no-cache',
                     'Content-Type' => 'application/json',
                 ],
                 'json' => $data,
             ]);
-            $body = $response->getBody();
-            Log::info('Najva notification response: ' . $body);
-        } catch (Exception $e) {
+
+            $responseBody = json_decode($response->getBody(), true);
+            Log::info($responseBody); // برای ثبت اطلاعات در لاگ
+        } catch (RequestException $e) {
             Log::error('Error sending Najva notification: ' . $e->getMessage());
         }
     }
