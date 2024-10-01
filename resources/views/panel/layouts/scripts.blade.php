@@ -101,11 +101,9 @@
     function initFirebaseMessagingRegistration() {
         messaging.getToken({ vapidKey: '<YOUR_PUBLIC_VAPID_KEY>' }).then((currentToken) => {
             if (currentToken) {
-                console.log('Token received: ', currentToken);
-
                 // ارسال توکن به سرور شما
                 $.ajax({
-                    url: '/panel/saveFcmToken',
+                    url: '/panel/saveFcmToken',  // این URL سمت سرور شما است
                     type: 'POST',
                     data: {
                         token: currentToken
@@ -119,7 +117,7 @@
                     },
                 });
             } else {
-                console.log('No registration token available. Request permission to generate one.');
+                console.log('No registration token available.');
             }
         }).catch((err) => {
             console.error('An error occurred while retrieving token. ', err);
