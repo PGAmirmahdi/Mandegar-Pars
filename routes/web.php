@@ -301,6 +301,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('sms', SMSController::class)->except('edit','update');
     Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
     Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
+
 });
 Route::get('/user-visits', function() {
     $userVisits = UserVisit::selectRaw('DATE(created_at) as date, COUNT(*) as visits')

@@ -86,9 +86,14 @@
     Pusher.logToConsole = true;
 
     // Initialize Pusher with your app key and cluster
-    var pusher = new Pusher('ac8ae105709d7299a673', {
-        cluster: 'ap1',
-        encrypted: true // استفاده از SSL
+    var pusher = new Pusher('YOUR_PUSHER_APP_KEY', {
+        cluster: 'YOUR_PUSHER_APP_CLUSTER',
+        authEndpoint: '/pusher/auth', // Specify the auth endpoint
+        auth: {
+            headers: {
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') // Include CSRF token if needed
+            }
+        }
     });
 
     // Subscribe to the channel

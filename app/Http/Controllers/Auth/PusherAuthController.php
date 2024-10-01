@@ -36,4 +36,5 @@ class PusherAuthController extends Controller
 
         return response()->json(['message' => 'Invalid request'], 400);
     }
+
 }
