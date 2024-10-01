@@ -75,98 +75,47 @@
 <script src="/vendors/dataTable/dataTables.responsive.min.js"></script>
 <script src="/assets/js/examples/datatable.js"></script>
 
-<script src="{{ mix('/js/app.js') }}"></script>
+<script src="{{ asset('/js/app.js') }}"></script>
 
 @yield('scripts')
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
-
-<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 <script>
-    // Firebase push notification setup
-    const firebaseConfig = {
-        apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
-        authDomain: "mandegarpars-5e075.firebaseapp.com",
-        projectId: "mandegarpars-5e075",
-        storageBucket: "mandegarpars-5e075.appspot.com",
-        messagingSenderId: "11452789862",
-        appId: "1:11452789862:web:8ee1465cf4e374fcbde9a7"
-    };
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
-
-    messaging.getToken({ vapidKey: 'YOUR_PUBLIC_VAPID_KEY' }).then((currentToken) => {
-        if (currentToken) {
-            console.log('Token received:', currentToken);
-            // ارسال توکن به سرور برای ذخیره‌سازی
-        } else {
-            console.log('No registration token available. Request permission to generate one.');
-        }
-    }).catch((err) => {
-        console.error('An error occurred while retrieving token. ', err);
+    // Initialize Pusher with your app key and cluster
+    var pusher = new Pusher('ac8ae105709d7299a673', {
+        cluster: 'ap1',
+        encrypted: true // استفاده از SSL
     });
 
-    // Initialize Firebase Messaging Registration
-    function initFirebaseMessagingRegistration() {
-        messaging.getToken({ vapidKey: 'BBFX0uQct6LXsTN8v4BIu6U1rAFvrpErc-DRjgGT4_Hnmr-Y5X9rP98mjsS4fOAAryKzo44P-M0NWQqKH8xbpq0' }).then((currentToken) => {
-            if (currentToken) {
-                $.ajax({
-                    url: '/panel/saveFcmToken',
-                    type: 'POST',
-                    data: {
-                        token: currentToken
-                    },
-                    dataType: 'JSON',
-                    success: function (response) {
-                        console.log('Token saved successfully on the server.');
-                    },
-                    error: function (err) {
-                        console.log('Error saving token on the server:', err);
-                    },
-                });
-            } else {
-                console.log('No registration token available.');
-            }
-        }).catch((err) => {
-            console.error('An error occurred while retrieving token. ', err);
-        });
-    }
+    // Subscribe to the channel
+    var channel = pusher.subscribe('private-notifications.{{ auth()->id() }}'); // تغییر به کانال خصوصی
 
-    initFirebaseMessagingRegistration();
-    // Handle incoming messages
-    messaging.onMessage(function(payload) {
-        console.log('Message received. ', payload);
-        const noteTitle = payload.notification.title;
-        const noteOptions = {
-            body: payload.notification.body,
-            icon: payload.notification.icon,
-        };
-        new Notification(noteTitle, noteOptions);
+    // Bind to the event
+    channel.bind('SendMessageEvent', function(data) {
+        // نمایش نوتیفیکیشن
+        alert(JSON.stringify(data));
+        // می‌توانید به جای alert از یک روش بهتر برای نمایش نوتیفیکیشن استفاده کنید
     });
+</script>
+<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 
-    // Pusher initialization and event handling
-    const pusher = new Pusher('ac8ae105709d7299a673', {
-        cluster: 'ap1'
-    });
+<script>
 
-    const channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function(data) {
-        alert(JSON.stringify(data)); // Handle the event as needed
-    });
-
-    // AJAX setup for CSRF token
+    {{-- ajax setup --}}
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    {{-- end ajax setup --}}
 
-    // Delete tables row
-    $(document).on('click', '.trashRow', function() {
-        let self = $(this);
+    {{-- delete tables row --}}
+    $(document).on('click','.trashRow', function() {
+        let self = $(this)
         Swal.fire({
             title: 'حذف شود؟',
             icon: 'warning',
@@ -199,7 +148,7 @@
                                 title: 'left-gap',
                                 content: 'left-gap',
                             }
-                        });
+                        })
                     },
                     error: function (jqXHR, exception) {
                         Swal.fire({
@@ -216,54 +165,111 @@
                                 title: 'left-gap',
                                 content: 'left-gap',
                             }
-                        });
+                        })
                     }
-                });
-            }
-        });
-    });
+                })
 
-    // Network status
+            }
+        })
+    })
+    {{-- end delete tables row --}}
+
+    //  network status
     window.addEventListener("offline", (event) => {
         $('#network_sec').html(`
-        <span data-toggle="tooltip" data-placement="bottom" data-original-title="connecting">
-            <i class="fa fa-wifi text-danger zoom-in-out"></i>
-        </span>`);
+                <span data-toggle="tooltip" data-placement="bottom" data-original-title="connecting">
+                    <i class="fa fa-wifi text-danger zoom-in-out"></i>
+                </span>`)
         $('#network_sec span').tooltip();
     });
 
     window.addEventListener("online", (event) => {
         $('#network_sec').html(`
-        <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
-            <i class="fa fa-wifi text-success"></i>
-        </span>`);
+                <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
+                    <i class="fa fa-wifi text-success"></i>
+                </span>`)
         $('#network_sec span').tooltip();
     });
+    // end network status
 
-    // Handle notifications via Laravel Echo
-    let audio = new Audio('/audio/notification.wav');
-    let userId = "{{ auth()->id() }}";
-    Echo.join('presence-notification.' + userId)
-        .listen('SendMessage', (e) => {
-            $('#notification_sec a').addClass('nav-link-notify');
-            $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
+    // realtime notification
+    var audio = new Audio('/audio/notification.wav');
+    let userId = "{{ auth()->id() }}"
+    Echo.channel('presence-notification.'+userId)
+        .listen('SendMessage', (e) =>{
+            $('#notification_sec a').addClass('nav-link-notify')
+            $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
             $(".timeline").prepend(`<div class="timeline-item">
-            <div>
-                <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-                    <span class="avatar-title bg-primary-bright text-primary rounded-circle">
-                        <i class="fa fa-bell font-size-20"></i>
-                    </span>
-                </figure>
-            </div>
-            <div>
-                <p class="m-b-5">
-                    <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-                </p>
-                <small class="text-muted">
-                    <i class="fa fa-clock-o m-r-5"></i>الان
-                </small>
-            </div>
-        </div>`);
+                                        <div>
+                                            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
+													<i class="fa fa-bell font-size-20"></i>
+												</span>
+                                            </figure>
+                                        </div>
+                                        <div>
+                                            <p class="m-b-5">
+                                                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                                            </p>
+                                            <small class="text-muted">
+                                                <i class="fa fa-clock-o m-r-5"></i>الان
+                                                </small>
+                                            </div>
+                                        </div>`)
             audio.play();
         });
+    // end realtime
+
+    // firebase push notification
+    var firebaseConfig = {
+        apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
+        authDomain: "mandegarpars-5e075.firebaseapp.com",
+        projectId: "mandegarpars-5e075",
+        storageBucket: "mandegarpars-5e075.appspot.com",
+        messagingSenderId: "11452789862",
+        appId: "1:11452789862:web:8ee1465cf4e374fcbde9a7"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    function initFirebaseMessagingRegistration() {
+        messaging
+            .requestPermission()
+            .then(function () {
+                return messaging.getToken()
+            })
+            .then(function(token) {
+                // console.log(token);
+
+                $.ajax({
+                    url: '/panel/saveFcmToken',
+                    type: 'POST',
+                    data: {
+                        token: token
+                    },
+                    dataType: 'JSON',
+                    success: function (response) {
+                        console.log('Token saved successfully.');
+                    },
+                    error: function (err) {
+                        console.log('User Chat Token Error'+ err);
+                    },
+                });
+
+            }).catch(function (err) {
+            console.log('User Chat Token Error'+ err);
+        });
+    }
+
+    initFirebaseMessagingRegistration();
+
+    messaging.onMessage(function(payload) {
+        const noteTitle = payload.notification.title;
+        const noteOptions = {
+            body: payload.notification.body,
+            icon: payload.notification.icon,
+        };
+        new Notification(noteTitle, noteOptions);
+    });
 </script>
