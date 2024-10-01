@@ -81,7 +81,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.js"></script>
 
 
-<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-messaging-compat.js"></script>
 <script>
     // Firebase push notification setup
     var firebaseConfig = {
@@ -165,6 +166,15 @@
             }
         });
     {{-- end ajax setup --}}
+    messaging.getToken().then((currentToken) => {
+        if (currentToken) {
+            console.log('FCM Token:', currentToken);
+        } else {
+            console.log('No registration token available.');
+        }
+    }).catch((err) => {
+        console.error('An error occurred while retrieving token. ', err);
+    });
 
     {{-- delete tables row --}}
     $(document).on('click','.trashRow', function() {
@@ -270,4 +280,12 @@
             </div>`);
             audio.play();
         });
+    messaging.requestPermission()
+        .then(() => {
+            console.log('Notification permission granted.');
+        })
+        .catch((err) => {
+            console.error('Unable to get permission to notify.', err);
+        });
+
 </script>
