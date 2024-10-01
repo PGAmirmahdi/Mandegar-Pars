@@ -513,9 +513,21 @@ class PanelController extends Controller
 
     public function saveFCMToken(Request $request)
     {
-        auth()->user()->update(['fcm_token' => $request->token]);
-        return response()->json(['token saved successfully.']);
+        // اعتبارسنجی درخواست
+        $request->validate([
+            'token' => 'required|string',
+        ]);
+
+        // ذخیره توکن برای کاربر احراز هویت شده
+        $user = auth()->user();
+        if ($user) {
+            $user->update(['fcm_token' => $request->token]);
+            return response()->json(['message' => 'Token saved successfully.'], 200);
+        }
+
+        return response()->json(['message' => 'User not authenticated.'], 401);
     }
+
 
     private function getFactorsMonthly()
     {
