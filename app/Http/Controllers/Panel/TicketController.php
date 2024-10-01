@@ -70,7 +70,7 @@ class TicketController extends Controller
         $url = route('tickets.edit', $ticket->id);
 
         // پیدا کردن کاربر دریافت کننده
-        $user = User::find($ticket->receiver);
+        $user = User::find($ticket->receiver_id);
 
         if ($user) {
             // ارسال نوتیفیکیشن به کاربر دریافت کننده
