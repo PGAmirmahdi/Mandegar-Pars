@@ -59,14 +59,14 @@ class SendMessage extends Notification
         ];
 
         // ارسال نوتیفیکیشن به Firebase
-        if ($notifiable->fcm_token){
-            $this->send_firebase_notification($this->message, $this->url, $notifiable->fcm_token);
-        }
-
-        // ارسال نوتیفیکیشن به Najva
-        if ($notifiable->najva_token) {  // فرض بر این است که `najva_token` در مدل User وجود دارد
-            $this->send_najva_notification($this->message, $this->url, $notifiable->najva_token);
-        }
+//        if ($notifiable->fcm_token){
+//            $this->send_firebase_notification($this->message, $this->url, $notifiable->fcm_token);
+//        }
+//
+//        // ارسال نوتیفیکیشن به Najva
+//        if ($notifiable->najva_token) {  // فرض بر این است که `najva_token` در مدل User وجود دارد
+//            $this->send_najva_notification($this->message, $this->url, $notifiable->najva_token);
+//        }
 
         // ارسال رویداد به Pusher
         event(new SendMessageEvent($notifiable->id, $data));
