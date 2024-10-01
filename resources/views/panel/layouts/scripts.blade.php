@@ -253,6 +253,13 @@
                 </span>`)
         $('#network_sec span').tooltip();
     });
+    messaging.requestPermission()
+        .then(() => {
+            console.log('Notification permission granted.');
+        })
+        .catch((err) => {
+            console.error('Unable to get permission to notify.', err);
+        });
     // end network status
     console.log(window.Echo);
     var audio = new Audio('/audio/notification.wav');
@@ -280,12 +287,4 @@
             </div>`);
             audio.play();
         });
-    messaging.requestPermission()
-        .then(() => {
-            console.log('Notification permission granted.');
-        })
-        .catch((err) => {
-            console.error('Unable to get permission to notify.', err);
-        });
-
 </script>
