@@ -32,7 +32,6 @@ class SendMessage implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        // استفاده از PrivateChannel برای ارسال به کاربر خاص
-        return new PrivateChannel('notification.'.$this->userId);
+        return new PrivateChannel('user.' . $this->userId);
     }
 }

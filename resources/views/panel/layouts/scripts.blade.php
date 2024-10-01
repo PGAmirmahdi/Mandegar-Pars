@@ -103,6 +103,11 @@
             window.open(data.url);
         };
     });
+    Echo.private(`notification.${userId}`)
+        .listen('SendMessage', (e) => {
+            console.log('Notification received: ', e.data.message);
+            alert('Notification received: ' + e.data.message);
+        });
 </script>
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 
