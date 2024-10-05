@@ -6,8 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ویرایش کاربر</h6>
             </div>
-            <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone"
-                  id="my-awesome-dropzone">
+            <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data" >
             @csrf
                 @method('PATCH')
                 <div class="form-row">
@@ -56,7 +55,7 @@
                         @endif
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                             <label for="sign_image">تصویر امضاء (PNG)</label>
-                            <input type="file" name="sign_image" id="sign_image" accept="image/png">
+                            <input type="file" name="sign_image" id="sign_image" accept="image/png" class="dropzone">
                             @if($user->sign_image)
                                 <a href="{{ $user->sign_image }}" class="btn btn-link" target="_blank">مشاهده امضاء</a>
                             @endif
@@ -69,7 +68,8 @@
                     <!-- فیلد آپلود عکس پروفایل با Dropzone -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="profile">عکس پروفایل</label>
-                        <input type="file" name="profile" >
+                        <input type="file" name="profile" class="dropzone"
+                               id="my-awesome-dropzone">
                         @if($user->profile)
                             <a href="{{ asset('storage/' . $user->profile) }}" class="btn btn-link" target="_blank">مشاهده پروفایل</a>
                         @endif
