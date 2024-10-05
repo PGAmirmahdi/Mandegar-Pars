@@ -53,6 +53,14 @@
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="customer_id" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                        <option value="all">نوع پرداختی (همه)</option>
+                        @foreach($customers as $customer)
+                            <option value="{{ $customer->id }}" {{ request()->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
                         <option value="all">استان (همه)</option>
                         @foreach(\App\Models\Province::all('name') as $province)
@@ -68,7 +76,15 @@
                         @endforeach
                     </select>
                 </div>
-                @can('accountant')
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="payment_type" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="6">
+                        <option value="all">نوع پرداختی (همه)</option>
+                        @foreach(App\Models\Invoice::Payment_Type as $key => $value)
+                            <option value="{{ $key }}" {{ request()->payment_type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            @can('accountant')
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                         <select name="user" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="4">
                             <option value="all">همکار (همه)</option>
