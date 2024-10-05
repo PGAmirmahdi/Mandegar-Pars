@@ -10,7 +10,7 @@
                   id="my-awesome-dropzone">
                 @csrf
                 @method('PATCH')
-                <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                <div class="col-xl-3 col-lg-3 col-md-3 mb-3 dropzone">
                     <label for="sign_image">تصویر امضاء (PNG)</label>
                     <input type="file" name="sign_image" id="sign_image" accept="image/png">
                     @if($user->sign_image)
@@ -20,12 +20,7 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
-                </form>
-                    <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone"
-                          id="my-awesome-dropzone">
-                        @csrf
-                        @method('PATCH')
-                <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                <div class="col-xl-3 col-lg-3 col-md-3 mb-3 dropzone">
                     <label for="profile">عکس پروفایل</label>
                     <input type="file" name="profile">
                     @if($user->profile)
@@ -36,7 +31,6 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
-                    </form>
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="name">نام <span class="text-danger">*</span></label>
@@ -85,6 +79,7 @@
                     @endcan
                 </div>
                 <button class="btn btn-primary" type="submit">ثبت فرم</button>
+            </form>
         </div>
     </div>
 
