@@ -40,7 +40,7 @@
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->role->label }}</td>
                             <td>@if($user->profile)
-                                    <a href="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"><img src="{{ route('us.file.show', ['filename' => basename($example->profile)]) }}" alt="Profile" width="125px" height="125px"></a>
+                                    <a href="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"><img src="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}" alt="Profile" width="125px" height="125px"></a>
                                 @else
                                     عکس پروفایل ندارد
                                 @endif</td>
