@@ -15,25 +15,6 @@
     </style>
 @endsection
 @section('content')
-    @php
-        $update = \App\Models\SoftwareUpdate::where('date', [now()->startOfDay(), now()->endOfDay()])->latest()->first();
-    @endphp
-    @if($update)
-        <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
-            <div>
-                <i class="ti-announcement d-inline m-r-10"></i>
-                <h5 class="alert-heading d-inline">بروزرسانی نرم افزار - تاریخ
-                    انتشار {{ verta($update->date)->format('Y/m/d') }} - نسخه{{ $update->version }}</h5>
-            </div>
-            <ul>
-                @foreach(explode(',',$update->description) as $item)
-                    <li>{{ $item }}</li>
-                @endforeach
-            </ul>
-            <hr>
-            <small>برای مشاهده تغییرات پیشین می توانید به صفحه نسخه های برنامه مراجعه کنید</small>
-        </div>
-    @endif
     <script src="https://cdn.jsdelivr.net/npm/moment-jalaali@latest/build/moment-jalaali.min.js"></script>
     @php
         $updates = SoftwareUpdate::latest()->paginate(1);;
@@ -161,6 +142,25 @@
             </div>
         </div>
     </div>
+    @php
+        $update = \App\Models\SoftwareUpdate::where('date', [now()->startOfDay(), now()->endOfDay()])->latest()->first();
+    @endphp
+    @if($update)
+        <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
+            <div>
+                <i class="ti-announcement d-inline m-r-10"></i>
+                <h5 class="alert-heading d-inline">بروزرسانی نرم افزار - تاریخ
+                    انتشار {{ verta($update->date)->format('Y/m/d') }} - نسخه{{ $update->version }}</h5>
+            </div>
+            <ul>
+                @foreach(explode(',',$update->description) as $item)
+                    <li>{{ $item }}</li>
+                @endforeach
+            </ul>
+            <hr>
+            <small>برای مشاهده تغییرات پیشین می توانید به صفحه نسخه های برنامه مراجعه کنید</small>
+        </div>
+    @endif
     <div class="card">
         <div class="card-body pt-2 pb-0">
             <div class="card-title d-flex justify-content-between align-items-center">
