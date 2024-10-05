@@ -87,7 +87,7 @@
         Dropzone.autoDiscover = false;
 
         var profileDropzone = new Dropzone("#profile-dropzone", {
-            url: "{{ route('users.uploadProfile') }}", // آدرس API آپلود فایل
+            url: "{{ route('users.update') }}", // آدرس API آپلود فایل
             paramName: "profile", // نام فیلد آپلود
             maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
             acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
