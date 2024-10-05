@@ -145,7 +145,7 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $invoice->customer->name }}</td>
                             <td>{{ \App\Models\Invoice::TYPE[$invoice->type] }}</td>
-                            <td>@if($invoice->payment_type) {{ \App\Models\Invoice::Payment_Type[$invoice->payment_type] }} @else نوع پرداختی تعیین ننشده @endif</td>
+                            <td>@if($invoice->payment_type) {{ \App\Models\Invoice::Payment_Type[$invoice->payment_type] }} @else نوع پرداختی تعیین نشده @endif</td>
                             <td>{{ \App\Models\Invoice::REQ_FOR[$invoice->req_for] }}</td>
                             <td>{{ $invoice->province }}</td>
                             <td>{{ $invoice->city }}</td>
