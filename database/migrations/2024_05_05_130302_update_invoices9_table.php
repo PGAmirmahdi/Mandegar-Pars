@@ -14,7 +14,7 @@ class UpdateInvoices9Table extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->enum('payment_type', ['1M', '2M', '3M', '6M', '12M', '24M', 'cash'])->comment('نوع پرداخت')->after('req_for');
+            $table->enum('payment_type', ['1M', '2M', '3M', '6M', '12M', '24M', 'cash'])->comment('نوع پرداخت')->after('req_for')->nullable();
         });
     }
 
