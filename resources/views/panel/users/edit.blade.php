@@ -20,6 +20,11 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
+                </form>
+                    <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone"
+                          id="my-awesome-dropzone">
+                        @csrf
+                        @method('PATCH')
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="profile">عکس پروفایل</label>
                     <input type="file" name="profile">
@@ -31,7 +36,7 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
-                <form>
+                    </form>
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="name">نام <span class="text-danger">*</span></label>
