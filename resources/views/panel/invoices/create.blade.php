@@ -206,13 +206,6 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="address">نشانی<span class="text-danger">*</span></label>
-                        <textarea name="address" id="address" class="form-control">{{ old('address') }}</textarea>
-                        @error('address')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="province">نوع پرداختی<span class="text-danger">*</span></label>
                         <select class="form-control" name="payment_type">
                             @foreach(App\Models\Invoice::Payment_Type as $key => $value)
@@ -220,6 +213,13 @@
                             @endforeach
                         </select>
                         @error('province')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="address">نشانی<span class="text-danger">*</span></label>
+                        <textarea name="address" id="address" class="form-control">{{ old('address') }}</textarea>
+                        @error('address')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
