@@ -108,6 +108,7 @@
                         <th>#</th>
                         <th>خریدار</th>
                         <th>نوع</th>
+                        <th>نوع پرداختی</th>
                         <th>درخواست جهت</th>
                         <th>استان</th>
                         <th>شهر</th>
@@ -144,6 +145,7 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $invoice->customer->name }}</td>
                             <td>{{ \App\Models\Invoice::TYPE[$invoice->type] }}</td>
+                            <td>@if($invoice->payment_type) {{ \App\Models\Invoice::Payment_Type[$invoice->payment_type] }} @else نوع پرداختی تعیین ننشده @endif</td>
                             <td>{{ \App\Models\Invoice::REQ_FOR[$invoice->req_for] }}</td>
                             <td>{{ $invoice->province }}</td>
                             <td>{{ $invoice->city }}</td>
