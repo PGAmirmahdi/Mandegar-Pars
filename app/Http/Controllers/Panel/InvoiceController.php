@@ -304,8 +304,11 @@ class InvoiceController extends Controller
                 ->where('user_id', auth()->id())
                 ->latest()->paginate(30);
         }
-
-        return view('panel.invoices.index', compact('invoices','customers','roles_id'));
+        $invoicespay = Invoice::when($request->payment_type && $request->payment_type !== 'all', function ($q) use ($request) {
+            return $q->where('payment_type', $request->payment_type);
+        })
+            ->latest()->paginate(30);
+        return view('panel.invoices.index', compact('invoices','customers','roles_id','invoicespay'));
     }
 
     public function applyDiscount(Request $request)
