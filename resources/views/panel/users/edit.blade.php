@@ -7,7 +7,7 @@
                 <h6>ویرایش کاربر</h6>
             </div>
             <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data" id="edit-user-form">
-                @csrf
+            @csrf
                 @method('PATCH')
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -87,7 +87,7 @@
         Dropzone.autoDiscover = false;
 
         var profileDropzone = new Dropzone("#profile-dropzone", {
-            url: "{{ route('users.update') }}", // آدرس API آپلود فایل
+            url: "{{ route('users.update', $user->id) }}", // اضافه کردن ID کاربر
             paramName: "profile", // نام فیلد آپلود
             maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
             acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
