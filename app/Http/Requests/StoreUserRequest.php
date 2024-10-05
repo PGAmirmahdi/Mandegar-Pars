@@ -29,6 +29,7 @@ class StoreUserRequest extends FormRequest
             'phone' => 'required|size:11|unique:users',
             'role' => 'required',
             'password' => 'required',
+            'profile'=>'nullable'
         ];
     }
 

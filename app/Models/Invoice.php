@@ -17,7 +17,15 @@ class Invoice extends Model
         'invoiced' => 'فاکتور شده',
 //        'return' => 'عودت داده شده',
     ];
-
+    const Payment_Type = [
+        '1M'=>'یک ماهه',
+        '2M'=>'دو ماهه',
+        '3M'=>'سه ماهه',
+        '6M'=>'شش ماهه',
+        '12M'=>'یک ساله',
+        '24M'=>'دو ساله',
+        'cash'=>'نقدی',
+    ];
     const CREATED_IN = [
         'website' => 'وبسایت',
         'automation' => 'اتوماسیون',

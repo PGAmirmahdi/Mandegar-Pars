@@ -10,6 +10,9 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="/assets/media/image/favicon.png">
 
+    <!-- Drop Zone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css">
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#5867dd">
 

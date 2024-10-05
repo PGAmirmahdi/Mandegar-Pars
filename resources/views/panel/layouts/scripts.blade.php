@@ -74,6 +74,9 @@
 <script src="/vendors/dataTable/dataTables.responsive.min.js"></script>
 <script src="/assets/js/examples/datatable.js"></script>
 
+<!-- Drop Zone -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
+
 <script src="{{ asset('/js/app.js') }}"></script>
 
 @yield('scripts')

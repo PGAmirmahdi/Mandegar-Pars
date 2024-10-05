@@ -6,7 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ویرایش کاربر</h6>
             </div>
-            <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data" id="edit-user-form">
                 @csrf
                 @method('PATCH')
                 <div class="form-row">
@@ -14,30 +14,31 @@
                         <label for="name">نام <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" id="name" value="{{ $user->name }}">
                         @error('name')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="family">نام خانوادگی <span class="text-danger">*</span></label>
                         <input type="text" name="family" class="form-control" id="family" value="{{ $user->family }}">
                         @error('family')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="phone">شماره موبایل <span class="text-danger">*</span></label>
                         <input type="text" name="phone" class="form-control" id="phone" value="{{ $user->phone }}">
                         @error('phone')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="password">رمزعبور</label>
                         <input type="password" name="password" class="form-control" id="password">
                         @error('password')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
+
                     @can('admin')
                         @if(auth()->id() != $user->id)
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -59,14 +60,47 @@
                                 <a href="{{ $user->sign_image }}" class="btn btn-link" target="_blank">مشاهده امضاء</a>
                             @endif
                             @error('sign_image')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
                     @endcan
+
+                    <!-- فیلد آپلود عکس پروفایل با Dropzone -->
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="profile">عکس پروفایل</label>
+                        <div class="dropzone" id="profile-dropzone"></div>
+                        @if($user->profile)
+                            <a href="{{ asset('storage/' . $user->profile) }}" class="btn btn-link" target="_blank">مشاهده پروفایل</a>
+                        @endif
+                        @error('profile')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
                 <button class="btn btn-primary" type="submit">ثبت فرم</button>
             </form>
         </div>
     </div>
-@endsection
 
+    <!-- تنظیمات Dropzone -->
+    <script>
+        Dropzone.autoDiscover = false;
+
+        var profileDropzone = new Dropzone("#profile-dropzone", {
+            url: "{{ route('users.uploadProfile') }}", // آدرس API آپلود فایل
+            paramName: "profile", // نام فیلد آپلود
+            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
+            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            success: function (file, response) {
+                console.log(response); // عملیات در صورت موفقیت‌آمیز بودن آپلود
+            },
+            error: function (file, response) {
+                console.log(response); // عملیات در صورت بروز خطا
+            }
+        });
+    </script>
+@endsection

@@ -34,6 +34,22 @@
         </div>
     @endif
     <script src="https://cdn.jsdelivr.net/npm/moment-jalaali@latest/build/moment-jalaali.min.js"></script>
+    @php
+        $updates = \App\Models\SoftwareUpdate::latest()->get();
+    @endphp
+    @foreach($updates as $update)
+        <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
+            <div>
+                <i class="ti-announcement d-inline m-r-10"></i>
+                <h5 class="alert-heading d-inline">بروزرسانی نرم افزار - تاریخ انتشار {{ verta($update->date)->format('Y/m/d') }} - نسخه {{ $update->version }}</h5>
+            </div>
+            <ul>
+                @foreach(explode(',', $update->description) as $item)
+                    <li>{{ $item }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endforeach
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">

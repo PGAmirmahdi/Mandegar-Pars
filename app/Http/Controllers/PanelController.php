@@ -6,6 +6,7 @@ use App\Models\Inventory;
 use App\Models\Invoice;
 use App\Models\Role;
 use App\Models\Sms;
+use App\Models\SoftwareUpdate;
 use App\Models\User;
 use App\Models\UserVisit;
 use App\Models\Visitor;
@@ -455,6 +456,7 @@ class PanelController extends Controller
         $totalVisits8 = $userVisits8->sum('visits');
 
         $bazdid= Visitor::latest()->paginate(10);
+        $versions = SoftwareUpdate::latest()->paginate(1);
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
@@ -466,7 +468,7 @@ class PanelController extends Controller
             'orderCounts2' => $orderCounts2,
             'userVisits9' => $userVisits9,
             'totalRows' => $totalRows,
-        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData','dates8', 'visitsData8', 'totalVisits8','bazdid'));
+        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData','dates8', 'visitsData8', 'totalVisits8','bazdid','versions'));
     }
         public function readNotification($notification = null)
     {

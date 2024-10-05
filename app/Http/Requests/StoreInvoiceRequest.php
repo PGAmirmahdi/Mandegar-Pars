@@ -30,7 +30,7 @@ class StoreInvoiceRequest extends FormRequest
                 'seller_province' => 'required',
                 'seller_city' => 'required',
                 'seller_address' => 'required',
-
+                'payment_type'=>'required',
                 'buyer_name' => 'required',
                 'national_number' => 'required|numeric',
                 'postal_code' => 'required|numeric',
@@ -52,6 +52,7 @@ class StoreInvoiceRequest extends FormRequest
                 'province' => 'required',
                 'city' => 'required',
                 'address' => 'required',
+                'payment_type'=>'required'
             ];
         }
     }
