@@ -1,3 +1,4 @@
+@php use App\Models\Customer;use App\Models\Product;use App\Models\Province;use App\Models\invoice @endphp
 @extends('panel.layouts.master')
 @section('title', 'ثبت سفارش')
 @section('styles')
@@ -134,7 +135,7 @@
                                 class="js-example-basic-single select2-hidden-accessible" data-select2-id="5"
                                 tabindex="-2" aria-hidden="true">
                             <option value="" disabled selected>انتخاب کنید...</option>
-                            @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
+                            @foreach(Customer::all(['id','name','code']) as $customer)
                                 <option
                                     value="{{ $customer->id }}" {{ old('buyer_name') == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
                             @endforeach
@@ -188,7 +189,7 @@
                         <label for="province">استان <span class="text-danger">*</span></label>
                         <select name="province" id="province" class="js-example-basic-single select2-hidden-accessible"
                                 data-select2-id="15" tabindex="-1" aria-hidden="true">
-                            @foreach(\App\Models\Province::all() as $province)
+                            @foreach(Province::all() as $province)
                                 <option
                                     value="{{ $province->name }}" {{ old('province') == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
                             @endforeach
@@ -208,6 +209,17 @@
                         <label for="address">نشانی<span class="text-danger">*</span></label>
                         <textarea name="address" id="address" class="form-control">{{ old('address') }}</textarea>
                         @error('address')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="province">نوع پرداختی<span class="text-danger">*</span></label>
+                        <select class="form-control" name="payment_type">
+                            @foreach(Invoice::Payment_Type as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                        @error('province')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
@@ -259,7 +271,7 @@
                                                     <option value="" disabled selected>..................... انتخاب کنید
                                                         .....................
                                                     </option>
-                                                    @foreach(\App\Models\Product::all(['id','title','code']) as $item)
+                                                    @foreach(Product::all(['id','title','code']) as $item)
                                                         <option
                                                             value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
                                                     @endforeach
@@ -267,7 +279,7 @@
                                             </td>
                                             <td>
                                                 <select class="form-control" name="colors[]" required>
-                                                    @foreach(\App\Models\Product::COLORS as $key => $value)
+                                                    @foreach(Product::COLORS as $key => $value)
                                                         <option
                                                             value="{{ $key }}" {{ $key == old('colors')[$i] ? 'selected' : '' }}>{{ $value }}</option>
                                                     @endforeach
@@ -442,7 +454,7 @@
         }
 
         // این رویداد برای هر ورودی جدید اعمال می‌شود
-        $(document).on('input', 'input[name="other_prices[]"]', function() {
+        $(document).on('input', 'input[name="other_prices[]"]', function () {
             formatPrice(this);
         });
         var products = [];
@@ -456,14 +468,14 @@
             }
         });
 
-        @foreach(\App\Models\Product::all(['id','title','code']) as $product)
+        @foreach(Product::all(['id','title','code']) as $product)
         products.push({
             "id": "{{ $product->id }}",
             "title": "{{ $product->title }}",
             "code": "{{ $product->code }}",
         });
         @endforeach
-        @foreach(\App\Models\Product::COLORS as $key => $value)
+        @foreach(Product::COLORS as $key => $value)
         colors.push({
             "key": "{{ $key }}",
             "value": "{{ $value }}",

@@ -30,7 +30,7 @@ class UpdateInvoiceRequest extends FormRequest
                 'seller_province' => 'required',
                 'seller_city' => 'required',
                 'seller_address' => 'required',
-
+                'payment_type'=>'required',
                 'buyer_name' => 'required',
                 'economical_number' => (auth()->user()->isSystemUser() ? 'required|numeric' : 'nullable|numeric'),
                 'national_number' => 'required|numeric',
@@ -52,6 +52,7 @@ class UpdateInvoiceRequest extends FormRequest
                 'province' => 'required',
                 'city' => 'required',
                 'address' => 'required',
+                'payment_type'=>'required'
             ];
         }
     }

@@ -27,6 +27,7 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required',
             'family' => 'required',
             'phone' => 'required|size:11|unique:users,phone,'.$this->user->id,
+            'profile'=>'nullable'
         ];
     }
 }

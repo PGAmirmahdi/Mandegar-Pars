@@ -7,12 +7,12 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     @can('artin-products-create')
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="createProductModalLabel">ایجاد محصول جدید</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
-                            <i class="ti-close"></i>
-                        </button>
-                    </div>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createProductModalLabel">ایجاد محصول جدید</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                                <i class="ti-close"></i>
+                            </button>
+                        </div>
                     @endcan
                     <div class="modal-body">
                         <div class="form-group">
@@ -20,8 +20,12 @@
                             <input type="text" name="title" id="create_title" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="create_sku">کد محصول</label>
+                            <label for="create_sku">مدل محصول</label>
                             <input type="text" name="sku" id="create_sku" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="code_accounting">کد حسابداری</label>
+                            <input type="text" name="code_accounting" id="code_accounting" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="create_price">قیمت</label>
@@ -44,6 +48,7 @@
         </div>
     @endcan
     {{--  end Create Product Modal  --}}
+
     {{--  edit Price Modal  --}}
     @can('artin-products-edit')
         <div class="modal fade" id="editPriceModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -70,6 +75,7 @@
         </div>
     @endcan
     {{--  end edit Price Modal  --}}
+
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -83,6 +89,7 @@
                         <th>#</th>
                         <th>عنوان محصول</th>
                         <th>کد محصول</th>
+                        <th>کد حسابداری</th> <!-- اضافه شده -->
                         <th>قیمت</th>
                         <th>وضعیت</th>
                         <th>تاریخ ایجاد</th>
@@ -100,6 +107,7 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $product->post_title }}</td>
                             <td>{{ $product->sku }}</td>
+                            <td>{{ $product->code_accounting ?? 'نامشخص' }}</td> <!-- اضافه شده -->
                             <td>{{ number_format($product->min_price).' تومان ' }}</td>
                             <td>
                                 @if($product->post_status == 'publish')
@@ -205,6 +213,7 @@
                 let sku = $('#create_sku').val();
                 let price = $('#create_price').val();
                 let status = $('#create_status').val();
+                let code_accounting = $('#code_accounting').val(); // اضافه شده
 
                 $.ajax({
                     url: '/panel/artin-products-store',
@@ -213,7 +222,8 @@
                         title: title,
                         sku: sku,
                         price: price,
-                        status: status
+                        status: status,
+                        code_accounting: code_accounting // اضافه شده
                     },
                     success: function (res) {
                         $('#createProductModal').hide();

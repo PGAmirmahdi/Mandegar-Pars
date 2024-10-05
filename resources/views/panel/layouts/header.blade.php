@@ -6,7 +6,7 @@
         <a href="/">
             <img class="large-logo" src="/assets/media/image/logo.png" alt="image">
             <img class="small-logo" src="/assets/media/image/logo-sm.png" alt="image">
-{{--            <img class="dark-logo" src="assets/media/image/logo-dark.png" alt="image">--}}
+            {{--            <img class="dark-logo" src="assets/media/image/logo-dark.png" alt="image">--}}
         </a>
     </div>
     <!-- end::header logo -->
@@ -33,30 +33,38 @@
             <!-- begin::navbar main body -->
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                     <div style="font-size: larger" id="network_sec">
+                    <div style="font-size: larger" id="network_sec">
                         <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
                             <i class="fa fa-wifi text-success"></i>
                         </span>
-                     </div>
+                    </div>
                 </li>
                 <li class="nav-item dropdown">
                     <a href="#internalTelModal" class="nav-link" data-toggle="modal">
-                        <i class="ti-headphone" data-toggle="tooltip" data-placement="bottom" data-original-title="داخلی همکاران"></i>
+                        <i class="ti-headphone" data-toggle="tooltip" data-placement="bottom"
+                           data-original-title="داخلی همکاران"></i>
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" data-toggle="tooltip" data-placement="bottom" data-original-title="خروج">
+                    <a href="{{ route('logout') }}" class="nav-link"
+                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                       data-toggle="tooltip" data-placement="bottom" data-original-title="خروج">
                         <i class="fa fa-power-off"></i>
                     </a>
                 </li>
                 <li class="nav-item dropdown" id="notification_sec">
-                    <a href="#" class="nav-link {{ auth()->user()->unreadNotifications->count() ? 'nav-link-notify' : '' }}" data-toggle="dropdown">
-                        <i class="ti-bell" data-toggle="tooltip" data-placement="bottom" data-original-title="اعلانات"></i>
+                    <a href="#"
+                       class="nav-link {{ auth()->user()->unreadNotifications->count() ? 'nav-link-notify' : '' }}"
+                       data-toggle="dropdown">
+                        <i class="ti-bell" data-toggle="tooltip" data-placement="bottom"
+                           data-original-title="اعلانات"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-big">
                         <div class="p-4 text-center" data-backround-image="/assets/media/image/image1.png">
                             <h6 class="m-b-0">اعلان ها</h6>
-                            <small class="font-size-13 opacity-7"><span id="notif_count">{{ auth()->user()->unreadNotifications->count() }}</span> اعلان خوانده نشده</small>
+                            <small class="font-size-13 opacity-7"><span
+                                    id="notif_count">{{ auth()->user()->unreadNotifications->count() }}</span> اعلان
+                                خوانده نشده</small>
                         </div>
                         <div class="p-3" style="overflow-y: auto; max-height: 400px;">
                             <div class="timeline">
@@ -64,7 +72,8 @@
                                     <div class="timeline-item">
                                         <div>
                                             <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
+												<span
+                                                    class="avatar-title bg-primary-bright text-primary rounded-circle">
 													<i class="fa fa-bell font-size-20"></i>
 												</span>
                                             </figure>
@@ -94,7 +103,19 @@
                     <a href="javascript:void(0)" class="nav-link bg-none">
                         <div>
                             <figure class="avatar avatar-state-success avatar-sm">
-                                <img src="/assets/media/image/avatar.png" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ auth()->user()->fullName() }}" class="rounded-circle" alt="image">
+                                @if(auth()->user()->profile)
+                                    <img
+                                        src="{{ route('panel.file.show', ['filename' => basename(auth()->user()->profile)]) }}"
+                                        style="max-height: 36.79px; max-width: 36.79px"
+                                        data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ auth()->user()->fullName() }}"
+                                        class="rounded-circle" alt="image">
+                                @else
+                                    <img src="{{ asset('assets/media/image/avatar.png') }}"
+                                         data-toggle="tooltip" data-placement="bottom"
+                                         title="{{ auth()->user()->fullName() }}"
+                                         class="rounded-circle" alt="image">
+                                @endif
                             </figure>
                         </div>
                     </a>

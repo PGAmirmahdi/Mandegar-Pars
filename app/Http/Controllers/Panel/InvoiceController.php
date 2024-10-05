@@ -84,6 +84,7 @@ class InvoiceController extends Controller
 //            'status' => $request->status,
             'discount' => $request->final_discount,
             'description' => $request->description,
+            'payment_type' => $request->payment_type
         ]);
 
         $this->send_notif_to_accountants($invoice);
@@ -185,6 +186,7 @@ class InvoiceController extends Controller
             'status' => $request->status,
             'discount' => $request->final_discount ?? $invoice->discount,
             'description' => $request->description,
+            'payment_type' => $request->payment_type
         ]);
 
         alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش');
