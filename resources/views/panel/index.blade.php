@@ -1,3 +1,4 @@
+@php use App\Models\SoftwareUpdate; @endphp
 @extends('panel.layouts.master')
 @section('title', 'پنل مدیریت')
 
@@ -35,7 +36,7 @@
     @endif
     <script src="https://cdn.jsdelivr.net/npm/moment-jalaali@latest/build/moment-jalaali.min.js"></script>
     @php
-        $updates = \App\Models\SoftwareUpdate::latest()->get();
+        $updates = SoftwareUpdate::latest()->paginate(1);;
     @endphp
     @foreach($updates as $update)
         <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
