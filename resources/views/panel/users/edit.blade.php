@@ -13,7 +13,7 @@
                 <!-- Dropzone برای آپلود تصویر امضاء -->
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="sign_image">تصویر امضاء (PNG)</label>
-                    <div class="dropzone" id="sign-image-dropzone"></div>
+                    <input type="file" name="sign_image" class="dropzone" id="sign-image-dropzone">
                     @if($user->sign_image)
                         <a href="{{ $user->sign_image }}" class="btn btn-link" target="_blank">مشاهده امضاء</a>
                     @endif
@@ -25,7 +25,7 @@
                 <!-- Dropzone برای آپلود تصویر پروفایل -->
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="profile">عکس پروفایل</label>
-                    <div class="dropzone" id="profile-dropzone"></div>
+                    <input type="file" name="profile" class="dropzone" id="profile-dropzone">
                     @if($user->profile)
                         <a href="{{ asset('storage/' . $user->profile) }}" class="btn btn-link" target="_blank">مشاهده پروفایل</a>
                     @endif
