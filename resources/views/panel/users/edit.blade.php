@@ -8,12 +8,12 @@
             </div>
 
             <!-- فرم آپلود تصویر امضاء -->
-            <form id="form-sign-image" enctype="multipart/form-data" class="dropzone">
+            <form id="form-sign-image" enctype="multipart/form-data" class="dropzone" id="sign-image-dropzone">
                 @csrf
                 @method('PATCH')
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="sign_image">تصویر امضاء (PNG)</label>
-                    <input type="file" name="sign_image" id="sign-image-dropzone">
+                    <input type="file" name="sign_image" id="sign-image-dropzone2">
                     @if($user->sign_image)
                         <a href="{{ $user->sign_image }}" class="btn btn-link" target="_blank">مشاهده امضاء</a>
                     @endif
@@ -24,12 +24,12 @@
             </form>
 
             <!-- فرم آپلود تصویر پروفایل -->
-            <form id="form-profile" enctype="multipart/form-data" class="dropzone">
+            <form id="form-profile" enctype="multipart/form-data" class="dropzone" id="profile-dropzone">
                 @csrf
                 @method('PATCH')
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="profile">عکس پروفایل</label>
-                    <input type="file" name="profile" id="profile-dropzone">
+                    <input type="file" name="profile" id="profile-dropzone2">
                     @if($user->profile)
                         <a href="{{ asset('storage/' . $user->profile) }}" class="btn btn-link" target="_blank">مشاهده پروفایل</a>
                     @endif
