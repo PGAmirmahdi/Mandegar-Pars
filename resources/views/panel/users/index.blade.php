@@ -41,17 +41,13 @@
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->role->label }}</td>
                             <td>
-                                    @if($user->sign_image)
-                                        <a href="{{ route('sign.file.show', ['filename' => $user->sign_image]) }}">
-                                            <img src="{{ route('sign.file.show', ['filename' => $user->sign_image]) }}" alt="sign_image" width="125px" height="125px">
-                                        </a>
-                                    @else
-                                        عکس امضا ندارد
-                                    @endif</td>
+                                    @@if($user->sign_image)
+                                    <a href="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}"><img src="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}" alt="Profile"></a>
+                                @else
+                                    عکس پروفایل ندارد
+                                @endif</td>
                             <td>@if($user->profile)
-                                    <a href="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"><img
-                                            src="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"
-                                            alt="Profile" width="125px" height="125px"></a>
+                                    <a href="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"><img src="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}" alt="Profile"></a>
                                 @else
                                     عکس پروفایل ندارد
                                 @endif</td>
