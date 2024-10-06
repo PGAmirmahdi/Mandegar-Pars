@@ -41,12 +41,16 @@
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->role->label }}</td>
                             <td>@if($user->sign_image)
-                                    <a href="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}"><img src="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}" alt="sign_image" width="125px" height="125px"></a>
-                                    @else
+                                    <a href="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}"><img
+                                            src="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}"
+                                            alt="sign_image" width="125px" height="125px"></a>
+                                @else
                                     عکس امضا ندارد
-                            @endif</td>
+                                @endif</td>
                             <td>@if($user->profile)
-                                    <a href="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"><img src="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}" alt="Profile" width="125px" height="125px"></a>
+                                    <a href="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"><img
+                                            src="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"
+                                            alt="Profile" width="125px" height="125px"></a>
                                 @else
                                     عکس پروفایل ندارد
                                 @endif</td>
@@ -60,7 +64,8 @@
                             @endcan
                             @can('users-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('users.destroy',$user->id) }}" data-id="{{ $user->id }}">
+                                    <button class="btn btn-danger btn-floating trashRow"
+                                            data-url="{{ route('users.destroy',$user->id) }}" data-id="{{ $user->id }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
