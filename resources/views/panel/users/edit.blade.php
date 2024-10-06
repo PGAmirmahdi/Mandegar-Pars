@@ -95,41 +95,55 @@
     </div>
 
     <script>
-        document.getElementById('submit').addEventListener('click', function() {
-            var formData = new FormData();
+        Dropzone.autoDiscover = false;
 
-            // جمع‌آوری داده‌های فرم اول
-            var formSignImage = document.getElementById('sign-image-dropzone').files[0];
-            if (formSignImage) {
-                formData.append('sign_image', formSignImage);
+        // Dropzone برای تصویر امضاء
+        var signImageDropzone = new Dropzone("#sign-image-dropzone", {
+            url: "{{ route('users.update', $user->id) }}",
+            paramName: "sign_image", // نام فیلد آپلود
+            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
+            acceptedFiles: ".png", // فرمت‌های مجاز
+            addRemoveLinks: true,
+            autoProcessQueue: false, // فایل‌ها به‌طور خودکار ارسال نمی‌شوند
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
             }
+        });
 
-            // جمع‌آوری داده‌های فرم دوم
-            var formProfile = document.getElementById('profile-dropzone').files[0];
-            if (formProfile) {
-                formData.append('profile', formProfile);
+        // Dropzone برای تصویر پروفایل
+        var profileDropzone = new Dropzone("#profile-dropzone", {
+            url: "{{ route('users.update', $user->id) }}",
+            paramName: "profile", // نام فیلد آپلود
+            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
+            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
+            addRemoveLinks: true,
+            autoProcessQueue: false, // فایل‌ها به‌طور خودکار ارسال نمی‌شوند
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
             }
+        });
 
-            // جمع‌آوری داده‌های فرم سوم (فیلدهای متنی)
+        document.getElementById('submit').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // جمع‌آوری داده‌های فرم سوم
             var formDetails = new FormData(document.getElementById('form-details'));
-            for (var [key, value] of formDetails.entries()) {
-                formData.append(key, value);
-            }
 
-            // ارسال داده‌ها با استفاده از AJAX
+            // ارسال داده‌های فرم سوم
             fetch('{{ route("users.update", $user->id) }}', {
                 method: 'POST',
-                body: formData,
+                body: formDetails,
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
-            }).then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    // در اینجا می‌توانید نتایج موفقیت‌آمیز را مدیریت کنید
-                }).catch(error => {
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                // بعد از موفقیت‌آمیز بودن فرم سوم، فایل‌ها ارسال شوند
+                signImageDropzone.processQueue(); // شروع آپلود تصویر امضاء
+                profileDropzone.processQueue(); // شروع آپلود تصویر پروفایل
+            }).catch(error => {
                 console.error('Error:', error);
-                // در اینجا می‌توانید خطاها را مدیریت کنید
             });
         });
     </script>
