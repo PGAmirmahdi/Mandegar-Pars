@@ -18,13 +18,13 @@ class Invoice extends Model
 //        'return' => 'عودت داده شده',
     ];
     const Payment_Type = [
+        'cash'=>'نقدی',
         '1M'=>'یک ماهه',
         '2M'=>'دو ماهه',
         '3M'=>'سه ماهه',
         '6M'=>'شش ماهه',
         '12M'=>'یک ساله',
         '24M'=>'دو ساله',
-        'cash'=>'نقدی',
     ];
     const CREATED_IN = [
         'website' => 'وبسایت',
