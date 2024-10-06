@@ -99,13 +99,17 @@ class UserController extends Controller
         $this->authorize('users-edit');
 
         // آپلود و به‌روزرسانی فایل امضا
-        if ($request->hasFile('sign_image')) {
-            if ($user->sign_image) {
-                // حذف فایل امضای قدیمی
-                unlink(public_path($user->sign_image));
+        if (auth()->user()->isAdmin()) {
+            if ($request->hasFile('sign_image')) {
+                if ($user->sign_image) {
+                    // حذف فایل امضای قدیمی
+                    unlink(public_path($user->sign_image));
+                }
+                // آپلود فایل جدید
+                $sign_image = upload_file($request->file('sign_image'), 'signs');
+            } else {
+                $sign_image = $user->sign_image;
             }
-            // آپلود فایل جدید
-            $sign_image = $request->file('sign_image')->store('Signs', 'public');
         } else {
             $sign_image = $user->sign_image;
         }
@@ -122,8 +126,8 @@ class UserController extends Controller
 
         // آپلود و به‌روزرسانی فایل پروفایل
         if ($request->hasFile('profile')) {
+            // حذف فایل قدیمی پروفایل
             if ($user->profile) {
-                // حذف فایل قدیمی پروفایل
                 Storage::disk('public')->delete($user->profile);
             }
             // ذخیره فایل جدید پروفایل
@@ -174,9 +178,9 @@ class UserController extends Controller
     }
     public function userSign($filename){
         // بررسی وجود فایل در دیسک public
-        if (Storage::disk('public')->exists('Signs/' . $filename)) {
+        if (Storage::disk('public')->exists('signs/' . $filename)) {
             // دریافت فایل و ارسال آن به مرورگر
-            $filePath = 'Signs/' . $filename;
+            $filePath = 'signs/' . $filename;
             return response()->file(Storage::disk('public')->path($filePath));
         } else {
             // فایل پیدا نشد

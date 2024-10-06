@@ -122,8 +122,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Users
     Route::resource('users', UserController::class)->except('show');
-    Route::get('/file/user/profile/{filename}', [UserController::class, 'userFile'])->name('us.file.show');
-    Route::get('/file/user/sign/{filename}', [UserController::class, 'userSign'])->name('sign.file.show');
+    Route::get('/file/sign/{filename}', [UserController::class, 'userSign'])->name('sign.file.show');
+    Route::get('/file/user/{filename}', [UserController::class, 'userFile'])->name('us.file.show');
 
 
     // Roles
