@@ -309,7 +309,7 @@
                                             </td>
                                             <td>
                                                 <input type="number" name="extra_amounts[]" class="form-control" min="0"
-                                                       value="{{ old('extra_amounts')[$i] }}" readonly>
+                                                       value="{{ old('extra_amounts')[$i] }}">
                                             </td>
                                             <td>
                                                 <input type="number" name="total_prices_with_off[]" class="form-control"
@@ -534,7 +534,7 @@
                         <input type="number" name="discount_amounts[]" class="form-control" min="0" value="0" readonly>
                     </td>
                     <td>
-                        <input type="number" name="extra_amounts[]" class="form-control" min="0" value="0" readonly>
+                        <input type="number" name="extra_amounts[]" class="form-control" min="0" value="0">
                     </td>
                     <td>
                         <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="0" readonly>

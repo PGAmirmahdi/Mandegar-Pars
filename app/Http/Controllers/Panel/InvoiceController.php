@@ -255,7 +255,7 @@ class InvoiceController extends Controller
         $tax_percentage = self::TAX_AMOUNT; // فرض می‌کنیم این درصد مالیات است (مثلاً 9)
         $tax = $tax_percentage * $total_price_with_off;
 
-        $invoice_net =  $tax + $total_price_with_off;
+        $invoice_net =  $tax + $total_price_with_off + $extra_amount;
 
         $data = [
             'price' => $price,
