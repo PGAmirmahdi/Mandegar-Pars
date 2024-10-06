@@ -312,10 +312,12 @@
                                             <div class="d-flex">
                                                 <span class="mr-4">شرایط و نحوه فروش</span>
                                                 <div class="d-flex">
-                                                    نقدی<input type="checkbox">
-                                                </div>
-                                                <div class="d-flex ml-5">
-                                                    غیر نقدی<input type="checkbox">
+                                                    @foreach(\App\Models\Invoice::Payment_Type as $key => $label)
+                                                        <label class="mr-3">
+                                                            {{ $label }}
+                                                            <input type="checkbox" {{ $invoice->payment_type === $key ? 'checked' : '' }} disabled>
+                                                        </label>
+                                                    @endforeach
                                                 </div>
                                             </div>
                                         </td>
@@ -333,9 +335,9 @@
                                     <tr>
                                         <td colspan="6" id="seller_sign_sec">
 {{--                                            @if($invoice->status == "invoiced")--}}
-                                            <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign">
+                                            <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign" alt="sign">
 {{--                                            @if($invoice->type == 'official')--}}
-                                            <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp">
+                                            <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp" alt="stamp">
 {{--                                            @endif--}}
 {{--                                            @endif--}}
                                             <small>مهر و امضای فروشنده</small>
