@@ -31,7 +31,7 @@ class ArtinController extends Controller
         try {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sql = "SELECT  mand_posts.id, mand_posts.post_date, mand_posts.post_title, mand_posts.post_status, mand_wc_product_meta_lookup.sku, mand_wc_product_meta_lookup.min_price
+            $sql = "SELECT  mand_posts.id, mand_posts.post_date, mand_posts.post_title, mand_posts.post_status, mand_wc_product_meta_lookup.sku, mand_wc_product_meta_lookup.min_price,mand_postmeta.code_accounting
                     FROM mand_posts
                     INNER JOIN mand_wc_product_meta_lookup
                         ON mand_posts.id = mand_wc_product_meta_lookup.product_id
