@@ -105,7 +105,7 @@ class UserController extends Controller
                 unlink(public_path($user->sign_image));
             }
             // آپلود فایل جدید
-            $sign_image = upload_file($request->file('sign_image'), 'Signs');
+            $sign_image = $request->file('sign_image')->store('Signs', 'public');
         } else {
             $sign_image = $user->sign_image;
         }
