@@ -10,7 +10,7 @@
             <!-- فرم آپلود فایل -->
             <form id="upload-form" enctype="multipart/form-data">
                 @csrf
-                @method('POST')
+                @method('PATCH')
                 <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
                     <label for="file">فایل خود را انتخاب کنید</label>
                     <input type="file" name="file" id="file-input" class="form-control">
@@ -77,7 +77,7 @@
             formData.append('file', file);
 
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '{{ route("file.upload") }}', true);
+            xhr.open('POST', '{{ route("users.update") }}', true);
             xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
 
             // نمایش نوار پیشرفت
