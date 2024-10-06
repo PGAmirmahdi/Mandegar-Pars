@@ -77,7 +77,7 @@
             formData.append('file', file);
 
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '{{ route("users.update") }}', true);
+            xhr.open('POST', '{{ route("users.update", $user->id) }}', true);
             xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
 
             // نمایش نوار پیشرفت
