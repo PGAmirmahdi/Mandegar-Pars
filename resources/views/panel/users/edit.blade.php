@@ -8,12 +8,12 @@
             </div>
 
             <!-- فرم آپلود تصویر امضاء -->
-            <form id="form-sign-image" enctype="multipart/form-data" class="dropzone" id="sign-image-dropzone">
+            <form id="uploadForm" enctype="multipart/form-data" class="dropzone">
                 @csrf
                 @method('PATCH')
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="sign_image">تصویر امضاء (PNG)</label>
-                    <input type="file" name="sign_image" id="sign-image-dropzone2">
+                    <input type="file" name="sign_image">
                     @if($user->sign_image)
                         <a href="{{ $user->sign_image }}" class="btn btn-link" target="_blank">مشاهده امضاء</a>
                     @endif
@@ -21,15 +21,10 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
-            </form>
 
-            <!-- فرم آپلود تصویر پروفایل -->
-            <form id="form-profile" enctype="multipart/form-data" class="dropzone" id="profile-dropzone">
-                @csrf
-                @method('PATCH')
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="profile">عکس پروفایل</label>
-                    <input type="file" name="profile" id="profile-dropzone2">
+                    <input type="file" name="profile">
                     @if($user->profile)
                         <a href="{{ asset('storage/' . $user->profile) }}" class="btn btn-link" target="_blank">مشاهده پروفایل</a>
                     @endif
@@ -37,12 +32,8 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
-            </form>
 
-            <!-- سایر فیلدها -->
-            <form id="form-details">
-                @csrf
-                @method('PATCH')
+                <!-- سایر فیلدها -->
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="name">نام <span class="text-danger">*</span></label>
@@ -89,62 +80,40 @@
                         @endif
                     @endcan
                 </div>
+                <button type="submit" class="btn btn-primary">ثبت فرم</button>
             </form>
-            <button class="btn btn-primary" id="submit">ثبت فرم</button>
         </div>
     </div>
 
     <script>
-        Dropzone.autoDiscover = false;
+        Dropzone.options.uploadForm = {
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 100,
 
-        // Dropzone برای تصویر امضاء
-        var signImageDropzone = new Dropzone("#sign-image-dropzone", {
-            url: "{{ route('users.update', $user->id) }}",
-            paramName: "sign_image", // نام فیلد آپلود
-            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
-            acceptedFiles: ".png", // فرمت‌های مجاز
-            addRemoveLinks: true,
-            autoProcessQueue: false, // فایل‌ها به‌طور خودکار ارسال نمی‌شوند
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            init: function() {
+                var myDropzone = this;
+
+                // دکمه‌ی ارسال برای پردازش صف
+                this.element.querySelector("button[type=submit]").addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    myDropzone.processQueue();
+                });
+
+                this.on("sendingmultiple", function() {
+                    // وقتی فایل‌ها ارسال می‌شوند
+                });
+
+                this.on("successmultiple", function(files, response) {
+                    // بعد از ارسال موفق فایل‌ها
+                });
+
+                this.on("errormultiple", function(files, response) {
+                    // در صورت بروز خطا در ارسال فایل‌ها
+                });
             }
-        });
-
-        // Dropzone برای تصویر پروفایل
-        var profileDropzone = new Dropzone("#profile-dropzone", {
-            url: "{{ route('users.update', $user->id) }}",
-            paramName: "profile", // نام فیلد آپلود
-            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
-            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
-            addRemoveLinks: true,
-            autoProcessQueue: false, // فایل‌ها به‌طور خودکار ارسال نمی‌شوند
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            }
-        });
-
-        document.getElementById('submit').addEventListener('click', function(e) {
-            e.preventDefault();
-
-            // جمع‌آوری داده‌های فرم سوم
-            var formDetails = new FormData(document.getElementById('form-details'));
-
-            // ارسال داده‌های فرم سوم
-            fetch('{{ route("users.update", $user->id) }}', {
-                method: 'POST',
-                body: formDetails,
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            }).then(response => {
-                return response.json();
-            }).then(data => {
-                // بعد از موفقیت‌آمیز بودن فرم سوم، فایل‌ها ارسال شوند
-                signImageDropzone.processQueue(); // شروع آپلود تصویر امضاء
-                profileDropzone.processQueue(); // شروع آپلود تصویر پروفایل
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        });
+        };
     </script>
 @endsection
