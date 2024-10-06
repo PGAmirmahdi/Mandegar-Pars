@@ -328,7 +328,7 @@
                                                     <input type="number" name="discount_amounts[]" class="form-control" min="0" value="{{ $discount_amount }}" readonly>
                                                 </td>
                                                 <td>
-                                                    <input type="number" name="extra_amounts[]" class="form-control" min="0" value="{{ $item->pivot->extra_amount }}" readonly>
+                                                    <input type="number" name="extra_amounts[]" class="form-control" min="0" value="{{ $item->pivot->extra_amount }}">
                                                 </td>
                                                 <td>
                                                     <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="{{ $item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount) }}" readonly>
@@ -407,7 +407,7 @@
                                                     <span class="price_with_grouping text-primary"></span>
                                                 </td>
                                                 <td>
-                                                    <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="{{ $product->extra_amount }}" readonly>
+                                                    <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="{{ $product->extra_amount }}">
                                                 </td>
                                                 <td>
                                                     <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="{{ $product->total_price - ($product->extra_amount + $product->discount_amount) }}" readonly>
@@ -518,7 +518,7 @@
                     <input type="number" name="discount_amounts[]" class="form-control" min="0" value="0" readonly>
                 </td>
                 <td>
-                    <input type="number" name="extra_amounts[]" class="form-control" min="0" value="0" readonly>
+                    <input type="number" name="extra_amounts[]" class="form-control" min="0" value="0">
                 </td>
                 <td>
                     <input type="number" name="total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
@@ -572,7 +572,7 @@
                     <span class="price_with_grouping text-primary"></span>
                 </td>
                 <td>
-                    <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0" readonly>
+                    <input type="number" name="other_extra_amounts[]" class="form-control" min="0" value="0">
                 </td>
                 <td>
                     <input type="number" name="other_total_prices_with_off[]" class="form-control" min="0" value="0" readonly>
