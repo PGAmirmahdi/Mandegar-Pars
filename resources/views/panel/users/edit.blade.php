@@ -46,6 +46,7 @@
                 @csrf
                 @method('PATCH')
                 <div class="form-row">
+                    <!-- سایر فیلدها -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="name">نام <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" id="name" value="{{ $user->name }}">
@@ -74,21 +75,6 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    @can('admin')
-                        @if(auth()->id() != $user->id)
-                            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                                <label for="role">نقش <span class="text-danger">*</span></label>
-                                <select class="form-control" name="role" id="role">
-                                    @foreach(\App\Models\Role::all() as $role)
-                                        <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>{{ $role->label }}</option>
-                                    @endforeach
-                                </select>
-                                @error('role')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        @endif
-                    @endcan
                 </div>
             </form>
             <button class="btn btn-primary" id="submit">ثبت فرم</button>
@@ -108,7 +94,7 @@
             transition: width 0.4s;
         }
         .progress-bar.success {
-            background-color: #28a745; /* رنگ سبز برای موفقیت */
+            background-color: #28a745;
         }
     </style>
 
@@ -116,10 +102,8 @@
         document.getElementById('submit').addEventListener('click', function(e) {
             e.preventDefault();
 
-            // جمع‌آوری داده‌های فرم سوم
             var formDetails = new FormData(document.getElementById('form-details'));
 
-            // ارسال داده‌های فرم سوم
             fetch('{{ route("users.update", $user->id) }}', {
                 method: 'POST',
                 body: formDetails,
@@ -129,9 +113,7 @@
             }).then(response => {
                 return response.json();
             }).then(data => {
-                // بررسی پاسخ
                 if (data.success) {
-                    // بعد از موفقیت‌آمیز بودن فرم سوم، فایل‌ها ارسال شوند
                     uploadFile('sign-image-input', 'sign-image-progress-container', 'sign-image-progress-bar', 'sign-image-file-name', data.sign_image_upload_route);
                     uploadFile('profile-input', 'profile-progress-container', 'profile-progress-bar', 'profile-file-name', data.profile_upload_route);
                 } else {
@@ -148,20 +130,18 @@
             if (!file) return;
 
             var formData = new FormData();
-            formData.append(inputId.split('-')[0], file); // نام فیلد آپلود
+            formData.append(inputId.split('-')[0], file);
 
             var xhr = new XMLHttpRequest();
             xhr.open('POST', uploadRoute, true);
             xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
 
-            // نمایش نوار پیشرفت
             var progressContainer = document.getElementById(progressContainerId);
             var progressBar = document.getElementById(progressBarId);
             var fileName = document.getElementById(fileNameId);
             progressContainer.style.display = 'block';
             fileName.innerHTML = 'آپلود فایل: ' + file.name;
 
-            // نظارت بر پیشرفت آپلود
             xhr.upload.addEventListener('progress', function(e) {
                 if (e.lengthComputable) {
                     var percentComplete = Math.round((e.loaded / e.total) * 100);
@@ -169,7 +149,6 @@
                 }
             });
 
-            // موفقیت آمیز بودن آپلود
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     progressBar.classList.add('success');

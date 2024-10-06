@@ -7,7 +7,7 @@
                 <h6>ایجاد کاربر</h6>
             </div>
             <form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data"
-                  >
+                  class="dropzone" id="my-awesome-dropzone">
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -52,7 +52,7 @@
                     <!-- فیلد آپلود عکس پروفایل با Dropzone -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="profile">عکس پروفایل</label>
-                        <input type="file" name="profile" class="dropzone" id="my-awesome-dropzone">
+                        <input type="file" name="profile">
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
