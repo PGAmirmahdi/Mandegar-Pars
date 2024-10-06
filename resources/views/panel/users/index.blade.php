@@ -21,6 +21,7 @@
                         <th>نام خانوادگی</th>
                         <th>شماره موبایل</th>
                         <th>نقش</th>
+                        <th>عکس امضا</th>
                         <th>عکس پروفایل</th>
                         <th>تاریخ ایجاد</th>
                         @can('users-edit')
@@ -39,6 +40,11 @@
                             <td>{{ $user->family }}</td>
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->role->label }}</td>
+                            <td>@if($user->sign_image)
+                                    <a href="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}"><img src="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}" alt="sign_image" width="125px" height="125px"></a>
+                                    @else
+                                    عکس امضا ندارد
+                            @endif</td>
                             <td>@if($user->profile)
                                     <a href="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"><img src="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}" alt="Profile" width="125px" height="125px"></a>
                                 @else
