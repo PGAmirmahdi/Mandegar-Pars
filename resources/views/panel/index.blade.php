@@ -134,7 +134,7 @@
             <div>
                 <i class="ti-announcement d-inline m-r-10"></i>
                 <h5 class="alert-heading d-inline">بروزرسانی نرم افزار - تاریخ
-                    انتشار {{ verta($update->date)->format('Y/m/d') }} - نسخه{{ $update->version }}</h5>
+                    انتشار {{ verta($update->date)->format('Y/m/d') }} - نسخه {{ $update->version }}</h5>
             </div>
             <ul>
                 @foreach(explode(',',$update->description) as $item)
