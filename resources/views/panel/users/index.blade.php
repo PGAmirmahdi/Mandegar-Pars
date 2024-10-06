@@ -40,7 +40,7 @@
                             <td>{{ $user->family }}</td>
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->role->label }}</td>
-                            <td>@if($user->sign_image)
+                            <td>
                                     @if($user->sign_image)
                                         <a href="{{ route('sign.file.show', ['filename' => $user->sign_image]) }}">
                                             <img src="{{ route('sign.file.show', ['filename' => $user->sign_image]) }}" alt="sign_image" width="125px" height="125px">
