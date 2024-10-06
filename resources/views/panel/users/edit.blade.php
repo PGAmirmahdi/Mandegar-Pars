@@ -129,9 +129,14 @@
             }).then(response => {
                 return response.json();
             }).then(data => {
-                // بعد از موفقیت‌آمیز بودن فرم سوم، فایل‌ها ارسال شوند
-                uploadFile('sign-image-input', 'sign-image-progress-container', 'sign-image-progress-bar', 'sign-image-file-name', data.sign_image_upload_route);
-                uploadFile('profile-input', 'profile-progress-container', 'profile-progress-bar', 'profile-file-name', data.profile_upload_route);
+                // بررسی پاسخ
+                if (data.success) {
+                    // بعد از موفقیت‌آمیز بودن فرم سوم، فایل‌ها ارسال شوند
+                    uploadFile('sign-image-input', 'sign-image-progress-container', 'sign-image-progress-bar', 'sign-image-file-name', data.sign_image_upload_route);
+                    uploadFile('profile-input', 'profile-progress-container', 'profile-progress-bar', 'profile-file-name', data.profile_upload_route);
+                } else {
+                    alert(data.message || 'خطایی در ثبت اطلاعات رخ داد');
+                }
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -169,13 +174,12 @@
                 if (xhr.status === 200) {
                     progressBar.classList.add('success');
                     progressBar.style.width = '100%';
-                    fileName.innerHTML = 'آپلود موفقیت‌آمیز: ' + file.name + ' <span class="tick-mark">&#10003;</span>';
+                    fileName.innerHTML = 'آپلود موفقیت‌آمیز: ' + file.name + ' <i class="fas fa-check"></i>';
                 } else {
-                    alert('خطایی در آپلود رخ داد');
+                    alert('خطایی در آپلود فایل رخ داد.');
                 }
             };
 
-            // ارسال فرم
             xhr.send(formData);
         }
     </script>
