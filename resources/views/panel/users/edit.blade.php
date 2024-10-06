@@ -6,14 +6,14 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ویرایش کاربر</h6>
             </div>
-            <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data">
+
+            <!-- فرم آپلود تصویر امضاء -->
+            <form id="form-sign-image" enctype="multipart/form-data" class="dropzone">
                 @csrf
                 @method('PATCH')
-
-                <!-- Dropzone برای آپلود تصویر امضاء -->
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="sign_image">تصویر امضاء (PNG)</label>
-                    <input type="file" name="sign_image" class="dropzone" id="sign-image-dropzone">
+                    <input type="file" name="sign_image" id="sign-image-dropzone">
                     @if($user->sign_image)
                         <a href="{{ $user->sign_image }}" class="btn btn-link" target="_blank">مشاهده امضاء</a>
                     @endif
@@ -21,11 +21,15 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
+            </form>
 
-                <!-- Dropzone برای آپلود تصویر پروفایل -->
+            <!-- فرم آپلود تصویر پروفایل -->
+            <form id="form-profile" enctype="multipart/form-data" class="dropzone">
+                @csrf
+                @method('PATCH')
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="profile">عکس پروفایل</label>
-                    <input type="file" name="profile" class="dropzone" id="profile-dropzone">
+                    <input type="file" name="profile" id="profile-dropzone">
                     @if($user->profile)
                         <a href="{{ asset('storage/' . $user->profile) }}" class="btn btn-link" target="_blank">مشاهده پروفایل</a>
                     @endif
@@ -33,8 +37,12 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
+            </form>
 
-                <!-- سایر فیلدها -->
+            <!-- سایر فیلدها -->
+            <form id="form-details">
+                @csrf
+                @method('PATCH')
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="name">نام <span class="text-danger">*</span></label>
@@ -43,7 +51,6 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="family">نام خانوادگی <span class="text-danger">*</span></label>
                         <input type="text" name="family" class="form-control" id="family" value="{{ $user->family }}">
@@ -51,7 +58,6 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="phone">شماره موبایل <span class="text-danger">*</span></label>
                         <input type="text" name="phone" class="form-control" id="phone" value="{{ $user->phone }}">
@@ -59,7 +65,6 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="password">رمزعبور</label>
                         <input type="password" name="password" class="form-control" id="password">
@@ -67,7 +72,6 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
                     @can('admin')
                         @if(auth()->id() != $user->id)
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -85,50 +89,48 @@
                         @endif
                     @endcan
                 </div>
-
-                <button class="btn btn-primary" type="submit">ثبت فرم</button>
             </form>
+            <button class="btn btn-primary" id="submit">ثبت فرم</button>
         </div>
     </div>
 
-    <!-- تنظیمات Dropzone -->
     <script>
-        Dropzone.autoDiscover = false;
+        document.getElementById('submit').addEventListener('click', function() {
+            var formData = new FormData();
 
-        // Dropzone برای تصویر امضاء
-        var signImageDropzone = new Dropzone("#sign-image-dropzone", {
-            url: "{{ route('users.update', $user->id) }}",
-            paramName: "sign_image", // نام فیلد آپلود
-            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
-            acceptedFiles: ".png", // فرمت‌های مجاز
-            addRemoveLinks: true,
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            success: function (file, response) {
-                console.log(response);
-            },
-            error: function (file, response) {
-                console.log(response);
+            // جمع‌آوری داده‌های فرم اول
+            var formSignImage = document.getElementById('sign-image-dropzone').files[0];
+            if (formSignImage) {
+                formData.append('sign_image', formSignImage);
             }
-        });
 
-        // Dropzone برای تصویر پروفایل
-        var profileDropzone = new Dropzone("#profile-dropzone", {
-            url: "{{ route('users.update', $user->id) }}",
-            paramName: "profile", // نام فیلد آپلود
-            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
-            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
-            addRemoveLinks: true,
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            success: function (file, response) {
-                console.log(response);
-            },
-            error: function (file, response) {
-                console.log(response);
+            // جمع‌آوری داده‌های فرم دوم
+            var formProfile = document.getElementById('profile-dropzone').files[0];
+            if (formProfile) {
+                formData.append('profile', formProfile);
             }
+
+            // جمع‌آوری داده‌های فرم سوم (فیلدهای متنی)
+            var formDetails = new FormData(document.getElementById('form-details'));
+            for (var [key, value] of formDetails.entries()) {
+                formData.append(key, value);
+            }
+
+            // ارسال داده‌ها با استفاده از AJAX
+            fetch('{{ route("users.update", $user->id) }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // در اینجا می‌توانید نتایج موفقیت‌آمیز را مدیریت کنید
+                }).catch(error => {
+                console.error('Error:', error);
+                // در اینجا می‌توانید خطاها را مدیریت کنید
+            });
         });
     </script>
 @endsection
