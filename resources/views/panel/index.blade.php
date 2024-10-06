@@ -127,7 +127,7 @@
         </div>
     </div>
     @php
-        $update = \App\Models\SoftwareUpdate::where('created_at', '<=', now()->subDays(7))->latest()->paginate(1);
+        $update = \App\Models\SoftwareUpdate::where('created_at', '>=', now()->subDays(7))->latest()->first();
     @endphp
     @if($update)
         <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
