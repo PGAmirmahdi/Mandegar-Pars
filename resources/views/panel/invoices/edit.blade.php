@@ -626,6 +626,17 @@
                     $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 }
             })
+            // وقتی مقدار فیلد اضافات تغییر کند
+            $(document).on('change', '#products_table input[name="extra_amounts[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+                CalcProductInvoice(this);
+            });
+
+            $(document).on('change', '#other_products_table input[name="other_extra_amounts[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+                CalcOtherProductInvoice(this);
+            });
+
             $(document).on('change', '#other_products_table input[name="other_prices[]"]', function () {
                 CalcOtherProductInvoice(this)
             })
@@ -713,9 +724,10 @@
         })
 
         function CalcProductInvoice(changeable) {
-            var index = $(changeable).parent().parent().index()
+            var index = $(changeable).parent().parent().index();
             let product_id =  $('#products_table select[name="products[]"]')[index].value;
             let count =  $('#products_table input[name="counts[]"]')[index].value;
+            let extra_amount = $('#products_table input[name="extra_amounts[]"]')[index].value;
 
             $.ajax({
                 url: "{{ route('calcProductsInvoice') }}",
@@ -724,6 +736,7 @@
                     'invoice_id': invoice_id,
                     'product_id': product_id,
                     'count': count,
+                    'extra_amount': extra_amount,  // ارسال مقدار اضافات به سرور
                     'unofficial': unofficials,
                 },
                 success: function (res) {
@@ -740,16 +753,17 @@
                 error: function (request, status, error) {
                     //
                 }
-            })
+            });
         }
 
         function CalcOtherProductInvoice(changeable) {
-            var index = $(changeable).parent().parent().index()
-            let count =  $('#other_products_table input[name="other_counts[]"]')[index].value;
+            var index = $(changeable).parent().parent().index();
+            let count = $('#other_products_table input[name="other_counts[]"]')[index].value;
             let price = $('#other_products_table input[name="other_prices[]"]')[index].value;
             let discount_amount = $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
+            let extra_amount = $('#other_products_table input[name="other_extra_amounts[]"]')[index].value;  // مقدار اضافات
 
-            // thousands grouping
+            // thousands grouping (افزودن جداسازی اعداد برای نمایش بهتر)
             $($('#other_products_table input[name="other_prices[]"]')[index]).siblings()[0].innerText = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $($('#other_products_table input[name="other_discount_amounts[]"]')[index]).siblings()[0].innerText = discount_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
@@ -760,6 +774,7 @@
                     'price': price,
                     'count': count,
                     'discount_amount': discount_amount,
+                    'extra_amount': extra_amount,  // ارسال مقدار اضافات به سرور
                     'unofficial': unofficials,
                 },
                 success: function (res) {
@@ -776,8 +791,9 @@
                 error: function (request, status, error) {
                     //
                 }
-            })
+            });
         }
+
 
         $('input[name="type"]').on('change', function () {
             let type = this.value;
