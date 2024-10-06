@@ -98,17 +98,14 @@ class UserController extends Controller
     {
         $this->authorize('users-edit');
 
-        if (auth()->user()->isAdmin()) {
-            if ($request->hasFile('sign_image')) {
-                if ($user->sign_image) {
-                    // حذف فایل امضای قدیمی
-                    unlink(public_path($user->sign_image));
-                }
-                // آپلود فایل جدید
-                $sign_image = upload_file($request->file('sign_image'), 'Signs');
-            } else {
-                $sign_image = $user->sign_image;
+        // آپلود و به‌روزرسانی فایل امضا
+        if ($request->hasFile('sign_image')) {
+            if ($user->sign_image) {
+                // حذف فایل امضای قدیمی
+                unlink(public_path($user->sign_image));
             }
+            // آپلود فایل جدید
+            $sign_image = upload_file($request->file('sign_image'), 'Signs');
         } else {
             $sign_image = $user->sign_image;
         }
@@ -123,10 +120,10 @@ class UserController extends Controller
             'sign_image' => $sign_image,
         ]);
 
-        // به‌روزرسانی فایل پروفایل
+        // آپلود و به‌روزرسانی فایل پروفایل
         if ($request->hasFile('profile')) {
-            // حذف فایل قدیمی پروفایل
             if ($user->profile) {
+                // حذف فایل قدیمی پروفایل
                 Storage::disk('public')->delete($user->profile);
             }
             // ذخیره فایل جدید پروفایل
@@ -137,7 +134,7 @@ class UserController extends Controller
         // ذخیره تغییرات نهایی
         $user->save();
 
-        // پیام موفقیت و بازگشت
+        // پیام موفقیت و بازگشت به صفحه قبلی
         if (Gate::allows('edit-profile', $user->id)) {
             alert()->success('پروفایل شما با موفقیت ویرایش شد', 'ویرایش پروفایل');
             return redirect()->back();
@@ -146,6 +143,7 @@ class UserController extends Controller
             return redirect()->route('users.index');
         }
     }
+
 
     public function destroy(User $user)
     {
