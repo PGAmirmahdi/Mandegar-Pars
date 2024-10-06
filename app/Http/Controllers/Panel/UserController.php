@@ -73,8 +73,8 @@ class UserController extends Controller
         $this->createLeaveInfo($user);
 
         // ارسال پیام موفقیت
-        alert()->success('کاربر مورد نظر با موفقیت ایجاد شد','ایجاد کاربر');
-        return redirect()->route('users.index');
+        alert()->success('کاربر با موفقیت ویرایش شد', 'ویرایش کاربر');
+        return response()->json(['success' => 'کاربر با موفقیت ویرایش شد']);
     }
 
 
