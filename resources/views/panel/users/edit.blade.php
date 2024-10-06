@@ -218,7 +218,7 @@
                                     errorMessage += "- " + errors[key][0] + "<br>";
                                 }
                             }
-                            alert(errorMessage);
+                            alert("ارسال موفق");
                         } else {
                             alert("مشکلی در ارسال فایل وجود دارد");
                         }
