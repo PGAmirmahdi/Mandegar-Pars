@@ -127,7 +127,7 @@
         </div>
     </div>
     @php
-        $update = \App\Models\SoftwareUpdate::where('date', [now()->startOfDay(), now()->endOfDay()])->latest()->first();
+        $update = \App\Models\SoftwareUpdate::where('date', [now()->startOfDay(), now()->addDays(7)->endOfDay()])->latest()->first();
     @endphp
     @if($update)
         <div class="alert alert-success alert-with-border alert-dismissible fade show mb-4 pr-3" id="app_updates">
