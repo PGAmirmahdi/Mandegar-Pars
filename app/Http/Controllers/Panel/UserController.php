@@ -174,9 +174,9 @@ class UserController extends Controller
     }
     public function userSign($filename){
         // بررسی وجود فایل در دیسک public
-        if (Storage::disk('public')->exists('signs/' . $filename)) {
+        if (Storage::disk('public')->exists('Signs/' . $filename)) {
             // دریافت فایل و ارسال آن به مرورگر
-            $filePath = 'signs/' . $filename;
+            $filePath = 'Signs/' . $filename;
             return response()->file(Storage::disk('public')->path($filePath));
         } else {
             // فایل پیدا نشد
