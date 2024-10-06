@@ -33,6 +33,7 @@ class UserController extends Controller
     {
         $this->authorize('users-create');
 
+        // ایجاد کاربر جدید
         $user = User::create([
             'name' => $request->name,
             'family' => $request->family,
@@ -40,8 +41,10 @@ class UserController extends Controller
             'role_id' => $request->role,
             'password' => bcrypt($request->password),
         ]);
+
+        // مدیریت آپلود تصویر پروفایل
         if ($request->hasFile('profile')) {
-            // حذف فایل قدیمی
+            // حذف فایل قدیمی اگر وجود داشته باشد
             if ($user->profile) {
                 Storage::disk('public')->delete($user->profile);
             }
@@ -50,13 +53,30 @@ class UserController extends Controller
             $filePath = $request->file('profile')->store('profile', 'public');
             $user->profile = $filePath;
         }
+
+        // مدیریت آپلود تصویر امضاء
+        if ($request->hasFile('sign_image')) {
+            // حذف فایل قدیمی اگر وجود داشته باشد
+            if ($user->sign_image) {
+                Storage::disk('public')->delete($user->sign_image);
+            }
+
+            // ذخیره فایل جدید
+            $signImagePath = $request->file('sign_image')->store('signatures', 'public');
+            $user->sign_image = $signImagePath;
+        }
+
+        // ذخیره تغییرات
         $user->save();
-        // اجرای متد createLeaveInfo برای کاربر
+
+        // اجرای متد ایجاد اطلاعات مرخصی برای کاربر
         $this->createLeaveInfo($user);
 
+        // ارسال پیام موفقیت
         alert()->success('کاربر مورد نظر با موفقیت ایجاد شد','ایجاد کاربر');
         return redirect()->route('users.index');
     }
+
 
     public function show(User $user)
     {
