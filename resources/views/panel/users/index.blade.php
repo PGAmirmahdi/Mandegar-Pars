@@ -41,7 +41,7 @@
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->role->label }}</td>
                             <td>
-                                    @@if($user->sign_image)
+                                    @if($user->sign_image)
                                     <a href="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}"><img src="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}" alt="Profile"></a>
                                 @else
                                     عکس پروفایل ندارد
