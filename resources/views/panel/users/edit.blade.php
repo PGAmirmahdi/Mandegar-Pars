@@ -1,39 +1,100 @@
 @extends('panel.layouts.master')
-@section('title', 'آپلود فایل')
+@section('title', 'ویرایش کاربر')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>آپلود فایل</h6>
+                <h6>ویرایش کاربر</h6>
             </div>
 
-            <!-- فرم آپلود فایل -->
-            <form id="upload-form" enctype="multipart/form-data">
+            <!-- فرم آپلود تصویر امضاء -->
+            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                <label for="sign_image">تصویر امضاء (PNG)</label>
+                <input type="file" name="sign_image" id="sign-image-input" class="form-control">
+                @if($user->sign_image)
+                    <a href="{{ $user->sign_image }}" class="btn btn-link" target="_blank">مشاهده امضاء</a>
+                @endif
+                @error('sign_image')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+                <!-- نوار پیشرفت -->
+                <div id="sign-image-progress-container" class="progress mt-2" style="display: none;">
+                    <div id="sign-image-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
+                </div>
+                <p id="sign-image-file-name" class="mt-2"></p>
+            </div>
+
+            <!-- فرم آپلود تصویر پروفایل -->
+            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                <label for="profile">عکس پروفایل</label>
+                <input type="file" name="profile" id="profile-input" class="form-control">
+                @if($user->profile)
+                    <a href="{{ asset('storage/' . $user->profile) }}" class="btn btn-link" target="_blank">مشاهده پروفایل</a>
+                @endif
+                @error('profile')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+                <!-- نوار پیشرفت -->
+                <div id="profile-progress-container" class="progress mt-2" style="display: none;">
+                    <div id="profile-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
+                </div>
+                <p id="profile-file-name" class="mt-2"></p>
+            </div>
+
+            <!-- سایر فیلدها -->
+            <form id="form-details">
                 @csrf
                 @method('PATCH')
-                <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
-                    <label for="file">فایل خود را انتخاب کنید</label>
-                    <input type="file" name="file" id="file-input" class="form-control">
-                    @error('file')
-                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
+                <div class="form-row">
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="name">نام <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" id="name" value="{{ $user->name }}">
+                        @error('name')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="family">نام خانوادگی <span class="text-danger">*</span></label>
+                        <input type="text" name="family" class="form-control" id="family" value="{{ $user->family }}">
+                        @error('family')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="phone">شماره موبایل <span class="text-danger">*</span></label>
+                        <input type="text" name="phone" class="form-control" id="phone" value="{{ $user->phone }}">
+                        @error('phone')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="password">رمزعبور</label>
+                        <input type="password" name="password" class="form-control" id="password">
+                        @error('password')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @can('admin')
+                        @if(auth()->id() != $user->id)
+                            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                <label for="role">نقش <span class="text-danger">*</span></label>
+                                <select class="form-control" name="role" id="role">
+                                    @foreach(\App\Models\Role::all() as $role)
+                                        <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>{{ $role->label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('role')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
+                    @endcan
                 </div>
             </form>
-
-            <!-- دکمه ارسال -->
-            <button class="btn btn-primary" id="upload-btn">ارسال فایل</button>
-
-            <!-- نوار پیشرفت -->
-            <div id="progress-container" class="mt-3" style="display: none;">
-                <div class="progress">
-                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
-                </div>
-                <p id="file-name" class="mt-2"></p>
-            </div>
+            <button class="btn btn-primary" id="submit">ثبت فرم</button>
         </div>
     </div>
 
-    <!-- استایل برای ظاهر نوار پیشرفت -->
     <style>
         .progress {
             height: 25px;
@@ -49,41 +110,49 @@
         .progress-bar.success {
             background-color: #28a745; /* رنگ سبز برای موفقیت */
         }
-        .progress-container {
-            margin-top: 10px;
-        }
-        .tick-mark {
-            color: #28a745;
-            font-size: 18px;
-            display: inline-block;
-            margin-left: 10px;
-        }
     </style>
 
     <script>
-        document.getElementById('upload-btn').addEventListener('click', function(e) {
+        document.getElementById('submit').addEventListener('click', function(e) {
             e.preventDefault();
 
-            // گرفتن فایل از ورودی فایل
-            var fileInput = document.getElementById('file-input');
-            var file = fileInput.files[0];
+            // جمع‌آوری داده‌های فرم سوم
+            var formDetails = new FormData(document.getElementById('form-details'));
 
-            if (!file) {
-                alert('لطفا یک فایل انتخاب کنید');
-                return;
-            }
+            // ارسال داده‌های فرم سوم
+            fetch('{{ route("users.update", $user->id) }}', {
+                method: 'POST',
+                body: formDetails,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                // بعد از موفقیت‌آمیز بودن فرم سوم، فایل‌ها ارسال شوند
+                uploadFile('sign-image-input', 'sign-image-progress-container', 'sign-image-progress-bar', 'sign-image-file-name', data.sign_image_upload_route);
+                uploadFile('profile-input', 'profile-progress-container', 'profile-progress-bar', 'profile-file-name', data.profile_upload_route);
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        function uploadFile(inputId, progressContainerId, progressBarId, fileNameId, uploadRoute) {
+            var fileInput = document.getElementById(inputId);
+            var file = fileInput.files[0];
+            if (!file) return;
 
             var formData = new FormData();
-            formData.append('file', file);
+            formData.append(inputId.split('-')[0], file); // نام فیلد آپلود
 
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '{{ route("users.update", $user->id) }}', true);
+            xhr.open('POST', uploadRoute, true);
             xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
 
             // نمایش نوار پیشرفت
-            var progressContainer = document.getElementById('progress-container');
-            var progressBar = document.getElementById('progress-bar');
-            var fileName = document.getElementById('file-name');
+            var progressContainer = document.getElementById(progressContainerId);
+            var progressBar = document.getElementById(progressBarId);
+            var fileName = document.getElementById(fileNameId);
             progressContainer.style.display = 'block';
             fileName.innerHTML = 'آپلود فایل: ' + file.name;
 
@@ -108,6 +177,6 @@
 
             // ارسال فرم
             xhr.send(formData);
-        });
+        }
     </script>
 @endsection
