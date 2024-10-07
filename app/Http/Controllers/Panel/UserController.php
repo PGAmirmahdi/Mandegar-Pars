@@ -96,9 +96,8 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
-        $this->authorize('users-edit');
-
         // آپلود و به‌روزرسانی فایل امضا
+        $sign_image = $user->sign_image; // پیش‌فرض امضا، تصویر فعلی کاربر است
         if (auth()->user()->isAdmin()) {
             if ($request->hasFile('sign_image')) {
                 if ($user->sign_image) {
@@ -107,22 +106,24 @@ class UserController extends Controller
                 }
                 // آپلود فایل جدید
                 $sign_image = upload_file($request->file('sign_image'), 'signs');
-            } else {
-                $sign_image = $user->sign_image;
             }
-        } else {
-            $sign_image = $user->sign_image;
         }
 
         // به‌روزرسانی اطلاعات کاربر
-        $user->update([
+        $dataToUpdate = [
             'name' => $request->name,
             'family' => $request->family,
             'phone' => $request->phone,
             'role_id' => $request->role ?? $user->role_id,
-            'password' => $request->password ? bcrypt($request->password) : $user->password,
             'sign_image' => $sign_image,
-        ]);
+        ];
+
+        // بروزرسانی رمز عبور در صورت ادمین بودن
+        if (auth()->user()->isAdmin()) {
+            $dataToUpdate['password'] = $request->password ? bcrypt($request->password) : $user->password;
+        }
+
+        $user->update($dataToUpdate);
 
         // آپلود و به‌روزرسانی فایل پروفایل
         if ($request->hasFile('profile')) {
@@ -147,6 +148,7 @@ class UserController extends Controller
             return redirect()->route('users.index');
         }
     }
+
 
 
     public function destroy(User $user)
