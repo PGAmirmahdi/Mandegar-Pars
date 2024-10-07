@@ -105,7 +105,7 @@
                             <figure class="avatar avatar-state-success avatar-sm">
                                 @if(auth()->user()->profile)
                                     <img
-                                        src="{{ auth()->user()->profile }}"
+                                        src="{{ route('us.file.show', ['filename' => basename(auth()->user()->profile)]) }}"
                                         style="max-height: 36.79px; max-width: 36.79px"
                                         data-toggle="tooltip" data-placement="bottom"
                                         title="{{ auth()->user()->fullName() }}"
