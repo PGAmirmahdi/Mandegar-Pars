@@ -67,6 +67,7 @@
                         </div>
                     @endif
                 @endcan
+                @can('admin')
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                     <label for="password">رمزعبور</label>
                     <input type="password" name="password" class="form-control" id="password">
@@ -74,6 +75,7 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
+                @endcan
                 <div class="form-row">
                     <button class="btn btn-primary" type="submit">ثبت فرم</button>
                     <div class="modal" id="uploadModal" tabindex="-1" role="dialog">
