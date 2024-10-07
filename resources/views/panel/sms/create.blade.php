@@ -26,7 +26,7 @@
                     <div class="col-12 mb-3">
                         <label for="message">متن پیام<span class="text-danger">*</span></label>
                         <textarea id="message" name="message" class="form-control" rows="10">
-سلام [نام مخاطب] عزیز
+با عرض سلام خدمت [نام مخاطب]
 [پیام شما]
 خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
@@ -99,7 +99,7 @@ www.instagram.com/artintoner.ir
             var modal = $('#uploadModal');
             var receiverNameInput = $('#receiver_name');
             var messageTextarea = $('#message');
-            var defaultMessage = `سلام [نام مخاطب] عزیز
+            var defaultMessage = `با عرض سلام خدمت [نام مخاطب]
 خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
 دانلود کاتالوگ محصولات:
