@@ -42,12 +42,12 @@
                             <td>{{ $user->role->label }}</td>
                             <td>
                                     @if($user->sign_image)
-                                    <a href="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}"><img src="{{ route('sign.file.show', ['filename' => basename($user->sign_image)]) }}" alt="Profile"></a>
+                                    <a href="{{ $user->sign_image ?? '' }}"><img src="{{ $user->sign_image ?? '' }}" class="sign" alt="sign"></a>
                                 @else
                                     عکس پروفایل ندارد
                                 @endif</td>
                             <td>@if($user->profile)
-                                    <a href="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}"><img src="{{ route('us.file.show', ['filename' => basename($user->profile)]) }}" alt="Profile"></a>
+                                    <a href="{{ $user->profile ?? '' }}"><img src="{{ $user->profile ?? '' }}" class="profile" alt="profile"></a>
                                 @else
                                     عکس پروفایل ندارد
                                 @endif</td>
