@@ -15,17 +15,19 @@
 @endphp
 @section('styles')
     <style>
-        #products_table input, #products_table select{
+        #products_table input, #products_table select {
             width: auto;
         }
-        .title-sec{
+
+        .title-sec {
             background: #ececec;
         }
-        .main-content{
+
+        .main-content {
             margin: 0 !important;
         }
 
-        .mr-100{
+        .mr-100 {
             margin-right: 100px !important;
         }
 
@@ -39,57 +41,57 @@
             }
         }
 
-        body{
+        body {
             padding: 0;
         }
 
-        main{
+        main {
             padding: 0 !important;
         }
 
-        table th, td{
+        table th, td {
             padding: 4px !important;
             border: 2px solid #000 !important;
             font-size: 16px !important;
         }
 
-        table th{
+        table th {
             font-weight: bold !important;
         }
 
-        table tr{
+        table tr {
             padding: 0 !important;
             border: 2px solid #000 !important;
         }
 
-        #printable_sec{
+        #printable_sec {
             padding: 0;
         }
 
-        .card{
+        .card {
             margin: 0;
         }
 
-        .guide_box{
+        .guide_box {
             text-align: center;
         }
 
-        #seller_sign_sec{
+        #seller_sign_sec {
             position: relative;
         }
 
-        #seller_sign_sec small{
+        #seller_sign_sec small {
             position: absolute;
         }
 
-        #seller_sign_sec .sign{
+        #seller_sign_sec .sign {
             position: absolute;
             top: -60px;
             left: 34%;
             width: 10rem;
         }
 
-        #seller_sign_sec .stamp{
+        #seller_sign_sec .stamp {
             position: absolute;
             top: -41px;
             left: 31%;
@@ -178,27 +180,27 @@
                     </table>
                     <table class="table table-bordered mb-5">
                         <thead>
-                            <tr>
-                                <th class="text-center p-0 title-sec">مشخصات خریدار</th>
-                            </tr>
+                        <tr>
+                            <th class="text-center p-0 title-sec">مشخصات خریدار</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-center">
-                                    <div class="mb-3">
-                                        <span class="mr-100">نام شخص حقیقی/حقوقی: {{ $invoice->customer->name }}</span>
-                                        <span class="mr-100">شماره اقتصادی: {{ $invoice->economical_number }}</span>
-                                        <span class="mr-100">شماره ثبت/شماره ملی: {{ $invoice->national_number }}</span>
-                                        <span class="mr-100">استان: {{ $invoice->province }}</span>
-                                    </div>
-                                    <div>
-                                        <span class="mr-100">شهر: {{ $invoice->city }}</span>
-                                        <span class="mr-100">کد پستی: {{ $invoice->postal_code }}</span>
-                                        <span class="mr-100">نشانی: {{ $invoice->address }}</span>
-                                        <span class="mr-100">شماره تلفن: {{ $invoice->phone }}</span>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td class="text-center">
+                                <div class="mb-3">
+                                    <span class="mr-100">نام شخص حقیقی/حقوقی: {{ $invoice->customer->name }}</span>
+                                    <span class="mr-100">شماره اقتصادی: {{ $invoice->economical_number }}</span>
+                                    <span class="mr-100">شماره ثبت/شماره ملی: {{ $invoice->national_number }}</span>
+                                    <span class="mr-100">استان: {{ $invoice->province }}</span>
+                                </div>
+                                <div>
+                                    <span class="mr-100">شهر: {{ $invoice->city }}</span>
+                                    <span class="mr-100">کد پستی: {{ $invoice->postal_code }}</span>
+                                    <span class="mr-100">نشانی: {{ $invoice->address }}</span>
+                                    <span class="mr-100">شماره تلفن: {{ $invoice->phone }}</span>
+                                </div>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="col-12 mb-3">
@@ -206,7 +208,7 @@
                             <table class="table text-center" border="2">
                                 <thead>
                                 <tr>
-                                   <th class="p-0 title-sec" colspan="12">مشخصات کالا یا خدمات مورد معامله</th>
+                                    <th class="p-0 title-sec" colspan="12">مشخصات کالا یا خدمات مورد معامله</th>
                                 </tr>
                                 <tr>
                                     <th>ردیف</th>
@@ -224,126 +226,130 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- artin products --}}
-                                    @foreach($invoice->products as $key => $item)
-                                        @php
-                                            $usedCoupon = DB::table('coupon_invoice')->where([
-                                                'product_id' => $item->pivot->product_id,
-                                                'invoice_id' => $invoice->id,
-                                            ])->first();
+                                {{-- artin products --}}
+                                @foreach($invoice->products as $key => $item)
+                                    @php
+                                        $usedCoupon = DB::table('coupon_invoice')->where([
+                                            'product_id' => $item->pivot->product_id,
+                                            'invoice_id' => $invoice->id,
+                                        ])->first();
 
-                                            if ($usedCoupon){
-                                                $coupon = \App\Models\Coupon::find($usedCoupon->coupon_id);
-                                                $discount_amount = $item->pivot->total_price * ($coupon->amount_pc / 100);
-                                            }else{
-                                                $discount_amount = 0;
-                                            }
-                                        @endphp
-                                        <tr>
-                                            <td>{{ $i++ }}</td>
-                                            <td>{{ \App\Models\Product::find($item->pivot->product_id)->title }}</td>
-                                            <td>{{ \App\Models\Product::COLORS[$item->pivot->color] }}</td>
-                                            <td>{{ $item->pivot->count }}</td>
-                                            <td>{{ \App\Models\Product::UNITS[$item->pivot->unit] }}</td>
-                                            <td>{{ number_format($item->pivot->price) }}</td>
-                                            <td>{{ number_format($item->pivot->total_price) }}</td>
-                                            <td>{{ number_format($discount_amount) }}</td>
-                                            <td>{{ number_format($item->pivot->extra_amount) }}</td>
-                                            <td>{{ number_format($item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount)) }}</td>
-                                            <td>{{ number_format($item->pivot->tax) }}</td>
-                                            <td>{{ number_format($item->pivot->invoice_net) }}</td>
-                                        </tr>
-
-                                        @php
-                                            $sum_total_price += $item->pivot->total_price;
-                                            $sum_discount_amount += $discount_amount;
-                                            $sum_extra_amount += $item->pivot->extra_amount;
-                                            $sum_total_price_with_off += $item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount);
-                                            $sum_tax += $item->pivot->tax;
-                                            $sum_invoice_net += $item->pivot->invoice_net;
-                                        @endphp
-                                    @endforeach
-
-                                    {{-- other products --}}
-                                    @foreach($invoice->other_products as $key => $item)
-                                        <tr>
-                                            <td>{{ $i++ }}</td>
-                                            <td>{{ $item->title }}</td>
-                                            <td>{{ $item->color }}</td>
-                                            <td>{{ $item->count }}</td>
-                                            <td>{{ \App\Models\Product::UNITS[$item->unit] }}</td>
-                                            <td>{{ number_format($item->price) }}</td>
-                                            <td>{{ number_format($item->total_price) }}</td>
-                                            <td>{{ number_format($item->discount_amount) }}</td>
-                                            <td>{{ number_format($item->extra_amount) }}</td>
-                                            <td>{{ number_format($item->total_price - ($item->extra_amount + $item->discount_amount)) }}</td>
-                                            <td>{{ number_format($item->tax) }}</td>
-                                            <td>{{ number_format($item->invoice_net) }}</td>
-                                        </tr>
-
-                                        @php
-                                            $sum_total_price += $item->total_price;
-                                            $sum_discount_amount += $item->discount_amount;
-                                            $sum_extra_amount += $item->extra_amount;
-                                            $sum_total_price_with_off += $item->total_price - ($item->extra_amount + $item->discount_amount);
-                                            $sum_tax += $item->tax;
-                                            $sum_invoice_net += $item->invoice_net;
-                                        @endphp
-                                    @endforeach
+                                        if ($usedCoupon){
+                                            $coupon = \App\Models\Coupon::find($usedCoupon->coupon_id);
+                                            $discount_amount = $item->pivot->total_price * ($coupon->amount_pc / 100);
+                                        }else{
+                                            $discount_amount = 0;
+                                        }
+                                    @endphp
                                     <tr>
-                                        <td colspan="6">جمع کل</td>
-                                        <td>{{ number_format($sum_total_price) }}</td>
-                                        <td>{{ number_format($sum_discount_amount) }}</td>
-                                        <td>{{ number_format($sum_extra_amount) }}</td>
-                                        <td>{{ number_format($sum_total_price_with_off) }}</td>
-                                        <td>{{ number_format($sum_tax) }}</td>
-                                        <td>{{ number_format($sum_invoice_net) }}</td>
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ \App\Models\Product::find($item->pivot->product_id)->title }}</td>
+                                        <td>{{ \App\Models\Product::COLORS[$item->pivot->color] }}</td>
+                                        <td>{{ $item->pivot->count }}</td>
+                                        <td>{{ \App\Models\Product::UNITS[$item->pivot->unit] }}</td>
+                                        <td>{{ number_format($item->pivot->price) }}</td>
+                                        <td>{{ number_format($item->pivot->total_price) }}</td>
+                                        <td>{{ number_format($discount_amount) }}</td>
+                                        <td>{{ number_format($item->pivot->extra_amount) }}</td>
+                                        <td>{{ number_format($item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount)) }}</td>
+                                        <td>{{ number_format($item->pivot->tax) }}</td>
+                                        <td>{{ number_format($item->pivot->invoice_net) }}</td>
                                     </tr>
+
+                                    @php
+                                        $sum_total_price += $item->pivot->total_price;
+                                        $sum_discount_amount += $discount_amount;
+                                        $sum_extra_amount += $item->pivot->extra_amount;
+                                        $sum_total_price_with_off += $item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount);
+                                        $sum_tax += $item->pivot->tax;
+                                        $sum_invoice_net += $item->pivot->invoice_net;
+                                    @endphp
+                                @endforeach
+
+                                {{-- other products --}}
+                                @foreach($invoice->other_products as $key => $item)
                                     <tr>
-                                        <th class="p-0 title-sec" colspan="6">تخفیف نهایی</th>
-                                        <th class="p-0 title-sec" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $item->title }}</td>
+                                        <td>{{ $item->color }}</td>
+                                        <td>{{ $item->count }}</td>
+                                        <td>{{ \App\Models\Product::UNITS[$item->unit] }}</td>
+                                        <td>{{ number_format($item->price) }}</td>
+                                        <td>{{ number_format($item->total_price) }}</td>
+                                        <td>{{ number_format($item->discount_amount) }}</td>
+                                        <td>{{ number_format($item->extra_amount) }}</td>
+                                        <td>{{ number_format($item->total_price - ($item->extra_amount + $item->discount_amount)) }}</td>
+                                        <td>{{ number_format($item->tax) }}</td>
+                                        <td>{{ number_format($item->invoice_net) }}</td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="6">{{ number_format($invoice->discount) }}</td>
-                                        <td colspan="6">{{ number_format($sum_invoice_net - $invoice->discount) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4">
+
+                                    @php
+                                        $sum_total_price += $item->total_price;
+                                        $sum_discount_amount += $item->discount_amount;
+                                        $sum_extra_amount += $item->extra_amount;
+                                        $sum_total_price_with_off += $item->total_price - ($item->extra_amount + $item->discount_amount);
+                                        $sum_tax += $item->tax;
+                                        $sum_invoice_net += $item->invoice_net;
+                                    @endphp
+                                @endforeach
+                                <tr>
+                                    <td colspan="6">جمع کل</td>
+                                    <td>{{ number_format($sum_total_price) }}</td>
+                                    <td>{{ number_format($sum_discount_amount) }}</td>
+                                    <td>{{ number_format($sum_extra_amount) }}</td>
+                                    <td>{{ number_format($sum_total_price_with_off) }}</td>
+                                    <td>{{ number_format($sum_tax) }}</td>
+                                    <td>{{ number_format($sum_invoice_net) }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="p-0 title-sec" colspan="6">تخفیف نهایی</th>
+                                    <th class="p-0 title-sec" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">{{ number_format($invoice->discount) }}</td>
+                                    <td colspan="6">{{ number_format($sum_invoice_net - $invoice->discount) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="d-flex">
+                                            <span class="mr-4">شرایط و نحوه فروش</span>
                                             <div class="d-flex">
-                                                <span class="mr-4">شرایط و نحوه فروش</span>
-                                                <div class="d-flex">
-                                                    @foreach(\App\Models\Invoice::Payment_Type as $key => $label)
-                                                        <label class="mr-3">
-                                                            {{ $label }}
-                                                            <input type="checkbox" {{ $invoice->payment_type === $key ? 'checked' : '' }} disabled>
-                                                        </label>
-                                                    @endforeach
-                                                </div>
+                                                @foreach(\App\Models\Invoice::Payment_Type as $key => $label)
+                                                    <label class="mr-3">
+                                                        {{ $label }}
+                                                        <input type="checkbox"
+                                                               {{ $invoice->payment_type === $key ? 'checked' : '' }} disabled>
+                                                    </label>
+                                                @endforeach
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><small>توضیحات</small></td>
+                                    <td colspan="10">{{ $invoice->description }}</td>
+                                    {{--                                        <td colspan="10">لطفا مبلغ فاکتور را به شماره شبا IR55 0110 0000 0010 3967 1380 01 نزد بانک صنعت و معدن شعبه مرکزی واریز فرمایید.</td>--}}
+                                </tr>
+                                @if($invoice->type == 'official')
                                     <tr>
-                                        <td colspan="2"><small>توضیحات</small></td>
-                                        <td colspan="10">{{ $invoice->description }}</td>
-{{--                                        <td colspan="10">لطفا مبلغ فاکتور را به شماره شبا IR55 0110 0000 0010 3967 1380 01 نزد بانک صنعت و معدن شعبه مرکزی واریز فرمایید.</td>--}}
+                                        <td colspan="12"><strong>تمام اجناس ارائه شده دارای 18 ماه گارانتی از سوی شرکت
+                                                صنایع ماشین های اداری ماندگار پارس می باشد</strong></td>
                                     </tr>
-                                    @if($invoice->type == 'official')
-                                        <tr>
-                                            <td colspan="12"><strong>تمام اجناس ارائه شده دارای 18 ماه گارانتی از سوی شرکت صنایع ماشین های اداری ماندگار پارس می باشد</strong></td>
-                                        </tr>
-                                    @endif
-                                    <tr>
-                                        <td colspan="6" id="seller_sign_sec">
-{{--                                            @if($invoice->status == "invoiced")--}}
-                                            <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign" alt="sign" style="width: 175px; height: 100px;transform:translateX(-20px);">
-{{--                                            @if($invoice->type == 'official')--}}
-                                            <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp" alt="stamp" style="transform:rotate(30deg)">
-{{--                                            @endif--}}
-{{--                                            @endif--}}
-                                            <small>مهر و امضای فروشنده</small>
-                                        </td>
-                                        <td colspan="6"><small>مهر و امضای خریدار</small></td>
-                                    </tr>
+                                @endif
+                                <tr>
+                                    <td colspan="6" id="seller_sign_sec">
+                                        {{--                                            @if($invoice->status == "invoiced")--}}
+                                        <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign" alt="sign"
+                                             style="width: 175px; height: 100px;transform:translateX(-20px);">
+                                        {{--                                            @if($invoice->type == 'official')--}}
+                                        <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp"
+                                             alt="stamp" style="transform: rotate(-20deg) translateY(-10px);">
+                                        {{--                                            @endif--}}
+                                        {{--                                            @endif--}}
+                                        <small>مهر و امضای فروشنده</small>
+                                    </td>
+                                    <td colspan="6"><small>مهر و امضای خریدار</small></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -361,10 +367,10 @@
             </form>
         </div>
     </div>
-{{--    <div class="alert alert-info">--}}
-{{--        <i class="fa fa-info-circle font-size-20"></i>--}}
-{{--        برای اشتراک گذاری پیش فاکتور/فاکتور ابتدا با استفاده از دکمه <a href="javascript:void(0)">چاپ</a> آن را چاپ کرده یا از <a href="#screenshotModal" data-toggle="modal">اسکرین شات مرورگر</a> استفاده کنید--}}
-{{--    </div>--}}
+    {{--    <div class="alert alert-info">--}}
+    {{--        <i class="fa fa-info-circle font-size-20"></i>--}}
+    {{--        برای اشتراک گذاری پیش فاکتور/فاکتور ابتدا با استفاده از دکمه <a href="javascript:void(0)">چاپ</a> آن را چاپ کرده یا از <a href="#screenshotModal" data-toggle="modal">اسکرین شات مرورگر</a> استفاده کنید--}}
+    {{--    </div>--}}
 @endsection
 @section('scripts')
     <script>
