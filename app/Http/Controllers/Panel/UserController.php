@@ -128,10 +128,10 @@ class UserController extends Controller
         if ($request->hasFile('profile')) {
             // حذف فایل قدیمی پروفایل
             if ($user->profile) {
-                Storage::disk('public')->delete($user->profile);
+                unlink(public_path($user->profile));
             }
             // ذخیره فایل جدید پروفایل
-            $filePath = $request->file('profile')->store('profile', 'public');
+            $filePath = upload_file($request->file('profile'), 'profiles');
             $user->profile = $filePath;
         }
 
