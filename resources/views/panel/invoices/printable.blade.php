@@ -337,7 +337,7 @@
 {{--                                            @if($invoice->status == "invoiced")--}}
                                             <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign" alt="sign" style="width: 175px; height: 100px;transform:translateX(-20px);">
 {{--                                            @if($invoice->type == 'official')--}}
-                                            <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp" alt="stamp">
+                                            <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp" alt="stamp" style="transform:rotate(30deg)">
 {{--                                            @endif--}}
 {{--                                            @endif--}}
                                             <small>مهر و امضای فروشنده</small>
