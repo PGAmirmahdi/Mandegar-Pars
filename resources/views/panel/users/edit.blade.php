@@ -205,7 +205,7 @@
                     },
                     success: function (response) {
                         modal.hide();
-                        alert(response.success);
+                        alert('ارسال موفق');
                         window.location.href = "{{ route('users.index') }}";
                     },
                     error: function (xhr) {
