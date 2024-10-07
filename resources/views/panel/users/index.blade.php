@@ -42,12 +42,12 @@
                             <td>{{ $user->role->label }}</td>
                             <td>
                                     @if($user->sign_image)
-                                    <a href="{{ $user->sign_image ?? '' }}"><img src="{{ $user->sign_image ?? '' }}" class="sign" alt="sign"></a>
+                                    <a href="{{ $user->sign_image ?? '' }}"><img src="{{ $user->sign_image ?? '' }}" class="sign" alt="sign" width="75px" height="75px"></a>
                                 @else
                                     عکس پروفایل ندارد
                                 @endif</td>
                             <td>@if($user->profile)
-                                    <a href="{{ $user->profile ?? '' }}"><img src="{{ $user->profile ?? '' }}" class="profile" alt="profile"></a>
+                                    <a href="{{ $user->profile ?? '' }}"><img src="{{ $user->profile ?? '' }}" class="profile" alt="profile" width="75px" height="75px"></a>
                                 @else
                                     عکس پروفایل ندارد
                                 @endif</td>
