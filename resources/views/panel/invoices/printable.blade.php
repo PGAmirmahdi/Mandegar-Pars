@@ -343,7 +343,7 @@
                                              style="width: 175px; height: 100px;transform:translateX(-20px);">
                                         {{--                                            @if($invoice->type == 'official')--}}
                                         <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp"
-                                             alt="stamp" style="transform: rotate(-20deg) translateY(-10px);">
+                                             alt="stamp" style="transform: rotate(-15deg) translateY(-20px);">
                                         {{--                                            @endif--}}
                                         {{--                                            @endif--}}
                                         <small>مهر و امضای فروشنده</small>
