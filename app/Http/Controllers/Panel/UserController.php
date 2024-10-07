@@ -165,26 +165,4 @@ class UserController extends Controller
             'month_updated' => verta()->month,
         ]);
     }
-    public function userFile($filename){
-        // بررسی وجود فایل در دیسک public
-        if (Storage::disk('public')->exists('profile/' . $filename)) {
-            // دریافت فایل و ارسال آن به مرورگر
-            $filePath = 'profile/' . $filename;
-            return response()->file(Storage::disk('public')->path($filePath));
-        } else {
-            // فایل پیدا نشد
-            abort(Response::HTTP_NOT_FOUND, 'فایل پیدا نشد');
-        }
-    }
-    public function userSign($filename){
-        // بررسی وجود فایل در دیسک public
-        if (Storage::disk('public')->exists('signs/' . $filename)) {
-            // دریافت فایل و ارسال آن به مرورگر
-            $filePath = 'signs/' . $filename;
-            return response()->file(Storage::disk('public')->path($filePath));
-        } else {
-            // فایل پیدا نشد
-            abort(Response::HTTP_NOT_FOUND, 'فایل پیدا نشد');
-        }
-    }
 }
