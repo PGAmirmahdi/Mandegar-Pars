@@ -138,12 +138,12 @@ class UserController extends Controller
         $user->save();
 
         // پیام موفقیت و بازگشت به صفحه قبلی
-        if (Gate::allows('edit-profile', $user->id)) {
+        if (Gate::allows('user-edit', $user->id)) {
             alert()->success('پروفایل شما با موفقیت ویرایش شد', 'ویرایش پروفایل');
             return redirect()->back();
         } else {
             alert()->success('کاربر مورد نظر با موفقیت ویرایش شد', 'ویرایش کاربر');
-            return redirect()->route('users.index');
+            return redirect()->route('panel.index');
         }
     }
 
