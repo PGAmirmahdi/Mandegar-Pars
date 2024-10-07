@@ -98,7 +98,6 @@ class UserController extends Controller
     {
         // آپلود و به‌روزرسانی فایل امضا
         $sign_image = $user->sign_image; // پیش‌فرض امضا، تصویر فعلی کاربر است
-        if (auth()->user()->isAdmin()) {
             if ($request->hasFile('sign_image')) {
                 if ($user->sign_image) {
                     // حذف فایل امضای قدیمی
@@ -107,7 +106,6 @@ class UserController extends Controller
                 // آپلود فایل جدید
                 $sign_image = upload_file($request->file('sign_image'), 'signs');
             }
-        }
 
         // به‌روزرسانی اطلاعات کاربر
         $dataToUpdate = [
