@@ -32,20 +32,23 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
+        // اعتبارسنجی ورودی
         $request->validate([
-            'message' => 'required|string|max:1000', // اعتبارسنجی
+            'message' => 'required|string|max:1000', // اعتبارسنجی برای پیام
         ]);
 
         $user = auth()->user();
-        $messageText = $request->input('message'); // تغییر این خط
+        $messageText = $request->input('message'); // دریافت پیام از درخواست
 
         // ذخیره پیام کاربر در دیتابیس
         $chatMessage = ChatMessage::create([
-            'user_id' => auth()->id(),
-            'message' => $messageText, // تغییر این خط
+            'user_id' => $user->id,
+            'message' => $messageText, // استفاده از messageText به‌جای prompt
             'is_user_message' => true,
         ]);
+
         $chatMessage->touch(); // به‌روزرسانی updated_at
+
         // ارسال درخواست به ChatGPT
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'), // کلید API شما
@@ -53,7 +56,7 @@ class ChatsGPTController extends Controller
             'model' => 'gpt-3.5-turbo',
             'messages' => [
                 ['role' => 'system', 'content' => 'You are ChatGPT'],
-                ['role' => 'user', 'content' => $prompt],
+                ['role' => 'user', 'content' => $messageText], // استفاده از messageText
             ],
         ]);
 
