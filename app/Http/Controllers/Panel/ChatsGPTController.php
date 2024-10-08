@@ -11,14 +11,16 @@ class ChatsGPTController extends Controller
 {
     public function index()
     {
-        $this->authorize('ChatGPT-list');
-
         // گرفتن آخرین پیام‌های هر کاربر
         $conversations = ChatMessage::where('user_id', auth()->id())
             ->orderBy('updated_at', 'desc') // مرتب‌سازی بر اساس آخرین زمان پیام
             ->get();
-        if(auth()->user()->role == 'admin'){return view('panel.ChatGPT.index', compact('conversations'));}
-        else{return view('panel.ChatGPT.create', compact('conversations'));}
+        // بررسی مجوز دسترسی
+        if (auth()->user()->can('ChatGPT-list')) {
+            return view('panel.ChatGPT.index', compact('conversations'));
+        } else {
+            return view('panel.ChatGPT.create', compact('conversations'));
+        }
 
     }
 
