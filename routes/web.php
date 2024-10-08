@@ -8,6 +8,7 @@ use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\BuyOrderController;
 use App\Http\Controllers\Panel\ChatController;
+use App\Http\Controllers\Panel\ChatsGPTController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\DeliveryDayController;
@@ -124,9 +125,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('users', UserController::class)->except('show');
     Route::get('/file/user/{filename}', [UserController::class, 'userFile'])->name('us.file.show');
 
-
-    // Roles
-    Route::resource('roles', RoleController::class)->except('show');
+    Route::resource('chat_messages ', ChatsGPTController::class)->except('edit','delete','destroy');
 
     // Categories
 //    Route::resource('categories',CategoryController::class)->except('show');
