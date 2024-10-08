@@ -71,7 +71,7 @@ class User extends Authenticatable
 
     public function isSalesManager()
     {
-        return $this->role->permissions->pluck('name')->contains('sales-manager');
+        return $this->role->permissions->pluck('name')->contains('sales-manager') && $this->role->permissions->pluck('name')->contains('partner-city');
     }
 
 
