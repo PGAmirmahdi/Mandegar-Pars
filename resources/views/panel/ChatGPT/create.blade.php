@@ -91,14 +91,14 @@
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function () {
-            // تابع برای اضافه کردن پیام به چت
-            function appendMessage(content, isUser = true) {
-                const messageClass = isUser ? 'user-message' : '';
-                const currentTime = new Date().toLocaleTimeString();
+        <script>
+            $(document).ready(function () {
+                // تابع برای اضافه کردن پیام به چت
+                function appendMessage(content, isUser = true) {
+                    const messageClass = isUser ? 'user-message' : '';
+                    const currentTime = new Date().toLocaleTimeString();
 
-                $('#chat-body').append(`
+                    $('#chat-body').append(`
                     <div class="message ${messageClass}">
                         <div class="message-content">
                             ${content}
@@ -107,47 +107,47 @@
                     </div>
                 `);
 
-                // پیمایش به آخر صفحه چت
-                $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
-            }
-
-            // ارسال درخواست به سرور برای دریافت پاسخ ChatGPT
-            $('#send-btn').on('click', function () {
-                var prompt = $('#chat-input').val();
-
-                if (prompt.trim() !== '') {
-                    // اضافه کردن پیام کاربر به صفحه
-                    appendMessage(prompt);
-
-                    // پاک کردن ورودی
-                    $('#chat-input').val('');
-
-                    // درخواست AJAX به ChatGPT
-                    $.ajax({
-                        url: '{{ route('chat_messages.store') }}',
-                        type: 'POST',
-                        data: {
-                            message: prompt,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function (response) {
-                            // نمایش پاسخ ChatGPT در چت
-                            const gptResponse = response.choices[0].message.content;
-                            appendMessage(gptResponse, false);
-                        },
-                        error: function () {
-                            appendMessage('خطا در دریافت پاسخ.', false);
-                        }
-                    });
+                    // پیمایش به آخر صفحه چت
+                    $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
                 }
-            });
 
-            // ارسال پیام با کلید Enter
-            $('#chat-input').on('keypress', function (e) {
-                if (e.which === 13) {
-                    $('#send-btn').click();
-                }
+                // ارسال درخواست به سرور برای دریافت پاسخ ChatGPT
+                $('#send-btn').on('click', function () {
+                    var prompt = $('#chat-input').val();
+
+                    if (prompt.trim() !== '') {
+                        // اضافه کردن پیام کاربر به صفحه
+                        appendMessage(prompt);
+
+                        // پاک کردن ورودی
+                        $('#chat-input').val('');
+
+                        // درخواست AJAX به API وردپرس
+                        $.ajax({
+                            url: 'https://artintoner.com/wp-json/artintoner/v1/chat', // URL API وردپرس
+                            type: 'POST',
+                            data: {
+                                message: prompt,
+                                _token: '{{ csrf_token() }}' // در صورت نیاز به توکن CSRF
+                            },
+                            success: function (response) {
+                                // نمایش پاسخ ChatGPT در چت
+                                const gptResponse = response.choices[0].message.content;
+                                appendMessage(gptResponse, false);
+                            },
+                            error: function () {
+                                appendMessage('خطا در دریافت پاسخ.', false);
+                            }
+                        });
+                    }
+                });
+
+                // ارسال پیام با کلید Enter
+                $('#chat-input').on('keypress', function (e) {
+                    if (e.which === 13) {
+                        $('#send-btn').click();
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 @endsection
