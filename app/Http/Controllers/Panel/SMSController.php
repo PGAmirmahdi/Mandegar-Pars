@@ -92,6 +92,13 @@ class SMSController extends Controller
                 $status = $responseDecoded['RetStatus'];
 
                 if (array_key_exists($status, $errorMessages)) {
+                    Sms::create([
+                        'user_id' => auth()->id(),
+                        'receiver_name' => $request->receiver_name,
+                        'receiver_phone' => $request->receiver_phone,
+                        'message' => $request->message,
+                        'status' => $status,
+                    ]);
                     return response()->json(['failed' => $errorMessages[$status]]);
                 } elseif (array_key_exists($status, $successMessages)) {
                     // Create Sms record

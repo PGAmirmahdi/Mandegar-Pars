@@ -32,6 +32,7 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
+        
         // اعتبارسنجی ورودی
         $request->validate([
             'message' => 'required|string|max:1000', // اعتبارسنجی برای پیام
