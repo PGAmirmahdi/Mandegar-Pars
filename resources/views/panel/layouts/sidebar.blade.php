@@ -106,7 +106,7 @@
             @endcan
             @can('roles-list')
                 <li>
-                    <a class="{{ active_sidebar(['roles','roles/create','roles/{role}/edit']) ? 'active' : '' }}" href="{{ route('roles.index') }}">نقش ها</a>
+                    <a class="{{ active_sidebar(['roles','roles/create','roles/{role}/edit']) ? 'active' : '' }}" href="{{ route('panel.roles.index') }}">نقش ها</a>
                 </li>
             @endcan
             @can('tasks-list')
@@ -237,6 +237,9 @@
         </ul>
         <ul id="navigationTickets" class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">پشتیبانی و تیکت</li>
+                <li>
+                    <a class="{{ active_sidebar(['chat_messages','chat_messages/create','chat_messages/{chat_message}/edit','search/chat_messages']) ? 'active' : '' }}" href="{{ route('chat_messages.index') }}">ام پی چت</a>
+                </li>
             @can('tickets-list')
                 <li>
                     <a class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets']) ? 'active' : '' }}" href="{{ route('tickets.index') }}">تیکت ها</a>

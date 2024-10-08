@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'گفتگو با ChatGPT')
+@section('title', 'گفتگو با ام پی چت')
 @section('styles')
     <style>
         .chat-container {
@@ -71,7 +71,7 @@
 @section('content')
     <div class="chat-container">
         <div class="chat-header">
-            <h4>گفتگو با ChatGPT</h4>
+            <h4>گفتگو با ام پی چت</h4>
         </div>
         <div class="chat-body" id="chat-body">
             @foreach ($messages as $message)
