@@ -73,7 +73,7 @@ class ChatsGPTController extends Controller
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
         // تنظیم پروکسی
-        curl_setopt($ch, CURLOPT_PROXY, '104.234.46.169:9011');
+        curl_setopt($ch, CURLOPT_PROXY, '104.234.46.169:3128');
 
         // ارسال درخواست
         $response = curl_exec($ch);
