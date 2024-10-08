@@ -32,72 +32,79 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
-
+        // اعتبارسنجی ورودی
         $request->validate([
-            'prompt' => 'required|string',
+            'message' => 'required|string|max:1000', // اعتبارسنجی برای پیام
         ]);
 
         $user = auth()->user();
-        $prompt = $request->input('prompt');
+        $messageText = $request->input('message');
 
-        // اضافه کردن پیام کاربر به دیتابیس
-        $userMessage = ChatMessage::create([
+        // ذخیره پیام کاربر در دیتابیس
+        $chatMessage = ChatMessage::create([
             'user_id' => $user->id,
-            'message' => $prompt,
+            'message' => $messageText,
             'is_user_message' => true,
         ]);
 
-        // فراخوانی API با استفاده از cURL و پراکسی
-        $url = "https://api.openai.com/v1/chat/completions";
-        $data = [
-            "model" => "gpt-3.5-turbo",
-            "messages" => [
-                ["role" => "user", "content" => $prompt]
-            ]
-        ];
+        $chatMessage->touch();
+
+        // تنظیم cURL
+        $ch = curl_init();
 
         // تنظیمات cURL
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . env('OPENAI_API_KEY'),
             'Content-Type: application/json',
         ]);
-        curl_setopt($ch, CURLOPT_POST, 1);
+
+        // داده‌های درخواست
+        $data = [
+            'model' => 'gpt-3.5-turbo',
+            'messages' => [
+                ['role' => 'system', 'content' => 'You are ChatGPT'],
+                ['role' => 'user', 'content' => $messageText],
+            ],
+        ];
+
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
-        // تنظیم پراکسی
-        curl_setopt($ch, CURLOPT_PROXY, '104.234.46.169:3128');
+        // تنظیم پروکسی
+        curl_setopt($ch, CURLOPT_PROXY, '104.234.46.169:9011');
 
         // ارسال درخواست
         $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        // بررسی خطا در cURL
+        if (curl_errno($ch)) {
+            return response()->json(['error' => 'cURL error: ' . curl_error($ch)], 500);
+        }
 
         // بستن cURL
         curl_close($ch);
 
-        // بررسی خطا
-        if ($httpCode !== 200) {
-            return response()->json(['error' => 'Error from OpenAI API: ' . $response], 500);
-        }
+        // بررسی وضعیت پاسخ
+        $gptResponse = json_decode($response, true);
 
-        $result = json_decode($response, true);
+        // اطمینان از وجود کلید choices
+        if (isset($gptResponse['choices']) && count($gptResponse['choices']) > 0) {
+            $responseMessage = $gptResponse['choices'][0]['message']['content'];
 
-        // بررسی نتیجه OpenAI API
-        if (isset($result['choices']) && !empty($result['choices'][0]['message']['content'])) {
-            $gptMessage = $result['choices'][0]['message']['content'];
-
-            // ذخیره پیام GPT در دیتابیس
+            // ذخیره پاسخ ChatGPT در دیتابیس
             ChatMessage::create([
                 'user_id' => $user->id,
-                'message' => $gptMessage,
+                'message' => $responseMessage,
                 'is_user_message' => false,
             ]);
 
-            return response()->json(['choices' => [['message' => ['content' => $gptMessage]]]]);
+            // ارسال پاسخ به سمت فرانت‌اند
+            return response()->json(['response' => $responseMessage]);
         } else {
-            return response()->json(['error' => 'Invalid response from OpenAI API'], 500);
+            // اگر کلید choices وجود ندارد
+            return response()->json(['error' => 'No response from ChatGPT.'], 500);
         }
     }
 
