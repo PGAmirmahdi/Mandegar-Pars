@@ -38,16 +38,16 @@ class ChatsGPTController extends Controller
         ]);
 
         $user = auth()->user();
-        $messageText = $request->input('message'); // دریافت پیام از درخواست
+        $messageText = $request->input('message');
 
         // ذخیره پیام کاربر در دیتابیس
         $chatMessage = ChatMessage::create([
             'user_id' => $user->id,
-            'message' => $messageText, // استفاده از messageText به‌جای prompt
+            'message' => $messageText,
             'is_user_message' => true,
         ]);
 
-        $chatMessage->touch(); // به‌روزرسانی updated_at
+        $chatMessage->touch();
 
         // ارسال درخواست به ChatGPT
         $response = Http::withHeaders([
@@ -56,23 +56,37 @@ class ChatsGPTController extends Controller
             'model' => 'gpt-3.5-turbo',
             'messages' => [
                 ['role' => 'system', 'content' => 'You are ChatGPT'],
-                ['role' => 'user', 'content' => $messageText], // استفاده از messageText
+                ['role' => 'user', 'content' => $messageText],
             ],
         ]);
 
-        // دریافت پاسخ ChatGPT
-        $gptResponse = $response->json()['choices'][0]['message']['content'];
+        // بررسی وضعیت پاسخ
+        if ($response->successful()) {
+            $gptResponse = $response->json();
 
-        // ذخیره پاسخ ChatGPT در دیتابیس
-        ChatMessage::create([
-            'user_id' => $user->id,
-            'message' => $gptResponse,
-            'is_user_message' => false,
-        ]);
+            // اطمینان از وجود کلید choices
+            if (isset($gptResponse['choices']) && count($gptResponse['choices']) > 0) {
+                $responseMessage = $gptResponse['choices'][0]['message']['content'];
 
-        // ارسال پاسخ به سمت فرانت‌اند
-        return response()->json(['response' => $gptResponse]);
+                // ذخیره پاسخ ChatGPT در دیتابیس
+                ChatMessage::create([
+                    'user_id' => $user->id,
+                    'message' => $responseMessage,
+                    'is_user_message' => false,
+                ]);
+
+                // ارسال پاسخ به سمت فرانت‌اند
+                return response()->json(['response' => $responseMessage]);
+            } else {
+                // اگر کلید choices وجود ندارد
+                return response()->json(['error' => 'No response from ChatGPT.'], 500);
+            }
+        } else {
+            // اگر پاسخ از API موفقیت‌آمیز نیست
+            return response()->json(['error' => 'Error from OpenAI API: ' . $response->body()], 500);
+        }
     }
+
 
     public function show($userId)
     {
