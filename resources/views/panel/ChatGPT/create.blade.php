@@ -127,7 +127,7 @@
                         url: '{{ route('chat_messages.store') }}',
                         type: 'POST',
                         data: {
-                            prompt: prompt,
+                            message: prompt,
                             _token: '{{ csrf_token() }}'
                         },
                         success: function (response) {

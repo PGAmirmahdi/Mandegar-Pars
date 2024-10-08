@@ -32,14 +32,18 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'message' => 'required|string|max:1000', // اعتبارسنجی
+        ]);
+
         $user = auth()->user();
-        $prompt = $request->input('prompt');
+        $messageText = $request->input('message'); // تغییر این خط
 
         // ذخیره پیام کاربر در دیتابیس
         $chatMessage = ChatMessage::create([
             'user_id' => auth()->id(),
-            'message' => $request->input('message'),
-            'is_user_message' => true, // مشخص کردن که پیام از سمت کاربر است
+            'message' => $messageText, // تغییر این خط
+            'is_user_message' => true,
         ]);
         $chatMessage->touch(); // به‌روزرسانی updated_at
         // ارسال درخواست به ChatGPT
