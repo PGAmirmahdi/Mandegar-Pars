@@ -27,7 +27,7 @@ class ChatsGPTController extends Controller
     public function create()
     {
         $messages = ChatMessage::where('user_id', auth()->id())->get();
-        return view('panel.ChatGPT', compact('messages'));
+        return view('panel.ChatGPT.create', compact('messages'));
     }
 
     public function store(Request $request)
