@@ -57,7 +57,7 @@ class ChatsGPTController extends Controller
 
         // استفاده از پروکسی Trojan
         curl_setopt($ch, CURLOPT_PROXY, '104.234.46.169:42368'); // آدرس پروکسی
-        curl_setopt($ch, CURLOPT_PROXYUSERPWD, '1881374:'); // نام کاربری (رمز عبور خالی)
+        curl_setopt($ch, CURLOPT_PROXYUSERPWD, 'amirmahdi:1881374'); // نام کاربری (رمز عبور خالی)
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . env('OPENAI_API_KEY'),
