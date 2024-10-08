@@ -106,7 +106,7 @@
             @endcan
             @can('roles-list')
                 <li>
-                    <a class="{{ active_sidebar(['roles','roles/create','roles/{role}/edit']) ? 'active' : '' }}" href="{{ route('panel.roles.index') }}">نقش ها</a>
+                    <a class="{{ active_sidebar(['roles','roles/create','roles/{role}/edit']) ? 'active' : '' }}" href="{{ route('roles.index') }}">نقش ها</a>
                 </li>
             @endcan
             @can('tasks-list')
