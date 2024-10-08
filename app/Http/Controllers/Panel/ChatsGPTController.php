@@ -32,6 +32,8 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
+        public function sendMessage(Request $request)
+    {
         // اعتبارسنجی ورودی
         $request->validate([
             'message' => 'required|string|max:1000',
@@ -79,8 +81,9 @@ class ChatsGPTController extends Controller
 
         // بررسی خطا
         if (curl_errno($ch)) {
+            $errorMessage = curl_error($ch);
             curl_close($ch); // بسته شدن cURL قبل از بازگشت خطا
-            return response()->json(['error' => 'cURL error: ' . curl_error($ch)], 500);
+            return response()->json(['error' => 'cURL error: ' . $errorMessage], 500);
         }
 
         $gptResponse = json_decode($response, true);
@@ -100,9 +103,13 @@ class ChatsGPTController extends Controller
             curl_close($ch); // بسته شدن cURL قبل از بازگشت پاسخ
             return response()->json(['response' => $responseMessage]);
         } else {
+            $statusCode = json_last_error() === JSON_ERROR_NONE ? 500 : 200;
+            $errorResponse = isset($gptResponse['error']) ? $gptResponse['error'] : 'No response from ChatGPT.';
             curl_close($ch); // بسته شدن cURL قبل از بازگشت خطا
-            return response()->json(['error' => 'No response from ChatGPT.'], 500);
+            return response()->json(['error' => $errorResponse], $statusCode);
         }
+    }
+
     }
 
 
