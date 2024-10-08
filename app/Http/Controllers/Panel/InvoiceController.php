@@ -31,7 +31,7 @@ class InvoiceController extends Controller
 
     public function index()
     {
-        $this->authorize('invoices-list');
+//        $this->authorize('invoices-list');
 
         if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
             $invoices = Invoice::latest()->paginate(30);
