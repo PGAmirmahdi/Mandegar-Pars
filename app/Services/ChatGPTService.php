@@ -17,7 +17,7 @@ class ChatGPTService
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->apiKey,
         ])->post('https://api.openai.com/v1/chat/completions', [
-            'model' => 'gpt-4',  // می‌توانید از مدل gpt-3.5-turbo هم استفاده کنید
+            'model' => 'gpt-3.5-turbo',  // می‌توانید از مدل gpt-3.5-turbo هم استفاده کنید
             'messages' => [
                 ['role' => 'user', 'content' => $prompt],
             ],

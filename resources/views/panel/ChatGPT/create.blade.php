@@ -124,7 +124,7 @@
 
                     // درخواست AJAX به ChatGPT
                     $.ajax({
-                        url: '{{ url('/ask-gpt') }}',
+                        url: '{{ route('/chat_messages.store') }}',
                         type: 'POST',
                         data: {
                             prompt: prompt,
