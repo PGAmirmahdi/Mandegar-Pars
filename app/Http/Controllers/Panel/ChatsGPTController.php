@@ -14,7 +14,7 @@ class ChatsGPTController extends Controller
         // گرفتن آخرین پیام‌های هر کاربر
         $conversations = ChatMessage::where('user_id', auth()->id())
             ->orderBy('updated_at', 'desc') // مرتب‌سازی بر اساس آخرین زمان پیام
-            ->get();
+            ->paginate(10);
         // بررسی مجوز دسترسی
         if (auth()->user()->can('ChatGPT-list')) {
             return view('panel.ChatGPT.index', compact('conversations'));
