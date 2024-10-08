@@ -34,7 +34,7 @@ class ChatsGPTController extends Controller
     {
         // اعتبارسنجی ورودی
         $request->validate([
-            'message' => 'required|string|max:1000', // اعتبارسنجی برای پیام
+            'message' => 'required|string|max:1000',
         ]);
 
         $user = auth()->user();
@@ -49,47 +49,43 @@ class ChatsGPTController extends Controller
 
         $chatMessage->touch();
 
-        // تنظیم cURL
-        $ch = curl_init();
-
         // تنظیمات cURL
+        $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
+
+        // استفاده از پروکسی Trojan
+        curl_setopt($ch, CURLOPT_PROXY, '104.234.46.169:42368'); // آدرس پروکسی
+        curl_setopt($ch, CURLOPT_PROXYUSERPWD, '1881374:'); // نام کاربری (رمز عبور خالی)
+
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . env('OPENAI_API_KEY'),
-            'Content-Type: application/json',
+            'Content-Type: application/json'
         ]);
 
-        // داده‌های درخواست
-        $data = [
+        $data = json_encode([
             'model' => 'gpt-3.5-turbo',
             'messages' => [
                 ['role' => 'system', 'content' => 'You are ChatGPT'],
                 ['role' => 'user', 'content' => $messageText],
             ],
-        ];
+        ]);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-        // تنظیم پروکسی
-        curl_setopt($ch, CURLOPT_PROXY, '104.234.46.169:3128');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
         // ارسال درخواست
         $response = curl_exec($ch);
 
-        // بررسی خطا در cURL
+        // بررسی خطا
         if (curl_errno($ch)) {
+            curl_close($ch); // بسته شدن cURL قبل از بازگشت خطا
             return response()->json(['error' => 'cURL error: ' . curl_error($ch)], 500);
         }
 
-        // بستن cURL
-        curl_close($ch);
-
-        // بررسی وضعیت پاسخ
         $gptResponse = json_decode($response, true);
 
-        // اطمینان از وجود کلید choices
+        // بررسی وضعیت پاسخ
         if (isset($gptResponse['choices']) && count($gptResponse['choices']) > 0) {
             $responseMessage = $gptResponse['choices'][0]['message']['content'];
 
@@ -101,9 +97,10 @@ class ChatsGPTController extends Controller
             ]);
 
             // ارسال پاسخ به سمت فرانت‌اند
+            curl_close($ch); // بسته شدن cURL قبل از بازگشت پاسخ
             return response()->json(['response' => $responseMessage]);
         } else {
-            // اگر کلید choices وجود ندارد
+            curl_close($ch); // بسته شدن cURL قبل از بازگشت خطا
             return response()->json(['error' => 'No response from ChatGPT.'], 500);
         }
     }
