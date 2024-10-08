@@ -32,8 +32,6 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
-        public function sendMessage(Request $request)
-    {
         // اعتبارسنجی ورودی
         $request->validate([
             'message' => 'required|string|max:1000',
@@ -110,7 +108,6 @@ class ChatsGPTController extends Controller
         }
     }
 
-    }
 
 
     public function show($userId)
