@@ -29,6 +29,10 @@ class ChatsGPTController extends Controller
         $messages = ChatMessage::where('user_id', auth()->id())->get();
         return view('panel.ChatGPT.create', compact('messages'));
     }
+    public function __construct(){
+        $this->authorization = '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';
+        $this->endpoint = 'https://api.openai.com/v1/chat/completions';
+    }
 
     public function store(Request $request)
     {
@@ -49,32 +53,30 @@ class ChatsGPTController extends Controller
 
         $chatMessage->touch();
 
-        // تنظیمات cURL
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-
-        // استفاده از پروکسی Trojan
-        curl_setopt($ch, CURLOPT_PROXY, '104.234.46.169:42368'); // آدرس پروکسی
-        curl_setopt($ch, CURLOPT_PROXYUSERPWD, 'amirmahdi:1881374'); // نام کاربری (رمز عبور خالی)
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . env('OPENAI_API_KEY'),
-            'Content-Type: application/json'
-        ]);
-
         $data = json_encode([
             'model' => 'gpt-3.5-turbo',
             'messages' => [
-                ['role' => 'system', 'content' => 'You are ChatGPT'],
+                [
+                    'role' => 'system',
+                    'content' => 'You are a kind and helpful customer service member at a cartridge store. If the user asks how to buy, refer them to our website at https://artintoner.com/.'
+                ],
                 ['role' => 'user', 'content' => $messageText],
             ],
         ]);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        $headers = [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $this->authorization,
+        ];
 
-        // ارسال درخواست
+        // تنظیمات cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->endpoint);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // تغییر این خط
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POST, true);
+
         $response = curl_exec($ch);
 
         // بررسی خطا
@@ -101,10 +103,9 @@ class ChatsGPTController extends Controller
             curl_close($ch); // بسته شدن cURL قبل از بازگشت پاسخ
             return response()->json(['response' => $responseMessage]);
         } else {
-            $statusCode = json_last_error() === JSON_ERROR_NONE ? 500 : 200;
             $errorResponse = isset($gptResponse['error']) ? $gptResponse['error'] : 'No response from ChatGPT.';
             curl_close($ch); // بسته شدن cURL قبل از بازگشت خطا
-            return response()->json(['error' => $errorResponse], $statusCode);
+            return response()->json(['error' => $errorResponse], 500);
         }
     }
 
@@ -120,7 +121,7 @@ class ChatsGPTController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -131,8 +132,8 @@ class ChatsGPTController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -143,7 +144,7 @@ class ChatsGPTController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
