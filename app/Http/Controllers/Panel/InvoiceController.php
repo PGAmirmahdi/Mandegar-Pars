@@ -31,13 +31,9 @@ class InvoiceController extends Controller
 
     public function index()
     {
-//        $this->authorize('invoices-list');
+        $this->authorize('invoices-list');
 
-        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
             $invoices = Invoice::latest()->paginate(30);
-        }else{
-            $invoices = Invoice::where('user_id', auth()->id())->latest()->paginate(30);
-        }
 
         $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
         $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
