@@ -124,7 +124,7 @@
 
                         // درخواست AJAX به API وردپرس
                         $.ajax({
-                            url: '{{route('chat_message.store')}}', // URL API وردپرس
+                            url: '{{route('chat_messages.store')}}', // URL API وردپرس
                             type: 'POST',
                             data: {
                                 message: prompt,
