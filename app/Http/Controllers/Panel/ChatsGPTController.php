@@ -30,7 +30,7 @@ class ChatsGPTController extends Controller
         return view('panel.ChatGPT.create', compact('messages'));
     }
     public function __construct(){
-        $this->authorization = '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';
+        $this->authorization = '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';
         $this->endpoint = 'https://api.openai.com/v1/chat/completions';
     }
 
