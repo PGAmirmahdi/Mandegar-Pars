@@ -114,9 +114,9 @@
                         <th>شهر</th>
                         <th>شماره تماس</th>
                         <th>وضعیت</th>
-                        @canany(['accountant', 'sales-manager'])
+{{--                        @canany(['accountant', 'sales-manager'])--}}
                             <th>همکار</th>
-                        @endcanany
+{{--                        @endcanany--}}
                         <th>تاریخ ایجاد</th>
 {{--                        @canany(['accountant','admin','ceo'])--}}
                         <th>مشاهده سفارش</th>
@@ -153,9 +153,9 @@
                             <td>
                                 <span class="badge badge-primary d-block">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>
                             </td>
-                            @canany(['accountant', 'sales-manager'])
+{{--                            @canany(['accountant', 'sales-manager'])--}}
                                 <td>{{ $invoice->user->fullName() }}</td>
-                            @endcanany
+{{--                            @endcanany--}}
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
 {{--                            @canany(['accountant','admin','ceo'])--}}
                                 <td>
