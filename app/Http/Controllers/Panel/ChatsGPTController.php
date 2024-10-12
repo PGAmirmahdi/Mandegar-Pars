@@ -32,7 +32,7 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorization = 'Bearer sk-x2VexORRZHtuIR_qFX6sLIy758do9uYzAawykLLgYzT3BlbkFJf1as_AIqO0uqZ4j_pez8UiQt9uLhy8woB1CCpLQEsA';
+        $this->authorization = 'Bearer ' . env('OPENAI_API_KEY');لهف
         $this->endpoint = 'https://api.openai.com/v1/chat/completions';
         // اعتبارسنجی ورودی
         $request->validate([
