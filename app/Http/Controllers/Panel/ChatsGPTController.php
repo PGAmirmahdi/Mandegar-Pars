@@ -30,7 +30,7 @@ class ChatsGPTController extends Controller
         return view('panel.ChatGPT.create', compact('messages'));
     }
     public function __construct(){
-        $this->authorization = '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';
+        $this->authorization = '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';
         $this->endpoint = 'https://api.openai.com/v1/chat/completions';
     }
 
@@ -73,9 +73,12 @@ class ChatsGPTController extends Controller
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->endpoint);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // تغییر این خط
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_POST, true);
+
+        // اضافه کردن پروکسی بدون احراز هویت
+        curl_setopt($ch, CURLOPT_PROXY, 'http://104.234.46.169:3128'); // آدرس پروکسی شما
 
         $response = curl_exec($ch);
 
