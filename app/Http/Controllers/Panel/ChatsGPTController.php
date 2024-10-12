@@ -29,13 +29,11 @@ class ChatsGPTController extends Controller
         $messages = ChatMessage::where('user_id', auth()->id())->get();
         return view('panel.ChatGPT.create', compact('messages'));
     }
-    public function __construct(){
-        $this->authorization = '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';
-        $this->endpoint = 'https://api.openai.com/v1/chat/completions';
-    }
 
     public function store(Request $request)
     {
+        $this->authorization = 'Bearer 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';
+        $this->endpoint = 'https://api.openai.com/v1/chat/completions';
         // اعتبارسنجی ورودی
         $request->validate([
             'message' => 'required|string|max:1000',
