@@ -124,7 +124,7 @@
 
                         // درخواست AJAX به API وردپرس
                         $.ajax({
-                            url: 'https://artintoner.com/wp-json/artintoner/v1/chat', // URL API وردپرس
+                            url: '{{route('chat_message.store')}}', // URL API وردپرس
                             type: 'POST',
                             data: {
                                 message: prompt,
