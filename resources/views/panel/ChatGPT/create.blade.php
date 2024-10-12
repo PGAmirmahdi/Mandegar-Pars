@@ -132,7 +132,7 @@
                             },
                             success: function (response) {
                                 // نمایش پاسخ ChatGPT در چت
-                                const gptResponse = response.choices[0].message.content;
+                                const gptResponse = response.response; // اصلاح این خط
                                 appendMessage(gptResponse, false);
                             },
                             error: function () {
