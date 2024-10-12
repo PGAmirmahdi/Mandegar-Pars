@@ -64,8 +64,9 @@ class ChatsGPTController extends Controller
 
         $headers = [
             'Content-Type: application/json',
-            'Authorization: Bearer ' . $this->authorization,
+            'Authorization: ' . $this->authorization,
         ];
+
 
         // تنظیمات cURL
         $ch = curl_init();
