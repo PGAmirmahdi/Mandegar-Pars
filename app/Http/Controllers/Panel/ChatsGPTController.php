@@ -62,8 +62,7 @@ class ChatsGPTController extends Controller
 
         // تنظیمات cURL
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api-inference.huggingface.co/models/gpt2'); // مدل GPT برای مکالمه متنی
-
+        curl_setopt($ch, CURLOPT_URL, 'https://api-inference.huggingface.co/models/gpt-3.5-turbo');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
