@@ -10,7 +10,7 @@
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="user_id">نام ارسال کننده</label>
-                        <input type="text" class="form-control" id="user_id" value="{{ $user->name . ' ' . $user->family }}" readonly>
+                        <input type="text" class="form-control" id="user_id" value="{{ $user_id->user->name . ' ' . $user_id->user->family }}" readonly>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="receiver_name">نام گیرنده</label>
