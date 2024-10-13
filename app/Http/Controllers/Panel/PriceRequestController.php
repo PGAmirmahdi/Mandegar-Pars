@@ -38,12 +38,13 @@ class PriceRequestController extends Controller
             $items[] = [
                 'product' => $product,
                 'count' => $request->counts[$key],
+                'description' => $request->description[$key],
             ];
         }
-
         PriceRequest::create([
             'user_id' => auth()->id(),
             'max_send_time' => $request->max_send_time,
+            'description' => $request->description,
             'items' => json_encode($items)
         ]);
 
@@ -86,6 +87,7 @@ class PriceRequestController extends Controller
             $items[] = [
                 'product' => $item['product'],
                 'count' => $item['count'],
+                'description' => $item['description'],
                 'price' => str_replace(',', '', $request->prices[$key]),
                 'vat_included' => isset($request->vat_included[$key]) ? true : false,
             ];

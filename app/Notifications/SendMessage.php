@@ -99,6 +99,7 @@ class SendMessage extends Notification
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+        curl_setopt($ch, CURLOPT_PROXY, 'http://104.234.46.169:3128'); // آدرس پروکسی شما
 
         $response = curl_exec($ch);
     }
@@ -128,6 +129,7 @@ class SendMessage extends Notification
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_PROXY, 'http://104.234.46.169:3128'); // آدرس پروکسی شما
 
         $headers = array();
         $headers[] = 'Authorization: Token f565da417ab6ef8ec57bab4a2a090955d5ee227e';
