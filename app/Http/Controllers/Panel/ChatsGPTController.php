@@ -33,7 +33,6 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
-        // اعتبارسنجی ورودی
         $request->validate([
             'message' => 'required|string|max:1000',
         ]);
@@ -41,41 +40,29 @@ class ChatsGPTController extends Controller
         $user = auth()->user();
         $messageText = $request->input('message');
 
-        // ذخیره پیام کاربر در دیتابیس
-        $chatMessage = ChatMessage::create([
+        ChatMessage::create([
             'user_id' => $user->id,
             'message' => $messageText,
             'is_user_message' => true,
         ]);
 
-        $chatMessage->touch();
-
-        // داده برای ارسال به Hugging Face API
         $data = json_encode([
-            'inputs' => $messageText,
+            'text' => $messageText,
         ]);
 
         $headers = [
-            'Authorization: Bearer ' . env('HUGGINGFACE_API_KEY'),
+            'Authorization: Token ' . env('NLP_CLOUD_API_KEY'),
             'Content-Type: application/json',
         ];
 
-        // تنظیمات cURL
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api-inference.huggingface.co/models/gpt-neo-2.7B');
-
+        curl_setopt($ch, CURLOPT_URL, 'https://api.nlpcloud.io/v1/gpt-j/generate');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_POST, true);
 
         $response = curl_exec($ch);
-
-        // بررسی خطا
-        $response = curl_exec($ch);
-
-// بررسی پاسخ و لاگ کردن آن
-        Log::info('CURL Response: ' . $response);
 
         if (curl_errno($ch)) {
             $errorMessage = curl_error($ch);
@@ -85,10 +72,9 @@ class ChatsGPTController extends Controller
 
         $apiResponse = json_decode($response, true);
 
-        if (isset($apiResponse[0]['generated_text'])) {
-            $responseMessage = $apiResponse[0]['generated_text'];
+        if (isset($apiResponse['generated_text'])) {
+            $responseMessage = $apiResponse['generated_text'];
 
-            // ذخیره پاسخ در دیتابیس
             ChatMessage::create([
                 'user_id' => $user->id,
                 'message' => $responseMessage,
@@ -102,6 +88,7 @@ class ChatsGPTController extends Controller
             return response()->json(['error' => 'No response from API.'], 500);
         }
     }
+
 
     public function show($userId)
     {
