@@ -32,8 +32,6 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorization = 'Bearer ' . env('OPENAI_API_KEY');
-        $this->endpoint = 'https://api.openai.com/v1/chat/completions';
         // اعتبارسنجی ورودی
         $request->validate([
             'message' => 'required|string|max:1000',
@@ -51,67 +49,52 @@ class ChatsGPTController extends Controller
 
         $chatMessage->touch();
 
+        // داده برای ارسال به API IndicNLP
         $data = json_encode([
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => 'You are a kind and helpful customer service member at a cartridge store. If the user asks how to buy, refer them to our website at https://artintoner.com/.'
-                ],
-                ['role' => 'user', 'content' => $messageText],
-            ],
+            'input' => $messageText,
+            'lang' => 'fa' // تعیین زبان فارسی
         ]);
 
         $headers = [
             'Content-Type: application/json',
-            'Authorization: ' . $this->authorization,
         ];
-
 
         // تنظیمات cURL
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->endpoint);
+        curl_setopt($ch, CURLOPT_URL, 'https://api.ai4bharat.org/indic-language-model/generate');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_POST, true);
-
-        // اضافه کردن پروکسی بدون احراز هویت
-        curl_setopt($ch, CURLOPT_PROXY, 'http://104.234.46.169:3128'); // آدرس پروکسی شما
 
         $response = curl_exec($ch);
 
         // بررسی خطا
         if (curl_errno($ch)) {
             $errorMessage = curl_error($ch);
-            curl_close($ch); // بسته شدن cURL قبل از بازگشت خطا
+            curl_close($ch);
             return response()->json(['error' => 'cURL error: ' . $errorMessage], 500);
         }
 
-        $gptResponse = json_decode($response, true);
+        $apiResponse = json_decode($response, true);
 
-        // بررسی وضعیت پاسخ
-        if (isset($gptResponse['choices']) && count($gptResponse['choices']) > 0) {
-            $responseMessage = $gptResponse['choices'][0]['message']['content'];
+        if (isset($apiResponse['generated_text'])) {
+            $responseMessage = $apiResponse['generated_text'];
 
-            // ذخیره پاسخ ChatGPT در دیتابیس
+            // ذخیره پاسخ در دیتابیس
             ChatMessage::create([
                 'user_id' => $user->id,
                 'message' => $responseMessage,
                 'is_user_message' => false,
             ]);
 
-            // ارسال پاسخ به سمت فرانت‌اند
-            curl_close($ch); // بسته شدن cURL قبل از بازگشت پاسخ
+            curl_close($ch);
             return response()->json(['response' => $responseMessage]);
         } else {
-            $errorResponse = isset($gptResponse['error']) ? $gptResponse['error'] : 'No response from ChatGPT.';
-            curl_close($ch); // بسته شدن cURL قبل از بازگشت خطا
-            return response()->json(['error' => $errorResponse], 500);
+            curl_close($ch);
+            return response()->json(['error' => 'No response from API.'], 500);
         }
     }
-
-
 
     public function show($userId)
     {
