@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ChatsGPTController extends Controller
 {
@@ -70,6 +71,11 @@ class ChatsGPTController extends Controller
         $response = curl_exec($ch);
 
         // بررسی خطا
+        $response = curl_exec($ch);
+
+// بررسی پاسخ و لاگ کردن آن
+        Log::info('CURL Response: ' . $response);
+
         if (curl_errno($ch)) {
             $errorMessage = curl_error($ch);
             curl_close($ch);
