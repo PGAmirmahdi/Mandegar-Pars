@@ -52,7 +52,7 @@ class ChatsGPTController extends Controller
         $chatMessage->touch();
 
         $data = json_encode([
-            'model' => 'gpt-4o-mini',
+            'model' => 'gpt-3.5-turbo',
             'messages' => [
                 [
                     'role' => 'system',
