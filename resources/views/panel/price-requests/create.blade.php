@@ -26,6 +26,7 @@
                                 <tr>
                                     <th>عنوان کالا</th>
                                     <th>تعداد</th>
+                                    <th>توضیحات</th>
                                     <th>حذف</th>
                                 </tr>
                             </thead>
@@ -33,6 +34,7 @@
                                 <tr>
                                     <td><input type="text" class="form-control" name="products[]" placeholder="HP 05A" required></td>
                                     <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
+                                    <td><input type="text" class="form-control" name="description[]" placeholder="توضیحات"></td>
                                     <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
                                 </tr>
                             </tbody>
@@ -63,6 +65,7 @@
                     <tr>
                         <td><input type="text" class="form-control" name="products[]" required></td>
                         <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
+                        <td><input type="text" class="form-control" name="description[]" placeholder="توضیحات"></td>
                         <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
                     </tr>
                 `)
