@@ -62,7 +62,8 @@ class ChatsGPTController extends Controller
 
         // تنظیمات cURL
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo'); // آدرس مدل مناسب برای زبان فارسی
+        curl_setopt($ch, CURLOPT_URL, 'https://api-inference.huggingface.co/models/gpt2'); // مدل GPT برای مکالمه متنی
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
