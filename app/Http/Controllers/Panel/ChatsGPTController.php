@@ -49,19 +49,19 @@ class ChatsGPTController extends Controller
 
         $chatMessage->touch();
 
-        // داده برای ارسال به API IndicNLP
+        // داده برای ارسال به Hugging Face API
         $data = json_encode([
-            'input' => $messageText,
-            'lang' => 'fa' // تعیین زبان فارسی
+            'inputs' => $messageText,
         ]);
 
         $headers = [
+            'Authorization: Bearer ' . env('HUGGINGFACE_API_KEY'),
             'Content-Type: application/json',
         ];
 
         // تنظیمات cURL
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.ai4bharat.org/indic-language-model/generate');
+        curl_setopt($ch, CURLOPT_URL, 'https://api-inference.huggingface.co/models/your-farsi-model'); // آدرس مدل مناسب برای زبان فارسی
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -78,8 +78,8 @@ class ChatsGPTController extends Controller
 
         $apiResponse = json_decode($response, true);
 
-        if (isset($apiResponse['generated_text'])) {
-            $responseMessage = $apiResponse['generated_text'];
+        if (isset($apiResponse[0]['generated_text'])) {
+            $responseMessage = $apiResponse[0]['generated_text'];
 
             // ذخیره پاسخ در دیتابیس
             ChatMessage::create([
