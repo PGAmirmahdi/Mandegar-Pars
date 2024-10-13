@@ -118,7 +118,7 @@ class SMSController extends Controller
         $sms = Sms::findOrFail($id);
 
         return view('panel.sms.show', [
-            'user_id'=>$sms->user_id,
+            'user' => $sms->user, // ارسال شیء کاربر به ویو
             'receiver_name' => $sms->receiver_name,
             'receiver_phone' => $sms->receiver_phone,
             'message' => $sms->message
