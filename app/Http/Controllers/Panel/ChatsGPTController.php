@@ -77,7 +77,7 @@ class ChatsGPTController extends Controller
         curl_setopt($ch, CURLOPT_POST, true);
 
         // اضافه کردن پروکسی بدون احراز هویت
-        curl_setopt($ch, CURLOPT_PROXY, 'http://104.234.46.169:3128'); // آدرس پروکسی شما
+//        curl_setopt($ch, CURLOPT_PROXY, 'http://104.234.46.169:3128'); // آدرس پروکسی شما
 
         $response = curl_exec($ch);
 
