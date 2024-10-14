@@ -69,6 +69,8 @@ class TicketController extends Controller
         // اطمینان حاصل کنید که $url یک رشته است و به درستی به SendMessage ارسال می‌شود
         Notification::send($ticket->receiver, new SendMessage($message, $url));
 
+
+
         return redirect()->route('tickets.edit', $ticket->id);
     }
 
