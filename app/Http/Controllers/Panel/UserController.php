@@ -54,7 +54,6 @@ class UserController extends Controller
             $user->profile = $filePath;
         }
 
-
         // ذخیره تغییرات
         $user->save();
 
@@ -63,7 +62,9 @@ class UserController extends Controller
 
         // ارسال پیام موفقیت
         alert()->success('کاربر با موفقیت ساخته شد', 'ساخت کاربر');
-        return route('users.index');
+
+        // برگرداندن پاسخ JSON
+        return response()->json(['redirect' => route('users.index')]); // به جای return route
     }
 
 

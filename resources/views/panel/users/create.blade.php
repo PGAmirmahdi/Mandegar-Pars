@@ -81,12 +81,12 @@
         },
             autoProcessQueue: false, // غیرفعال کردن پردازش خودکار صف
 
-            success: function(file, response) {
-            console.log("ممنونتم مهندس: ", response);
-
-            // هدایت بر اساس نقش کاربر
-            window.location.href = "{{ route('users.index') }}"; // هدایت به صفحه users.index
-        },
+                success: function(file, response) {
+                    console.log("ممنونتم مهندس: ", response);
+                    if (response.redirect) {
+                        window.location.href = response.redirect; // هدایت به صفحه users.index
+                    }
+                },
             error: function(file, response) {
             console.error("Upload error: ", response);
         }
