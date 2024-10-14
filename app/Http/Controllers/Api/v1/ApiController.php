@@ -38,7 +38,7 @@ class ApiController extends Controller
 
         // users where has single-price-user permission
         $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
-            $permission->where('name', 'single-price-user');
+            $permission->where('name', 'admin');
         })->pluck('id');
         $single_price_user = User::whereIn('role_id', $role_id)->latest()->first();
         // end users where has single-price-user permission
