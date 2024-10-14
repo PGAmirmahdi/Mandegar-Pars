@@ -2,6 +2,7 @@
 
 use App\Events\SendMessage as SendMessageEvent;
 use App\Events\TestEvent;
+use App\Http\Controllers\Api\v1\ApiController;
 use App\Http\Controllers\Auth\PusherAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\ArtinController;
@@ -305,7 +306,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
     Route::get('/send-test-event/{userId}', [InvoiceController::class, 'testEvent']);
 });
-
+Route::post('invoice-create', [ApiController::class, 'createInvoice'])->name('invoice-create');
 Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
 Route::get('/user-visits', function() {
     $userVisits = UserVisit::selectRaw('DATE(created_at) as date, COUNT(*) as visits')
