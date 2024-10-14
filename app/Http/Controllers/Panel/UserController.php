@@ -50,21 +50,10 @@ class UserController extends Controller
             }
 
             // ذخیره فایل جدید
-            $filePath = $request->file('profile')->store('profile', 'public');
+            $filePath = upload_file($request->file('profile'), 'profiles');
             $user->profile = $filePath;
         }
 
-        // مدیریت آپلود تصویر امضاء
-        if ($request->hasFile('sign_image')) {
-            // حذف فایل قدیمی اگر وجود داشته باشد
-            if ($user->sign_image) {
-                Storage::disk('public')->delete($user->sign_image);
-            }
-
-            // ذخیره فایل جدید
-            $signImagePath = $request->file('sign_image')->store('signatures', 'public');
-            $user->sign_image = $signImagePath;
-        }
 
         // ذخیره تغییرات
         $user->save();
