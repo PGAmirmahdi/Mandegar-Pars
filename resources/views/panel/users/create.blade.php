@@ -50,7 +50,7 @@
                     </div>
                     <!-- فیلد آپلود عکس پروفایل با Dropzone -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <input type="hidden" name="profile" id="profile">
+                        <input type="file" name="profile" id="profile">
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -96,14 +96,14 @@
                 myDropzone.on("success", function(file, response) {
                     // مقدار مسیر فایل آپلود شده را در input hidden قرار دهید
                     document.getElementById("profile-path").value = response.filepath;
-
+                    "ممنونتم مهندسی"
                     // بعد از آپلود فایل، فرم ارسال شود
                     document.getElementById("user-form").submit();
                 });
 
                 // خطا در آپلود
                 myDropzone.on("error", function(file, response) {
-                    console.log(response);
+                    console.log("مهندس فایل ارور داره خببببببببببب" . response);
                 });
             }
         });

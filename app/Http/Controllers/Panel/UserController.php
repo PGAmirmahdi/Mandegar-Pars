@@ -70,7 +70,7 @@ class UserController extends Controller
         ]);
 
         if ($request->file('profile')) {
-            $filePath = $request->file('profile')->store('profiles', 'public');
+            $filePath = upload_file($request->file('profile'), 'profiles');
             return response()->json(['filepath' => $filePath], 200);
         }
 
