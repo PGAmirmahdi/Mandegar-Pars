@@ -50,37 +50,35 @@
                     </div>
                     <!-- فیلد آپلود عکس پروفایل با Dropzone -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="profile">عکس پروفایل <span class="text-danger">*</span></label>
-                        <input type="file" name="profile" id="profile">
+                        <input type="hidden" name="profile" id="profile">
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <div>
+                    <label for="profile">عکس پروفایل <span class="text-danger">*</span></label>
+                </div>
             </form>
         </div>
     </div>
 
     <!-- تنظیمات Dropzone -->
     <script>
-        Dropzone.autoDiscover = false;
-
-        var profileDropzone = new Dropzone("#profile", {
-            url: "{{ route('users.store') }}", // آدرس API آپلود فایل
+        var profileDropzone = new Dropzone("#profile-dropzone", {
+            url: "{{ route('users.store') }}", // مسیر آپلود فایل
             paramName: "profile", // نام فیلد آپلود
-            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
+            maxFilesize: 2, // حداکثر حجم فایل (MB)
             acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
-            addRemoveLinks: true,
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
             success: function (file, response) {
-                // در صورت موفقیت آپلود
-                console.log(response);
+                // در صورت موفقیت آپلود، فایل را به فرم اضافه کنید
+                $('input[name="profile"]').val(response.filepath); // فایل آپلود شده را در input مخفی قرار می‌دهیم
             },
             error: function (file, response) {
-                // در صورت خطا در آپلود
                 console.log(response);
             }
         });
