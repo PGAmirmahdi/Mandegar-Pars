@@ -58,47 +58,42 @@
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit" id="submit-button">ثبت فرم</button>
+                <div id="dynamic-button-container"></div>
                 <div class="m-2"><label for="profile">عکس پروفایل</label></div>
             </form>
         </div>
     </div>
 
     <!-- تنظیمات Dropzone -->
-        <script>
-            // فرض کنید که متغیر role از سمت سرور به این صورت تعریف شده است
-            var userRole = "{{ auth()->user()->role }}"; // دریافت نقش کاربر
+    <script>
+        document.getElementById('profile-input').addEventListener('change', function() {
+            const dynamicButtonContainer = document.getElementById('dynamic-button-container');
+            const submitButton = document.getElementById('submit-button');
 
-            Dropzone.autoDiscover = false; // غیرفعال کردن auto discover
+            // حذف دکمه submit
+            if (submitButton) {
+                submitButton.remove(); // حذف دکمه submit
+            }
 
-            var profileDropzone = new Dropzone("#profile-dropzone", {
-            url: "{{ route('users.store') }}", // آدرس API آپلود فایل
-            paramName: "profile", // نام فیلد آپلود
-            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
-            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
-            addRemoveLinks: true,
-            headers: {
-            'X-CSRF-TOKEN': "{{ csrf_token() }}" // توکن CSRF
-        },
-            autoProcessQueue: false, // غیرفعال کردن پردازش خودکار صف
+            // بررسی اینکه آیا دکمه قبلاً وجود دارد یا خیر
+            if (document.getElementById('dynamic-submit-button')) {
+                return; // اگر دکمه وجود دارد، هیچ کاری نکنید
+            }
 
-                success: function(file, response) {
-                    console.log("ممنونتم مهندس: ", response);
-                    if (response.redirect) {
-                        window.location.href = response.redirect; // هدایت به صفحه users.index
-                    }
-                },
-            error: function(file, response) {
-            console.error("Upload error: ", response);
-        }
-        });
+            // ایجاد دکمه جدید
+            const newButton = document.createElement('button');
+            newButton.id = 'dynamic-submit-button';
+            newButton.className = 'btn btn-secondary m-2'; // کلاس دکمه
+            newButton.innerText = 'رفتن به صفحه کاربران'; // متن دکمه
+            newButton.type = 'button'; // نوع دکمه را به button تنظیم کنید
 
-            // پردازش صف هنگام کلیک بر روی دکمه ارسال
-            document.getElementById("submit-button").addEventListener("click", function() {
-            if (profileDropzone.getQueuedFiles().length > 0) {
-            profileDropzone.processQueue(); // پردازش صف
-        } else {
-            console.log("هیچ فایلی برای آپلود وجود ندارد.");
-        }
+            // اضافه کردن رویداد کلیک به دکمه جدید
+            newButton.addEventListener('click', function() {
+                window.location.href = "{{ route('users.index') }}"; // هدایت به صفحه users.index
+            });
+
+            // اضافه کردن دکمه جدید به DOM
+            dynamicButtonContainer.appendChild(newButton);
         });
     </script>
 @endsection
