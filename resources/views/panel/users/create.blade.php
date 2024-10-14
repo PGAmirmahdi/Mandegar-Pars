@@ -88,7 +88,7 @@
             if (userRole === 'admin') {
             window.location.href = "{{ route('users.index') }}"; // هدایت به صفحه users.index
         } else {
-            window.location.href = "{{ route('dashboard.index') }}"; // هدایت به صفحه dashboard.index
+            window.location.href = "{{ route('panel.index') }}"; // هدایت به صفحه dashboard.index
         }
         },
             error: function(file, response) {
