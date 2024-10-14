@@ -24,6 +24,8 @@
                         <th>عکس امضا</th>
                         <th>عکس پروفایل</th>
                         <th>تاریخ ایجاد</th>
+                        <th>ویرایش عکس امضا</th>
+                        <th>ویرایش عکس پروفایل</th>
                         @can('users-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -48,7 +50,6 @@
                                 @else
                                     عکس امضا ندارد
                                 @endif
-                                <button class="btn btn-info btn-sm mt-1" data-toggle="modal" data-target="#editSignImageModal{{ $user->id }}">ویرایش عکس امضا</button>
                             </td>
                             <td>
                                 @if($user->profile)
@@ -58,9 +59,10 @@
                                 @else
                                     عکس پروفایل ندارد
                                 @endif
-                                <button class="btn btn-info btn-sm mt-1" data-toggle="modal" data-target="#editProfileImageModal{{ $user->id }}">ویرایش عکس پروفایل</button>
                             </td>
                             <td>{{ verta($user->created_at)->format('H:i - Y/m/d') }}</td>
+                            <td><button class="btn btn-info btn-floating" data-toggle="modal" data-target="#editSignImageModal{{ $user->id }}"><i class="fa fa-edit"></i></button></td>
+                            <td><button class="btn btn-info btn-floating" data-toggle="modal" data-target="#editProfileImageModal{{ $user->id }}"><i class="fa fa-edit"></i></td>
                             @can('users-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating" href="{{ route('users.edit', $user->id) }}">
