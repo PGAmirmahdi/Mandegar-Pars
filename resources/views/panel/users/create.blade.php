@@ -85,11 +85,7 @@
             console.log("ممنونتم مهندس: ", response);
 
             // هدایت بر اساس نقش کاربر
-            if (userRole === 'admin') {
             window.location.href = "{{ route('users.index') }}"; // هدایت به صفحه users.index
-        } else {
-            window.location.href = "{{ route('users.edit') }}"; // هدایت به صفحه dashboard.index
-        }
         },
             error: function(file, response) {
             console.error("Upload error: ", response);
