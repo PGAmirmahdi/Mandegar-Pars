@@ -65,34 +65,35 @@
 
     <!-- تنظیمات Dropzone -->
     <script>
-        Dropzone.autoDiscover = false;
+        Dropzone.autoDiscover = false; // Disable auto discovery
 
         var profileDropzone = new Dropzone("#profile-dropzone", {
-            url: "{{ route('users.store') }}", // آدرس API آپلود فایل
-            paramName: "profile", // نام فیلد آپلود
-            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
-            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
+            url: "{{ route('users.store') }}", // URL for file upload
+            paramName: "profile", // Field name for the upload
+            maxFilesize: 2, // Max file size in MB
+            acceptedFiles: ".jpeg,.jpg,.png,.gif", // Allowed file formats
             addRemoveLinks: true,
             headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                'X-CSRF-TOKEN': "{{ csrf_token() }}" // CSRF token
             },
-            autoProcessQueue: false, // غیرفعال کردن پردازش خودکار صف
-            success: function (file, response) {
-                // در صورت موفقیت آپلود
-                console.log("ممنونتم مهندس");
+            autoProcessQueue: false, // Disable automatic processing of files
+
+            // Optional: You can add handlers for success and error
+            success: function(file, response) {
+                console.log("ممنونتم مهندس: ", response);
             },
-            error: function (file, response) {
-                // در صورت خطا در آپلود
-                console.log("مهندس خطا داری خببببببببببببب اینم خطا: " + response);
+            error: function(file, response) {
+                console.error("مهندسی ارور داری خبببببببببب: ", response);
             }
         });
 
-        // پردازش صف هنگام کلیک بر روی دکمه ارسال
+        // Handle the submit button click to process the queue
         document.getElementById("submit-button").addEventListener("click", function() {
+            // Check if there are files to upload
             if (profileDropzone.getQueuedFiles().length > 0) {
-                profileDropzone.processQueue();
+                profileDropzone.processQueue(); // Manually process the queued files
             } else {
-                console.log("هیچ فایلی برای آپلود وجود ندارد.");
+                console.log("No files to upload.");
             }
         });
     </script>
