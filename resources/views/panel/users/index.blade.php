@@ -97,7 +97,6 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                                        <button type="button" class="btn btn-primary" onclick="processSignUpload('{{ $user->id }}')">بارگذاری</button>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +122,6 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                                        <button type="button" class="btn btn-primary" onclick="processProfileUpload('{{ $user->id }}')">بارگذاری</button>
                                     </div>
                                 </div>
                             </div>
