@@ -55,14 +55,16 @@ class SendMessage extends Notification
             'url' => $this->url,
         ];
 
-        if ($notifiable->fcm_token){
+        if ($notifiable->fcm_token) {
             $this->send_firebase_notification($this->message, $this->url, $notifiable->fcm_token);
         }
 
-        event(new SendMessageEvent($notifiable->id, $data));
+        // ارسال فقط پیام به رویداد
+        event(new SendMessage($notifiable->id, $this->message));
 
         return $data;
     }
+
 
     private function send_firebase_notification($message, $url, $token)
     {
