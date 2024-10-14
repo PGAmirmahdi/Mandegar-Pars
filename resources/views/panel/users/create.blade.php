@@ -66,30 +66,46 @@
 
     <!-- تنظیمات Dropzone -->
     <script>
-        var profileDropzone = new Dropzone("#profile-dropzone", {
-            url: "{{ route('users.store') }}", // مسیر آپلود فایل
+        Dropzone.autoDiscover = false;
+
+        // تنظیم Dropzone برای input فایل
+        var profileDropzone = new Dropzone("#profile-input", {
+            url: "{{ route('profile.upload') }}", // مسیر آپلود فایل
             paramName: "profile", // نام فیلد آپلود
             maxFilesize: 2, // حداکثر حجم فایل (MB)
             acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
+            autoProcessQueue: false, // جلوگیری از آپلود خودکار
+            addRemoveLinks: true,
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
-            success: function (file, response) {
-                // در صورت موفقیت آپلود، فایل را به فرم اضافه کنید
-                $('input[name="profile"]').val(response.filepath); // فایل آپلود شده را در input مخفی قرار می‌دهیم
-            },
-            error: function (file, response) {
-                console.log(response);
+            init: function() {
+                var myDropzone = this;
+
+                // آپلود فایل‌ها هنگام کلیک بر روی دکمه ثبت
+                document.getElementById("submit-btn").addEventListener("click", function(e) {
+                    e.preventDefault();
+                    if (myDropzone.getQueuedFiles().length > 0) {
+                        myDropzone.processQueue(); // آپلود فایل‌ها
+                    } else {
+                        document.getElementById("user-form").submit(); // اگر فایلی در Dropzone نیست، فرم ارسال شود
+                    }
+                });
+
+                // آپلود موفق فایل
+                myDropzone.on("success", function(file, response) {
+                    // مقدار مسیر فایل آپلود شده را در input hidden قرار دهید
+                    document.getElementById("profile-path").value = response.filepath;
+
+                    // بعد از آپلود فایل، فرم ارسال شود
+                    document.getElementById("user-form").submit();
+                });
+
+                // خطا در آپلود
+                myDropzone.on("error", function(file, response) {
+                    console.log(response);
+                });
             }
         });
-
-        // وقتی که فرم ارسال می‌شود
-        document.getElementById('userForm').onsubmit = function () {
-            // بررسی اینکه آیا فایل آپلود شده است یا خیر
-            if (profileDropzone.getAcceptedFiles().length === 0) {
-                alert("لطفاً یک فایل برای آپلود انتخاب کنید.");
-                return false; // جلوگیری از ارسال فرم
-            }
-        };
     </script>
 @endsection
