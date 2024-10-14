@@ -76,13 +76,26 @@
 
 <!-- Drop Zone -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
-
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 <script src="{{ asset('/js/app.js') }}"></script>
 
 @yield('scripts')
-
 <script>
 
+    // Enable pusher logging - don't include this in production--}}
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('ac8ae105709d7299a673', {
+        cluster: 'ap1'
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+        alert(JSON.stringify(data));
+    });
+</script>
+<script>
     {{-- ajax setup --}}
     $.ajaxSetup({
         headers: {
