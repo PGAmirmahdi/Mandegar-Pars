@@ -64,37 +64,45 @@
     </div>
 
     <!-- تنظیمات Dropzone -->
-    <script>
-        Dropzone.autoDiscover = false; // Disable auto discovery
+        <script>
+            // فرض کنید که متغیر role از سمت سرور به این صورت تعریف شده است
+            var userRole = "{{ auth()->user()->role }}"; // دریافت نقش کاربر
 
-        var profileDropzone = new Dropzone("#profile-dropzone", {
-            url: "{{ route('users.store') }}", // URL for file upload
-            paramName: "profile", // Field name for the upload
-            maxFilesize: 2, // Max file size in MB
-            acceptedFiles: ".jpeg,.jpg,.png,.gif", // Allowed file formats
+            Dropzone.autoDiscover = false; // غیرفعال کردن auto discover
+
+            var profileDropzone = new Dropzone("#profile-dropzone", {
+            url: "{{ route('users.store') }}", // آدرس API آپلود فایل
+            paramName: "profile", // نام فیلد آپلود
+            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
+            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
             addRemoveLinks: true,
             headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}" // CSRF token
-            },
-            autoProcessQueue: false, // Disable automatic processing of files
+            'X-CSRF-TOKEN': "{{ csrf_token() }}" // توکن CSRF
+        },
+            autoProcessQueue: false, // غیرفعال کردن پردازش خودکار صف
 
-            // Optional: You can add handlers for success and error
             success: function(file, response) {
-                console.log("ممنونتم مهندس: ", response);
-            },
+            console.log("ممنونتم مهندس: ", response);
+
+            // هدایت بر اساس نقش کاربر
+            if (userRole === 'admin') {
+            window.location.href = "{{ route('users.index') }}"; // هدایت به صفحه users.index
+        } else {
+            window.location.href = "{{ route('dashboard.index') }}"; // هدایت به صفحه dashboard.index
+        }
+        },
             error: function(file, response) {
-                console.error("مهندسی ارور داری خبببببببببب: ", response);
-            }
+            console.error("Upload error: ", response);
+        }
         });
 
-        // Handle the submit button click to process the queue
-        document.getElementById("submit-button").addEventListener("click", function() {
-            // Check if there are files to upload
+            // پردازش صف هنگام کلیک بر روی دکمه ارسال
+            document.getElementById("submit-button").addEventListener("click", function() {
             if (profileDropzone.getQueuedFiles().length > 0) {
-                profileDropzone.processQueue(); // Manually process the queued files
-            } else {
-                console.log("No files to upload.");
-            }
+            profileDropzone.processQueue(); // پردازش صف
+        } else {
+            console.log("هیچ فایلی برای آپلود وجود ندارد.");
+        }
         });
     </script>
 @endsection
