@@ -154,7 +154,7 @@
                 fetch("{{ route('users.uploadProfile', ':id') }}".replace(':id', userId), {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: formData
                 })
@@ -183,7 +183,7 @@
                 fetch("{{ route('users.uploadSignImage', ':id') }}".replace(':id', userId), {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: formData
                 })
