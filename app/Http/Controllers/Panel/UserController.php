@@ -62,8 +62,8 @@ class UserController extends Controller
         $this->createLeaveInfo($user);
 
         // ارسال پیام موفقیت
-        alert()->success('کاربر با موفقیت ساخته شد', 'ویرایش کاربر');
-        return response()->json(['success' => 'کاربر با موفقیت ساخته شد شد']);
+        alert()->success('کاربر با موفقیت ساخته شد', 'ساخت کاربر');
+        return view('panel.users.index');
     }
 
 
