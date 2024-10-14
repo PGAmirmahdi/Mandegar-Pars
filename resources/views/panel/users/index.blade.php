@@ -143,6 +143,19 @@
 
     <!-- اسکریپت Dropzone -->
     <script>
+        Dropzone.options.signDropzone = {
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            init: function() {
+                this.on("success", function(file, response) {
+                    // مدیریت پاسخ
+                });
+                this.on("error", function(file, response) {
+                    // مدیریت خطا
+                });
+            }
+        };
         // آپلود پروفایل
         document.getElementById('upload-profile-button').addEventListener('click', function() {
             var formData = new FormData();
