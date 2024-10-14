@@ -42,7 +42,10 @@ class ApiController extends Controller
         })->pluck('id');
         $single_price_user = User::whereIn('role_id', $role_id)->latest()->first();
         // end users where has single-price-user permission
-
+// بررسی اینکه کاربر پیدا شده یا نه
+        if (!$single_price_user) {
+            return response()->json(['error' => 'کاربر با دسترسی "single-price-user" پیدا نشد.'], 404);
+        }
         // send notification
         $notifiables = User::whereHas('role' , function ($role) {
             $role->whereHas('permissions', function ($q) {
