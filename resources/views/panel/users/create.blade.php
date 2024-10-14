@@ -6,8 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ایجاد کاربر</h6>
             </div>
-            <form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data"
-                  class="dropzone" id="my-awesome-dropzone">
+            <form id="userForm" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -50,15 +49,16 @@
                         @enderror
                     </div>
                     <!-- فیلد آپلود عکس پروفایل با Dropzone -->
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <input type="hidden" name="profile">
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3" id="profile-dropzone">
+                        <label for="profile">عکس پروفایل</label>
+                        <div class="dropzone" id="my-awesome-dropzone"></div>
+                        <input type="hidden" name="profile" id="profileInput">
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit">ثبت فرم</button>
-                <label for="profile">عکس پروفایل</label>
             </form>
         </div>
     </div>
@@ -67,7 +67,7 @@
     <script>
         Dropzone.autoDiscover = false;
 
-        var profileDropzone = new Dropzone("#profile-dropzone", {
+        var myDropzone = new Dropzone("#my-awesome-dropzone", {
             url: "{{ route('users.store') }}", // آدرس API آپلود فایل
             paramName: "profile", // نام فیلد آپلود
             maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
@@ -79,11 +79,41 @@
             success: function (file, response) {
                 // در صورت موفقیت آپلود
                 console.log(response);
+                // ذخیره شناسه فایل در فیلد hidden
+                document.getElementById('profileInput').value = response.id; // فرض بر این است که API شناسه فایل را برمی‌گرداند
             },
             error: function (file, response) {
                 // در صورت خطا در آپلود
                 console.log(response);
             }
+        });
+
+        // ارسال اطلاعات فرم با Ajax
+        document.getElementById('userForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // جلوگیری از ارسال پیش‌فرض فرم
+
+            var formData = new FormData(this); // ساخت FormData از فرم
+
+            fetch("{{ route('users.store') }}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // بررسی نتیجه
+                    if (data.success) {
+                        // موفقیت
+                        console.log(data.message);
+                        // نمایش پیغام موفقیت یا هدایت به صفحه دیگر
+                    } else {
+                        // خطا
+                        console.log(data.errors);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
     </script>
 @endsection
