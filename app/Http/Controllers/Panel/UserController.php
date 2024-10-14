@@ -16,7 +16,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        if (auth()->user()->role() == 'admin') {
+        if (auth()->user()->isAdmin()) {
             // اگر کاربر ادمین است، همه کاربران را بگیرید
             $users = User::latest()->paginate(10);
         } else {
