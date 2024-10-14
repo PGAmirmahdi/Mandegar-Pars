@@ -46,7 +46,7 @@ class TicketController extends Controller
             'code' => $this->generateCode(),
         ]);
 
-        if ($request->file){
+        if ($request->file) {
             $file_info = [
                 'name' => $request->file('file')->getClientOriginalName(),
                 'type' => $request->file('file')->getClientOriginalExtension(),
@@ -54,8 +54,7 @@ class TicketController extends Controller
             ];
 
             $file = upload_file($request->file, 'Messages');
-
-            $file_info['path'] = $file;
+            $file_info['path'] = $file; // اطمینان حاصل کنید که فایل آپلود شده به درستی ذخیره می‌شود
         }
 
         $ticket->messages()->create([
@@ -64,13 +63,15 @@ class TicketController extends Controller
             'file' => isset($file) ? json_encode($file_info) : null,
         ]);
 
-        $message = 'تیکتی با عنوان "'.$ticket->title.'" به شما ارسال شده است';
+        $message = 'تیکتی با عنوان "' . $ticket->title . '" به شما ارسال شده است';
         $url = route('tickets.edit', $ticket->id);
 
+        // اطمینان حاصل کنید که $url یک رشته است و به درستی به SendMessage ارسال می‌شود
         Notification::send($ticket->receiver, new SendMessage($message, $url));
 
         return redirect()->route('tickets.edit', $ticket->id);
     }
+
 
 
     public function show(Ticket $ticket)
