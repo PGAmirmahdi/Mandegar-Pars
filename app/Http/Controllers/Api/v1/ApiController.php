@@ -19,33 +19,37 @@ class ApiController extends Controller
 {
     public function createInvoice(Request $request)
     {
+        // اعتبارسنجی داده‌ها
         $request->validate([
             'phone' => 'required|string|max:15',
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'national_code' => 'required|string|max:10', // تغییرات ممکن
+            'national_code' => 'required|string|max:10',
             'province' => 'required|string|max:50',
             'city' => 'required|string|max:50',
             'address_1' => 'required|string|max:255',
             'postal_code' => 'required|string|max:10',
-            'created_in' => 'required|in:app,website', // فرض بر اینکه فقط دو مقدار 'app' و 'website' معتبر است
-            'items' => 'required|array', // باید یک آرایه باشد
-            'items.*.acc_code' => 'required|string|max:50', // اعتبارسنجی کد محصول
-            'items.*.quantity' => 'required|integer|min:1', // تعداد محصولات
-            'items.*.total' => 'required|numeric|min:0', // مبلغ کل
+            'created_in' => 'required|in:app,website',
+            'items' => 'required|array',
+            'items.*.acc_code' => 'required|string|max:50',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.total' => 'required|numeric|min:0',
         ]);
+
         $data = $request->all();
 
         // users where has single-price-user permission
-        $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
+        $role_id = \App\Models\Role::whereHas('permissions', function ($permission) {
             $permission->where('name', 'single-price-user');
         })->pluck('id');
+
         $single_price_user = User::whereIn('role_id', $role_id)->latest()->first();
-        // end users where has single-price-user permission
-// بررسی اینکه کاربر پیدا شده یا نه
+
+        // بررسی اینکه کاربر پیدا شده یا نه
         if (!$single_price_user) {
             return response()->json(['error' => 'کاربر با دسترسی "single-price-user" پیدا نشد.'], 404);
         }
+
         // send notification
         $notifiables = User::whereHas('role' , function ($role) {
             $role->whereHas('permissions', function ($q) {
@@ -53,19 +57,16 @@ class ApiController extends Controller
             });
         })->get();
 
-        if ($data['created_in'] == 'app'){
-            $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
-        }else{
-            $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
-        }
+        $notif_message = ($data['created_in'] == 'app') ?
+            'یک سفارش از سایت آرتین دریافت گردید' :
+            'یک سفارش از اپلیکیشن آرتین دریافت گردید';
 
         $url = route('invoices.index');
         Notification::send($notifiables, new SendMessage($notif_message, $url));
-        // end send notification
 
         // create customer
         $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
-            'user_id' => $single_price_user->id,
+            'user_id' => $single_price_user->id, // اینجا کاربر را استفاده می‌کنیم
             'name' => $data['first_name'].' '.$data['last_name'],
             'type' => 'private',
             'economical_number' => 0,
@@ -78,10 +79,9 @@ class ApiController extends Controller
             'customer_type' => 'single-sale',
         ]);
 
-
         // create invoice
         $invoice = \App\Models\Invoice::create([
-            'user_id' => $single_price_user->id,
+            'user_id' => $single_price_user->id, // اینجا هم کاربر را استفاده می‌کنیم
             'customer_id' => $customer->id,
             'economical_number' => 0,
             'national_number' => $customer->national_number,
@@ -98,12 +98,12 @@ class ApiController extends Controller
         $tax = 0.1;
 
         // create product items
-        foreach ($request->items as $item){
-            // for test
-//            $product = Product::first();
-            // end for test
-
+        foreach ($request->items as $item) {
             $product = Product::where('code', $item['acc_code'])->first();
+
+            if (!$product) {
+                return response()->json(['error' => 'محصول پیدا نشد: ' . $item['acc_code']], 404);
+            }
 
             $price = ($item['total'] / $item['quantity']) .'0';
             $total = $item['total'].'0';
