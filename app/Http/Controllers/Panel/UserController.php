@@ -143,7 +143,7 @@ class UserController extends Controller
             return redirect()->back();
         } else {
             alert()->success('کاربر مورد نظر با موفقیت ویرایش شد', 'ویرایش کاربر');
-            return redirect()->route('panel.index');
+            return redirect()->route('dashboard.index');
         }
     }
 
