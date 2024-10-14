@@ -19,6 +19,21 @@ class ApiController extends Controller
 {
     public function createInvoice(Request $request)
     {
+        $request->validate([
+            'phone' => 'required|string|max:15',
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'national_code' => 'required|string|max:10', // تغییرات ممکن
+            'province' => 'required|string|max:50',
+            'city' => 'required|string|max:50',
+            'address_1' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:10',
+            'created_in' => 'required|in:app,website', // فرض بر اینکه فقط دو مقدار 'app' و 'website' معتبر است
+            'items' => 'required|array', // باید یک آرایه باشد
+            'items.*.acc_code' => 'required|string|max:50', // اعتبارسنجی کد محصول
+            'items.*.quantity' => 'required|integer|min:1', // تعداد محصولات
+            'items.*.total' => 'required|numeric|min:0', // مبلغ کل
+        ]);
         $data = $request->all();
 
         // users where has single-price-user permission
