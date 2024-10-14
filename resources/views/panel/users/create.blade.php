@@ -57,7 +57,7 @@
                         @enderror
                     </div>
                 </div>
-                <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <button class="btn btn-primary" type="submit" id="submit-button">ثبت فرم</button>
                 <div class="m-2"><label for="profile">عکس پروفایل</label></div>
             </form>
         </div>
@@ -76,6 +76,7 @@
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
+            autoProcessQueue: false, // غیرفعال کردن پردازش خودکار صف
             success: function (file, response) {
                 // در صورت موفقیت آپلود
                 console.log("ممنونتم مهندس");
@@ -83,6 +84,15 @@
             error: function (file, response) {
                 // در صورت خطا در آپلود
                 console.log("مهندس خطا داری خببببببببببببب اینم خطا: " + response);
+            }
+        });
+
+        // پردازش صف هنگام کلیک بر روی دکمه ارسال
+        document.getElementById("submit-button").addEventListener("click", function() {
+            if (profileDropzone.getQueuedFiles().length > 0) {
+                profileDropzone.processQueue();
+            } else {
+                console.log("هیچ فایلی برای آپلود وجود ندارد.");
             }
         });
     </script>
