@@ -51,7 +51,6 @@
                     </div>
                     <!-- فیلد آپلود عکس پروفایل با Dropzone -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="profile">عکس پروفایل</label>
                         <input type="hidden" name="profile">
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -59,6 +58,7 @@
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <label for="profile">عکس پروفایل</label>
             </form>
         </div>
     </div>
