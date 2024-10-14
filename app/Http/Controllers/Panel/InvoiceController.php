@@ -656,4 +656,13 @@ class InvoiceController extends Controller
 
         Notification::send($managers, new SendMessage($message, $url));
     }
+    public function testEvent($userId)
+    {
+        // ارسال ایونت با رشته به جای آرایه
+        event(new SendMessage($userId, 'Test notification'));
+
+        // ارسال داده به ویو
+        return view('test', ['message' => "Event Sent!"]);
+    }
+
 }
