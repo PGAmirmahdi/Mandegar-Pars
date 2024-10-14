@@ -6,7 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ایجاد کاربر</h6>
             </div>
-            <form id="userForm" action="{{ route('users.store') }}" method="post" enctype="multipart/form-data" class="dropzone">
+            <form id="userForm" action="{{ route('profile.upload') }}" method="post" enctype="multipart/form-data" class="dropzone">
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -66,7 +66,7 @@
 
     <!-- تنظیمات Dropzone -->
     <script>
-        Dropzone.autoDiscover = false;
+        Dropzone.options.myDropzone = false;
 
         // تنظیم Dropzone برای input فایل
         var profileDropzone = new Dropzone("#profile-input", {
