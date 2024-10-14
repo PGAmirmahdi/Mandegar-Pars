@@ -6,7 +6,8 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ایجاد کاربر</h6>
             </div>
-            <form id="userForm" action="{{ route('profile.upload') }}" method="post" enctype="multipart/form-data" class="dropzone">
+            <form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data"
+                  class="dropzone" id="my-awesome-dropzone">
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -50,61 +51,38 @@
                     </div>
                     <!-- فیلد آپلود عکس پروفایل با Dropzone -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <input type="file" name="profile" id="profile">
+                        <input type="hidden" name="profile">
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit">ثبت فرم</button>
-                <div>
-                    <label for="profile">عکس پروفایل <span class="text-danger">*</span></label>
-                </div>
+                <div class="m-2"><label for="profile">عکس پروفایل</label></div>
             </form>
         </div>
     </div>
 
     <!-- تنظیمات Dropzone -->
     <script>
-        Dropzone.options.myDropzone = false;
+        Dropzone.autoDiscover = false;
 
-        // تنظیم Dropzone برای input فایل
-        var profileDropzone = new Dropzone("#profile-input", {
-            url: "{{ route('profile.upload') }}", // مسیر آپلود فایل
+        var profileDropzone = new Dropzone("#profile-dropzone", {
+            url: "{{ route('users.store') }}", // آدرس API آپلود فایل
             paramName: "profile", // نام فیلد آپلود
-            maxFilesize: 2, // حداکثر حجم فایل (MB)
+            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
             acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
-            autoProcessQueue: false, // جلوگیری از آپلود خودکار
             addRemoveLinks: true,
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
-            init: function() {
-                var myDropzone = this;
-
-                // آپلود فایل‌ها هنگام کلیک بر روی دکمه ثبت
-                document.getElementById("submit-btn").addEventListener("click", function(e) {
-                    e.preventDefault();
-                    if (myDropzone.getQueuedFiles().length > 0) {
-                        myDropzone.processQueue(); // آپلود فایل‌ها
-                    } else {
-                        document.getElementById("user-form").submit(); // اگر فایلی در Dropzone نیست، فرم ارسال شود
-                    }
-                });
-
-                // آپلود موفق فایل
-                myDropzone.on("success", function(file, response) {
-                    // مقدار مسیر فایل آپلود شده را در input hidden قرار دهید
-                    document.getElementById("profile-path").value = response.filepath;
-                    "ممنونتم مهندسی"
-                    // بعد از آپلود فایل، فرم ارسال شود
-                    document.getElementById("user-form").submit();
-                });
-
-                // خطا در آپلود
-                myDropzone.on("error", function(file, response) {
-                    console.log("مهندس فایل ارور داره خببببببببببب" . response);
-                });
+            success: function (file, response) {
+                // در صورت موفقیت آپلود
+                console.log("ممنونتم مهندس");
+            },
+            error: function (file, response) {
+                // در صورت خطا در آپلود
+                console.log("مهندس خطا داری خببببببببببببب اینم خطا: " + response);
             }
         });
     </script>
