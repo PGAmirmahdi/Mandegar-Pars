@@ -305,7 +305,6 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('sms', SMSController::class)->except('edit','update');
     Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
     Route::get('/send-test-event/{userId}', [InvoiceController::class, 'testEvent']);
-    Route::post('/profile/upload', [UserController::class, 'uploadProfile'])->name('profile.upload');
 });
 Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
 Route::get('/user-visits', function() {
