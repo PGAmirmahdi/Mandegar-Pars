@@ -18,5 +18,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('notification.{userId}', function ($user, $userId){
-    return $user->id == $userId ? $user : false;
+    return (int) $user->id === (int) $userId;
 });
+

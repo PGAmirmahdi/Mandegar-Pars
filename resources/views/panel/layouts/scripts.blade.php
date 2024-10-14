@@ -82,17 +82,27 @@
 
 @yield('scripts')
 <script>
+    // افزودن توکن CSRF به درخواست‌های Ajax
 
-    // Enable pusher logging - don't include this in production--}}
+    var userId = {{ Auth::user()->id }}; // شناسه کاربر لاگین شده
+
+    // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
 
-    var pusher = new Pusher('ac8ae105709d7299a673', {
-        cluster: 'ap1'
+    var pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
+        cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+        encrypted: true,
+        authEndpoint: '/pusher/auth',
+        auth: {
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // ارسال توکن CSRF
+            }
+        }
     });
 
-    var channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function(data) {
-        alert(JSON.stringify(data));
+    var channel = pusher.subscribe('private-notification.' + userId);
+    channel.bind('App\\Events\\SendMessage', function(data) {
+        console.log('Notification received: ', data.message);
     });
 </script>
 <script>
@@ -185,7 +195,6 @@
 
     // realtime notification
     var audio = new Audio('/audio/notification.wav');
-    let userId = "{{ auth()->id() }}"
     Echo.channel('presence-notification.'+userId)
         .listen('SendMessage', (e) =>{
             $('#notification_sec a').addClass('nav-link-notify')
