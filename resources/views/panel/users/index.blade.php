@@ -88,9 +88,10 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="{{ route('users.updateSignImage', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone" id="sign-dropzone{{ $user->id }}">
+                                        <form action="{{ route('users.uploadSignImage', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone" id="sign-dropzone{{ $user->id }}">
                                             @csrf
                                             @method('PUT')
+                                            <input type="hidden" name="sign_image">
                                             <div class="dz-message">عکس امضا خود را اینجا رها کنید</div>
                                         </form>
                                     </div>
@@ -113,9 +114,10 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="{{ route('users.updateProfileImage', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone" id="profile-dropzone{{ $user->id }}">
+                                        <form action="{{ route('users.uploadProfile', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone" id="profile-dropzone{{ $user->id }}">
                                             @csrf
                                             @method('PUT')
+                                            <input type="hidden" name="profile">
                                             <div class="dz-message">عکس پروفایل خود را اینجا رها کنید</div>
                                         </form>
                                     </div>
