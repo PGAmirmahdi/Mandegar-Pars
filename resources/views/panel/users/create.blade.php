@@ -49,9 +49,10 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <!-- فیلد آپلود عکس پروفایل با Dropzone -->
+
+                    <!-- فیلد آپلود عکس پروفایل -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <input type="hidden" name="profile">
+                        <input type="file" name="profile" id="profile-input">
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
