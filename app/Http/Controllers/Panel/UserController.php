@@ -63,7 +63,7 @@ class UserController extends Controller
 
         // ارسال پیام موفقیت
         alert()->success('کاربر با موفقیت ساخته شد', 'ساخت کاربر');
-        return view('panel.users.index');
+        return route('users.index');
     }
 
 
