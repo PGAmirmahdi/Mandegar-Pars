@@ -6,7 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ایجاد کاربر</h6>
             </div>
-            <form id="userForm" method="post" enctype="multipart/form-data">
+            <form id="userForm" method="post" enctype="multipart/form-data" class="dropzone" id="my-awesome-dropzone">
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -51,7 +51,6 @@
                     <!-- فیلد آپلود عکس پروفایل با Dropzone -->
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3" id="profile-dropzone">
                         <label for="profile">عکس پروفایل</label>
-                        <div class="dropzone" id="my-awesome-dropzone"></div>
                         <input type="hidden" name="profile" id="profileInput">
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
