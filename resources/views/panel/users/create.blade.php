@@ -70,7 +70,7 @@
 
         // تنظیم Dropzone برای input فایل
         var profileDropzone = new Dropzone("#profile-input", {
-            url: "{{ route('users.store') }}", // مسیر آپلود فایل
+            url: "{{ route('profile.upload') }}", // مسیر آپلود فایل
             paramName: "profile", // نام فیلد آپلود
             maxFilesize: 2, // حداکثر حجم فایل (MB)
             acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
