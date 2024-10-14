@@ -43,17 +43,15 @@ class UserController extends Controller
         ]);
 
         // مدیریت آپلود تصویر پروفایل
-        if ($request->hasFile('profile')) {
+        if ($request->filled('profile')) {
             // حذف فایل قدیمی اگر وجود داشته باشد
             if ($user->profile) {
                 Storage::disk('public')->delete($user->profile);
             }
 
             // ذخیره فایل جدید
-            $filePath = upload_file($request->file('profile'), 'profiles');
-            $user->profile = $filePath;
+            $user->profile = $request->profile;
         }
-
 
         // ذخیره تغییرات
         $user->save();
@@ -62,10 +60,22 @@ class UserController extends Controller
         $this->createLeaveInfo($user);
 
         // ارسال پیام موفقیت
-        alert()->success('کاربر با موفقیت ویرایش شد', 'ویرایش کاربر');
-        return response()->json(['success' => 'کاربر با موفقیت ویرایش شد']);
+        return response()->json(['success' => 'کاربر با موفقیت ایجاد شد']);
     }
 
+    public function uploadProfile(Request $request)
+    {
+        $request->validate([
+            'profile' => 'required|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->file('profile')) {
+            $filePath = $request->file('profile')->store('profiles', 'public');
+            return response()->json(['filepath' => $filePath], 200);
+        }
+
+        return response()->json(['error' => 'Upload failed'], 400);
+    }
 
     public function show(User $user)
     {
