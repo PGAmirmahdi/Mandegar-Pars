@@ -21,52 +21,43 @@ class ApiController extends Controller
     {
         $data = $request->all();
 
-        // users where has single-price-user permission
         $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
             $permission->where('name', 'single-price-user');
         })->pluck('id');
         $single_price_user = User::whereIn('role_id', $role_id)->latest()->first();
-        // end users where has single-price-user permission
 
-        // send notification
         $notifiables = User::whereHas('role' , function ($role) {
             $role->whereHas('permissions', function ($q) {
                 $q->whereIn('name', ['single-price-user','sales-manager']);
             });
         })->get();
 
-        if ($data['created_in'] == 'app'){
+        if ($data['created_in'] == 'site'){
             $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
-        }else{
+        } else {
             $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
         }
 
         $url = route('invoices.index');
         Notification::send($notifiables, new SendMessage($notif_message, $url));
-        // end send notification
 
-        // create customer
         $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
             'user_id' => $single_price_user->id,
-            'name' => $data['billing_first_name'].' '.$data['billing_last_name'],
+            'name' => $data['first_name'].' '.$data['last_name'],
             'type' => 'private',
             'economical_number' => 0,
-//            'national_number' => $data['billing_shomaremeli'],
-            'province' => $data['billing_state'],
-            'city' => $data['billing_city'],
-            'address1' => $data['billing_address_1'],
-            'postal_code' => $data['billing_postcode'],
-            'phone1' => $data['billing_phone'],
+            'province' => $data['province'],
+            'city' => $data['city'],
+            'address1' => $data['address_1'],
+            'postal_code' => $data['postal_code'],
+            'phone1' => $data['phone'],
             'customer_type' => 'single-sale',
         ]);
 
-
-        // create invoice
         $invoice = \App\Models\Invoice::create([
             'user_id' => $single_price_user->id,
             'customer_id' => $customer->id,
             'economical_number' => 0,
-//            'national_number' => $customer->national_number,
             'province' => $customer->province,
             'city' => $customer->city,
             'address' => $customer->address1,
@@ -79,16 +70,10 @@ class ApiController extends Controller
 
         $tax = 0.1;
 
-        // create product items
         foreach ($request->items as $item){
-            // for test
-//            $product = Product::first();
-            // end for test
-
             $product = Product::where('code', $item['acc_code'])->first();
-
-            $price = ($item['total'] / $item['quantity']) .'0';
-            $total = $item['total'].'0';
+            $price = ($item['total'] / $item['quantity']);
+            $total = $item['total'];
 
             $invoice->products()->attach($product->id, [
                 'color' => 'black',
@@ -104,6 +89,7 @@ class ApiController extends Controller
             $invoice->factor()->updateOrCreate(['status' => 'paid']);
         }
     }
+
 
     public function getInvoiceProducts(Request $request)
     {
