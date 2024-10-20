@@ -62,7 +62,7 @@
                             </td>
                             <td>{{ verta($user->created_at)->format('H:i - Y/m/d') }}</td>
                             <td><button class="btn btn-info btn-floating" data-toggle="modal" data-target="#editSignImageModal{{ $user->id }}"><i class="fa fa-edit"></i></button></td>
-                            <td><button class="btn btn-info btn-floating" data-toggle="modal" data-target="#editProfileImageModal{{ $user->id }}"><i class="fa fa-edit"></i></td>
+                            <td><button class="btn btn-info btn-floating" data-toggle="modal" data-target="#editProfileImageModal{{ $user->id }}"><i class="fa fa-edit"></i></button></td>
                             @can('users-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating" href="{{ route('users.edit', $user->id) }}">
@@ -78,8 +78,6 @@
                                 </td>
                             @endcan
                         </tr>
-
-                        <!-- Modal برای ویرایش عکس امضا -->
                         <div class="modal fade" id="editSignImageModal{{ $user->id }}" tabindex="-1" aria-labelledby="editSignImageModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -90,12 +88,12 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="{{ route('users.uploadSignImage', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone" id="sign-dropzone{{ $user->id }}">
+                                        <form action="{{ route('users.uploadSignImage', $user->id) }}" method="post" class="dropzone" id="sign-dropzone-{{ $user->id }}">
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="sign_image">
-                                            <div class="dz-message">عکس امضا خود را اینجا رها کنید</div>
                                         </form>
+
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
@@ -104,7 +102,7 @@
                             </div>
                         </div>
 
-                        <!-- Modal برای ویرایش عکس پروفایل -->
+                        <!-- برای ویرایش عکس پروفایل -->
                         <div class="modal fade" id="editProfileImageModal{{ $user->id }}" tabindex="-1" aria-labelledby="editProfileImageModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -115,11 +113,10 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="{{ route('users.uploadProfile', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone" id="profile-dropzone{{ $user->id }}">
+                                        <form action="{{ route('users.uploadProfile', $user->id) }}" method="post" class="dropzone" id="profile-dropzone-{{ $user->id }}">
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="profile">
-                                            <div class="dz-message">عکس پروفایل خود را اینجا رها کنید</div>
                                         </form>
                                     </div>
                                     <div class="modal-footer">
@@ -128,7 +125,6 @@
                                 </div>
                             </div>
                         </div>
-
                     @endforeach
                     </tbody>
                     <tfoot>
@@ -143,80 +139,47 @@
 
     <!-- اسکریپت Dropzone -->
     <script>
-        Dropzone.options.signDropzone = {
+        Dropzone.autoDiscover = false;
+        @foreach($users as $user)
+        var profileDropzone = new Dropzone("#profile-dropzone-{{ $user->id }}", {
+            url: "{{ route('users.uploadProfile',$user->id) }}", // آدرس API آپلود فایل
+            paramName: "profile", // نام فیلد آپلود
+            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
+            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
+            addRemoveLinks: true,
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
-            init: function() {
-                this.on("success", function(file, response) {
-                    // مدیریت پاسخ
-                });
-                this.on("error", function(file, response) {
-                    // مدیریت خطا
-                });
-            }
-        };
-        // آپلود پروفایل
-        document.getElementById('upload-profile-button').addEventListener('click', function() {
-            var formData = new FormData();
-            var fileInput = document.getElementById('profile-input'); // فرض بر این است که یک input برای آپلود پروفایل دارید
-
-            if (fileInput.files.length > 0) {
-                formData.append('profile', fileInput.files[0]);
-
-                fetch("{{ route('users.uploadProfile', ':id') }}".replace(':id', userId), {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.redirect) {
-                            window.location.href = data.redirect; // هدایت به صفحه کاربران
-                        } else {
-                            console.error(data.message);
-                        }
-                    })
-                    .catch(error => console.error('Upload error:', error));
-            } else {
-                console.error('هیچ فایلی برای آپلود انتخاب نشده است.');
+            success: function (file, response) {
+                // در صورت موفقیت آپلود
+                console.log(response);
+            },
+            error: function (file, response) {
+                // در صورت خطا در آپلود
+                console.log(response);
             }
         });
 
-        // آپلود امضا
-        document.getElementById('upload-sign-button').addEventListener('click', function() {
-            var formData = new FormData();
-            var fileInput = document.getElementById('sign-input'); // فرض بر این است که یک input برای آپلود امضا دارید
+        Dropzone.autoDiscover = false;
 
-            if (fileInput.files.length > 0) {
-                formData.append('sign_image', fileInput.files[0]);
-
-                fetch("{{ route('users.uploadSignImage', ':id') }}".replace(':id', userId), {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },ل
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.redirect) {
-                            window.location.href = data.redirect; // هدایت به صفحه کاربران
-                        } else {
-                            console.error(data.message);
-                        }
-                    })
-                    .catch(error => console.error('Upload error:', error));
-            } else {
-                console.error('هیچ فایلی برای آپلود انتخاب نشده است.');
+        var sign_imageDropzone = new Dropzone("#sign-dropzone-{{ $user->id }}", {
+            url: "{{ route('users.uploadSignImage',$user->id) }}", // آدرس API آپلود فایل
+            paramName: "profile", // نام فیلد آپلود
+            maxFilesize: 2, // حداکثر حجم فایل (به مگابایت)
+            acceptedFiles: ".jpeg,.jpg,.png,.gif", // فرمت‌های مجاز
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            success: function (file, response) {
+                // در صورت موفقیت آپلود
+                console.log(response);
+            },
+            error: function (file, response) {
+                // در صورت خطا در آپلود
+                console.log(response);
             }
         });
-
+        @endforeach
     </script>
 @endsection
