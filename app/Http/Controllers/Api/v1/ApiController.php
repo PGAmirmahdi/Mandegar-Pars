@@ -19,21 +19,6 @@ class ApiController extends Controller
 {
     public function createInvoice(Request $request)
     {
-        $request->validate([
-            'phone' => 'required|string|max:15',
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'national_code' => 'required|string|max:10', // تغییرات ممکن
-            'province' => 'required|string|max:50',
-            'city' => 'required|string|max:50',
-            'address_1' => 'required|string|max:255',
-            'postal_code' => 'required|string|max:10',
-            'created_in' => 'required|in:app,website', // فرض بر اینکه فقط دو مقدار 'app' و 'website' معتبر است
-            'items' => 'required|array', // باید یک آرایه باشد
-            'items.*.acc_code' => 'required|string|max:50', // اعتبارسنجی کد محصول
-            'items.*.quantity' => 'required|integer|min:1', // تعداد محصولات
-            'items.*.total' => 'required|numeric|min:0', // مبلغ کل
-        ]);
         $data = $request->all();
 
         // users where has single-price-user permission
@@ -63,15 +48,15 @@ class ApiController extends Controller
         // create customer
         $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
             'user_id' => $single_price_user->id,
-            'name' => $data['first_name'].' '.$data['last_name'],
+            'name' => $data['billing_first_name'].' '.$data['billing_last_name'],
             'type' => 'private',
             'economical_number' => 0,
-            'national_number' => $data['national_code'],
-            'province' => $data['province'],
-            'city' => $data['city'],
-            'address1' => $data['address_1'],
-            'postal_code' => $data['postal_code'],
-            'phone1' => $data['phone'],
+//            'national_number' => $data['billing_shomaremeli'],
+            'province' => $data['billing_state'],
+            'city' => $data['billing_city'],
+            'address1' => $data['billing_address_1'],
+            'postal_code' => $data['billing_postcode'],
+            'phone1' => $data['billing_phone'],
             'customer_type' => 'single-sale',
         ]);
 
@@ -81,7 +66,7 @@ class ApiController extends Controller
             'user_id' => $single_price_user->id,
             'customer_id' => $customer->id,
             'economical_number' => 0,
-            'national_number' => $customer->national_number,
+//            'national_number' => $customer->national_number,
             'province' => $customer->province,
             'city' => $customer->city,
             'address' => $customer->address1,
