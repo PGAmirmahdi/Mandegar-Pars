@@ -20,9 +20,9 @@
                     <div class="form-group">
                         <label for="bodyId">پیامک<span class="text-danger">*</span></label>
                         <select class="form-control" id="bodyId">
-                            <option value="177554">کد رهگیری مرسوله</option>
-                            <option value="178278">عودت فاکتور</option>
-                            <option value="185679">یادآوری پرداخت فاکتور</option>
+                            <option value="260039">کد رهگیری مرسوله</option>
+                            <option value="260125">عودت فاکتور</option>
+                            <option value="260126">یادآوری پرداخت فاکتور</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -251,7 +251,7 @@
             // end btn send sms
 
             function changeBody(bodyId) {
-                if (bodyId == 177554){
+                if (bodyId == 260039){
                     if(code == ''){
                         $('#text_error').text('ابتدا فیلد کد رهگیری را وارد نمایید')
                         text_error = true;
@@ -265,7 +265,7 @@
                     $('#text').html(`کد پیگیری مرسوله شما: ${code} \n\n` +
                         `شرکت صنایع ماشین های اداری ماندگار پارس\n` +
                         `Artintoner.com\n`)
-                }else if(bodyId == 185679){
+                }else if(bodyId == 260126){
                     if(receiver == ''){
                         $('#text_error').text('ابتدا فیلد گیرنده را وارد نمایید')
                         text_error = true;

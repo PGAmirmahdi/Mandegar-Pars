@@ -58,40 +58,53 @@ if (!function_exists('formatBytes')) {
 }
 
 if (!function_exists('sendSMS')) {
-    function sendSMS(int $bodyId, string $to, array $args)
+    function sendSMS(int $bodyId, string $to, array $args, array $options = [])
     {
-        // مقادیر ثابت نام کاربری و رمز عبور
-        $username = '09336533433';
-        $password = '31$9#';
+        $url = 'https://console.melipayamak.com/api/send/shared/9ac659ce20e74c2288f0b58cb9c4e710';
+        $data = array('bodyId' => $bodyId, 'to' => $to, 'args' => $args);
+        $data_string = json_encode($data);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 
-        // تبدیل آرگومان‌ها به یک رشته جدا شده با ;
-        $text = implode(';', $args);
+        // Next line makes the request absolute insecure
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        // تنظیم داده‌ها برای ارسال پیامک
-        $data = array(
-            'username' => $username,
-            'password' => $password,
-            'text' => $text,
-            'to' => $to,
-            'bodyId' => $bodyId
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,
+            array('Content-Type: application/json',
+                'Content-Length: ' . strlen($data_string))
         );
+        $result = json_decode(curl_exec($ch));
+        curl_close($ch);
 
-        $post_data = http_build_query($data);
+        \App\Models\SmsHistory::create([
+            'user_id' => auth()->id(),
+            'phone' => $to,
+            'text' => $options['text'] ?? '',
+            'status' => isset($result->recId) ? $result->recId != 11 ? 'sent' : 'failed' : 'failed',
+        ]);
 
-        // آغاز عملیات cURL برای ارسال درخواست
-        $handle = curl_init('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber');
-        curl_setopt($handle, CURLOPT_HTTPHEADER, array(
-            'content-type' => 'application/x-www-form-urlencoded'
-        ));
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($handle, CURLOPT_POST, true);
-        curl_setopt($handle, CURLOPT_POSTFIELDS, $post_data);
+        return $result;
 
-        $response = curl_exec($handle);
-        curl_close($handle);
-
-        return json_decode($response, true); // نتیجه به صورت آرایه برگردانده می‌شود
+// --------------------------------------------------- //
+//        try{
+//            $sms = Melipayamak\Laravel\Facade::sms();
+//            $from = '50004000425053';
+//            $response = $sms->send($to,$from,$text);
+//            $json = json_decode($response);
+//
+//            \App\Models\SmsHistory::create([
+//                'user_id' => auth()->id(),
+//                'phone' => $to,
+//                'text' => $text,
+//                'status' => $json->Value != 11 ? 'sent' : 'failed',
+//            ]);
+//
+//            return $json->Value; //RecId or Error Number
+//        }catch(Exception $e){
+//            return $e->getMessage();
+//        }
+// --------------------------------------------------- //
     }
 }
