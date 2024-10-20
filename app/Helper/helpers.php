@@ -84,7 +84,11 @@ if (!function_exists('sendSMS')) {
             'text' => $options['text'] ?? '',
             'status' => isset($result->recId) ? $result->recId != 11 ? 'sent' : 'failed' : 'failed',
         ]);
-
+        $result = curl_exec($ch);
+        if ($result === false) {
+            dd('CURL Error: ' . curl_error($ch));
+        }
+        $result = json_decode($result);
         return $result;
 
 // --------------------------------------------------- //
