@@ -95,6 +95,7 @@ class ApiController extends Controller
                 'payment_type' => $data['payment_type'],
                 'province' => $customer->province,
                 'city' => $customer->city,
+                'national_number' => $customer->national_number,
                 'address' => $customer->address1,
                 'postal_code' => $customer->postal_code,
                 'phone' => $customer->phone1,
