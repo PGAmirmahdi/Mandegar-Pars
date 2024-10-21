@@ -32,7 +32,7 @@ class ApiController extends Controller
             });
         })->get();
 
-        if ($data['created_in'] == 'site'){
+        if ($data['created_in'] == 'website'){
             $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
         } else {
             $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
