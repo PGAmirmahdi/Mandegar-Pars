@@ -60,7 +60,7 @@ if (!function_exists('formatBytes')) {
 if (!function_exists('sendSMS')) {
     function sendSMS(int $bodyId, string $to, array $args, array $options = [])
     {
-        $url = 'https://console.melipayamak.com/api/send/shared/9ac659ce20e74c2288f0b58cb9c4e710';
+        $url = 'https://console.melipayamak.com/api/send/shared/de3a0dfcc49d4e408041a386f63b4d6f';
         $data = array('bodyId' => $bodyId, 'to' => $to, 'args' => $args);
         $data_string = json_encode($data);
         $ch = curl_init($url);
@@ -68,7 +68,7 @@ if (!function_exists('sendSMS')) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 
         // Next line makes the request absolute insecure
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER,
