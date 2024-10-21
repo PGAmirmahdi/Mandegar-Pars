@@ -19,6 +19,7 @@ class ApiController extends Controller
 {
     public function createInvoice(Request $request)
     {
+        Log::info('Request data: ', $request->all());
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
