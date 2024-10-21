@@ -315,7 +315,9 @@
                                             <span class="mr-4">شرایط و نحوه فروش</span>
                                             <div class="d-flex">
                                                 @foreach(\App\Models\Invoice::Payment_Type as $key => $label)
-                                                    {{ $invoice->payment_type === $key ? 'checked' : '' }}
+                                                    @if($invoice->payment_type === $key)
+                                                        <span>{{$label}}</span>
+                                                        @endif
                                                 @endforeach
                                             </div>
                                         </div>
