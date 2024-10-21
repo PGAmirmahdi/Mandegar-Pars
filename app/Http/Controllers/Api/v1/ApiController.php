@@ -119,6 +119,8 @@ class ApiController extends Controller
 
             $invoice->factor()->updateOrCreate(['status' => 'paid']);
         }
+        return redirect()->back()->withErrors($validatedData)->withInput();
+
     }
 
 
