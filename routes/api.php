@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('invoice-create', [ApiController::class, 'createInvoice'])->name('invoice-create');
+Route::post('invoice-create', [ApiController::class, 'createInvoice'])->name('invoice-create')->withoutMiddleware('auth');
 Route::post('get-invoice-products', [ApiController::class, 'getInvoiceProducts']);
 
 Route::get('get-printer-brands', [ApiController::class, 'getPrinterBrands']);
