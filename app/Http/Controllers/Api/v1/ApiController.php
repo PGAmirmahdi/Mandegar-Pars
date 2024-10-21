@@ -63,7 +63,7 @@ class ApiController extends Controller
             });
         })->get();
 
-        if ($request->input('created_in') == 'website'){
+        if ($data['created_in'] == 'website'){
             $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
         } else {
             $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
@@ -72,16 +72,16 @@ class ApiController extends Controller
         $url = route('invoices.index');
         Notification::send($notifiables, new SendMessage($notif_message, $url));
 
-        $customer = \App\Models\Customer::where('phone1', $request->input('phone'))->firstOrCreate([
+        $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
             'user_id' => $single_price_user->id,
-            'name' => $request->input('first_name').' '.$request->input('last_name'),
+            'name' => $data['first_name'].' '.$data['last_name'],
             'type' => 'private',
             'economical_number' => 0,
-            'province' => $request->input('province'),
-            'city' => $request->input('city'),
-            'address1' => $request->input('address_1'),
-            'postal_code' => $request->input('postal_code'),
-            'phone1' => $request->input('phone'),
+            'province' => $data['province'],
+            'city' => $data['city'],
+            'address1' => $data['address_1'],
+            'postal_code' => $data['postal_code'],
+            'phone1' => $data['phone'],
             'customer_type' => 'single-sale',
         ]);
 
@@ -95,7 +95,7 @@ class ApiController extends Controller
             'postal_code' => $customer->postal_code,
             'phone' => $customer->phone1,
             'status' => 'order',
-            'created_in' => $request->input('created_in'),
+            'created_in' => $data['created_in'],
             'discount' => 0,
         ]);
 
