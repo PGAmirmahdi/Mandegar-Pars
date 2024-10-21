@@ -19,6 +19,37 @@ class ApiController extends Controller
 {
     public function createInvoice(Request $request)
     {
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required|string|digits_between:10,15',
+            'national_code' => 'required|string|size:10',
+            'province' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'address_1' => 'required|string|max:500',
+            'postal_code' => 'required|string|digits:6',
+            'created_in' => 'required|string|in:website,application',
+            'payment_type' => 'required|string|in:cash,credit',
+            'items' => 'required|array|min:1',
+            'items.*.acc_code' => 'required|string|exists:products,code',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.total' => 'required|numeric|min:0',
+        ], [
+            'first_name.required' => 'فیلد نام الزامی است.',
+            'last_name.required' => 'فیلد نام خانوادگی الزامی است.',
+            'phone.required' => 'شماره تلفن الزامی است.',
+            'national_code.required' => 'کد ملی الزامی است.',
+            'province.required' => 'فیلد استان الزامی است.',
+            'city.required' => 'فیلد شهر الزامی است.',
+            'address_1.required' => 'آدرس الزامی است.',
+            'postal_code.required' => 'کد پستی الزامی است.',
+            'created_in.required' => 'منبع ایجاد سفارش الزامی است.',
+            'payment_type.required' => 'نوع پرداخت الزامی است.',
+            'items.required' => 'حداقل یک آیتم باید انتخاب شود.',
+            'items.*.acc_code.required' => 'کد محصول الزامی است.',
+            'items.*.quantity.required' => 'تعداد آیتم باید وارد شود.',
+            'items.*.total.required' => 'قیمت کل باید وارد شود.',
+        ]);
         $data = $request->all();
 
         $role_id = \App\Models\Role::whereHas('permissions', function ($permission){
@@ -32,7 +63,7 @@ class ApiController extends Controller
             });
         })->get();
 
-        if ($data['created_in'] == 'website'){
+        if ($request->input('created_in') == 'website'){
             $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
         } else {
             $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
