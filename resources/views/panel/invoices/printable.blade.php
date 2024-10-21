@@ -312,7 +312,7 @@
                                 <tr>
                                     <td colspan="4">
                                         <div class="d-flex">
-                                            <span class="mr-4">:شرایط و نحوه فروش</span>
+                                            <span class="mr-4">شرایط و نحوه فروش:</span>
                                             <div class="d-flex">
                                                 @foreach(\App\Models\Invoice::Payment_Type as $key => $label)
                                                     @if($invoice->payment_type === $key)
