@@ -104,10 +104,9 @@ class ApiController extends Controller
                 'discount' => 0,
             ]);
 
-            $tax = 0.1;
-
             foreach ($request->items as $item) {
                 $product = Product::where('code', $item['acc_code'])->first();
+
                 $price = ($item['total'] / $item['quantity']);
                 $total = $item['total'];
 
@@ -118,8 +117,8 @@ class ApiController extends Controller
                     'total_price' => $total,
                     'discount_amount' => 0,
                     'extra_amount' => 0,
-                    'tax' => $total * $tax,
-                    'invoice_net' => (int)$total + ($total * $tax),
+                    'tax' => $total + $item['tax'],
+                    'invoice_net' => (int)$total + ($total + $item['tax']),
                 ]);
 
                 $invoice->factor()->updateOrCreate(['status' => 'paid']);
