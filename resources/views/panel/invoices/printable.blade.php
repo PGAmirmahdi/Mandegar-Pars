@@ -315,11 +315,7 @@
                                             <span class="mr-4">شرایط و نحوه فروش</span>
                                             <div class="d-flex">
                                                 @foreach(\App\Models\Invoice::Payment_Type as $key => $label)
-                                                    <label class="mr-3">
-                                                        {{ $label }}
-                                                        <input type="checkbox"
-                                                               {{ $invoice->payment_type === $key ? 'checked' : '' }} disabled>
-                                                    </label>
+                                                    {{ $invoice->payment_type === $key ? 'checked' : '' }}
                                                 @endforeach
                                             </div>
                                         </div>
