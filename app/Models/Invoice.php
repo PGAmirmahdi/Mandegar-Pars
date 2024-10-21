@@ -26,6 +26,7 @@ class Invoice extends Model
         '6M'=>'شش ماهه',
         '12M'=>'یک ساله',
         '24M'=>'دو ساله',
+        '45D'=>'45 روزه'
     ];
     const CREATED_IN = [
         'website' => 'وبسایت',
