@@ -75,7 +75,6 @@
 <script src="/assets/js/examples/datatable.js"></script>
 
 <!-- Drop Zone -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 

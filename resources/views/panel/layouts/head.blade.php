@@ -12,7 +12,11 @@
     <!-- اضافه کردن CSS Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Drop Zone -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css">
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
+        type="text/css"
+    />
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#5867dd">
