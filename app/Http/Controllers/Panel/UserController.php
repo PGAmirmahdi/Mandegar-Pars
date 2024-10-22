@@ -46,12 +46,38 @@ class UserController extends Controller
         ];
 
         // بروزرسانی رمز عبور در صورت ادمین بودن
-        if (auth()->user()->isAdmin()) {
-            $dataToUpdate['password'] = $request->password ? bcrypt($request->password) : $user->password;
+        if (auth()->user()->isAdmin() && $request->filled('password')) {
+            $dataToUpdate['password'] = bcrypt($request->password);
         }
 
+        // آپلود و به‌روزرسانی فایل امضا در صورت موجود بودن
+        if ($request->hasFile('sign_image')) {
+            // حذف فایل قدیمی اگر وجود داشته باشد
+            if ($user->sign_image) {
+                Storage::disk('public')->delete($user->sign_image);
+            }
+
+            // ذخیره فایل جدید
+            $filePath = upload_file($request->file('sign_image'), 'sign_images');
+            $user->sign_image = $filePath;
+        }
+
+        // آپلود و به‌روزرسانی فایل پروفایل در صورت موجود بودن
+        if ($request->hasFile('profile')) {
+            // حذف فایل قدیمی اگر وجود داشته باشد
+            if ($user->profile) {
+                Storage::disk('public')->delete($user->profile);
+            }
+
+            // ذخیره فایل جدید
+            $filePath = upload_file($request->file('profile'), 'profiles');
+            $user->profile = $filePath;
+        }
+
+        // به‌روزرسانی کاربر در دیتابیس
         $user->update($dataToUpdate);
 
+        // پیام موفقیت و بازگرداندن کاربر به صفحه لیست کاربران
         alert()->success('پروفایل شما با موفقیت ویرایش شد', 'ویرایش پروفایل');
         return redirect()->route('users.index');
     }
@@ -94,9 +120,6 @@ class UserController extends Controller
         return view('panel.users.edit', compact('user'));
     }
 
-
-
-
     public function destroy(User $user)
     {
         $this->authorize('users-delete');
@@ -130,27 +153,6 @@ class UserController extends Controller
             $user->save();
 
             return response()->json(['message' => 'پروفایل با موفقیت به‌روز شد', 'redirect' => route('users.index')]);
-        }
-
-        return response()->json(['message' => 'فایلی برای آپلود وجود ندارد.'], 400);
-    }
-    public function uploadSignImage(Request $request, User $user)
-    {
-        $this->authorize('users-edit');
-
-        // آپلود و به‌روزرسانی فایل امضا
-        if ($request->hasFile('sign_image')) {
-            // حذف فایل امضای قدیمی
-            if ($user->sign_image) {
-                unlink(public_path($user->sign_image));
-            }
-
-            // آپلود فایل جدید
-            $sign_image = upload_file($request->file('sign_image'), 'signs');
-            $user->sign_image = $sign_image;
-            $user->save();
-
-            return response()->json(['message' => 'امضا با موفقیت به‌روز شد', 'redirect' => route('users.index')]);
         }
 
         return response()->json(['message' => 'فایلی برای آپلود وجود ندارد.'], 400);

@@ -121,8 +121,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('send-sms', [PanelController::class, 'sendSMS'])->name('sendSMS');
     Route::post('najva_token', [PanelController::class, 'najva_token_store']);
     Route::post('saveFcmToken', [PanelController::class, 'saveFCMToken']);
-    Route::post('/users/{user}/upload-profile', [UserController::class, 'uploadProfile'])->name('users.uploadProfile');
-    Route::post('/users/{user}/upload-sign-image', [UserController::class, 'uploadSignImage'])->name('users.uploadSignImage');
+    Route::put('/users/{user}/upload-profile', [UserController::class, 'uploadProfile'])->name('users.uploadProfile');
+    Route::put('/users/{user}/upload-sign-image', [UserController::class, 'uploadSignImage'])->name('users.uploadSignImage');
 
 
     // Users
