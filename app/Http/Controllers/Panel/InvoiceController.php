@@ -664,5 +664,10 @@ class InvoiceController extends Controller
         // ارسال داده به ویو
         return view('test', ['message' => "Event Sent!"]);
     }
+    public function getInvoice($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+        return response()->json($invoice);
+    }
 
 }

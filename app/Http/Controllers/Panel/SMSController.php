@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Sms;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,7 +24,8 @@ class SMSController extends Controller
     public function create()
     {
         $this->authorize('sms-create');
-        return view('panel.sms.create');
+        $customers= Customer::all();
+        return view('panel.sms.create',compact('customers'));
     }
 
     public function store(Request $request)
@@ -38,7 +40,7 @@ class SMSController extends Controller
 
         $successMessages = [
             1 => 'پیام با موفقیت ارسال شد',
-            200 => 'ارسال شده'
+            200 => 'ارسال شده',
         ];
 
         $errorMessages = [
@@ -67,7 +69,6 @@ class SMSController extends Controller
                 'text' => $request->message,
             ];
 
-
             $post_data = http_build_query($data);
 
             $handle = curl_init('https://rest.payamak-panel.com/api/SendSMS/SendSMS');
@@ -90,6 +91,7 @@ class SMSController extends Controller
 
             if (isset($responseDecoded['RetStatus'])) {
                 $status = $responseDecoded['RetStatus'];
+
                 Sms::create([
                     'user_id' => auth()->id(),
                     'receiver_name' => $request->receiver_name,
@@ -97,18 +99,24 @@ class SMSController extends Controller
                     'message' => $request->message,
                     'status' => $status,
                 ]);
+
                 if (array_key_exists($status, $errorMessages)) {
-
-                    return response()->json(['failed' => $errorMessages[$status]]);
+                    alert()->error($errorMessages[$status], 'ارسال پیامک');
                 } elseif (array_key_exists($status, $successMessages)) {
-
-                    return response()->json(['success' => $successMessages[$status]]);
+                    alert()->success($successMessages[$status], 'ارسال پیامک');
+                } else {
+                    alert()->info('وضعیت پیامک ناشناخته است.', 'ارسال پیامک');
                 }
+
+                return redirect()->route('sms.index');
+            } else {
+                alert()->error('پاسخ نامعتبر از سرویس پیامک دریافت شد.', 'خطا در ارسال پیامک');
+                return redirect()->route('sms.index');
             }
 
-            return response()->json(['error' => 'پاسخ نامشخص از سرور دریافت شد']);
         } catch (Exception $e) {
-            return response()->json(['error' => 'خطایی در ارسال پیام رخ داده است: ' . $e->getMessage()]);
+            alert()->error('پیامک با خطا مواجه شد: ' . $e->getMessage(), 'خطا در ارسال پیامک');
+            return redirect()->route('sms.index');
         }
     }
 

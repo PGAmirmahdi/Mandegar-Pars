@@ -159,6 +159,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::put('invoice-file/{invoice_action}/delete', [InvoiceController::class, 'deleteInvoiceFile'])->name('invoice.action.delete');
     Route::put('factor-file/{invoice_action}/delete', [InvoiceController::class, 'deleteFactorFile'])->name('factor.action.delete');
 
+
     // Coupons
     Route::resource('coupons', CouponController::class)->except('show');
 
