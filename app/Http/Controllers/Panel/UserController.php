@@ -26,11 +26,11 @@ class UserController extends Controller
         return view('panel.users.index', compact('users'));
     }
 
-    public function create()
+    public function create(User $user)
     {
         $this->authorize('users-create');
 
-        return view('panel.users.create');
+        return view('panel.users.create',compact('user'));
     }
 
     public function update(UpdateUserRequest $request, User $user)

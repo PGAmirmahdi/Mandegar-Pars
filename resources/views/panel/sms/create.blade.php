@@ -10,15 +10,32 @@
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="customer_id">انتخاب مشتری<span class="text-danger">*</span></label>
+                        <select name="customer_id" id="customer_id" class="js-example-basic-single">
+                            <option value="">یک مشتری انتخاب کنید</option>
+                            @foreach($customers as $customer)
+                                <option value="{{ $customer->id }}" data-name="{{ $customer->name }}"
+                                        data-phone="{{ $customer->phone1 }}">
+                                    {{ $customer->name }}
+                                </option>
+                        @endforeach
+                        </select>
+                        @error('customer_id')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="receiver_name">نام گیرنده<span class="text-danger">*</span></label>
-                        <input type="text" name="receiver_name" class="form-control" id="receiver_name" value="{{ old('receiver_name') }}">
+                        <input type="text" name="receiver_name" class="form-control" id="receiver_name"
+                               value="{{ old('receiver_name') }}">
                         @error('receiver_name')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="receiver_phone">شماره گیرنده<span class="text-danger">*</span></label>
-                        <input type="text" name="receiver_phone" class="form-control" id="receiver_phone" value="{{ old('receiver_phone') }}">
+                        <input type="text" name="receiver_phone" class="form-control" id="receiver_phone"
+                               value="{{ old('receiver_phone') }}">
                         @error('receiver_phone')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -27,7 +44,6 @@
                         <label for="message">متن پیام<span class="text-danger">*</span></label>
                         <textarea id="message" name="message" class="form-control" rows="10">
 با عرض سلام خدمت [نام مخاطب]
-[پیام شما]
 خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
 
 دانلود کاتالوگ محصولات:
@@ -47,129 +63,37 @@ www.instagram.com/artintoner.ir
 09906424827
 09014667657
 09027386996
-
 با سپاس،
-ماندگارپارس</textarea>
+ماندگارپارس
+                        </textarea>
                         @error('message')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit">ارسال پیامک</button>
-                <div class="modal" id="uploadModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">در حال ارسال...</h5>
-                            </div>
-                            <div class="modal-body text-center">
-                                <p>لطفا منتظر بمانید...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </form>
         </div>
     </div>
-    <style>
-        .modal-content {
-            width: 300px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1050;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: rgba(0, 0, 0, 0.5);
-            outline: 0;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-    </style>
-    {{--Jquery--}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            var form = $('#sms-form');
-            var modal = $('#uploadModal');
             var receiverNameInput = $('#receiver_name');
+            var receiverPhoneInput = $('#receiver_phone');
             var messageTextarea = $('#message');
-            var defaultMessage = `با عرض سلام خدمت [نام مخاطب]
-خوشحالیم که شما را در جمع مشتریان ارزشمند خود داریم. برای اطلاع از جدیدترین اخبار و پیشنهادات ویژه، ما را در صفحات اجتماعی دنبال کنید:
+            var defaultMessage = messageTextarea.val();
 
-دانلود کاتالوگ محصولات:
-https://artintoner.com/folder/Catalog-v1.3.10.pdf
+            $('#customer_id').on('change', function () {
+                var selectedOption = $(this).find('option:selected');
+                var customerName = selectedOption.data('name');
+                var customerPhone = selectedOption.data('phone');
 
-فروشگاه اینترنتی:
-https://artintoner.com
+                receiverNameInput.val(customerName);
+                receiverPhoneInput.val(customerPhone);
 
-اپلیکیشن:
-https://mpsystem.ir/Discover
-
-اینستاگرام:
-www.instagram.com/artintoner.ir
-
-شماره تماس
-02165425052-54
-09906424827
-09014667657
-09027386996
-با سپاس،
-ماندگارپارس`;
-
-            receiverNameInput.on('input', function () {
-                var name = $(this).val();
-                var message = defaultMessage.replace('[نام مخاطب]', name);
-                messageTextarea.val(message);
-            });
-
-            form.on('submit', function (event) {
-                event.preventDefault();
-
-                var formData = new FormData(this);
-                var messageContent = messageTextarea.val();
-                formData.set('message', messageContent);
-
-                modal.css('display', 'flex');
-
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function () {
-                        console.log("قبل از ارسال");
-                    },
-                    success: function (response) {
-                        modal.hide();
-                        if (response.success) {
-                            window.location.href = "{{ route('sms.index') }}";
-                        } else if (response.failed) {
-                            alert(response.failed);
-                        }
-                    },
-                    error: function (xhr) {
-                        modal.hide();
-                        if (xhr.status === 422) {
-                            var errors = xhr.responseJSON.errors;
-                            var errorMessage = "خطا در اعتبارسنجی:<br>";
-                            for (var key in errors) {
-                                if (errors.hasOwnProperty(key)) {
-                                    errorMessage += "- " + errors[key][0] + "<br>";
-                                }
-                            }
-                            alert(errorMessage);
-                        } else {
-                            alert("مشکلی در ارسال پیامک وجود دارد");
-                        }
-                    }
-                });
+                // Updating message with customer name
+                var personalizedMessage = defaultMessage.replace('[نام مخاطب]', customerName);
+                messageTextarea.val(personalizedMessage);
             });
         });
     </script>

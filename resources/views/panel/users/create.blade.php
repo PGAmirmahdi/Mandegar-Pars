@@ -12,145 +12,143 @@
                     </a>
                 @endcan
             </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered dataTable dtr-inline text-center" style="width: 100%">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>نام</th>
-                        <th>نام خانوادگی</th>
-                        <th>شماره موبایل</th>
-                        <th>نقش</th>
-                        <th>عکس امضا</th>
-                        <th>عکس پروفایل</th>
-                        <th>تاریخ ایجاد</th>
-                        @can('users-edit')
-                            <th>ویرایش</th>
-                        @endcan
-                        @can('users-delete')
-                            <th>حذف</th>
-                        @endcan
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($users as $key => $user)
-                        <tr>
-                            <td>{{ ++$key }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->family }}</td>
-                            <td>{{ $user->phone }}</td>
-                            <td>{{ $user->role->label }}</td>
-                            <td>
-                                @if($user->sign_image)
-                                    <a href="{{ $user->sign_image ?? '' }}">
-                                        <img src="{{ $user->sign_image ?? '' }}" class="sign" alt="sign" width="75px" height="75px">
-                                    </a>
-                                @else
-                                    عکس امضا ندارد
-                                @endif
-                                <button class="btn btn-info btn-sm mt-1" data-toggle="modal" data-target="#editSignImageModal{{ $user->id }}">ویرایش عکس امضا</button>
-                            </td>
-                            <td>
-                                @if($user->profile)
-                                    <a href="{{ $user->profile ?? '' }}">
-                                        <img src="{{ $user->profile ?? '' }}" class="profile" alt="profile" width="75px" height="75px">
-                                    </a>
-                                @else
-                                    عکس پروفایل ندارد
-                                @endif
-                                <button class="btn btn-info btn-sm mt-1" data-toggle="modal" data-target="#editProfileImageModal{{ $user->id }}">ویرایش عکس پروفایل</button>
-                            </td>
-                            <td>{{ verta($user->created_at)->format('H:i - Y/m/d') }}</td>
-                            @can('users-edit')
-                                <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('users.edit', $user->id) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                </td>
-                            @endcan
-                            @can('users-delete')
-                                <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('users.destroy',$user->id) }}" data-id="{{ $user->id }}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            @endcan
-                        </tr>
+            <form id="user-form" action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="form-row">
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="name">نام کاربر<span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" id="name" value="{{ old('name') }}">
+                        @error('name')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="family">نام خانوادگی<span class="text-danger">*</span></label>
+                        <input type="text" name="family" class="form-control" id="family" value="{{ old('family') }}">
+                        @error('family')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="phone"> شماره تلفن <span class="text-danger">*</span> </label>
+                        <input type="text" name="phone" class="form-control" id="phone"
+                               value="{{ old('phone') }}">
+                        @error('phone')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @can('admin')
+                        @if(auth()->id() != $user->id)
+                            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                <label for="role">نقش<span class="text-danger">*</span></label>
+                                <select class="form-control" name="role" id="role">
+                                    @foreach(\App\Models\Role::all() as $role)
+                                        <option
+                                            value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>{{ $role->label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('role')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
+                    @endcan
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="password">رمز عبور <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control" id="password" required>
+                        @error('password')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                        <!-- Modal برای ویرایش عکس امضا -->
-                        <div class="modal fade" id="editSignImageModal{{ $user->id }}" tabindex="-1" aria-labelledby="editSignImageModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editSignImageModalLabel">ویرایش عکس امضا</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="{{ route('users.updateSignImage', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone" id="sign-dropzone{{ $user->id }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="dz-message">عکس امضا خود را اینجا رها کنید</div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                                        <button type="button" class="btn btn-primary" onclick="processSignUpload('{{ $user->id }}')">بارگذاری</button>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="profile">تصویر پروفایل<span class="text-danger">*</span></label>
+                        <input type="file" name="profile" id="profile" class="dropzone">
+                        @error('profile')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="modal" id="uploadModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">در حال بارگذاری...</h5>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <div class="progress-circle">
+                                        <svg viewBox="0 0 36 36" class="circular-chart">
+                                            <path class="circle-bg"
+                                                  d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                            <path class="circle"
+                                                  stroke-dasharray="0, 100"
+                                                  d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                            <text x="18" y="20.35" class="percentage">0%</text>
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Modal برای ویرایش عکس پروفایل -->
-                        <div class="modal fade" id="editProfileImageModal{{ $user->id }}" tabindex="-1" aria-labelledby="editProfileImageModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editProfileImageModalLabel">ویرایش عکس پروفایل</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="{{ route('users.updateProfileImage', $user->id) }}" method="post" enctype="multipart/form-data" class="dropzone" id="profile-dropzone{{ $user->id }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="dz-message">عکس پروفایل خود را اینجا رها کنید</div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                                        <button type="button" class="btn btn-primary" onclick="processProfileUpload('{{ $user->id }}')">بارگذاری</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    @endforeach
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                    </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="d-flex justify-content-center">{{ $users->links() }}</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">بارگذاری</button>
+            </form>
         </div>
     </div>
 
-    <!-- اسکریپت Dropzone -->
-    <script>
-        Dropzone.autoDiscover = false;
+    <style>
+        .modal-content { width: 300px; }
+        .modal { display: none; position: fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; }
+        .progress-circle { width: 100px; margin: auto; }
+        .circular-chart { display: block; max-width: 100%; max-height: 100%; }
+        .circle-bg { fill: none; stroke: #eee; stroke-width: 3.8; }
+        .circle { fill: none; stroke-width: 2.8; stroke-linecap: round; stroke: #4caf50; transition: stroke-dasharray 0.3s; }
+        .percentage { fill: #666; font-family: sans-serif; font-size: 0.5em; text-anchor: middle; }
+    </style>
 
-        function processSignUpload(userId) {
-            var dropzone = new Dropzone("#sign-dropzone" + userId);
-            dropzone.processQueue();
-        }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var form = $('#user-form');
+            var modal = $('#uploadModal');
+            var circle = $('.circle');
+            var percentageText = $('.percentage');
 
-        function processProfileUpload(userId) {
-            var dropzone = new Dropzone("#profile-dropzone" + userId);
-            dropzone.processQueue();
-        }
+            form.on('submit', function (event) {
+                event.preventDefault();
+                var formData = new FormData(this);
+                modal.css('display', 'flex');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                circle.attr('stroke-dasharray', percentComplete + ', 100');
+                                percentageText.text(percentComplete + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function (response) {
+                        modal.hide();
+                        window.location.href = "{{ route('users.index') }}";
+                    },
+                    error: function (xhr) {
+                        modal.hide();
+                        window.location.href = "{{ route('users.index') }}";
+                    }
+                });
+            });
+        });
     </script>
 @endsection
