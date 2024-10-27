@@ -16,6 +16,7 @@
                     <p onclick="copyToClipboard('خصوصی', this)"> نوع مالکیت: <strong>خصوصی</strong></p>
                     <p onclick="copyToClipboard('مسئولیت محدود', this)"> نوع شخص حقوقی: <strong>مسئولیت محدود</strong></p>
                     <p onclick="copyToClipboard('9931', this)"> شماره ثبت: <strong>9931</strong></p>
+                    <p onclick="copyToClipboard('515311', this)"> کد ایسیک: <strong>515311</strong></p>
                     <p onclick="copyToClipboard('1401/05/10', this)"> تاریخ ثبت: <strong>1401/05/10</strong></p>
                     <p onclick="copyToClipboard('1401/04/01', this)"> تاریخ شروع فعالیت: <strong>1401/04/01</strong></p>
                     <p onclick="copyToClipboard('تجاری', this)"> نوع فعالیت: <strong>تجاری</strong></p>
@@ -25,6 +26,8 @@
                     <p onclick="copyToClipboard('جناب آقای غلامی نظامی', this)"> نام: <strong>جناب آقای غلامی نظامی</strong></p>
                     <p onclick="copyToClipboard('09121447598', this)">شماره تماس: <strong>09121447598</strong></p>
                     <p onclick="copyToClipboard('0010963601', this)">شماره ملی: <strong>0010963601</strong></p>
+                    <p onclick="copyToClipboard('1368/06/24', this)">تاریخ تولد: <strong>1368/06/24</strong></p>
+                    <p onclick="copyToClipboard('1402443503', this)">شماره صنفی: <strong>1402443503</strong></p>
                 </div>
                 <div class="mb-3 col-lg-3 col-md-6 col-sm-12">
                     <h5 class="card-title">اطلاعات تماس</h5>
@@ -38,6 +41,18 @@
                     <p onclick="copyToClipboard('صفادشت', this)">شهر: <strong>صفادشت</strong></p>
                     <p onclick="copyToClipboard('صفادشت،بلوار خرداد،بین خیابان پنجم و ششم غربی،پلاک 228', this)">آدرس: <strong>صفادشت،بلوار خرداد،بین خیابان پنجم و ششم غربی،پلاک 228</strong></p>
                 </div>
+                <div class="mb-3 col-lg-3 col-md-6 col-sm-12">
+                    <h5 class="card-title">اطلاعات حساب بانکی</h5>
+                    <p onclick="copyToClipboard('0101', this)">کد شعبه: <strong>0101    </strong></p>
+                    <p onclick="copyToClipboard('0103967138001', this)">شماره حساب: <strong>0103967138001</strong></p>
+                    <p onclick="copyToClipboard('IR550110000000103967138001', this)">شماره شبا: <strong>IR550110000000103967138001</strong></p>
+                    <p onclick="copyToClipboard('www.mpsystem.ir', this)">اتوماسیون: <strong>www.mpsystem.ir</strong></p>
+                    <p onclick="copyToClipboard('02165425052-4', this)">شماره های تماس: <strong>02165425052-4</strong></p>
+                </div>
+{{--                <div class="mb-3 col-lg-3 col-md-6 col-sm-12">--}}
+{{--                    <h5 class="card-title">فایلهای مربوطه</h5>--}}
+{{--                    <a href="{{asset('assets/media/image/Info/Parvane_Kasb.jpg')}}"><img src="{{asset('assets/media/image/Info/Parvane_Kasb.jpg')}}" alt="پروانه کسب" width="200px" height="fit-content"><strong>پروانه کسب</strong></a>--}}
+{{--                </div>--}}
             </div>
         </div>
 {{--        <div id="copyNotification" class="notification"></div>--}}
