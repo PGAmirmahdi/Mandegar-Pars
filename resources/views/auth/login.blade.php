@@ -91,7 +91,7 @@
         </div>
         <div class="frc-captcha" data-sitekey="{{ env('FRIENDLY_CAPTCHA_SITEKEY') }}" style="width:100vw;"></div>
         <div class="form-group" id="captcha_sec">
-            @error('frc-captcha-solution')
+            @error('frc-captcha-response')
             <span class="invalid-feedback d-block" role="alert">
             <strong>{{ $message }}</strong>
             </span>
@@ -127,6 +127,16 @@
             })
         })
     })
+    document.querySelector('form').addEventListener('submit', function (event) {
+        const captchaResponse = document.querySelector('input[name="frc-captcha-response"]');
+        if (captchaResponse.value === '.ACTIVATED') {
+            captchaResponse.value = ''; // مقدار را خالی کنید
+        } else if (captchaResponse.value === '.UNACTIVATED') {
+            captchaResponse.value = ''; // مقدار را خالی کنید
+        }
+
+    });
+
 </script>
 </body>
 

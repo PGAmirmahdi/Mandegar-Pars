@@ -39,7 +39,7 @@ class LoginController extends Controller
 
         // cURL initialization
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.friendlycaptcha.com/api/v1/siteverify');
+        curl_setopt($ch, CURLOPT_URL, 'https://global.frcapi.com/api/v2/captcha/siteverify');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . env('FRIENDLY_CAPTCHA_API_KEY'),
@@ -67,8 +67,13 @@ class LoginController extends Controller
         // Decode the response
         $responseData = json_decode($response, true);
 
+        // Check if the CAPTCHA was successful
         if (!$responseData['success']) {
             return back()->withErrors(['captcha_code' => 'کد امنیتی وارد شده صحیح نیست']);
+        }
+
+        if ($responseData['success']) {
+            return $this->attemptLogin($request);
         }
     }
 
