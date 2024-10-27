@@ -11,6 +11,7 @@
         "ext-json": "*",
         "ext-libxml": "*",
         "ext-pdo": "*",
+        "anhskohbo/no-captcha": "*",
         "beyondcode/laravel-websockets": "^1.14",
         "carlos-meneses/laravel-mpdf": "^2.1",
         "fruitcake/laravel-cors": "^2.0",
