@@ -22,7 +22,7 @@
     <link rel="manifest" href="/manifest.json">
     <!-- Najva Push Notification -->
     <script type="text/javascript">
-        (function(){
+        (function () {
             var now = new Date();
             var version = now.getFullYear().toString() + "0" + now.getMonth() + "0" + now.getDate() +
                 "0" + now.getHours();
@@ -39,14 +39,25 @@
         })()
     </script>
     <!-- END NAJVA PUSH NOTIFICATION -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.8/site.min.js" async
+            defer></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.8/site.compat.min.js" async
+            defer></script>
 </head>
 <style>
-    #captcha_sec img{
+    #captcha_sec img {
         cursor: pointer;
     }
-    #captcha_sec input{
+
+    #captcha_sec input {
         text-align: center !important;
         letter-spacing: 1rem;
+    }
+    iframe {
+        width: 100%; /* عرض کامل */
+        height: 80px; /* ارتفاع مورد نظر */
+        margin:0px;
+        position:relative !important;
     }
 </style>
 <body class="form-membership">
@@ -71,18 +82,19 @@
     <form action="{{ route('login') }}" method="post">
         @csrf
         <div class="form-group">
-            <input type="text" name="phone" class="form-control text-left" placeholder="شماره موبایل" dir="ltr" required autofocus>
+            <input type="text" name="phone" class="form-control text-left" placeholder="شماره موبایل" dir="ltr" required
+                   autofocus>
         </div>
         <div class="form-group">
-            <input type="password" name="password" class="form-control text-left" placeholder="رمز عبور" dir="ltr" required>
+            <input type="password" name="password" class="form-control text-left" placeholder="رمز عبور" dir="ltr"
+                   required>
         </div>
+        <div class="frc-captcha" data-sitekey="{{ env('FRIENDLY_CAPTCHA_SITEKEY') }}" style="width:100vw;"></div>
         <div class="form-group" id="captcha_sec">
-            {!! captcha_img() !!}
-            <input type="text" name="captcha_code" class="form-control text-left mt-2 mb-0" placeholder="کد امنیتی" dir="ltr" required autofocus>
-            @error('captcha_code')
+            @error('frc-captcha-solution')
             <span class="invalid-feedback d-block" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
         <button class="btn btn-primary btn-block">ورود</button>
@@ -93,8 +105,8 @@
         @enderror
     </form>
     <!-- ./ form -->
-
 </div>
+
 
 <!-- Plugin scripts -->
 <script src="vendors/bundle.js"></script>
@@ -104,12 +116,12 @@
 
 <script>
     $(document).ready(function () {
-        $(document).on('click', '#captcha_sec img', function (){
+        $(document).on('click', '#captcha_sec img', function () {
             $.ajax({
                 type: 'get',
                 url: '/captcha/api',
-                success: function (res){
-                    $('#captcha_sec img').attr('src',res.img)
+                success: function (res) {
+                    $('#captcha_sec img').attr('src', res.img)
                     // console.log($(this))
                 }
             })

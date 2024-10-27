@@ -70,7 +70,7 @@ class SendMessage extends Notification
     {
         $firebaseToken = [$token];
 
-        $SERVER_API_KEY = 'AAAAAqqjtGY:APA91bGqBtuYddBnAnliS0HOL1PBuf8cbWgdkNWMpOJCMFuWPVq2nCZoLTZIcxDQMJf8OwAsWRYYan5BpXC6qFdoIpyWW91OCUOu-eDOggSmBv-Oi5ebT2FWdSRid7OV1iP02_9rGftS';
+        $SERVER_API_KEY = env('FireBase_Key');
 
         $data = [
             "registration_ids" => $firebaseToken,
