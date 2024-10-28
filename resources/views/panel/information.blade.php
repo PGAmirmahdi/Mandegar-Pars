@@ -83,8 +83,8 @@
                                             src="{{asset('assets/media/image/Info/Rouzname.png')}}" alt="روزنامه رسمی"
                                             width="200px"
                                             height="fit-content"></a></td>
-                                <td><a href="{{asset('assets/media/image/logo.png')}}"><img
-                                            src="{{asset('assets/media/image/logo.png')}}" alt="لوگو برند"
+                                <td><a href="{{asset('assets/media/image/logo-lg.png')}}"><img
+                                            src="{{asset('assets/media/image/logo-lg.png')}}" alt="لوگو برند"
                                             width="200px"
                                             height="fit-content"></a></td>
                             </tr>
