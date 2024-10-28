@@ -63,6 +63,13 @@
                     </a>
                 </li>
             @endcan
+            @can('folder-list')
+                <li class="{{ active_sidebar(['files','files/create','files/create-folder','files/folder/{folder}']) ? 'active' : '' }}" data-toggle="tooltip" title="مدیریت فایل">
+                    <a href="#navigationFileControl" title="مدیریت فایل">
+                        <i class="icon ti-folder"></i>
+                    </a>
+                </li>
+            @endcan
 {{--            @can('bot-manager')--}}
 {{--                <li class="{{ active_sidebar(['bot-profile']) ? 'active' : '' }}" data-toggle="tooltip" title="ربات تلگرام">--}}
 {{--                    <a href="#navigationBot" title="ربات تلگرام">--}}
@@ -310,6 +317,14 @@
             @can('exit-door')
                 <li>
                     <a class="{{ active_sidebar(['exit-door','exit-door/create','exit-door/{exit_door}/edit','search/exit-door']) ? 'active' : '' }}" href="{{ route('exit-door.index') }}">ثبت خروج</a>
+                </li>
+            @endcan
+        </ul>
+        <ul id="navigationFileControl" class="{{ active_sidebar(['files','files/create','files/create-folder','files/folder/{folder}']) ? 'navigation-active' : '' }}">
+            <li class="navigation-divider">مدیریت فایل</li>
+            @can('folder-list')
+                <li>
+                    <a class="{{ active_sidebar(['files','files/create','files/create-folder','files/folder/{folder}']) ? 'active' : '' }}" href="{{ route('files.index') }}">مدیریت فایل</a>
                 </li>
             @endcan
         </ul>
