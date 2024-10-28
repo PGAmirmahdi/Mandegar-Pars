@@ -15,6 +15,7 @@ use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\DeliveryDayController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
+use App\Http\Controllers\Panel\FileController;
 use App\Http\Controllers\Panel\ForeignCustomerController;
 use App\Http\Controllers\Panel\GuaranteeController;
 use App\Http\Controllers\Panel\InputController;
@@ -310,7 +311,17 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('sms', SMSController::class)->except('edit','update');
     Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
     Route::get('/send-test-event/{userId}', [InvoiceController::class, 'testEvent']);
+
+    // File Control
+    Route::resource('files', FileController::class)->middleware('auth');
+    Route::post('files/create-folder', [FileController::class, 'createFolder'])->name('files.createFolder');
+    Route::get('files/download/{id}', [FileController::class, 'download'])->name('files.download');
+    Route::get('files/folder/{folder}', [FileController::class, 'showFolder'])->name('files.showFolder');
+    Route::post('files/bulk-destroy', [FileController::class, 'bulkDestroy'])->name('files.bulkDestroy');
 });
+
+// Share File
+Route::get('/files/share/{id}', [FileController::class, 'share'])->name('files.share');
 Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
 Route::get('/user-visits', function() {
     $userVisits = UserVisit::selectRaw('DATE(created_at) as date, COUNT(*) as visits')
