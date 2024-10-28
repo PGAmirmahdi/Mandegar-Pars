@@ -84,7 +84,7 @@
                                             width="200px"
                                             height="fit-content"></a></td>
                                 <td><a href="{{asset('assets/media/image/logo.png')}}"><img
-                                            src="{{asset('assets/media/image/Info/logo.png')}}" alt="لوگو برند"
+                                            src="{{asset('assets/media/image/logo.png')}}" alt="لوگو برند"
                                             width="200px"
                                             height="fit-content"></a></td>
                             </tr>
