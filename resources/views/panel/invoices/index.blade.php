@@ -149,7 +149,9 @@
                             <td>@if($invoice->payment_type) {{ \App\Models\Invoice::Payment_Type[$invoice->payment_type] }} @else نوع پرداختی تعیین نشده @endif</td>
                             <td>{{ \App\Models\Invoice::REQ_FOR[$invoice->req_for] }}</td>
                             <td>{{ $invoice->province }}</td>
-                            <td>{{ \App\Models\Invoice::CREATED_IN[$invoice->created_id] }}</td>
+                            @if($invoice->created_in)
+                            <td>{{ \App\Models\Invoice::CREATED_IN[$invoice->created_in] }}</td>
+                            @endif
                             <td>{{ $invoice->city }}</td>
                             <td>{{ $invoice->phone }}</td>
                             <td>
