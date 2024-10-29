@@ -53,7 +53,8 @@ class ApiController extends Controller
                 'items.*.total.required' => 'قیمت کل باید وارد شود.',
             ]);
             $data = $request->all();
-
+            // محاسبه هزینه ارسال
+            $shipping_cost = $request->input('shipping_cost', 0); // فرض بر اینکه هزینه ارسال در درخواست وجود دارد
             $role_id = \App\Models\Role::whereHas('permissions', function ($permission) {
                 $permission->where('name', 'single-price-user');
             })->pluck('id');
@@ -118,9 +119,9 @@ class ApiController extends Controller
                     'price' => $price * 10,
                     'total_price' => $total,
                     'discount_amount' => 0,
-                    'extra_amount' => 0,
+                    'extra_amount' => $shipping_cost * 10, // هزینه ارسال
                     'tax' => $total * $tax,
-                    'invoice_net' => (int)$total + ($total * $tax),
+                    'invoice_net' => (int)$total + ($total * $tax) + ($shipping_cost * 10), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
                 ]);
 
                 $invoice->factor()->updateOrCreate(['status' => 'paid']);
