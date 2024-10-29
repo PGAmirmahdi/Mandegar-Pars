@@ -65,6 +65,7 @@ class FileController extends Controller
             'file_path' => $filePath,
             'file_type' => $file->getClientMimeType(),
             'parent_folder_id' => $request->parent_folder_id,
+            'user_role' => Auth::user()->role->name, // ذخیره نقش کاربر
         ]);
         alert()->success('فایل با موفقیت بارگذاری شد', 'بارگذاری فایل');
         return redirect()->route('files.index')->with('success', 'فایل با موفقیت بارگذاری شد.');
@@ -82,6 +83,7 @@ class FileController extends Controller
             'file_name' => $request->folder_name,
             'file_type' => 'folder',
             'parent_folder_id' => $request->parent_folder_id,
+            'user_role' => Auth::user()->role->name,
         ]);
         alert()->success('فولدر با موفقیت ایجاد شد', 'ایجاد فولدر');
         return redirect()->route('files.index')->with('success', 'فولدر با موفقیت ایجاد شد.');

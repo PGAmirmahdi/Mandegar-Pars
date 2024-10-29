@@ -109,13 +109,13 @@ class ApiController extends Controller
             foreach ($request->items as $item) {
                 $product = Product::where('code', $item['acc_code'])->first();
 
-                $price = ($item['total'] / $item['quantity']);
-                $total = $item['total'];
+                $price = ($item['total'] / $item['quantity']) * 10; // تبدیل قیمت واحد به ریال
+                $total = $item['total'] * 10; // تبدیل قیمت کل به ریال
 
                 $invoice->products()->attach($product->id, [
                     'color' => 'black',
                     'count' => $item['quantity'],
-                    'price' => $price,
+                    'price' => $price * 10,
                     'total_price' => $total,
                     'discount_amount' => 0,
                     'extra_amount' => 0,
