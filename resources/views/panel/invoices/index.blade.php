@@ -112,6 +112,7 @@
                         <th>درخواست جهت</th>
                         <th>استان</th>
                         <th>شهر</th>
+                        <th>ثبت شده در</th>
                         <th>شماره تماس</th>
                         <th>وضعیت</th>
 {{--                        @canany(['accountant', 'sales-manager'])--}}
@@ -148,6 +149,7 @@
                             <td>@if($invoice->payment_type) {{ \App\Models\Invoice::Payment_Type[$invoice->payment_type] }} @else نوع پرداختی تعیین نشده @endif</td>
                             <td>{{ \App\Models\Invoice::REQ_FOR[$invoice->req_for] }}</td>
                             <td>{{ $invoice->province }}</td>
+                            <td>{{ \App\Models\Invoice::CREATED_IN[$invoice->created_id] }}</td>
                             <td>{{ $invoice->city }}</td>
                             <td>{{ $invoice->phone }}</td>
                             <td>
