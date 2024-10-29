@@ -43,7 +43,8 @@
                             <td>
                                 @if($user->sign_image)
                                     <a href="{{ $user->sign_image ?? '' }}">
-                                        <img src="{{ $user->sign_image ?? '' }}" class="sign" alt="sign" width="75px" height="75px">
+                                        <img src="{{ $user->sign_image ?? '' }}" class="sign" alt="sign" width="75px"
+                                             height="75px">
                                     </a>
                                 @else
                                     عکس امضا ندارد
@@ -52,7 +53,8 @@
                             <td>
                                 @if($user->profile)
                                     <a href="{{ $user->profile ?? '' }}">
-                                        <img src="{{ $user->profile ?? '' }}" class="profile" alt="profile" width="75px" height="75px">
+                                        <img src="{{ $user->profile ?? '' }}" class="profile" alt="profile" width="75px"
+                                             height="75px">
                                     </a>
                                 @else
                                     عکس پروفایل ندارد
@@ -68,13 +70,14 @@
                             @endcan
                             @can('users-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('users.destroy',$user->id) }}" data-id="{{ $user->id }}">
+                                    <button class="btn btn-danger btn-floating trashRow"
+                                            data-url="{{ route('users.destroy',$user->id) }}" data-id="{{ $user->id }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
                             @endcan
                         </tr>
-                        @endforeach
+                    @endforeach
                     </tbody>
                     <tfoot>
                     <tr>

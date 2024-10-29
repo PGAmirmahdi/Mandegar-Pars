@@ -13,7 +13,8 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
         <!-- مدال اشتراک‌گذاری -->
-        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -33,7 +34,8 @@
             </div>
         </div>
         <!-- مدال ساخت فولدر -->
-        <div class="modal fade" id="createFolderModal" tabindex="-1" role="dialog" aria-labelledby="createFolderModalLabel" aria-hidden="true">
+        <div class="modal fade" id="createFolderModal" tabindex="-1" role="dialog"
+             aria-labelledby="createFolderModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -60,7 +62,8 @@
         </div>
 
         <!-- مدال آپلود فایل -->
-        <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+        <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -95,7 +98,8 @@
                         <form method="GET">
                             <div class="form-row align-items-center">
                                 <div class="col-auto">
-                                    <input type="text" name="search" class="form-control" placeholder="جستجو در همین مسیر" value="{{ request('search') }}">
+                                    <input type="text" name="search" class="form-control"
+                                           placeholder="جستجو در همین مسیر" value="{{ request('search') }}">
                                 </div>
                                 <div class="col-auto">
                                     <button type="submit" class="btn btn-info"><i class="ti-search"></i></button>
@@ -115,7 +119,8 @@
                             </button>
                         @endcan
                         @if(isset($folder) && $folder->parent_folder_id)
-                            <a href="{{ route('files.showFolder', $folder->parent_folder_id) }}" class="btn btn-danger"><i class="ti-angle-left"></i></a>
+                            <a href="{{ route('files.showFolder', $folder->parent_folder_id) }}" class="btn btn-danger"><i
+                                    class="ti-angle-left"></i></a>
                         @endif
                     </div>
                 </h5>
@@ -124,7 +129,8 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center file">
                             <div>
                                 @if($file->file_type == 'folder')
-                                    <a href="{{ route('files.showFolder', $file->id) }}" class="open-folder-link" style="text-decoration: none; color: inherit;">
+                                    <a href="{{ route('files.showFolder', $file->id) }}" class="open-folder-link"
+                                       style="text-decoration: none; color: inherit;">
                                         📁 <strong>{{ $file->file_name }}</strong>
                                     </a>
                                 @else
@@ -144,19 +150,27 @@
                                     @endphp
                                     <i class="{{ $iconClass }}"></i>
                                     <strong>{{ $file->file_name }}</strong> -
-                                    <small class="text-muted">ارسال شده توسط: {{ $file->user->name }} | تاریخ بارگذاری: {{ verta($file->created_at)->format('Y/m/d') }}</small>
+                                    <small class="text-muted">ارسال شده توسط: {{ $file->user->role->label . ' ' . $file->user->name }} | تاریخ
+                                        بارگذاری: {{ verta($file->created_at)->format('Y/m/d') }}</small>
                                 @endif
                             </div>
                             <div>
                                 @if($file->file_type != 'folder')
-                                    <a href="{{ route('files.download', $file->id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-download"></i></a>
-                                    <button class="btn btn-sm btn-info share-button" data-id="{{ $file->id }}" data-toggle="modal" data-target="#shareModal"><i class="ti-link"></i></button>
+                                    <a href="{{ route('files.download', $file->id) }}" class="btn btn-sm btn-primary"><i
+                                            class="fa-solid fa-download"></i></a>
+                                    @can('share-file')
+                                        <button class="btn btn-sm btn-info share-button" data-id="{{ $file->id }}"
+                                                data-toggle="modal" data-target="#shareModal"><i class="ti-link"></i>
+                                        </button>
+                                    @endcan
                                 @endif
                                 @can('delete-file')
-                                    <form action="{{ route('files.destroy', $file->id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('files.destroy', $file->id) }}" method="POST"
+                                          style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                        <button type="submit" class="btn btn-sm btn-danger"><i
+                                                class="fa-solid fa-trash"></i></button>
                                     </form>
                                 @endcan
                             </div>
@@ -178,14 +192,14 @@
         }
     @endphp
     <script>
-        $(document).on('click', '.share-button', function() {
+        $(document).on('click', '.share-button', function () {
             var fileId = $(this).data('id');
-            $.get("{{ url('/files/share') }}/" + fileId, function(data) {
+            $.get("{{ url('/files/share') }}/" + fileId, function (data) {
                 $('#shareLink').val(data.link);
             });
         });
 
-        $('#copyLinkButton').on('click', function() {
+        $('#copyLinkButton').on('click', function () {
             var shareLink = document.getElementById('shareLink');
             shareLink.select();
             document.execCommand("copy");
