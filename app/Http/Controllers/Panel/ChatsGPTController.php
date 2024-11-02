@@ -33,6 +33,7 @@ class ChatsGPTController extends Controller
 
     public function store(Request $request)
     {
+        // اعتبارسنجی درخواست
         $request->validate([
             'message' => 'required|string|max:1000',
         ]);
@@ -40,55 +41,55 @@ class ChatsGPTController extends Controller
         $user = auth()->user();
         $messageText = $request->input('message');
 
+        // ذخیره پیام کاربر در دیتابیس
         ChatMessage::create([
             'user_id' => $user->id,
             'message' => $messageText,
             'is_user_message' => true,
         ]);
 
-        $data = json_encode([
-            'text' => $messageText,
-        ]);
-
-        $headers = [
-            'Authorization: Token ' . env('NLP_CLOUD_API_KEY'),
-            'Content-Type: application/json',
+        // داده‌های JSON مورد نیاز برای ارسال به API گوگل جمینی
+        $data = [
+            'contents' => [
+                [
+                    'parts' => [
+                        ['text' => $messageText]
+                    ]
+                ]
+            ]
         ];
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.nlpcloud.io/v1/gpt-j/generate');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POST, true);
+        // ارسال درخواست به API گوگل جمینی
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', $data, [
+            'key' => env('GOOGLE_GEMINI_API_KEY'),
+        ]);
 
-        $response = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            $errorMessage = curl_error($ch);
-            curl_close($ch);
-            return response()->json(['error' => 'cURL error: ' . $errorMessage], 500);
+        // بررسی پاسخ API
+        if ($response->failed()) {
+            Log::error('API request failed', ['response' => $response->body()]);
+            return response()->json(['error' => 'API request failed.'], 500);
         }
 
-        $apiResponse = json_decode($response, true);
+        $apiResponse = $response->json();
 
-        if (isset($apiResponse['generated_text'])) {
-            $responseMessage = $apiResponse['generated_text'];
+        if (isset($apiResponse['contents'][0]['parts'][0]['text'])) {
+            $responseMessage = $apiResponse['contents'][0]['parts'][0]['text'];
 
+            // ذخیره پیام پاسخ در دیتابیس
             ChatMessage::create([
                 'user_id' => $user->id,
                 'message' => $responseMessage,
                 'is_user_message' => false,
             ]);
 
-            curl_close($ch);
             return response()->json(['response' => $responseMessage]);
         } else {
-            curl_close($ch);
-            return response()->json(['error' => 'No response from API.'], 500);
+            Log::error('No valid response from API', ['apiResponse' => $apiResponse]);
+            return response()->json(['error' => 'No valid response from API.'], 500);
         }
     }
-
 
     public function show($userId)
     {

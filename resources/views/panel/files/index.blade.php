@@ -135,6 +135,7 @@
                                     </a>
                                 @else
                                     @php
+                                        // تنظیم آیکون بر اساس نوع فایل
                                         $iconClass = '';
                                         if ($file->file_type == 'application/pdf') {
                                             $iconClass = 'fas fa-file-pdf text-danger';
@@ -159,8 +160,10 @@
                                     <a href="{{ route('files.download', $file->id) }}" class="btn btn-sm btn-primary"><i
                                             class="fa-solid fa-download"></i></a>
                                     @can('share-file')
-                                        <button class="btn btn-sm btn-info share-button" data-id="{{ $file->id }}"
-                                                data-toggle="modal" data-target="#shareModal"><i class="ti-link"></i>
+                                        <button class="btn btn-sm btn-info share-button"
+                                                data-link="{{ route('files.download', $file->id) }}"
+                                                data-toggle="modal" data-target="#shareModal">
+                                            <i class="ti-link"></i>
                                         </button>
                                     @endcan
                                 @endif
@@ -191,12 +194,12 @@
             return implode(' / ', array_reverse($path)); // مسیر را به صورت معکوس نمایش دهید
         }
     @endphp
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).on('click', '.share-button', function () {
-            var fileId = $(this).data('id');
-            $.get("{{ url('/files/share') }}/" + fileId, function (data) {
-                $('#shareLink').val(data.link);
-            });
+            var downloadLink = $(this).data('link');
+            console.log("Download link: " + downloadLink); // بررسی لینک
+            $('#shareLink').val(downloadLink);
         });
 
         $('#copyLinkButton').on('click', function () {
