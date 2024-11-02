@@ -116,7 +116,7 @@ class ApiController extends Controller
                 $invoice->products()->attach($product->id, [
                     'color' => 'black',
                     'count' => $item['quantity'],
-                    'price' => $price * 10,
+                    'price' => $price,
                     'total_price' => $total,
                     'discount_amount' => 0,
                     'extra_amount' => $shipping_cost * 10, // هزینه ارسال
