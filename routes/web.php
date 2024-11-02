@@ -321,7 +321,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 });
 
 // Share File
-Route::get('/files/share/{id}', [FileController::class, 'share'])->name('files.share');
+Route::get('/files/share/{id}', [FileController::class, 'getShareLink'])->name('files.share');
 Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
 Route::get('/user-visits', function() {
     $userVisits = UserVisit::selectRaw('DATE(created_at) as date, COUNT(*) as visits')
@@ -330,7 +330,6 @@ Route::get('/user-visits', function() {
 
     return response()->json($userVisits);
 });
-
 Route::get('Discover', function () {
     return view('panel.discover');
 })->name("Discover");

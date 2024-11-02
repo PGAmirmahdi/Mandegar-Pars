@@ -107,7 +107,7 @@ class ArtinController extends Controller
         $sku = $validatedData['sku'];
         $price = $validatedData['price'];
         $status = $validatedData['status'];
-        $code_accounting = $validatedData['code_accounting']; // اضافه شده
+        $code_accounting = $validatedData['code_accounting'];
 
         try {
             // Establish PDO connection
@@ -147,8 +147,8 @@ class ArtinController extends Controller
             $sql5 = "INSERT INTO mand_postmeta (post_id, meta_key, meta_value) VALUES (:product_id, 'code_accounting', :code_accounting)"; // اضافه شده
             $stmt5 = $this->conn->prepare($sql5);
             $stmt5->bindParam(':product_id', $product_id);
-            $stmt5->bindParam(':code_accounting', $code_accounting); // اضافه شده
-            $stmt5->execute(); // اضافه شده
+            $stmt5->bindParam(':code_accounting', $code_accounting);
+            $stmt5->execute();
 
             // Close PDO connection
             $this->conn = null;

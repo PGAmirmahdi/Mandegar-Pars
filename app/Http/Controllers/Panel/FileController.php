@@ -137,12 +137,11 @@ class FileController extends Controller
 
         return redirect()->back()->with('error', 'هیچ فایلی انتخاب نشده است.');
     }
-    public function share($id)
+    public function getShareLink($id)
     {
         $file = File::findOrFail($id);
-        // فرض بر این است که فایل‌ها در فولدر public ذخیره شده‌اند
-        $link = asset('storage/' . $file->file_path); // لینک دانلود فایل
-        Log::info("Generated share link: " . $link);
-        return response()->json(['link' => $link]);
+        $shareLink = route('files.download', $file->id); // لینک مستقیم دانلود فایل
+
+        return response()->json(['link' => $shareLink]);
     }
 }
