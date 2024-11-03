@@ -36,7 +36,7 @@ class ArtinController extends Controller
                 FROM mand_posts
                 INNER JOIN mand_wc_product_meta_lookup ON mand_posts.id = mand_wc_product_meta_lookup.product_id
                 LEFT JOIN mand_postmeta AS meta ON mand_posts.id = meta.post_id AND meta.meta_key = 'code_accounting' -- اضافه شده برای واکشی کد حسابداری
-                WHERE mand_posts.post_type = 'product';";
+                WHERE mand_posts.post_type = 'product'";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
