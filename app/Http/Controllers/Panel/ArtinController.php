@@ -41,7 +41,7 @@ class ArtinController extends Controller
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            $products = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $products = $stmt->setFetchMode(PDO::FETCH_OBJ);
             $this->conn = null;
 
             // بازگرداندن نمای محصولات به همراه کد حسابداری
