@@ -1,3 +1,4 @@
+@extends('panel.layouts.master')
 @section('title', 'اطلاعات شرکت')
 @section('content')
     <div class="mx-0 ">
