@@ -1,7 +1,3 @@
-
-
-
-
 @section('title', 'اطلاعات شرکت')
 
 @section('content')

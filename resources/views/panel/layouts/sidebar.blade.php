@@ -70,13 +70,13 @@
                     </a>
                 </li>
             @endcan
-{{--            @can('bot-manager')--}}
-{{--                <li class="{{ active_sidebar(['bot-profile']) ? 'active' : '' }}" data-toggle="tooltip" title="ربات تلگرام">--}}
-{{--                    <a href="#navigationBot" title="ربات تلگرام">--}}
-{{--                        <i class="icon fa fa-robot"></i>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
-{{--            @endcan--}}
+            @can('Telegram-bot')
+                <li class="{{ active_sidebar(['bot-profile']) ? 'active' : '' }}" data-toggle="tooltip" title="ربات تلگرام">
+                    <a href="#navigationBot" title="ربات تلگرام">
+                        <i class="icon fa fa-robot"></i>
+                    </a>
+                </li>
+            @endcan
         </ul>
         <ul>
             <li data-toggle="tooltip" title="نسخه های برنامه">
@@ -328,12 +328,14 @@
                 </li>
             @endcan
         </ul>
-{{--        <ul id="navigationBot" class="{{ active_sidebar(['bot-profile']) ? 'navigation-active' : '' }}">--}}
-{{--            <li class="navigation-divider">ربات تلگرام</li>--}}
-{{--            <li>--}}
-{{--                <a class="{{ active_sidebar(['bot-profile']) ? 'active' : '' }}" href="{{ route('bot.profile') }}">مشخصات ربات</a>--}}
-{{--            </li>--}}
-{{--        </ul>--}}
+        <ul id="navigationBot" class="{{ active_sidebar(['bot-profile']) ? 'navigation-active' : '' }}">
+            @can('Telegram-bot')
+            <li class="navigation-divider">ربات تلگرام</li>
+            <li>
+                <a class="{{ active_sidebar(['bot-profile']) ? 'active' : '' }}" href="{{ route('bot.profile') }}">مشخصات ربات</a>
+            </li>
+                @endcan
+        </ul>
     </div>
 </div>
 <!-- end::navigation -->
