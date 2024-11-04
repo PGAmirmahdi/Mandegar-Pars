@@ -7,20 +7,40 @@ use Illuminate\Http\Request;
 
 class BotController extends Controller
 {
-    private $token = '6972066054:AAGJS9VIFQ9_oC0lrsJzpdhxWHgVU9rdHMk';
+    private $token;
+    public function __construct()
+    {
+        $this->token = env('TELEGRAM_BOT_TOKEN');
+    }
 
     public function profile()
     {
-        $this->authorize('bot-manager');
+        $this->authorize('Telegram-bot');
 
-        $this->getMyName();
+        $nameData = $this->getMyName();
+        $descriptionData = $this->getMyDescription();
+        $shortDescriptionData = $this->getMyShortDescription();
 
-        $name = $this->getMyName()['result']['name'];
-        $description = $this->getMyDescription()['result']['description'];
-        $shortDescription = $this->getMyShortDescription()['result']['short_description'];
+        // بررسی اینکه نتیجه‌گیری‌ها `null` نیستند
+        if (is_null($nameData) || !isset($nameData['result']['name'])) {
+            return "Unable to retrieve bot name from Telegram API.";
+        }
 
-        return view('panel.bot.profile', compact('name' ,'description','shortDescription'));
+        if (is_null($descriptionData) || !isset($descriptionData['result']['description'])) {
+            return "Unable to retrieve bot description from Telegram API.";
+        }
+
+        if (is_null($shortDescriptionData) || !isset($shortDescriptionData['result']['short_description'])) {
+            return "Unable to retrieve bot short description from Telegram API.";
+        }
+
+        $name = $nameData['result']['name'];
+        $description = $descriptionData['result']['description'];
+        $shortDescription = $shortDescriptionData['result']['short_description'];
+
+        return view('panel.bot.profile', compact('name', 'description', 'shortDescription'));
     }
+
 
     public function editProfile(Request $request)
     {
@@ -34,17 +54,26 @@ class BotController extends Controller
 
     private function getMyName()
     {
-        $url = $this->getUrl().'/getMyName';
+        $url = $this->getUrl().'/getMe';
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         $result = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            dd('Curl error: ' . curl_error($ch));
+        }
+
         curl_close($ch);
 
-        dd(curl_error($ch));
-        return json_decode($result, true);
+        $response = json_decode($result, true);
+        if (isset($response['ok']) && $response['ok'] === true) {
+            return $response;
+        } else {
+            dd('Unable to retrieve bot name from Telegram API. Response:', $response);
+        }
     }
 
     private function getMyDescription()
