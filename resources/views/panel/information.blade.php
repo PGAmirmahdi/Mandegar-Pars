@@ -1,5 +1,4 @@
 @section('title', 'اطلاعات شرکت')
-
 @section('content')
     <div class="mx-0 ">
         <div class="card mt-5">
