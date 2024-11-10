@@ -6,7 +6,7 @@
             <div class="card-header bg-primary text-white text-center">
                 اطلاعات مربوط به شرکت
             </div>
-            <div class="card-body row"> <!-- Use Bootstrap row class for layout -->
+            <div class="card-body row">
                 <div class="mb-3 col-lg-6 col-md-6 col-sm-12">
                     <h5 class="card-title">اطلاعات پایه</h5>
                     <p onclick="copyToClipboard('شخص حقوقی', this)"> نوع مودی: <strong>شخص حقوقی</strong></p>

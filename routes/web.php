@@ -3,6 +3,7 @@
 use App\Events\SendMessage as SendMessageEvent;
 use App\Events\TestEvent;
 use App\Http\Controllers\Api\v1\ApiController;
+use App\Http\Controllers\Api\v1\WhatsappController;
 use App\Http\Controllers\Auth\PusherAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\ArtinController;
@@ -318,6 +319,10 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::get('files/download/{id}', [FileController::class, 'download'])->name('files.download');
     Route::get('files/folder/{folder}', [FileController::class, 'showFolder'])->name('files.showFolder');
     Route::post('files/bulk-destroy', [FileController::class, 'bulkDestroy'])->name('files.bulkDestroy');
+
+    // WhatsApp
+    Route::resource('whatsapp', WhatsAppController::class);
+
 });
 
 // Share File
@@ -387,6 +392,7 @@ Route::post('/storeDeviceInfo', function (Request $request) {
         return response()->json(['message' => 'Failed to retrieve location info'], 500);
     }
 });
+Route::get('send-to-group', [WhatsAppController::class, 'sendToGroup']);
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
