@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\ApiController;
 use App\Http\Controllers\Api\v1\ChatGPTController;
+use App\Http\Controllers\Api\v1\WhatsappController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
