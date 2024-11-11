@@ -401,3 +401,4 @@ Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
 Route::fallback(function () {
     abort(404);
 });
+

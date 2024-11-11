@@ -1,10 +1,11 @@
 @extends('panel.layouts.master')
-@section('title', 'مشاهده پیامک')
+@section('title', 'مشاهده پیام واتساپی')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>مشاهده پیامک</h6>
+                <h6>مشاهده پیام واتساپی</h6>
+                @if($status=='failed')<span class="badge badge-danger">ناموفق</span>@elseif($status == 'successful')<span class="badge badge-success">موفق</span>@else<span class="badge badge-secondary">{{ $status }}</span>@endif
             </div>
             <form id="sms-form">
                 <div class="form-row">
@@ -26,6 +27,7 @@
 {{ $message }}
                         </textarea>
                     </div>
+                    <div class="col-12 d-flex row justify-content-end"><a href="{{ route('whatsapp.index') }}" class="btn btn-danger" type="submit">بازگشت</a></div>
                 </div>
             </form>
         </div>
