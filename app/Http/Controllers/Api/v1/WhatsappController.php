@@ -127,8 +127,9 @@ www.instagram.com/artintoner.ir
         return view('panel.Whatsapp.show', [
             'user' => $sms->user, // ارسال شیء کاربر به ویو
             'receiver_name' => $sms->receiver_name,
-            'receiver_phone' => $sms->receiver_phone,
-            'message' => $sms->message
+            'receiver_phone' => $sms->phone,
+            'message' => $sms->description,
+            'status' => $sms->status,
         ]);
     }
 

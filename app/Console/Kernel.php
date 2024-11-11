@@ -20,8 +20,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+//        $schedule->command('send:weekly-price-list')->everyMinute();
         // $schedule->command('inspire')->hourly();
-
         // cron set every day at 00:00 for this job
         $schedule->job(InvoiceDeadlineJob::class);
 
