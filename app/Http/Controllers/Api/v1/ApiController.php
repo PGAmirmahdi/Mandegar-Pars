@@ -131,7 +131,6 @@ class ApiController extends Controller
         } catch (\Exception $e) {
             // ثبت خطا در لاگ
             Log::error('Error processing order data: ' . $e->getMessage(), [
-                'data' => $data,
                 'exception' => $e,
             ]);
 
