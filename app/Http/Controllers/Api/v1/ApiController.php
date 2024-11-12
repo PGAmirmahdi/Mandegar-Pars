@@ -121,7 +121,11 @@ class ApiController extends Controller
                 $invoice->factor()->updateOrCreate(['status' => 'paid']);
             }
             Log::info('Order processed successfully', ['data' => $data]);
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json([
+                'success' => true,
+                'message' => 'سفارش با موفقیت از طریق سایت در اتوماسیون ایجاد شد',
+                'data' => $data
+            ], 200);
         } catch (\Exception $e) {
             // ثبت خطا در لاگ
             Log::error('Error processing order data: ' . $e->getMessage(), [
