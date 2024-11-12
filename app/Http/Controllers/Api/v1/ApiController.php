@@ -131,11 +131,9 @@ class ApiController extends Controller
             Log::error('Error processing order data: ' . $e->getMessage(), [
                 'exception' => $e,
             ]);
-
             // اگر بخواهید می‌توانید یک پاسخ خطا به کاربر بازگردانید
             return response()->json(['error' => 'Unable to process order.'], 500);
         }
-
     }
 
 
