@@ -14,6 +14,7 @@ use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Validator;
 
 class ApiController extends Controller
 {
@@ -21,7 +22,7 @@ class ApiController extends Controller
     {
         Log::info('Request data: ', $request->all());
         try {
-            $validatedData = $request->validate([
+            $validator = Validator::make($request->all(), [
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'phone' => 'required|string|digits_between:10,15',
@@ -36,22 +37,15 @@ class ApiController extends Controller
                 'items.*.acc_code' => 'required|string|exists:products,code',
                 'items.*.quantity' => 'required|integer|min:1',
                 'items.*.total' => 'required|numeric|min:0',
-            ], [
-                'first_name.required' => 'فیلد نام الزامی است.',
-                'last_name.required' => 'فیلد نام خانوادگی الزامی است.',
-                'phone.required' => 'شماره تلفن الزامی است.',
-                'national_number.required' => 'کد ملی الزامی است.',
-                'province.required' => 'فیلد استان الزامی است.',
-                'city.required' => 'فیلد شهر الزامی است.',
-                'address_1.required' => 'آدرس الزامی است.',
-                'postal_code.required' => 'کد پستی الزامی است.',
-                'created_in.required' => 'منبع ایجاد سفارش الزامی است.',
-                'payment_type.required' => 'نوع پرداخت الزامی است.',
-                'items.required' => 'حداقل یک آیتم باید انتخاب شود.',
-                'items.*.acc_code.required' => 'کد محصول الزامی است.',
-                'items.*.quantity.required' => 'تعداد آیتم باید وارد شود.',
-                'items.*.total.required' => 'قیمت کل باید وارد شود.',
             ]);
+            if ($validator->fails()) {
+                // اگر اعتبارسنجی شکست خورد، خطاها را لاگ کرده و در پاسخ JSON برمی‌گردانیم
+                Log::error('Validation errors: ', $validator->errors()->toArray());
+                return response()->json([
+                    'error' => 'Validation failed',
+                    'details' => $validator->errors()
+                ], 422);
+            }
             $data = $request->all();
             // محاسبه هزینه ارسال
             $shipping_cost = $request->input('shipping_cost', 0); // فرض بر اینکه هزینه ارسال در درخواست وجود دارد
