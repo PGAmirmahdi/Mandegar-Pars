@@ -193,7 +193,12 @@
     scroll-behavior: smooth;
   }
 }
-
+/* دکمه فقط در سایزهای موبایل نمایش داده شود */
+@media (min-width: 768px) {
+    .d-md-none {
+        display: none !important;
+    }
+}
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
