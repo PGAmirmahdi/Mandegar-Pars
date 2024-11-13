@@ -23,6 +23,7 @@
                             <option value="260039">کد رهگیری مرسوله</option>
                             <option value="260125">عودت فاکتور</option>
                             <option value="260126">یادآوری پرداخت فاکتور</option>
+                            <option value="267553">پیامک به مشتریان سایت</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -281,6 +282,25 @@
                         `Artintoner.com`)
 
                     args = [receiver];
+                }else if(bodyId == 267553){
+                    if(receiver == ''){
+                        $('#text_error').text('ابتدا فیلد گیرنده را وارد نمایید')
+                        text_error = true;
+                    }else if(code == '') {
+                        $('#text_error').text('ابتدا فیلد کد رهگیری را وارد نمایید')
+                        text_error = true;
+                    }else {
+                        text_error = false;
+                        $('#text_error').text('')
+                    }
+
+                    $('#text').html(`مشتری گرامی ${receiver} \n` +
+                        `مرسوله شما به شماره پیگیری ${code} ارسال گردیده است. \n` +
+                        `با تشکر از خرید شما. \n` +
+                        `شرکت صنایع ماشین های اداری ماندگار پارس \n` +
+                        `Artintoner.com`);
+
+                    args = [receiver,code];
                 } else{
                     if(receiver == ''){
                         $('#text_error').text('ابتدا فیلد گیرنده را وارد نمایید')

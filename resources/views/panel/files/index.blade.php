@@ -49,7 +49,7 @@
                         <div class="modal-body">
                             <input type="text" name="folder_name" class="form-control" placeholder="نام پوشه" required>
                             @if(isset($folder))
-                                <input type="hidden" name="parent_folder_id" value="{{ $folder->id }}">
+                                <input type="hidden" name="parent_folder_id" id="parent_folder_id" value="{{ $folder->id }}">
                             @endif
                         </div>
                         <div class="modal-footer">
@@ -72,18 +72,12 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ route('files.store') }}" method="POST" enctype="multipart/form-data">
+                    <form id="file-upload-form">
                         @csrf
-                        <div class="modal-body">
-                            <input type="file" name="file" class="form-control" required>
-                            @if(isset($folder))
-                                <input type="hidden" name="parent_folder_id" value="{{ $folder->id }}">
-                            @endif
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                            <button type="submit" class="btn btn-success">آپلود</button>
-                        </div>
+                        <div id="file-dropzone" class="dropzone"></div>
+                        @if(isset($folder))
+                            <input type="hidden" name="parent_folder_id" value="{{ $folder->id }}">
+                        @endif
                     </form>
                 </div>
             </div>
@@ -95,17 +89,10 @@
                 <h5 class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <!-- فرم جستجو و مرتب‌سازی -->
-                        <form method="GET">
-                            <div class="form-row align-items-center">
-                                <div class="col-auto">
-                                    <input type="text" name="search" class="form-control"
-                                           placeholder="جستجو در همین مسیر" value="{{ request('search') }}">
-                                </div>
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-info"><i class="ti-search"></i></button>
-                                </div>
-                            </div>
-                        </form>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#searchModal">
+                            <i class="ti-search"></i>
+                        </button>
+
                     </div>
                     <div>
                         @can('upload-file')
@@ -124,6 +111,29 @@
                         @endif
                     </div>
                 </h5>
+                <!-- مدال جستجو -->
+                <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="searchModalLabel">جستجو در همین مسیر</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form method="GET" action="{{ url()->current() }}">
+                                <div class="modal-body">
+                                    <input type="text" name="search" class="form-control" placeholder="جستجو..." value="{{ request('search') }}" required>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                                    <button type="submit" class="btn btn-primary">جستجو</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 <ul class="list-group">
                     @foreach($files as $file)
                         <li class="list-group-item d-flex justify-content-between align-items-center file">
@@ -145,10 +155,20 @@
                                             $iconClass = 'fas fa-file-video text-warning';
                                         } elseif ($file->file_type == 'application/zip') {
                                             $iconClass = 'fas fa-file-archive text-info';
+                                        } elseif (in_array($file->file_type, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
+                                            // برای فایل‌های Word
+                                            $iconClass = 'fas fa-file-word text-primary';
+                                        } elseif (in_array($file->file_type, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
+                                            // برای فایل‌های Excel
+                                            $iconClass = 'fas fa-file-excel text-success';
+                                        } elseif (in_array($file->file_type, ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'])) {
+                                            // برای فایل‌های PowerPoint
+                                            $iconClass = 'fas fa-file-powerpoint text-warning';
                                         } else {
                                             $iconClass = 'fas fa-file text-secondary';
                                         }
                                     @endphp
+
                                     <i class="{{ $iconClass }}"></i>
                                     <strong>{{ $file->file_name }}</strong> -
                                     <small class="text-muted">ارسال شده توسط: {{ $file->user->role->label . ' ' . $file->user->name }} | تاریخ
@@ -194,6 +214,7 @@
             return implode(' / ', array_reverse($path)); // مسیر را به صورت معکوس نمایش دهید
         }
     @endphp
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).on('click', '.share-button', function () {
@@ -207,6 +228,42 @@
             shareLink.select();
             document.execCommand("copy");
             alert("لینک کپی شد: " + shareLink.value);
+        });
+        Dropzone.autoDiscover = false;
+
+        // تنظیمات Dropzone برای آپلود فایل
+        let fileDropzone = new Dropzone("#file-dropzone", {
+            url: "{{ route('files.store') }}", // آدرس آپلود فایل
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            autoProcessQueue: true, // جلوگیری از پردازش خودکار فایل‌ها
+            maxFiles: 1,
+            dictDefaultMessage: "فایل را اینجا بکشید یا کلیک کنید",
+            addRemoveLinks: true,
+            init: function() {
+                this.on("sending", function(file, xhr, formData) {
+                    // افزودن parent_folder_id به فرم‌دیتا
+                    let parentFolderId = document.querySelector('#parent_folder_id').value; // شناسه فولدر والد را از DOM دریافت کنید
+                    formData.append("parent_folder_id", parentFolderId);
+                });
+            }
+        });
+
+        // آپلود فایل پس از کلیک بر روی دکمه
+        $('#upload-btn').on('click', function() {
+            fileDropzone.processQueue();
+        });
+
+        // رویداد موفقیت‌آمیز آپلود فایل
+        fileDropzone.on("success", function(file, response) {
+            console.log("File uploaded successfully");
+            window.location.reload(); // بارگذاری مجدد صفحه پس از آپلود موفقیت‌آمیز
+        });
+
+        // مدیریت خطاهای آپلود فایل
+        fileDropzone.on("error", function(file, response) {
+            console.error("Upload failed:", response);
         });
     </script>
 @endsection
