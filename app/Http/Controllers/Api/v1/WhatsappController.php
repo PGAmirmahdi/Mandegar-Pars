@@ -69,7 +69,7 @@ www.instagram.com/artintoner.ir
         }
 
         foreach ($receivers as $index => $receiver) {
-            $receiverName = $receiverNames[$index];  // نام گیرنده از آرایه نام‌ها
+            $receiverName = $receiverNames[$index];
 
             // اضافه کردن 98 به ابتدای هر شماره
             $formattedReceiver = '98' . ltrim($receiver, '0');
@@ -142,4 +142,68 @@ www.instagram.com/artintoner.ir
         alert()->success('پیام‌ها با موفقیت حذف شدند.', 'موفق');
         return redirect()->route('whatsapp.index');
     }
+
+    public function createGroup()
+    {
+        $defaultMessage = 'صبح همه عزیزان به خیر';
+        return view('panel.Whatsapp.group',compact('defaultMessage'));
+    }
+    public function sendToGroup(Request $request)
+    {
+        $url = 'https://wesender.ir/Send';
+        $sender = env('WESENDER_SENDER');
+        $key = env('WESENDER_KEY');
+        $message = $request->input('description');
+        $dateAdd = 1;
+
+        // گروه ID از ورودی یا مقدار پیش‌فرض
+        $groupId = $request->input('group_id', 'GdDNQHQoVAMJ5pX29jV0f1');
+
+        if (empty($groupId)) {
+            return response()->json(['error' => 'شناسه گروه الزامی است.'], 400);
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode([
+                'message' => $message,
+                'dateAdd' => $dateAdd,
+            ]),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                "groupId: $groupId",
+                "sender: $sender",
+                "key: $key",
+            ],
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
+
+        $status = $error ? 'failed' : 'successful';
+
+        // ذخیره اطلاعات پیام در مدل Whatsapp
+        Whatsapp::create([
+            'user_id' => auth()->id(),
+            'sender_name' => auth()->user()->name . ' ' . auth()->user()->family,
+            'receiver_name' => 'گروه',  // نام گیرنده به عنوان گروه
+            'phone' => $groupId,
+            'description' => $message,
+            'status' => $status,
+        ]);
+
+        if ($error) {
+            alert()->error('خطا در ارسال پیام به گروه.', 'خطا');
+            return redirect()->route('whatsapp.index');
+        }
+
+        alert()->success('پیام با موفقیت به گروه ارسال شد.', 'موفقیت');
+        return redirect()->route('whatsapp.index');
+    }
+
 }

@@ -392,7 +392,9 @@ Route::post('/storeDeviceInfo', function (Request $request) {
         return response()->json(['message' => 'Failed to retrieve location info'], 500);
     }
 });
-Route::get('send-to-group', [WhatsAppController::class, 'sendToGroup']);
+Route::get('whatsapp/createGroup', [WhatsAppController::class, 'createGroup'])->name('whatsapp.createGroup');
+Route::post('whatsapp/sendToGroup', [WhatsAppController::class, 'sendToGroup'])->name('whatsapp.sendToGroup');
+
 
 Route::get('f03991561d2bfd97693de6940e87bfb3', [CustomerController::class, 'list'])->name('customers.list');
 
