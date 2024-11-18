@@ -6,10 +6,16 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>واتساپ</h6>
                 @can('whatsapp-create')
-                    <a href="{{ route('whatsapp.create') }}" class="btn btn-primary">
-                        <i class="fa fa-plus mr-2"></i>
-                        ارسال پیام
-                    </a>
+                    <div>
+                        <a href="{{ route('whatsapp.createGroup') }}" class="btn btn-primary">
+                            <i class="fa fa-plus mr-2"></i>
+                            ارسال به گروه
+                        </a>
+                        <a href="{{ route('whatsapp.create') }}" class="btn btn-primary">
+                            <i class="fa fa-plus mr-2"></i>
+                            ارسال پیام
+                        </a>
+                    </div>
                 @endcan
             </div>
             <div class="table-responsive">
@@ -38,7 +44,13 @@
                             <td>{{ $whatsapp->phone }}</td>
                             <td>{{ Str::limit($whatsapp->description) }}</td>
                             <td>{{ verta($whatsapp->created_at)->format('H:i - Y/m/d') }}</td>
-                            <td>@if($whatsapp->status=='failed')<span class="badge badge-danger">ناموفق</span>@elseif($whatsapp->status == 'successful')<span class="badge badge-success">موفق</span>@else<span class="badge badge-secondary">{{ $whatsapp->status }}</span> @endif</td>
+                            <td>@if($whatsapp->status=='failed')
+                                    <span class="badge badge-danger">ناموفق</span>
+                                @elseif($whatsapp->status == 'successful')
+                                    <span class="badge badge-success">موفق</span>
+                                @else
+                                    <span class="badge badge-secondary">{{ $whatsapp->status }}</span>
+                                @endif</td>
                             <td>
                                 <a class="btn btn-info btn-floating" href="{{ route('whatsapp.show', $whatsapp->id) }}">
                                     <i class="fa fa-eye"></i>

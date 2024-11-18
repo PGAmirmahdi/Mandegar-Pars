@@ -91,7 +91,7 @@
                     </div>
                     <div class="col-12 mb-3">
                         <label for="editor-demo2">توضیحات </label>
-                        <textarea id="editor-demo2"></textarea>
+                        <textarea id="editor-demo2" name="description"></textarea>
                         @error('category')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
