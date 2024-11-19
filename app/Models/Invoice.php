@@ -45,6 +45,14 @@ class Invoice extends Model
         'invoice' => 'فاکتور',
         'amani-invoice' => 'فاکتور امانی',
     ];
+// مدل Invoice
+    public function getTotalPriceAttribute()
+    {
+        // فرض کنید رابطه محصولات (items) با فاکتور تعریف شده است
+        return $this->items->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+    }
 
     public function products()
     {
