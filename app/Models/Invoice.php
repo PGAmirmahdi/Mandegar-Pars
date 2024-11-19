@@ -48,11 +48,12 @@ class Invoice extends Model
 // مدل Invoice
     public function getTotalPriceAttribute()
     {
-        // فرض کنید رابطه محصولات (items) با فاکتور تعریف شده است
-        return $this->items->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
+        return ($this->products ? $this->products->sum(function ($product) {
+                return $product->pivot->total_price;
+            }) : 0) + ($this->other_products ? $this->other_products->sum('total_price') : 0);
     }
+
+
 
     public function products()
     {
