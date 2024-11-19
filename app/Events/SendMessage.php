@@ -15,16 +15,26 @@ class SendMessage implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $userId;
-    public $message; // تغییر نام از data به message
+    public $data;
 
-    public function __construct($userId, string $message)
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
+    public function __construct($userId, $data)
     {
         $this->userId = $userId;
-        $this->message = $message;
+        $this->data = $data;
     }
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
     public function broadcastOn()
     {
-        return new PrivateChannel('notification.' . $this->userId);
+        return new PresenceChannel('notification.'.$this->userId);
     }
 }

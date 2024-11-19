@@ -20,7 +20,6 @@ use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules\In;
 use Maatwebsite\Excel\Facades\Excel;
@@ -34,11 +33,7 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-list');
 
-//        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager() || auth()->user()->name === 'اشکان'){
             $invoices = Invoice::latest()->paginate(30);
-//        }else{
-//            $invoices = Invoice::where('user_id', auth()->id())->latest()->paginate(30);
-//        }
 
         $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
         $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
@@ -85,7 +80,6 @@ class InvoiceController extends Controller
 //            'status' => $request->status,
             'discount' => $request->final_discount,
             'description' => $request->description,
-            'payment_type' => $request->payment_type
         ]);
 
         $this->send_notif_to_accountants($invoice);
@@ -104,13 +98,9 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         // edit own invoice OR is admin
-//        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper() || auth()->user()->isExitDoor()){
             $factor = \request()->type == 'factor' ? $invoice->factor : null;
 
             return view('panel.invoices.printable', compact('invoice','factor'));
-//        }else{
-//            abort(403);
-//        }
     }
 
     public function edit(Invoice $invoice)
@@ -187,7 +177,6 @@ class InvoiceController extends Controller
             'status' => $request->status,
             'discount' => $request->final_discount ?? $invoice->discount,
             'description' => $request->description,
-            'payment_type' => $request->payment_type
         ]);
 
         alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش');
@@ -251,12 +240,8 @@ class InvoiceController extends Controller
 
         $extra_amount = 0;
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
-
-        // اصلاح محاسبه مالیات
-        $tax_percentage = self::TAX_AMOUNT; // فرض می‌کنیم این درصد مالیات است (مثلاً 9)
-        $tax = $tax_percentage * $total_price_with_off;
-
-        $invoice_net =  $tax + $total_price_with_off + $extra_amount;
+        $tax = $unofficial ? 0 : (int) ($total_price_with_off * self::TAX_AMOUNT);
+        $invoice_net = $tax + $total_price_with_off;
 
         $data = [
             'price' => $price,
@@ -289,8 +274,8 @@ class InvoiceController extends Controller
 //        dd($user_id);
         if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
             $invoices = Invoice::when($request->need_no, function ($q) use($request){
-                    return $q->where('need_no', $request->need_no);
-                })
+                return $q->where('need_no', $request->need_no);
+            })
                 ->whereIn('user_id', $user_id)
                 ->whereIn('customer_id', $customers_id)
                 ->whereIn('status', $status)
@@ -298,18 +283,15 @@ class InvoiceController extends Controller
                 ->latest()->paginate(30);
         }else{
             $invoices = Invoice::when($request->need_no, function ($q) use($request){
-                    return $q->where('need_no', $request->need_no);
-                })                ->whereIn('customer_id', $customers_id)
+                return $q->where('need_no', $request->need_no);
+            })                ->whereIn('customer_id', $customers_id)
                 ->whereIn('status', $status)
                 ->whereIn('province', $province)
                 ->where('user_id', auth()->id())
                 ->latest()->paginate(30);
         }
-        $invoicespay = Invoice::when($request->payment_type && $request->payment_type !== 'all', function ($q) use ($request) {
-            return $q->where('payment_type', $request->payment_type);
-        })
-            ->latest()->paginate(30);
-        return view('panel.invoices.index', compact('invoices','customers','roles_id','invoicespay'));
+
+        return view('panel.invoices.index', compact('invoices','customers','roles_id'));
     }
 
     public function applyDiscount(Request $request)
@@ -657,27 +639,4 @@ class InvoiceController extends Controller
 
         Notification::send($managers, new SendMessage($message, $url));
     }
-
-    public function testEvent($userId)
-    {
-        Log::info("testEvent called with userId: {$userId}");
-
-        try {
-            event(new SendMessage($userId, 'Test notification'));
-            Log::info("Event SendMessage triggered successfully.");
-        } catch (\Exception $e) {
-            Log::error("Error triggering SendMessage event: " . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-            ]);
-        }
-
-        return view('test', ['message' => "Event Sent!"]);
-    }
-
-    public function getInvoice($id)
-    {
-        $invoice = Invoice::findOrFail($id);
-        return response()->json($invoice);
-    }
-
 }
