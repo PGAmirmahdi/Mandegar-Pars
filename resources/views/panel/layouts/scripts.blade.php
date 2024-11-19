@@ -109,6 +109,7 @@
     channel.bind('App\\Events\\SendMessage', function(data) {
         console.log('Notification received: ', data.message);
     });
+
 </script>
 <script>
     {{-- ajax setup --}}

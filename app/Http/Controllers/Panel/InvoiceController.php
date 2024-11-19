@@ -20,6 +20,7 @@ use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules\In;
 use Maatwebsite\Excel\Facades\Excel;
@@ -656,14 +657,23 @@ class InvoiceController extends Controller
 
         Notification::send($managers, new SendMessage($message, $url));
     }
+
     public function testEvent($userId)
     {
-        // ارسال ایونت با رشته به جای آرایه
-        event(new SendMessage($userId, 'Test notification'));
+        Log::info("testEvent called with userId: {$userId}");
 
-        // ارسال داده به ویو
+        try {
+            event(new SendMessage($userId, 'Test notification'));
+            Log::info("Event SendMessage triggered successfully.");
+        } catch (\Exception $e) {
+            Log::error("Error triggering SendMessage event: " . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
+
         return view('test', ['message' => "Event Sent!"]);
     }
+
     public function getInvoice($id)
     {
         $invoice = Invoice::findOrFail($id);
