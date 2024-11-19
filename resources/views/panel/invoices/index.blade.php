@@ -181,7 +181,7 @@
                             {{--                            @endcanany--}}
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
                             {{--                            @canany(['accountant','admin','ceo'])--}}
-                            <td>{{ number_format($invoice->total_price) }} تومان</td>
+                            <td>{{ number_format($invoice->total_price * 1/10) }} تومان</td>
                             <td>
                                 <a class="btn btn-info btn-floating" href="{{ route('invoices.show', $invoice->id) }}">
                                     <i class="fa fa-eye"></i>
