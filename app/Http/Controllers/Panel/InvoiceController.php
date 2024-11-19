@@ -46,6 +46,7 @@ class InvoiceController extends Controller
         })->pluck('id');
 
         $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isWareHouseKeeper() || auth()->user()->isSalesManager() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+
         return view('panel.invoices.index', compact('invoices','customers','roles_id'));
     }
 

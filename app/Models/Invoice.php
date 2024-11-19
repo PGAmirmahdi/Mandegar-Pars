@@ -45,16 +45,12 @@ class Invoice extends Model
         'invoice' => 'فاکتور',
         'amani-invoice' => 'فاکتور امانی',
     ];
-// مدل Invoice
     public function getTotalPriceAttribute()
     {
         return ($this->products ? $this->products->sum(function ($product) {
                 return $product->pivot->total_price;
             }) : 0) + ($this->other_products ? $this->other_products->sum('total_price') : 0);
     }
-
-
-
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot([
