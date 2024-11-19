@@ -49,36 +49,34 @@ class SendMessage extends Notification
      */
     public function toArray($notifiable)
     {
-        Log::info("Notification SendMessage triggered.", [
-            'notifiable_id' => $notifiable->id,
-        ]);
         $data = [
             'id' => $this->id,
             'message' => $this->message,
             'url' => $this->url,
         ];
 
-        if ($notifiable->fcm_token) {
+        if ($notifiable->fcm_token){
             $this->send_firebase_notification($this->message, $this->url, $notifiable->fcm_token);
         }
 
-        // ارسال فقط پیام به رویداد
-        event(new SendMessage($notifiable->id, $this->message));
+        event(new SendMessageEvent($notifiable->id, $data));
 
         return $data;
     }
 
-
     private function send_firebase_notification($message, $url, $token)
     {
         $firebaseToken = [$token];
-        $SERVER_API_KEY = env('FireBase_Key');
+
+        $SERVER_API_KEY = 'AAAAAqqjtGY:APA91bGqBtuYddBnAnliS0HOL1PBuf8cbWgdkNWMpOJCMFuWPVq2nCZoLTZIcxDQMJf8OwAsWRYYan5BpXC6qFdoIpyWW91OCUOu-eDOggSmBv-Oi5ebT2FWdSRid7OV1iP02_9rGftS';
 
         $data = [
             "registration_ids" => $firebaseToken,
             "notification" => [
                 "title" => $message,
                 "body" => '',
+//                "image" => 'https://mpsystem.ir/assets/media/image/logo.png',
+//                "content_available" => true,
                 "priority" => "high",
             ],
             "webpush" => [
@@ -87,7 +85,6 @@ class SendMessage extends Notification
                 ]
             ]
         ];
-
         $dataString = json_encode($data);
 
         $headers = [
@@ -97,43 +94,13 @@ class SendMessage extends Notification
 
         $ch = curl_init();
 
-        try {
-            curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
-            curl_setopt($ch, CURLOPT_PROXY, "181.41.194.86:3128"); // آدرس و پورت پروکسی
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, "username:password"); // اگر پروکسی نیاز به احراز هویت دارد
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
 
-            $response = curl_exec($ch);
-
-            if (curl_errno($ch)) {
-                // لاگ کردن خطاهای CURL
-                Log::error('CURL Error: ' . curl_error($ch));
-            } else {
-                $httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-                if ($httpStatusCode !== 200) {
-                    // لاگ کردن وضعیت HTTP غیرموفق
-                    Log::error("FCM Notification failed with status code: $httpStatusCode", [
-                        'response' => $response,
-                        'data' => $dataString,
-                    ]);
-                } else {
-                    Log::info("FCM Notification sent successfully", [
-                        'response' => $response,
-                    ]);
-                }
-            }
-        } catch (\Exception $e) {
-            // لاگ کردن استثناها
-            Log::error('Exception while sending FCM Notification: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-            ]);
-        } finally {
-            curl_close($ch);
-        }
+        $response = curl_exec($ch);
     }
     private function send_najva_notificaion($message, $url, $token)
     {
@@ -161,7 +128,6 @@ class SendMessage extends Notification
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_PROXY, "181.41.194.86:3128"); // آدرس و پورت پروکسی
 
         $headers = array();
         $headers[] = 'Authorization: Token f565da417ab6ef8ec57bab4a2a090955d5ee227e';
@@ -172,7 +138,6 @@ class SendMessage extends Notification
 
         $result = curl_exec($ch);
         if (curl_errno($ch)) {
-            Log::error('CURL Error: ' . curl_error($ch));
             return 'Error:' . curl_error($ch);
         }
         curl_close($ch);
