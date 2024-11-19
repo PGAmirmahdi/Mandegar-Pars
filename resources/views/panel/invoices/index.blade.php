@@ -132,6 +132,7 @@
                         <th>همکار</th>
                         {{--                        @endcanany--}}
                         <th>تاریخ ایجاد</th>
+                        <th>ملبغ کل</th>
                         {{--                        @canany(['accountant','admin','ceo'])--}}
                         <th>مشاهده سفارش</th>
                         {{--                        @endcanany--}}
@@ -151,7 +152,6 @@
                                 <th>حذف</th>
                             @endcan
                         @endcannot
-                        <th>ملبغ کل</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -181,6 +181,7 @@
                             {{--                            @endcanany--}}
                             <td>{{ verta($invoice->created_at)->format('H:i - Y/m/d') }}</td>
                             {{--                            @canany(['accountant','admin','ceo'])--}}
+                            <td>{{ number_format($invoice->products->total_price) }}</td>
                             <td>
                                 <a class="btn btn-info btn-floating" href="{{ route('invoices.show', $invoice->id) }}">
                                     <i class="fa fa-eye"></i>
@@ -256,7 +257,6 @@
                                     @endcan
                                 @endcan
                             @endcannot
-                            <td>{{ $invoice->total_price }}</td>
                         </tr>
                     @endforeach
                     </tbody>
