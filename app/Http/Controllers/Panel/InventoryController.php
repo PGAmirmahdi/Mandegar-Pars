@@ -86,7 +86,8 @@ class InventoryController extends Controller
             'code' => $request->code,
             'type' => $request->type,
             'initial_count' => $request->count,
-            'current_count' => ($inventory->current_count - $inventory->initial_count) + $request->count,
+//            'current_count' => ($inventory->current_count - $inventory->initial_count) + $request->count,
+            'current_count' => $request->count,
         ]);
 
         alert()->success('کالا مورد نظر با موفقیت ویرایش شد','ویرایش کالا');
