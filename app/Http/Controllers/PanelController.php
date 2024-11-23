@@ -458,13 +458,25 @@ class PanelController extends Controller
             ->selectRaw('
         users.family as user_name,
         COUNT(invoices.id) as total_invoices,
-        SUM(COALESCE(invoice_product.total_price, 0)) as total_price
+        SUM(COALESCE(invoice_product.total_price, 0)) + SUM(COALESCE(other_product.total_price, 0)) as total_price
     ')
             ->join('users', 'invoices.user_id', '=', 'users.id')
             ->leftJoin('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
-            ->groupBy('users.id', 'users.family') // اضافه کردن 'users.id' و 'users.name' به گروه‌بندی
+            ->leftJoin('other_products as other_product', 'invoices.id', '=', 'other_product.invoice_id')  // اضافه کردن جدول other_products
+            ->whereNotNull('invoice_product.total_price')  // فقط فاکتورهایی که قیمت دارند را بررسی می‌کند
+            ->orWhereNotNull('other_product.total_price')  // اضافه کردن بررسی برای قیمت‌های جدول other_products
+            ->groupBy('users.id', 'users.family')
             ->orderBy('total_invoices', 'desc')
             ->get();
+
+        $userInvoices175 = DB::table('invoices')
+            ->select('invoices.id', 'invoice_product.total_price')
+            ->join('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
+            ->where('invoices.user_id', 175) // فقط برای کاربر 175
+            ->get();
+
+        logger()->info($userInvoices175);
+
         // لاگ کردن نتایج
         logger()->info($userInvoices);
 

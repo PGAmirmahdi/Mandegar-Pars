@@ -579,24 +579,33 @@ class InvoiceController extends Controller
 
     private function storeInvoiceProducts(Invoice $invoice, $request)
     {
+        Log::info('Products in request: ', ['products' => $request->products ?: 'No products found']);
+        Log::info('other_products in request: ', ['products' => $request->other_products ?: 'No other_products found']);
+
+
         if ($request->products) {
-            foreach ($request->products as $key => $product_id){
-                if ($request->status == 'paid' && $request->status != $invoice->status){
-                    // decrease product counts
+            foreach ($request->products as $key => $product_id) {
+                // بررسی داده‌های ارسالی
+                logger()->info('Product ID:', ['product_id' => $product_id]);
+                logger()->info('Color:', ['color' => $request->colors[$key]]);
+                logger()->info('Count:', ['count' => $request->counts[$key]]);
+                logger()->info('Price:', ['price' => $request->prices[$key]]);
+                logger()->info('Total Price:', ['total_price' => $request->total_prices[$key]]);
 
-                    $product = Product::find($product_id);
-                    $properties = json_decode($product->properties);
-                    $product_exist = array_keys(array_column($properties, 'color'), $request->colors[$key]);
+                // کد کاهش موجودی و ذخیره در جدول
+                $product = Product::find($product_id);
+                $properties = json_decode($product->properties);
+                $product_exist = array_keys(array_column($properties, 'color'), $request->colors[$key]);
 
-                    if ($product_exist){
-                        $properties[$product_exist[0]]->counts -= $request->counts[$key];
-                        $changed_properties = json_encode($properties);
-                        $product->update(['properties' => $changed_properties]);
-                    }
-
-                    $product->update(['total_count' => $product->total_count -= $request->counts[$key]]);
+                if ($product_exist) {
+                    $properties[$product_exist[0]]->counts -= $request->counts[$key];
+                    $changed_properties = json_encode($properties);
+                    $product->update(['properties' => $changed_properties]);
                 }
 
+                $product->update(['total_count' => $product->total_count -= $request->counts[$key]]);
+
+                // ذخیره در invoice_product
                 $invoice->products()->attach($product_id, [
                     'color' => $request->colors[$key],
                     'count' => $request->counts[$key],
@@ -608,8 +617,9 @@ class InvoiceController extends Controller
                     'tax' => $request->taxes[$key],
                     'invoice_net' => $request->invoice_nets[$key],
                 ]);
-
             }
+        } else {
+            logger()->warning('No products found in the request.');
         }
 
         $invoice->other_products()->delete();
