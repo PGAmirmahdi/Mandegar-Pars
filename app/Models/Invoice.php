@@ -51,6 +51,7 @@ class Invoice extends Model
                 return $product->pivot->total_price;
             }) : 0) + ($this->other_products ? $this->other_products->sum('total_price') : 0);
     }
+
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot([

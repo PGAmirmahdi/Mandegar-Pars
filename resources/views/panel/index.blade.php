@@ -382,6 +382,16 @@
                 <div class="d-flex justify-content-center">{{ $bazdid->appends(request()->all())->links() }}</div>
             </div>
         </div>
+        <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار قیمت و تعداد فاکتور کاربران</h6>
+                    </div>
+                    <canvas id="invoiceChart"></canvas>
+                </div>
+            </div>
+        </div>
         @can('sms-list')
             <div class="card">
                 <div class="card-body">
@@ -477,10 +487,86 @@
 
         var visits_dates = {!! json_encode($userVisits->pluck('date')) !!};
         var visits_counts = {!! json_encode($userVisits->pluck('visits')) !!};
-
         // مقادیر مربوط به SMS‌ها
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
+        document.addEventListener('DOMContentLoaded', function () {
+            const userNames2 = @json($userNames2);
+            const totalInvoices = @json($totalInvoices);
+            const totalPrices = @json($totalPrices);
+
+            const ctx = document.getElementById('invoiceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: userNames2,
+                    datasets: [
+                        {
+                            label: 'تعداد فاکتورها',
+                            data: totalInvoices,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'مجموع قیمت‌ها (ريال)',
+                            data: totalPrices,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                    },
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 0.3,
+                            ticks: {
+                                fontSize: 15,
+                                fontColor: '#999'
+                            },
+                            gridLines: {
+                                display: false,
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'ریال',
+                                fontSize: 18
+                            },
+                            ticks: {
+                                beginAtZero: true,
+                                fontSize: 15,
+                                fontColor: '#999',
+                                callback: function (value) {
+                                    return value.toLocaleString('fa-IR'); // سه رقم جدا کردن
+                                },
+                            },
+                            gridLines: {
+                                color: '#e8e8e8',
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return formattedValue;
+                            }
+                        }
+                    }
+                },
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
             if (document.getElementById('bar_chart_user_visits3')) {
                 var ctx = document.getElementById('bar_chart_user_visits3').getContext('2d');
