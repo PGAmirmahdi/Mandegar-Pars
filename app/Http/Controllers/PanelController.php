@@ -454,7 +454,24 @@ class PanelController extends Controller
         $dates8 = $userVisits8->pluck('date')->unique();
 
         $totalVisits8 = $userVisits8->sum('visits');
+        $userInvoices = DB::table('invoices')
+            ->selectRaw('
+        users.name as user_name,
+        COUNT(invoices.id) as total_invoices,
+        SUM(COALESCE(invoice_product.total_price, 0)) as total_price
+    ')
+            ->join('users', 'invoices.user_id', '=', 'users.id')
+            ->leftJoin('invoice_product', 'invoices.id', '=', 'invoice_product.invoice_id')
+            ->groupBy('users.id', 'users.family') // اضافه کردن 'users.id' و 'users.name' به گروه‌بندی
+            ->orderBy('total_invoices', 'desc')
+            ->get();
+        // لاگ کردن نتایج
+        logger()->info($userInvoices);
 
+        // آماده‌سازی داده‌ها
+        $userNames2 = $userInvoices->pluck('user_name');
+        $totalInvoices = $userInvoices->pluck('total_invoices');
+        $totalPrices = $userInvoices->pluck('total_price');
         $bazdid= Visitor::latest()->paginate(10);
         return view('panel.index', [
             'labels' => $labels,
@@ -467,7 +484,8 @@ class PanelController extends Controller
             'orderCounts2' => $orderCounts2,
             'userVisits9' => $userVisits9,
             'totalRows' => $totalRows,
-        ], compact('invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData','dates8', 'visitsData8', 'totalVisits8','bazdid'));
+            'userInvoices' => $userInvoices
+        ], compact('userNames2','totalInvoices','totalPrices','invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData','dates8', 'visitsData8', 'totalVisits8','bazdid'));
     }
         public function readNotification($notification = null)
     {
