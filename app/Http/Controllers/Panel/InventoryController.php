@@ -47,8 +47,8 @@ class InventoryController extends Controller
             'title' => $request->title,
             'code' => $request->code,
             'type' => $request->type,
-            'initial_count' => $request->count,
             'current_count' => $request->count,
+            'initial_count' => $request->count,
         ]);
 
         alert()->success('کالا مورد نظر با موفقیت ایجاد شد','ایجاد کالا');

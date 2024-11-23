@@ -1,135 +1,273 @@
 @extends('panel.layouts.master')
 @section('title', 'اطلاعات شرکت')
 @section('content')
-    <div class="mx-0 ">
+    <div class="mx-0">
         <div class="card mt-5">
             <div class="card-header bg-primary text-white text-center">
                 اطلاعات مربوط به شرکت
             </div>
-            <div class="card-body row">
-                <div class="mb-3 col-lg-6 col-md-6 col-sm-12">
-                    <h5 class="card-title">اطلاعات پایه</h5>
-                    <p onclick="copyToClipboard('شخص حقوقی', this)"> نوع مودی: <strong>شخص حقوقی</strong></p>
-                    <p onclick="copyToClipboard('صنایع ماشین های اداری ماندگار پارس', this)">نام شرکت/نام تجاری:
-                        <strong>صنایع ماشین های اداری ماندگار پارس</strong></p>
-                    <p onclick="copyToClipboard('14011383061', this)"> شماره اقتصادی/کد ملی:
-                        <strong>14011383061</strong></p>
-                    <p onclick="copyToClipboard('خصوصی', this)"> نوع مالکیت: <strong>خصوصی</strong></p>
-                    <p onclick="copyToClipboard('مسئولیت محدود', this)"> نوع شخص حقوقی: <strong>مسئولیت محدود</strong>
-                    </p>
-                    <p onclick="copyToClipboard('9931', this)"> شماره ثبت: <strong>9931</strong></p>
-                    <p onclick="copyToClipboard('515311', this)"> کد ایسیک: <strong>515311</strong></p>
-                    <p onclick="copyToClipboard('1401/05/10', this)"> تاریخ ثبت: <strong>1401/05/10</strong></p>
-                    <p onclick="copyToClipboard('1401/04/01', this)"> تاریخ شروع فعالیت: <strong>1401/04/01</strong></p>
-                    <p onclick="copyToClipboard('تجاری', this)"> نوع فعالیت: <strong>تجاری</strong></p>
+            <div class="card-body">
+                <!-- اطلاعات پایه -->
+                <div class="card-header bg-primary text-white text-center">
+                    اطلاعات پایه
                 </div>
-                <div class="mb-3 col-lg-3 col-md-6 col-sm-12">
-                    <h5 class="card-title">اطلاعات مدیر عامل</h5>
-                    <p onclick="copyToClipboard('جناب آقای غلامی نظامی', this)"> نام: <strong>جناب آقای غلامی
-                            نظامی</strong></p>
-                    <p onclick="copyToClipboard('09121447598', this)">شماره تماس: <strong>09121447598</strong></p>
-                    <p onclick="copyToClipboard('0010963601', this)">شماره ملی: <strong>0010963601</strong></p>
-                    <p onclick="copyToClipboard('1368/06/24', this)">تاریخ تولد: <strong>1368/06/24</strong></p>
-                    <p onclick="copyToClipboard('1402443503', this)">شماره صنفی: <strong>1402443503</strong></p>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                        <thead>
+                        <tr>
+                            <th>عنوان</th>
+                            <th>اطلاعات</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>نوع مودی</td>
+                            <td>شخص حقوقی</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>نام شرکت/نام تجاری</td>
+                            <td>صنایع ماشین های اداری ماندگار پارس</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        @can('information')
+                        <tr>
+                            <td>شماره اقتصادی/کد ملی</td>
+                            <td>14011383061</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>نوع مالکیت</td>
+                            <td>خصوصی</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>نوع شخص حقوقی</td>
+                            <td>مسئولیت محدود</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>شماره ثبت</td>
+                            <td>9931</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>کد ایسیک</td>
+                            <td>515311</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>تاریخ ثبت</td>
+                            <td>1401/05/10</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>تاریخ شروع فعالیت</td>
+                            <td>1401/04/01</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>نوع فعالیت</td>
+                            <td>تجاری</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                            @endcan
+                        </tbody>
+                    </table>
                 </div>
-                <div class="mb-3 col-lg-3 col-md-6 col-sm-12">
-                    <h5 class="card-title">اطلاعات تماس</h5>
-                    <p onclick="copyToClipboard('mandegarparsco@gmail.com', this)">ایمیل: <strong>mandegarparsco@gmail.com</strong>
-                    </p>
-                    <p onclick="copyToClipboard('www.artintoner.com', this)">وب‌سایت:
-                        <strong>www.artintoner.com</strong></p>
-                    <p onclick="copyToClipboard('www.mpsystem.ir', this)">اتوماسیون: <strong>www.mpsystem.ir</strong>
-                    </p>
-                    <p onclick="copyToClipboard('02165425052-4', this)">شماره های تماس: <strong>02165425052-4</strong>
-                    </p>
-                    <p onclick="copyToClipboard('3164114855', this)">کد پستی: <strong>3164114855</strong></p>
-                    <p onclick="copyToClipboard('تهران', this)">استان: <strong>تهران</strong></p>
-                    <p onclick="copyToClipboard('ملارد', this)">شهرستان: <strong>ملارد</strong></p>
-                    <p onclick="copyToClipboard('صفادشت', this)">شهر: <strong>صفادشت</strong></p>
-                    <p onclick="copyToClipboard('صفادشت،بلوار خرداد،بین خیابان پنجم و ششم غربی،پلاک 228', this)">آدرس:
-                        <strong>صفادشت،بلوار خرداد،بین خیابان پنجم و ششم غربی،پلاک 228</strong></p>
+                @can('information')
+                <div class="card-header bg-primary text-white text-center">
+                    اطلاعات حساب بانکی
                 </div>
-                <div class="mb-3 col-lg-3 col-md-6 col-sm-12">
-                    <h5 class="card-title">اطلاعات حساب بانکی</h5>
-                    <p onclick="copyToClipboard('0101', this)">کد شعبه: <strong>0101 </strong></p>
-                    <p onclick="copyToClipboard('0103967138001', this)">شماره حساب: <strong>0103967138001</strong></p>
-                    <p onclick="copyToClipboard('IR550110000000103967138001', this)">شماره شبا: <strong>IR550110000000103967138001</strong>
-                    </p>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                        <thead>
+                        <tr>
+                            <th>عنوان</th>
+                            <th>اطلاعات</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>کد شعبه</td>
+                            <td>0101</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>شماره حساب</td>
+                            <td>0103967138001</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>شماره شبا</td>
+                            <td>IR550110000000103967138001</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="mb-3 col-lg-12 col-md-12 col-sm-12">
-                    <h5 class="card-title">فایلهای مربوطه</h5>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                            <thead>
+                @endcan
+                <!-- اطلاعات مدیرعامل -->
+                <div class="card-header bg-primary text-white text-center">
+                    اطلاعات مدیر عامل
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                        <thead>
+                        <tr>
+                            <th>عنوان</th>
+                            <th>اطلاعات</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>نام مدیرعامل</td>
+                            <td>غلامی نظامی</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>سمت</td>
+                            <td>مدیرعامل</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        @can('information')
+                        <tr>
+                            <td>شماره ملی</td>
+                            <td>0010963601</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>تلفن همراه</td>
+                            <td>09121447598</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>تاریخ تولد</td>
+                            <td>1368/06/24</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>شماره صنفی</td>
+                            <td>1402443503</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        @endcan
+                        </tbody>
+                    </table>
+                </div>
+                <!-- اطلاعات تماس -->
+                <div class="card-header bg-primary text-white text-center">
+                    اطلاعات تماس
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                        <thead>
+                        <tr>
+                            <th>عنوان</th>
+                            <th>اطلاعات</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>استان</td>
+                            <td>تهران</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>شهرستان</td>
+                            <td>صفادشت</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>آدرس</td>
+                            <td>صفادشت،بلوار خرداد،بین خیابان پنجم و ششم غربی،پلاک 228</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        @can('information')
                             <tr>
-                                <td>پروانه کسب</td>
-                                <td>گواهی عضویت</td>
-                                <td>روزنامه رسمی</td>
-                                <td>لوگو برند</td>
+                                <td>کد پستی</td>
+                                <td>3164114855</td>
+                                <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><a href="{{asset('assets/media/image/Info/Parvane_Kasb.jpg')}}"><img
-                                            src="{{asset('assets/media/image/Info/Parvane_Kasb.jpg')}}" alt="پروانه کسب"
-                                            width="200px"
-                                            height="fit-content"></a></td>
-                                <td><a href="{{asset('assets/media/image/Info/Govahi_Ozviat.jpg')}}"><img
-                                            src="{{asset('assets/media/image/Info/Govahi_Ozviat.jpg')}}" alt="گواهی عضویت"
-                                            width="200px"
-                                            height="fit-content"></a></td>
-                                <td><a href="{{asset('assets/media/image/Info/Rouzname.png')}}"><img
-                                            src="{{asset('assets/media/image/Info/Rouzname.png')}}" alt="روزنامه رسمی"
-                                            width="200px"
-                                            height="fit-content"></a></td>
-                                <td><a href="{{asset('assets/media/image/logo-lg.png')}}"><img
-                                            src="{{asset('assets/media/image/logo-lg.png')}}" alt="لوگو برند"
-                                            width="200px"
-                                            height="fit-content"></a></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                        @endcan
+                        <tr>
+                            <td>شماره تماس</td>
+                            <td>02165425052-4</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>ایمیل</td>
+                            <td>mandegarparsco@gmail.com</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>سایت</td>
+                            <td>www.artintoner.com</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        <tr>
+                            <td>اتوماسیون</td>
+                            <td>www.mpsystem.ir</td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">کپی</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-header bg-primary text-white text-center">
+                    اطلاعات تماس
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                        <thead>
+                        <tr>
+                            <th>عنوان</th>
+                            <th>اطلاعات</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>پروانه کسب</td>
+                            <td><a href="{{asset('assets/media/image/Info/Parvane_Kasb.jpg')}}"><img
+                                        src="{{asset('assets/media/image/Info/Parvane_Kasb.jpg')}}" alt="پروانه کسب"
+                                        width="125px"
+                                        height="fit-content"></a></td>
+                            <td><button class="btn btn-primary" onclick="copyRowData(this)">دانلود</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        {{--        <div id="copyNotification" class="notification"></div>--}}
     </div>
 
     <script>
-        function copyToClipboard(text, element) {
-            // Create a temporary input element to hold the text
+        function copyRowData(button) {
+            // گرفتن داده‌های ردیف
+            const row = button.closest('tr');
+            const cells = row.querySelectorAll('td');
+            let textToCopy = '';
+
+            // جمع‌آوری متن از ستون اطلاعات (ستون اول را نگیریم)
+            textToCopy = cells[1].textContent.trim();
+
+            // کپی کردن متن به کلیپ‌بورد
             const tempInput = document.createElement('input');
-            tempInput.value = text;
+            tempInput.value = textToCopy;
             document.body.appendChild(tempInput);
             tempInput.select();
             document.execCommand('copy');
             document.body.removeChild(tempInput);
 
-            // Show "کپی شد!" next to the item
-            const copiedText = document.createElement('span');
-            copiedText.className = 'copy-highlight text-success';
-            copiedText.textContent = '  کپی شد!';
-            element.appendChild(copiedText);
-
-            // Hide the "کپی شد!" message after 3 seconds
-            setTimeout(() => {
-                element.removeChild(copiedText);
-            }, 3000);
-
-            // Show notification
-            const notification = document.getElementById('copyNotification');
-            notification.textContent = text + ' کپی شد!';
-            notification.style.display = 'block';
-            notification.style.opacity = 1;
-
-            // Hide notification after 3 seconds
-            setTimeout(() => {
-                notification.style.opacity = 0;
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 500); // Delay before hiding
-            }, 3000);
+            // نمایش پیام کپی شدن اطلاعات
+            button.textContent = 'کپی شد!';
+            setTimeout(function () {
+                button.textContent = 'کپی';
+            }, 1500); // بعد از 1.5 ثانیه دکمه به حالت اولیه باز می‌گردد
         }
     </script>
 @endsection
