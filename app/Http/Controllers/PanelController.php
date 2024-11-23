@@ -456,7 +456,7 @@ class PanelController extends Controller
         $totalVisits8 = $userVisits8->sum('visits');
         $userInvoices = DB::table('invoices')
             ->selectRaw('
-        users.family as user_family,
+        users.family as user_name,
         COUNT(invoices.id) as total_invoices,
         SUM(COALESCE(invoice_product.total_price, 0)) as total_price
     ')
