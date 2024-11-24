@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\v1\WhatsappController;
 use App\Http\Controllers\Auth\PusherAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Panel\ArtinController;
+use App\Http\Controllers\Panel\BaseinfoController;
 use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\BuyOrderController;
 use App\Http\Controllers\Panel\ChatController;
@@ -293,8 +294,13 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Price Request
     Route::resource('price-requests', PriceRequestController::class);
+
     // Cheque Request
     Route::resource('cheque', ChequeController::class);
+
+    // Baseinfo
+    Route::resource('baseinfo', BaseinfoController::class);
+
     // Buy Orders
     Route::resource('buy-orders', BuyOrderController::class);
     Route::post('buy-order/{buy_order}/change-status', [BuyOrderController::class, 'changeStatus'])->name('buy-orders.changeStatus');
