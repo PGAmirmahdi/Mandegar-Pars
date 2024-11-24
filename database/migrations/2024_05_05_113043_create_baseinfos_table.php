@@ -17,6 +17,7 @@ class CreateBaseinfosTable extends Migration
             $table->id();
             $table->string('type')->nullable(); // نوع اطلاعات (مثلاً اطلاعات پایه، بانکی و غیره)
             $table->string('title'); // عنوان
+            $table->string('file')->nullable(); // فایل
             $table->text('info'); // اطلاعات
             $table->timestamps();
         });

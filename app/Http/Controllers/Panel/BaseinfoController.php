@@ -11,25 +11,37 @@ class BaseinfoController extends Controller
     public function index()
     {
         $baseInfos = BaseInfo::all();
-        return view('baseinfo.index', compact('baseInfos'));
+        return view('panel.information.index', compact('baseInfos'));
     }
 
     public function create()
     {
-        return view('baseinfo.create');
+        $this->authorize('information');
+        return view('panel.information.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Baseinfo $file)
     {
         $request->validate([
             'type' => 'required',
             'title' => 'required',
             'info' => 'required',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        BaseInfo::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('file')) {
+
+            $filePath = upload_file($request->file('file'), 'InfoFiles');
+            $data['file'] = $filePath;
+        }
+
+        BaseInfo::create($data);
+
         return redirect()->route('baseinfo.index')->with('success', 'اطلاعات با موفقیت ذخیره شد.');
     }
+
 
     /**
      * Display the specified resource.
@@ -65,14 +77,11 @@ class BaseinfoController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(Baseinfo $baseinfo)
     {
-        //
+        $this->authorize('information');
+
+        $baseinfo->delete();
+        return back();
     }
 }
