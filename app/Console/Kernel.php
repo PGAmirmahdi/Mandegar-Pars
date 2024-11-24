@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\SendWeeklyPriceList;
 use App\Jobs\InvoiceDeadlineJob;
 use App\Models\Packet;
 use App\Models\User;
@@ -20,19 +21,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('send:weekly-price-list')
-            ->weeklyOn(6, '11:00'); // شنبه‌ها ساعت 11 صبح
-        // $schedule->command('inspire')->hourly();
-        // cron set every day at 00:00 for this job
-        $schedule->job(InvoiceDeadlineJob::class);
-
-        // backup database
-//        $schedule->command('backup:run --only-db');
-
-        // test cron job
-        // $schedule->call(function(){
-        //     Notification::send(User::find(1), new SendMessage('test', 'test'));
-        // });
+        $schedule->job(new SendWeeklyPriceList)->dailyAt('11:00');
     }
 
     /**
