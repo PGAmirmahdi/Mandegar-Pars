@@ -615,8 +615,4 @@ class PanelController extends Controller
         return collect($factors);
     }
 
-    public function information()
-    {
-        return view('panel.information');
-    }
 }
