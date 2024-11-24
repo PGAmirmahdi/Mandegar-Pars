@@ -39,17 +39,15 @@ class SendWeeklyPriceList extends Command
      *
      * @return int
      */
-    public function handle()
-    {
+    public function handle(){
         $url = 'https://wesender.ir/Send';
         $sender = env('WESENDER_SENDER');
         $key = env('WESENDER_KEY');
         $dateAdd = 1;
 
-        // دریافت لیست مشتریان
-        $customers = Customer::all();
+        $groupId = 'GdDNQHQoVAMJ5pX29jV0f1';
 
-        // دریافت لیست قیمت‌ها
+//        // دریافت لیست قیمت‌ها
         $priceHistories = PriceHistory::with('product')->distinct()->get();
 
         // محصولات مورد نظر برای ارسال
@@ -65,12 +63,11 @@ class SendWeeklyPriceList extends Command
             'کارتریج تونر 78A برند آرتین تونر',
         ];
 
-        foreach ($customers as $customer) {
-            $message = "صبح بخیر مشتری عزیز {$customer->name}،\n";
-            $message .= "لیست قیمت این هفته ماندگار پارس به شرح زیر میباشد:\n";
+            $message = "صبح بخیر مشتریان عزیز،\n";
+            $message .= "لیست قیمت امروز ماندگار پارس به شرح زیر میباشد:\n";
 
             $sentProducts = [];
-            Log::info("Message for customer {$customer->name}: {$message}");
+            Log::info("Message: {$message}");
 
             foreach ($priceHistories as $price) {
                 // فیلتر کردن بر اساس نام محصول و اطمینان از اینکه قیمت بازار بیشتر از صفر است
@@ -86,49 +83,49 @@ class SendWeeklyPriceList extends Command
                 }
             }
 
-            Log::info("Complete message for customer {$customer->name}: {$message}");
+            Log::info("Complete message: {$message}");
 
-            // اضافه کردن 98 به ابتدای هر شماره
-            $formattedPhone = '98' . ltrim($customer->phone1, '0');
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode([
+                'message' => $message,
+                'dateAdd' => $dateAdd,
+            ]),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                "groupId: $groupId",
+                "sender: $sender",
+                "key: $key",
+            ],
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
 
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => json_encode([
-                    'message' => $message,
-                    'dateAdd' => $dateAdd,
-                ]),
-                CURLOPT_HTTPHEADER => [
-                    'Content-Type: application/json',
-                    "receivers: $formattedPhone",
-                    "sender: $sender",
-                    "key: $key",
-                ],
-                CURLOPT_SSL_VERIFYPEER => false,
-            ]);
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
 
-            $response = curl_exec($curl);
-            $error = curl_error($curl);
-            curl_close($curl);
+        $status = $error ? 'failed' : 'successful';
 
-            // لاگ کردن پاسخ cURL و خطا (در صورت وجود)
-            Log::info("cURL response for customer {$customer->name}: " . ($response ? $response : 'No response'));
-            Log::info("cURL error for customer {$customer->name}: " . ($error ? $error : 'No error'));
+        // ذخیره اطلاعات پیام در مدل Whatsapp
+        Whatsapp::create([
+            'user_id' => 173,
+            'sender_name' =>  'سیستم',
+            'receiver_name' => 'گروه',  // نام گیرنده به عنوان گروه
+            'phone' => $groupId,
+            'description' => $message,
+            'status' => $status,
+        ]);
 
-            $status = $error ? 'failed' : 'successful';
-            Log::info("Sending message to {$customer->name} with phone {$customer->phone1}");
-
-            // ذخیره وضعیت ارسال پیام
-            Whatsapp::create([
-                'user_id' => 173,
-                'sender_name' => 'سیستم',
-                'receiver_name' => $customer->name,
-                'phone' => $customer->phone1,
-                'description' => $message,
-                'status' => $status,
-            ]);
+        if ($error) {
+            Log::error("Failed to send message: $error");
+            return Command::FAILURE;
         }
+
+        Log::info("Message sent successfully.");
+        return Command::SUCCESS;
+
     }
 }
