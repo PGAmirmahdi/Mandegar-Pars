@@ -39,51 +39,74 @@ class SendWeeklyPriceList extends Command
      *
      * @return int
      */
-    public function handle(){
+    public function handle()
+    {
         $url = 'https://wesender.ir/Send';
         $sender = env('WESENDER_SENDER');
         $key = env('WESENDER_KEY');
         $dateAdd = 1;
 
-        $groupId = 'GdDNQHQoVAMJ5pX29jV0f1';
-
-//        // دریافت لیست قیمت‌ها
-        $priceHistories = PriceHistory::with('product')->distinct()->get();
+        $groupId = 'KIShrprMf7x59CGPLDW5Qk';
 
         // محصولات مورد نظر برای ارسال
         $targetProducts = [
-            'کارتریج تونر 80X برند آرتین تونر',
-            'کارتریج تونر 49A برند آرتین تونر',
-            'کارتریج تونر 83A برند آرتین تونر',
-            'کارتریج تونر 59A برند آرتین تونر',
-            'کارتریج تونر 26X برند آرتین تونر',
-            'کارتریج تونر 26A برند آرتین تونر',
-            'کارتریج تونر 05A برند آرتین تونر',
-            'کارتریج تونر 85A برند آرتین تونر',
-            'کارتریج تونر 78A برند آرتین تونر',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-80X | 80X',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-49A | 49A',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-83A | 83A',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-59A | 59A',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-26X | 26X',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-26A | 26A',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-05A | 05A',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-85A | 85A',
+            'کارتریج اچ پی مدل مشکی Toner-Cartridge-78A | 78A',
         ];
 
-            $message = "صبح بخیر مشتریان عزیز،\n";
-            $message .= "لیست قیمت امروز ماندگار پارس به شرح زیر میباشد:\n";
+        // واکشی لیست قیمت‌ها
+        $priceHistories = PriceHistory::with('product')->distinct()->get();
 
-            $sentProducts = [];
-            Log::info("Message: {$message}");
+        if ($priceHistories->isEmpty()) {
+            Log::warning("No price histories found.");
+            return Command::FAILURE;
+        }
 
-            foreach ($priceHistories as $price) {
-                // فیلتر کردن بر اساس نام محصول و اطمینان از اینکه قیمت بازار بیشتر از صفر است
-                if (in_array($price->product->title, $targetProducts) && $price->product->market_price > 0) {
-                    if (!in_array($price->product->title, $sentProducts)) {
-                        $formattedPrice = number_format($price->product->market_price); // جدا کردن سه رقم، سه رقم
-                        $message .= " محصول: {$price->product->title}\n";
-                        $message .= " قیمت بازار: {$formattedPrice} ريال \n";
+        Log::info("Fetched price histories count: " . $priceHistories->count());
 
-                        // اضافه کردن محصول به لیست ارسال شده‌ها
-                        $sentProducts[] = $price->product->title;
-                    }
-                }
+        $message = "صبح بخیر مشتریان عزیز،\n";
+        $message .= "لیست قیمت امروز ماندگار پارس به شرح زیر میباشد:\n";
+
+        $sentProducts = [];
+        foreach ($priceHistories as $price) {
+            // بررسی وجود محصول
+            if (!$price->product) {
+                Log::warning("Price history ID {$price->id} does not have an associated product.");
+                continue;
             }
 
-            Log::info("Complete message: {$message}");
+            Log::info("Checking product: {$price->product->title}");
+
+            // فیلتر کردن محصولات هدف
+            if (in_array($price->product->title, $targetProducts) && $price->product->market_price > 0) {
+                if (!in_array($price->product->title, $sentProducts)) {
+                    $formattedPrice = number_format($price->product->market_price); // جدا کردن سه رقم، سه رقم
+                    $message .= " محصول: {$price->product->title}\n";
+                    $message .= " قیمت بازار: {$formattedPrice} ريال \n";
+
+                    // اضافه کردن محصول به لیست ارسال شده‌ها
+                    $sentProducts[] = $price->product->title;
+
+                    Log::info("Added product to message: {$price->product->title}");
+                }
+            } else {
+                Log::info("Product not in target or market price <= 0: {$price->product->title}, Market Price: {$price->product->market_price}");
+            }
+        }
+
+        if (empty($sentProducts)) {
+            Log::warning("No target products found with valid market prices.");
+            return Command::FAILURE;
+        }
+
+        Log::info("Complete message: {$message}");
 
         $curl = curl_init();
         curl_setopt_array($curl, [
@@ -109,10 +132,9 @@ class SendWeeklyPriceList extends Command
 
         $status = $error ? 'failed' : 'successful';
 
-        // ذخیره اطلاعات پیام در مدل Whatsapp
         Whatsapp::create([
             'user_id' => 173,
-            'sender_name' =>  'سیستم',
+            'sender_name' => 'سیستم',
             'receiver_name' => 'گروه',  // نام گیرنده به عنوان گروه
             'phone' => $groupId,
             'description' => $message,
@@ -126,6 +148,6 @@ class SendWeeklyPriceList extends Command
 
         Log::info("Message sent successfully.");
         return Command::SUCCESS;
-
     }
+
 }
