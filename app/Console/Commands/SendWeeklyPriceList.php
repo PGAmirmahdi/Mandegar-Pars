@@ -137,7 +137,7 @@ class SendWeeklyPriceList extends Command
             'sender_name' => 'سیستم',
             'receiver_name' => 'گروه',  // نام گیرنده به عنوان گروه
             'phone' => $groupId,
-            'description' => $message,
+            'description' => $message . "شماره تماس:02165425052\n",
             'status' => $status,
         ]);
 
