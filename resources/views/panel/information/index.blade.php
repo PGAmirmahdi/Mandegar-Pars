@@ -124,6 +124,7 @@
                                     <th>عنوان</th>
                                     <th>اطلاعات</th>
                                     <th>عملیات</th>
+                                    <th>دسترسی</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -152,24 +153,49 @@
                                     </td>
                                 </tr>
                                 @foreach($baseInfos as $baseInfo)
-                                    <tr>
-                                        <td>{{$baseInfo->title}}</td>
-                                        <td>{{$baseInfo->info}}</td>
-                                        <td>
-                                            <button class="btn btn-primary btn-floating mx-1"
-                                                    onclick="copyRowData(this)"><i class="fa-solid fa-copy"></i>
-                                            </button>
-                                            <a class="btn btn-warning btn-floating mx-1"
-                                               href="{{ route('baseinfo.edit', $baseInfo->id) }}">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                            <button class="btn btn-danger btn-floating trashRow mx-1"
-                                                    data-url="{{ route('baseinfo.destroy',$baseInfo->id) }}"
-                                                    data-id="{{ $baseInfo->id }}">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    @if($baseInfo->access == 'private')
+                                        @can('information')
+                                            <tr>
+                                                <td>{{$baseInfo->title}}</td>
+                                                <td>{{$baseInfo->info}}</td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-floating mx-1"
+                                                            onclick="copyRowData(this)"><i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                    <a class="btn btn-warning btn-floating mx-1"
+                                                       href="{{ route('baseinfo.edit', $baseInfo->id) }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <button class="btn btn-danger btn-floating trashRow mx-1"
+                                                            data-url="{{ route('baseinfo.destroy',$baseInfo->id) }}"
+                                                            data-id="{{ $baseInfo->id }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                                <td><i class="badge badge-danger"><i class="fa-solid fa-lock"></i></i></td>
+                                            </tr>
+                                        @endcan
+                                    @else
+                                        <tr>
+                                            <td>{{$baseInfo->title}}</td>
+                                            <td>{{$baseInfo->info}}</td>
+                                            <td>
+                                                <button class="btn btn-primary btn-floating mx-1"
+                                                        onclick="copyRowData(this)"><i class="fa-solid fa-copy"></i>
+                                                </button>
+                                                <a class="btn btn-warning btn-floating mx-1"
+                                                   href="{{ route('baseinfo.edit', $baseInfo->id) }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <button class="btn btn-danger btn-floating trashRow mx-1"
+                                                        data-url="{{ route('baseinfo.destroy',$baseInfo->id) }}"
+                                                        data-id="{{ $baseInfo->id }}">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                            <td><i class="badge badge-success"><i class="fa-solid fa-lock-open"></i></i></td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>
@@ -335,6 +361,7 @@
                                 <th>عنوان</th>
                                 <th>تصویر</th>
                                 <th>عملیات</th>
+                                <th>دسترسی</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -354,6 +381,7 @@
                                             <i class="fa-solid fa-down-long"></i>
                                         </a>
                                     </td>
+                                    <td><i class="badge badge-danger"><i class="fa-solid fa-lock"></i></i></td>
                             </tr>
                             <tr>
                                 <td>گواهی عضویت</td>
@@ -370,6 +398,7 @@
                                         <i class="fa-solid fa-down-long"></i>
                                     </a>
                                 </td>
+                                <td><i class="badge badge-danger"><i class="fa-solid fa-lock"></i></i></td>
                             </tr>
                             <tr>
                                 <td>روزنامه رسمی</td>
@@ -386,6 +415,7 @@
                                         <i class="fa-solid fa-down-long"></i>
                                     </a>
                                 </td>
+                                <td><i class="badge badge-danger"><i class="fa-solid fa-lock"></i></i></td>
                                 @else
                                     <td colspan="3">خالی</td>
                                 @endcan

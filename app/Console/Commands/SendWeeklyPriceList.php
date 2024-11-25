@@ -114,7 +114,7 @@ class SendWeeklyPriceList extends Command
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode([
-                'message' => $message,
+                'message' => $message . "شماره تماس:02165425052\n",
                 'dateAdd' => $dateAdd,
             ]),
             CURLOPT_HTTPHEADER => [
