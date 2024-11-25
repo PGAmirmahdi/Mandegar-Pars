@@ -42,10 +42,13 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @php
+                                $counter = 0; // تعریف شمارنده کلی
+                            @endphp
                             @foreach($baseInfos->where('type', $type) as $key => $info)
                                 @if($info->access == 'public' || auth()->user()->can('information'))
                                     <tr>
-                                        <td>{{$key }}</td>
+                                        <td>{{ ++$counter }}</td>
                                         <td>{{ $info->title }}</td>
                                         <td>{{ $info->info }}</td>
                                         <td>
