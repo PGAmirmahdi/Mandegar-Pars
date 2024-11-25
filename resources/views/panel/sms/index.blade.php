@@ -75,7 +75,7 @@ $errorMessages = [
                         <tbody>
                         @foreach($smsList as $key => $sms)
                             <tr>
-                                <td>{{ $key + 1 }}</td>
+                                <td>{{ ++$key }}</td>
                                 <td>
                                     {{ $sms->user ? $sms->user->name . ' ' . $sms->user->family : 'نامشخص' }}
                                 </td>
