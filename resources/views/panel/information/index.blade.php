@@ -45,7 +45,7 @@
                             @foreach($baseInfos->where('type', $type) as $key => $info)
                                 @if($info->access == 'public' || auth()->user()->can('information'))
                                     <tr>
-                                        <td>{{$key++}}</td>
+                                        <td>{{$key }}</td>
                                         <td>{{ $info->title }}</td>
                                         <td>{{ $info->info }}</td>
                                         <td>
