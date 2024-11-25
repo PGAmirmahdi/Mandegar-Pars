@@ -39,7 +39,7 @@ class BaseinfoController extends Controller
 
         BaseInfo::create($data);
         alert()->success('اطلاعات با موفقیت بارگذاری شد','موفق');
-        return redirect()->route('panel.information.index')->with('success', 'اطلاعات با موفقیت ذخیره شد.');
+        return redirect()->route('baseinfo.index')->with('success', 'اطلاعات با موفقیت ذخیره شد.');
     }
 
 
@@ -73,7 +73,7 @@ class BaseinfoController extends Controller
         $baseinfo = Baseinfo::findOrFail($id);
         $baseinfo->update($validated);
         alert()->success('اطلاعات با موفقیت به روز رسانی شد','موفق');
-        return redirect()->route('panel.information.index')->with('success', 'اطلاعات با موفقیت به‌روزرسانی شد.');
+        return redirect()->route('baseinfo.index')->with('success', 'اطلاعات با موفقیت به‌روزرسانی شد.');
     }
 
     public function destroy(Baseinfo $baseinfo)
