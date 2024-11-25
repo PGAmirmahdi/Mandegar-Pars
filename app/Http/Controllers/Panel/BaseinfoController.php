@@ -57,7 +57,7 @@ class BaseinfoController extends Controller
     public function edit($id)
     {
         $baseinfo = Baseinfo::findOrFail($id);
-        return view('baseinfo.edit', compact('baseinfo'));
+        return view('panel.baseinfo.edit', compact('baseinfo'));
     }
 
 
@@ -73,7 +73,7 @@ class BaseinfoController extends Controller
         $baseinfo = Baseinfo::findOrFail($id);
         $baseinfo->update($validated);
         alert()->success('اطلاعات با موفقیت به روز رسانی شد','موفق');
-        return redirect()->route('baseinfo.index')->with('success', 'اطلاعات با موفقیت به‌روزرسانی شد.');
+        return redirect()->route('panel.baseinfo.index')->with('success', 'اطلاعات با موفقیت به‌روزرسانی شد.');
     }
 
     public function destroy(Baseinfo $baseinfo)
