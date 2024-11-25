@@ -8,6 +8,7 @@
             font-size: 16px;
             cursor: pointer;
         }
+
         .download-btn.loading {
             background-color: #6f42c1;
             color: #fff;
@@ -33,6 +34,7 @@
                         <table class="table table-striped table-bordered text-center dataTable">
                             <thead>
                             <tr>
+                                <th>#</th>
                                 <th>عنوان</th>
                                 <th>اطلاعات</th>
                                 <th>عملیات</th>
@@ -43,6 +45,7 @@
                             @foreach($baseInfos->where('type', $type) as $info)
                                 @if($info->access == 'public' || auth()->user()->can('information'))
                                     <tr>
+                                        <td>{{$key++}}</td>
                                         <td>{{ $info->title }}</td>
                                         <td>{{ $info->info }}</td>
                                         <td>
@@ -166,7 +169,7 @@
                 button.addEventListener('click', () => {
                     const url = button.dataset.url;
                     if (confirm('آیا مطمئن هستید؟')) {
-                        fetch(url, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                        fetch(url, {method: 'DELETE', headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                             .then(response => response.json())
                             .then(data => location.reload());
                     }
