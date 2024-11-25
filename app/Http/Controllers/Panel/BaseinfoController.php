@@ -38,7 +38,7 @@ class BaseinfoController extends Controller
         }
 
         BaseInfo::create($data);
-
+        alert()->message('اطلاعات با موفقیت بارگذاری شد','موفق');
         return redirect()->route('baseinfo.index')->with('success', 'اطلاعات با موفقیت ذخیره شد.');
     }
 
@@ -54,27 +54,26 @@ class BaseinfoController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+        $baseinfo = Baseinfo::findOrFail($id);
+        return view('baseinfo.edit', compact('baseinfo'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'type' => 'required|string',
+            'title' => 'required|string|max:255',
+            'info' => 'required|string',
+            'access' => 'required|string',
+        ]);
+
+        $baseinfo = Baseinfo::findOrFail($id);
+        $baseinfo->update($validated);
+        alert()->message('اطلاعات با موفقیت به روز رسانی شد','موفق');
+        return redirect()->route('baseinfo.index')->with('success', 'اطلاعات با موفقیت به‌روزرسانی شد.');
     }
 
     public function destroy(Baseinfo $baseinfo)
