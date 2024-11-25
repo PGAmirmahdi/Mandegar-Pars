@@ -38,7 +38,7 @@ class BaseinfoController extends Controller
         }
 
         BaseInfo::create($data);
-        alert()->message('اطلاعات با موفقیت بارگذاری شد','موفق');
+        alert()->success('اطلاعات با موفقیت بارگذاری شد','موفق');
         return redirect()->route('baseinfo.index')->with('success', 'اطلاعات با موفقیت ذخیره شد.');
     }
 
@@ -72,7 +72,7 @@ class BaseinfoController extends Controller
 
         $baseinfo = Baseinfo::findOrFail($id);
         $baseinfo->update($validated);
-        alert()->message('اطلاعات با موفقیت به روز رسانی شد','موفق');
+        alert()->success('اطلاعات با موفقیت به روز رسانی شد','موفق');
         return redirect()->route('baseinfo.index')->with('success', 'اطلاعات با موفقیت به‌روزرسانی شد.');
     }
 
