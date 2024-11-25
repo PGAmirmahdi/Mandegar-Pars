@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use SoapClient;
 
 class SMSController extends Controller
@@ -100,8 +101,16 @@ class SMSController extends Controller
                     'status' => $status,
                 ]);
 
+                Log::info('SMS Sent', [
+                    'user_id' => auth()->id(),
+                    'receiver_name' => $request->receiver_name,
+                    'receiver_phone' => $request->receiver_phone,
+                    'message' => $request->message,
+                    'status' => $status,
+                ]);
                 if (array_key_exists($status, $errorMessages)) {
                     alert()->error($errorMessages[$status], 'ارسال پیامک');
+
                 } elseif (array_key_exists($status, $successMessages)) {
                     alert()->success($successMessages[$status], 'ارسال پیامک');
                 } else {

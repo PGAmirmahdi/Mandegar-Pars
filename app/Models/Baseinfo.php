@@ -13,6 +13,7 @@ class Baseinfo extends Model
     const TYPE = [
         'base' => 'اطلاعات پایه',
         'manager' => 'اطلاعات مدیرعامل',
+        'bank' => 'اطلاعات حساب بانکی',
         'call' => 'اطلاعات تماس',
         'file' => 'اطلاعات فایل',
     ];
