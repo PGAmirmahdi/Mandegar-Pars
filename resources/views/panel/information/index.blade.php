@@ -42,7 +42,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($baseInfos->where('type', $type) as $info)
+                            @foreach($baseInfos->where('type', $type) as $key => $info)
                                 @if($info->access == 'public' || auth()->user()->can('information'))
                                     <tr>
                                         <td>{{$key++}}</td>
