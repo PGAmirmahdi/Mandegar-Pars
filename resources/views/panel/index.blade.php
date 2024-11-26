@@ -360,7 +360,7 @@
                                 </tfoot>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
+                        <div class="d-flex justify-content-center">{{ $bazdid->appends(request()->all())->links() }}</div>
                     </div>
                 </div>
             @endcan
