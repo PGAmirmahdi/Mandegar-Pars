@@ -45,6 +45,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
 
     public function isAdmin()
     {

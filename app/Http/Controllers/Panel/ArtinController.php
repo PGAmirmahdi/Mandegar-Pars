@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use PDO;
 
@@ -82,8 +83,20 @@ class ArtinController extends Controller
             $stmt3->bindParam(':product_id', $product_id);
             $stmt3->execute();
 
-            $this->conn = null;
+            // گرفتن نام محصول از دیتابیس
+            $sql4 = "SELECT post_title FROM mand_posts WHERE ID = :product_id";
+            $stmt4 = $this->conn->prepare($sql4);
+            $stmt4->bindParam(':product_id', $product_id);
+            $stmt4->execute();
+            $product_name = $stmt4->fetchColumn(); // نام محصول
 
+            $this->conn = null;
+            // ثبت فعالیت کاربر همراه با نام محصول
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'ویرایش قیمت محصول سایت',
+                'description' => 'کاربر ' . auth()->user()->name . ' قیمت محصول "' . $product_name . '" را ویرایش کرد.',
+            ]);
             return back();
         } catch(\PDOException $e) {
             return "Connection failed: " . $e->getMessage();
