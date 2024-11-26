@@ -102,39 +102,45 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($products as $key => $product)
+                    @if($products && $products->count() > 0)
+                        @foreach($products as $key => $product)
+                            <tr>
+                                <td>{{ ++$key }}</td>
+                                <td>{{ $product->post_title }}</td>
+                                <td>{{ $product->sku }}</td>
+                                <td>{{ $product->code_accounting ?? 'نامشخص' }}</td>
+                                <td>{{ number_format($product->min_price).' تومان ' }}</td>
+                                <td>
+                                    @if($product->post_status == 'publish')
+                                        <span class="badge badge-success">منتشر شده</span>
+                                    @elseif($product->post_status == 'draft')
+                                        <span class="badge badge-warning">پیش نویس</span>
+                                    @else
+                                        <span class="badge badge-warning">نامشخص</span>
+                                    @endif
+                                </td>
+                                <td>{{ verta($product->post_date)->format('H:i - Y/m/d') }}</td>
+                                @can('artin-products-edit')
+                                    <td>
+                                        <button class="btn btn-warning btn-floating btn_edit" data-toggle="modal" data-target="#editPriceModal" data-id="{{ $product->id }}" data-price="{{ $product->min_price }}">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    </td>
+                                @endcan
+                                @can('artin-products-delete')
+                                    <td>
+                                        <button class="btn btn-danger btn-floating btn_delete" data-id="{{ $product->id }}">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                @endcan
+                            </tr>
+                        @endforeach
+                    @else
                         <tr>
-                            <td>{{ ++$key }}</td>
-                            <td>{{ $product->post_title }}</td>
-                            <td>{{ $product->sku }}</td>
-                            <td>{{ $product->code_accounting ?? 'نامشخص' }}</td> <!-- اضافه شده -->
-                            <td>{{ number_format($product->min_price).' تومان ' }}</td>
-                            <td>
-                                @if($product->post_status == 'publish')
-                                    <span class="badge badge-success">منتشر شده</span>
-                                @elseif($product->post_status == 'draft')
-                                    <span class="badge badge-warning">پیش نویس</span>
-                                @else
-                                    <span class="badge badge-warning">نامشخص</span>
-                                @endif
-                            </td>
-                            <td>{{ verta($product->post_date)->format('H:i - Y/m/d') }}</td>
-                            @can('artin-products-edit')
-                                <td>
-                                    <button class="btn btn-warning btn-floating btn_edit" data-toggle="modal" data-target="#editPriceModal" data-id="{{ $product->id }}" data-price="{{ $product->min_price }}">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                </td>
-                            @endcan
-                            @can('artin-products-delete')
-                                <td>
-                                    <button class="btn btn-danger btn-floating btn_delete" data-id="{{ $product->id }}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            @endcan
+                            <td colspan="8">هیچ محصولی یافت نشد.</td>
                         </tr>
-                    @endforeach
+                    @endif
                     </tbody>
                     <tfoot>
                     <tr>
