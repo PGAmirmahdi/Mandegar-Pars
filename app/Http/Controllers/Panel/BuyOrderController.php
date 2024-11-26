@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBuyOrderRequest;
+use App\Models\Activity;
 use App\Models\BuyOrder;
+use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class BuyOrderController extends Controller
@@ -49,14 +52,20 @@ class BuyOrderController extends Controller
                 'count' => $counts[$key],
             ];
         }
-
+        // دریافت نام مشتری
+        $customerName = Customer::find($request->customer_id)->name;
         BuyOrder::create([
             'user_id' => auth()->id(),
             'customer_id' => $request->customer_id,
             'description' => $request->description,
             'items' => json_encode($items),
         ]);
-
+        // ثبت فعالیت کاربر
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'اضافه کردن سفارش خرید',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید برای مشتری ' . $customerName . ' اضافه کرد.',
+        ]);
         alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش خرید');
         return redirect()->route('buy-orders.index');
     }
@@ -101,7 +110,14 @@ class BuyOrderController extends Controller
             'description' => $request->description,
             'items' => json_encode($items),
         ]);
-
+        // دریافت نام مشتری
+        $customerName = Customer::find($request->customer_id)->name;
+// ثبت فعالیت کاربر
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش سفارش خرید',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید برای مشتری ' . $customerName . ' را ویرایش کرد.',
+        ]);
         alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش خرید');
         return redirect()->route('buy-orders.index');
     }
@@ -110,11 +126,23 @@ class BuyOrderController extends Controller
     {
         $this->authorize('buy-orders-delete');
 
-        if (Gate::allows('ceo') || $buyOrder->status == 'bought'){
+        // گرفتن نام مشتری
+        $customerName = $buyOrder->customer->name;
+
+        // ثبت فعالیت
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش سفارش خرید',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید برای مشتری ' . $customerName . ' را حذف کرد.',
+        ]);
+
+        if (Gate::allows('ceo') || $buyOrder->status == 'bought') {
             return back();
         }
 
+        // حذف سفارش خرید
         $buyOrder->delete();
+
         return back();
     }
 
@@ -129,7 +157,15 @@ class BuyOrderController extends Controller
         }else{
             $buyOrder->update(['status' => 'bought']);
         }
+        // گرفتن نام مشتری
+        $customerName = $buyOrder->customer->name;
 
+        // ثبت فعالیت
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش وضعیت سفارش خرید',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role . ') وضعیت سفارش خرید برای مشتری ' . $customerName . 'را تغییر داد.',
+        ]);
         alert()->success('وضعیت سفارش با موفقیت تغییر کرد','تغییر وضعیت سفارش');
         return back();
     }

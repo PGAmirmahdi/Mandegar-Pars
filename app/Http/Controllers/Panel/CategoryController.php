@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Activity;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -34,6 +36,12 @@ class CategoryController extends Controller
             'slug' => make_slug($request->slug),
         ]);
 
+        // ثبت فعالیت
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'دسته بندی',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') دسته بندی ' . $request->name . ' را ایجاد کرد.',
+        ]);
         alert()->success('دسته بندی مورد نظر با موفقیت ایجاد شد','ایجاد دسته بندی');
         return redirect()->route('categories.index');
     }
@@ -58,7 +66,11 @@ class CategoryController extends Controller
             'name' => $request->name,
             'slug' => $request->slug,
         ]);
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'دسته بندی',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') دسته بندی ' . $request->name . ' را ویرایش کرد.',
+        ]);
         alert()->success('دسته بندی مورد نظر با موفقیت ویرایش شد','ویرایش دسته بندی');
         return redirect()->route('categories.index');
     }
@@ -66,7 +78,11 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $this->authorize('categories-delete');
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'دسته بندی',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') دسته بندی ' . $category->name . ' را حذف کرد.',
+        ]);
         if (!$category->products()->exists()){
             $category->delete();
             return back();

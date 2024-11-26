@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
@@ -51,7 +53,11 @@ class CustomerController extends Controller
             'address2' => $request->address2,
             'description' => $request->description,
         ]);
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد مشتری',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  مشتری ' . $request->name . ' را ایجاد کرد.',
+        ]);
         alert()->success('مشتری مورد نظر با موفقیت ایجاد شد','ایجاد مشتری');
         return redirect()->route('customers.index');
     }
@@ -73,7 +79,11 @@ class CustomerController extends Controller
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
         $this->authorize('customers-edit');
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد مشتری',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  مشتری ' . $customer->name . ' را ویرایش کرد.',
+        ]);
         $customer->update([
             'name' => $request->name,
             'code' => Gate::allows('sales-manager') ? $request->customer_code : $customer->code,
@@ -91,7 +101,6 @@ class CustomerController extends Controller
             'address2' => $request->address2,
             'description' => $request->description,
         ]);
-
         $url = $request->url;
 
         alert()->success('مشتری مورد نظر با موفقیت ویرایش شد','ویرایش مشتری');
@@ -101,7 +110,11 @@ class CustomerController extends Controller
     public function destroy(Customer $customer)
     {
         $this->authorize('customers-delete');
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد مشتری',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  مشتری ' . $customer->name . ' را حذف کرد.',
+        ]);
         if ($customer->invoices()->exists()){
             return response('ابتدا سفارشات این مشتری را حذف کنید',500);
         }
@@ -150,6 +163,11 @@ class CustomerController extends Controller
 
     public function excel()
     {
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'خروجی اکسل از مشتریان',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ' از مشتریان خروجی اکسل گرفت',
+        ]);
         return Excel::download(new \App\Exports\CustomersExport, 'customers.xlsx');
     }
 

@@ -100,7 +100,7 @@ class ArtinController extends Controller
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ویرایش قیمت محصول سایت',
-                'description' => 'کاربر ' . auth()->user()->name . ' قیمت محصول "' . $product_name . '" را ویرایش کرد.',
+                'description' => 'کاربر ' . auth()->user()->family . ' قیمت محصول "' . $product_name . '" را ویرایش کرد.',
             ]);
             return back();
         } catch(\PDOException $e) {
@@ -170,7 +170,11 @@ class ArtinController extends Controller
 
             // Close PDO connection
             $this->conn = null;
-
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'ایجاد محصول محصول در سایت',
+                'description' => 'کاربر ' . auth()->user()->family .  'محصول '  . $title . ' را برای سایت ایجاد کرد',
+            ]);
             // Redirect back with success message
             return redirect()->back()->with('success', 'Product created successfully.');
         } catch(\PDOException $e) {
@@ -211,11 +215,25 @@ class ArtinController extends Controller
             // Commit transaction
             $this->conn->commit();
 
+            // Get product name
+            $sql4 = "SELECT post_title FROM mand_posts WHERE ID = :product_id";
+            $stmt4 = $this->conn->prepare($sql4);
+            $stmt4->bindParam(':product_id', $id);
+            $stmt4->execute();
+            $product_name = $stmt4->fetchColumn();
+
+            // Log activity
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'Delete product',
+                'description' => 'User ' . auth()->user()->family . ' deleted the product "' . $product_name . '".',
+            ]);
+
             // Close PDO connection
             $this->conn = null;
 
-            // Return success message or redirect back
-            return response()->json(['success' => 'Product deleted successfully.']);
+            // Return success message with product name
+            return response()->json(['success' => 'Product "' . $product_name . '" deleted successfully.']);
 
         } catch (\PDOException $e) {
             // Rollback transaction on error

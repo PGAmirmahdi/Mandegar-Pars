@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\Inventory;
 use App\Models\Invoice;
 use App\Models\Role;
@@ -485,6 +486,7 @@ class PanelController extends Controller
         $totalInvoices = $userInvoices->pluck('total_invoices');
         $totalPrices = $userInvoices->pluck('total_price');
         $bazdid= Visitor::latest()->paginate(10);
+        $activities = Activity::latest()->paginate(10);
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,
@@ -497,7 +499,7 @@ class PanelController extends Controller
             'userVisits9' => $userVisits9,
             'totalRows' => $totalRows,
             'userInvoices' => $userInvoices
-        ], compact('userNames2','totalInvoices','totalPrices','invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData','dates8', 'visitsData8', 'totalVisits8','bazdid'));
+        ], compact('activities','userNames2','totalInvoices','totalPrices','invoices', 'factors', 'factors_monthly', 'userVisits', 'totalVisits', 'users', 'sms_dates', 'sms_counts', 'totalSmsSent','users2','inventories','productNames', 'productCounts','visitsDates', 'visitsCounts', 'totalVisits2','visitsData','dates8', 'visitsData8', 'totalVisits8','bazdid'));
     }
         public function readNotification($notification = null)
     {

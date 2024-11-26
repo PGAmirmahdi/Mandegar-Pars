@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\ExitDoor;
 use App\Models\InventoryReport;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ExitDoorController extends Controller
 {
@@ -49,7 +51,11 @@ class ExitDoorController extends Controller
             'status' => $request->status,
             'description' => $request->description,
         ]);
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد مشتری',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . 'خروج از انبار ثبت کرد',
+        ]);
         alert()->success('ثبت خروج محموله با موفقیت انجام شد','ثبت خروج');
         return redirect()->route('exit-door.index');
     }
