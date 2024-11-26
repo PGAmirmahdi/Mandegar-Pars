@@ -322,7 +322,7 @@
                 </div>
             </div>
             @can('activity-list')
-                <div class="card">
+                <div class="card col-12">
                     <div class="card-body">
                         <div class="card-title d-flex justify-content-between align-items-center">
                             <h6>آخرین فعالیت ها</h6>
