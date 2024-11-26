@@ -32,25 +32,30 @@ class ArtinController extends Controller
         try {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // کوئری برای واکشی محصولات به همراه کد حسابداری
+            // SQL query to fetch products with accounting code
             $sql = "SELECT mand_posts.id, mand_posts.post_date, mand_posts.post_title, mand_posts.post_status, mand_wc_product_meta_lookup.sku, mand_wc_product_meta_lookup.min_price, meta.meta_value AS code_accounting
                 FROM mand_posts
                 INNER JOIN mand_wc_product_meta_lookup ON mand_posts.id = mand_wc_product_meta_lookup.product_id
-                LEFT JOIN mand_postmeta AS meta ON mand_posts.id = meta.post_id AND meta.meta_key = 'code_accounting' -- اضافه شده برای واکشی کد حسابداری
+                LEFT JOIN mand_postmeta AS meta ON mand_posts.id = meta.post_id AND meta.meta_key = 'code_accounting'
                 WHERE mand_posts.post_type = 'product'";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            $products = $stmt->setFetchMode(PDO::FETCH_OBJ);
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            $products = $stmt->fetchAll(); // Fetch results as objects
+
+            if ($products === false) {
+                return view('panel.artin.products', ['products' => []]); // Return empty array if no products
+            }
+
             $this->conn = null;
 
-            // بازگرداندن نمای محصولات به همراه کد حسابداری
-            return view('panel.artin.products', compact('products'));
+            return view('panel.artin.products', compact('products')); // Pass products to view
         } catch(\PDOException $e) {
             return "Connection failed: " . $e->getMessage();
         }
     }
+
 
 
     public function updatePrice(Request $request)
