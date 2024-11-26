@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateFactorRequest;
+use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\Factor;
 use App\Models\Invoice;
@@ -15,6 +16,7 @@ use App\Models\Seller;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
 use function Symfony\Component\String\b;
@@ -137,7 +139,14 @@ class FactorController extends Controller
             'status' => $request->status,
             'deposit_doc' => $deposit_doc
         ]);
+        // Assuming the invoice has a customer relationship
+        $customer = $invoice->customer; // or get customer based on your structure
 
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش فاکتور',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  فاکتور مشتری ' . ($customer ? $customer->name : 'نامشخص') . ' را ویرایش کرد.',
+        ]);
         alert()->success('فاکتور مورد نظر با موفقیت ویرایش شد','ویرایش فاکتور');
         return redirect()->route('factors.index');
     }
@@ -152,6 +161,13 @@ class FactorController extends Controller
         }
 
         $invoice = Invoice::find($factor->invoice_id);
+        // Assuming the invoice has a customer relationship
+        $customer = $invoice->customer; // or get customer based on your structure
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'حذف فاکتور',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  فاکتور ' . ($customer ? $customer->name : 'نامشخص'). ' را حذف کرد.',
+        ]);
         $factor->delete();
         $invoice->update(['status' => 'pending']);
 
@@ -201,6 +217,11 @@ class FactorController extends Controller
 
     public function excel()
     {
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'خروجی اکسل از فاکتور',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') از فاکتور ها خروجی اکسل گرفت',
+        ]);
         return Excel::download(new \App\Exports\FactorsExport, 'factors.xlsx');
     }
 
@@ -214,8 +235,22 @@ class FactorController extends Controller
 
         if ($factor->status == 'invoiced'){
             $factor->update(['status' => 'paid']);
+            $invoice = Invoice::find($factor->invoice_id);
+            $customer = $invoice->customer; // or get customer based on your structure
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'وضعیت فاکتور به روز کرد',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') وضعیت فاکتور مشتری' . ($customer ? $customer->name : 'نامشخص'). ' را به روز کرد.',
+            ]);
         }else{
             $factor->update(['status' => 'invoiced']);
+            $invoice = Invoice::find($factor->invoice_id);
+            $customer = $invoice->customer; // or get customer based on your structure
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'وضعیت فاکتور به روز کرد',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') وضعیت فاکتور مشتری' . ($customer ? $customer->name : 'نامشخص'). ' را به روز کرد.',
+            ]);
         }
 
         return back();
@@ -252,7 +287,12 @@ class FactorController extends Controller
                     'tax' => $request->taxes[$key],
                     'invoice_net' => $request->invoice_nets[$key],
                 ]);
-
+                $product = Product::find($product_id); // Get product
+                Activity::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'اضافه کردن محصول به فاکتور',
+                    'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') محصول ' . $product->name . ' را به فاکتور شماره ' . $invoice->id . ' اضافه کرد.',
+                ]);
             }
         }
 
@@ -271,6 +311,12 @@ class FactorController extends Controller
                     'extra_amount' => $request->other_extra_amounts[$key],
                     'tax' => $request->other_taxes[$key],
                     'invoice_net' => $request->other_invoice_nets[$key],
+                ]);
+                // Register Activity for adding other product to the invoice
+                Activity::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'اضافه کردن محصول دیگر به فاکتور',
+                    'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') محصول دیگر ' . $product . ' را به فاکتور شماره ' . $invoice->id . ' اضافه کرد.',
                 ]);
             }
         }

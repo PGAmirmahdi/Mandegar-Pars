@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Cheque;
 use App\Models\PriceRequest;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 
 
@@ -47,7 +49,11 @@ class ChequeController extends Controller
             'max_send_time' => $request->max_send_time,
             'items' => json_encode($items)
         ]);
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'درخواست وضعیت چک',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') درخواست وضعیت چک ' . $request->title[0] . ' را ایجاد کرد.',
+        ]);
         // notification sent to ceo
         $notifiables = User::where('id','!=',auth()->id())->whereHas('role' , function ($role) {
             $role->whereHas('permissions', function ($q) {
@@ -57,7 +63,7 @@ class ChequeController extends Controller
 
         $notif_message = 'یک درخواست وضعیت چک توسط همکار فروش ثبت گردید';
         $url = route('cheque.index');
-        Notification::send($notifiables, new SendMessage($notif_message, $url));
+//        Notification::send($notifiables, new SendMessage($notif_message, $url));
         // end notification sent to ceo
 
         alert()->success('وضعیت چک با موفقیت ثبت شد','وضعیت چک ثبت شد');
@@ -95,7 +101,11 @@ class ChequeController extends Controller
             'items' => json_encode($items),
             'status' => 'sent',
         ]);
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش وضعیت چک',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') درخواست وضعیت چک ' . $cheque->title[0] . ' را ویرایش کرد.',
+        ]);
         // notification sent to ceo
         $notifiables = User::whereHas('role' , function ($role) {
             $role->whereHas('permissions', function ($q) {
@@ -105,8 +115,8 @@ class ChequeController extends Controller
 
         $notif_message = 'وضعیت چک های درخواستی توسط مدیر ثبت گردید توسط مدیر ثبت گردید';
         $url = route('cheque.index');
-        Notification::send($notifiables, new SendMessage($notif_message, $url));
-        Notification::send($cheque->user, new SendMessage($notif_message, $url));
+//        Notification::send($notifiables, new SendMessage($notif_message, $url));
+//        Notification::send($cheque->user, new SendMessage($notif_message, $url));
         // end notification sent to ceo
 
         alert()->success(' وضعیت چک ها با موفقیت ثبت شدند','وضعیت چک تغییر یافته');
@@ -116,7 +126,11 @@ class ChequeController extends Controller
     public function destroy(Cheque $cheque)
     {
         $this->authorize('delete-cheque-check');
-
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'حذف وضعیت چک',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') درخواست وضعیت چک ' . $cheque->title[0] . ' را حذف کرد.',
+        ]);
         $cheque->delete();
         return back();
     }

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\PriceHistory;
 use App\Models\Whatsapp;
@@ -140,7 +141,12 @@ class SendWeeklyPriceList extends Command
             'description' => $message . "شماره تماس:02165425052\n",
             'status' => $status,
         ]);
-
+        // Register Activity for adding other product to the invoice
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'پیام واتساپی سیستم',
+            'description' => 'سیستم به صورت خودکار پیام واتساپی لیست قیمت محصولات در گروه گذاشت' ,
+        ]);
         if ($error) {
             Log::error("Failed to send message: $error");
             return Command::FAILURE;
