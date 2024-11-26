@@ -1,17 +1,16 @@
 <?php
 
-use App\Events\SendMessage as SendMessageEvent;
 use App\Events\TestEvent;
-use App\Http\Controllers\Api\v1\ApiController;
 use App\Http\Controllers\Api\v1\WhatsappController;
 use App\Http\Controllers\Auth\PusherAuthController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Panel\ActivityController;
 use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BaseinfoController;
 use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\BuyOrderController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\ChatsGPTController;
+use App\Http\Controllers\Panel\ChequeController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\DeliveryDayController;
@@ -47,23 +46,12 @@ use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\Panel\WarehouseController;
 use App\Http\Controllers\PanelController;
-use App\Http\Controllers\testController;
-use App\Models\Invoice;
-use App\Models\Packet;
-use App\Models\User;
-use App\Models\Visitor;
 use App\Models\UserVisit;
-use App\Notifications\SendMessage;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Route;
+use App\Models\Visitor;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Http\Controllers\Panel\ChequeController;
-use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 use PDF as PDF;
 
 
@@ -303,6 +291,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Buy Orders
     Route::resource('buy-orders', BuyOrderController::class);
     Route::post('buy-order/{buy_order}/change-status', [BuyOrderController::class, 'changeStatus'])->name('buy-orders.changeStatus');
+
+    // Activity
+    Route::get('activity', [ActivityController::class, 'index'])->name('activity');
 
     // Delivery Days
     Route::get('delivery-days', [DeliveryDayController::class, 'index'])->name('delivery-days.index');
