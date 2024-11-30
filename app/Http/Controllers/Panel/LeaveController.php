@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLeaveRequest;
+use App\Models\Activity;
 use App\Models\Leave;
 use App\Models\User;
 use App\Notifications\SendMessage;
@@ -47,7 +48,7 @@ class LeaveController extends Controller
         }
         // end limit daily leave
 
-        Leave::create([
+        $leave=Leave::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
             'desc' => $request->description,
@@ -57,7 +58,14 @@ class LeaveController extends Controller
             'from' => $request->from,
             'to' => $request->to,
         ]);
-
+// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ثبت درخواست مرخصی',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') درخواست مرخصی با عنوان "' . $leave->title . '" را ثبت کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         // send notification to ceo`s
         $roles_id = \App\Models\Role::whereHas('permissions', function ($q){
             $q->where('name','ceo');
@@ -127,7 +135,14 @@ class LeaveController extends Controller
             'status' => $request->status,
             'answer_time' => now(),
         ]);
-
+// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'تغییر وضعیت درخواست مرخصی',
+            'description' => 'وضعیت درخواست مرخصی کاربر ' . $leave->user->family . ' (' . $leave->user->role->label . ' توسط کاربر ' . auth()->user()->fullName() . ') به "' . Leave::STATUS[$leave->status] . '" تغییر یافت.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('وضعیت درخواست مورد نظر با موفقیت تغییر کرد','تعیین وضعیت درخواست');
         return redirect()->route('leaves.index');
     }
@@ -135,7 +150,13 @@ class LeaveController extends Controller
     public function destroy(Leave $leave)
     {
         $this->authorize('leaves-delete');
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف درخواست مرخصی',
+            'description' => ' درخواست مرخصی کاربر ' . $leave->user->family . ' (' . $leave->user->role->label . ' توسط کاربر ' . auth()->user()->fullName() . 'حذف شد',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         $leave->delete();
         return back();
     }

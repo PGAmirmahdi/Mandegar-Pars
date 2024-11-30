@@ -403,7 +403,14 @@ class InvoiceController extends Controller
             'tax' => $tax,
             'invoice_net' => $invoice_net,
         ];
+        $data = [
+            'user_id' => auth()->id(),
+            'action' => 'استفاده از کد تخفیف',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') از کد تخفیف ' . $coupon->code . ' در سفارش ' . $request->invoice_id . ' استفاده کرد',
+        ];
 
+        Log::info('Activity Data:', $data);
+        Activity::create($data);
         return response()->json(['error' => 0, 'message' => 'کد تخفیف اعمال شد', 'data' => $data]);
     }
 
@@ -442,9 +449,14 @@ class InvoiceController extends Controller
             $status = Invoice::STATUS[$invoice->status];
             $url = route('invoices.index');
             $message = " وضعیت سفارش {$invoice->customer->name} به '{$status}' تغییر یافت";
-
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'تغییر وضعیت سفارش',
+                'description' => "کاربر " . auth()->user()->family . " وضعیت سفارش شماره {$invoice->id} را به '{$status}' تغییر داد.",
+            ]);
             Notification::send($invoice->user, new SendMessage($message, $url));
             Notification::send($sales_manager, new SendMessage($message, $url));
+
         }else{
             $status = Invoice::STATUS['pending'];
             $url = route('invoices.index');
@@ -454,6 +466,11 @@ class InvoiceController extends Controller
             Notification::send($sales_manager, new SendMessage($message, $url));
 
             $invoice->update(['status' => 'pending']);
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'تغییر وضعیت سفارش',
+                'description' => "کاربر " . auth()->user()->family . " وضعیت سفارش شماره {$invoice->id} را به '{$status}' تغییر داد.",
+            ]);
         }
 
         return back();
@@ -462,7 +479,9 @@ class InvoiceController extends Controller
     public function downloadPDF(Request $request)
     {
         $invoice = Invoice::find($request->invoice_id);
-
+        if (!$invoice) {
+            return back()->withErrors(['message' => 'فاکتور مورد نظر یافت نشد.']);
+        }
         $pdf = PDF::loadView('panel.pdf.invoice',['invoice' => $invoice],[], [
             'format' => 'A3',
             'orientation' => 'L',
@@ -471,7 +490,12 @@ class InvoiceController extends Controller
             'margin_top' => 2,
             'margin_bottom' => 0,
         ]);
-
+        // ثبت فعالیت
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'دانلود PDF',
+            'description' => "کاربر " . auth()->user()->family . " فایل PDF مربوط به سفارش شماره {$invoice->id} را دانلود کرد.",
+        ]);
         return $pdf->stream("order.pdf");
     }
 
@@ -503,6 +527,12 @@ class InvoiceController extends Controller
 
             $title = 'ثبت و ارسال به حسابدار';
             $message = 'تاییدیه شما به حسابداری ارسال شد';
+            // ثبت فعالیت
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'ارسال پیش فاکتور به حسابدار',
+                'description' => "کاربر " . auth()->user()->family . " پیش فاکتور مربوط به سفارش شماره {$invoice->id} را به حسابداری ارسال کرد.",
+            ]);
 
             //send notif to accountants
             $permissionsId = Permission::where('name', 'accountant')->pluck('id');
@@ -529,6 +559,12 @@ class InvoiceController extends Controller
 
             $title = 'ثبت و ارسال به انبار';
             $message = 'فاکتور مورد نظر با موفقیت به انبار ارسال شد';
+            // ثبت فعالیت
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'ارسال فاکتور به انبار',
+                'description' => "کاربر " . auth()->user()->family . " فاکتور مربوط به سفارش شماره {$invoice->id} را به انبار ارسال کرد.",
+            ]);
 
             $invoice->update(['status' => 'invoiced']);
 
@@ -558,6 +594,13 @@ class InvoiceController extends Controller
                 $title = 'ثبت و ارسال پیش فاکتور';
                 $message = 'پیش فاکتور مورد نظر با موفقیت به همکار فروش ارسال شد';
 
+                // ثبت فعالیت
+                Activity::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'ارسال پیش فاکتور به همکار فروش',
+                    'description' => "کاربر " . auth()->user()->family . " پیش فاکتور مربوط به سفارش شماره {$invoice->id} را ارسال کرد.",
+                ]);
+
                 //send notif
                 $roles_id = Role::whereHas('permissions', function ($q){
                     $q->where('name', 'sales-manager');
@@ -583,6 +626,13 @@ class InvoiceController extends Controller
                 $title = 'ثبت و ارسال فاکتور';
                 $message = 'فاکتور مورد نظر با موفقیت به انبار ارسال شد';
 
+                // ثبت فعالیت
+                Activity::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'ارسال فاکتور به انبار',
+                    'description' => "کاربر " . auth()->user()->family . " فاکتور مربوط به سفارش شماره {$invoice->id} را ارسال کرد.",
+                ]);
+
                 //send notif to warehouse-keeper and sales-manager
                 $permissionsId = Permission::whereIn('name', ['warehouse-keeper','sales-manager'])->pluck('id');
                 $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
@@ -607,6 +657,13 @@ class InvoiceController extends Controller
     public function deleteInvoiceFile(InvoiceAction $invoiceAction)
     {
         unlink(public_path($invoiceAction->invoice_file));
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف فایل پیش ‌فاکتور',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') فایل پیش ‌فاکتور مربوط به سفارش ' . $invoiceAction->invoice->customer->name . ' را حذف کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         $invoiceAction->delete();
 
         alert()->success('فایل پیش فاکتور مورد نظر حذف شد','حذف پیش فاکتور');
@@ -616,6 +673,13 @@ class InvoiceController extends Controller
     public function deleteFactorFile(InvoiceAction $invoiceAction)
     {
         unlink(public_path($invoiceAction->factor_file));
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف فایل ‌فاکتور',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') فایل ‌فاکتور مربوط به سفارش ' . $invoiceAction->invoice->customer->name . ' را حذف کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         $invoiceAction->delete();
 
         alert()->success('فایل فاکتور مورد نظر حذف شد','حذف فاکتور');

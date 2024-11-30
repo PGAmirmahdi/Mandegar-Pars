@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePrinterRequest;
 use App\Http\Requests\UpdatePrinterRequest;
+use App\Models\Activity;
 use App\Models\Printer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PrinterController extends Controller
 {
@@ -29,12 +31,19 @@ class PrinterController extends Controller
     {
         $this->authorize('printers-create');
 
-        Printer::create([
+        $printer = Printer::create([
             'name' => $request->name,
             'brand' => $request->brand,
             'cartridges' => $request->cartridges,
         ]);
-
+// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد پرینتر',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') پرینتر جدیدی به نام ' . $printer->name . ' از برند ' . $printer->brand . ' ایجاد کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
         alert()->success('پرینتر مورد نظر با موفقیت ایجاد شد','ایجاد پرینتر');
         return redirect()->route('printers.index');
     }
@@ -59,16 +68,29 @@ class PrinterController extends Controller
             'brand' => $request->brand,
             'cartridges' => $request->cartridges,
         ]);
-
+// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش پرینتر',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') پرینتر به نام ' . $printer->name . ' از برند ' . $printer->brand . ' را ویرایش کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
         alert()->success('پرینتر مورد نظر با موفقیت ویرایش شد','ویرایش پرینتر');
         return redirect()->route('printers.index');
-
     }
 
     public function destroy(Printer $printer)
     {
         $this->authorize('printers-delete');
-
+        // ثبت فعالیت قبل از حذف پرینتر
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف پرینتر',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') پرینتر به نام ' . $printer->name . ' از برند ' . $printer->brand . ' را حذف کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
         $printer->delete();
         return back();
     }

@@ -121,6 +121,7 @@
                     <tr>
                         <th>#</th>
                         <th>خریدار</th>
+                        <th>شماره سفارش</th>
                         <th>نوع</th>
                         <th>نوع پرداختی</th>
                         <th>درخواست جهت</th>
@@ -160,6 +161,7 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $invoice->customer->name }}</td>
+                            <td>{{ $invoice->id }}</td>
                             <td>{{ \App\Models\Invoice::TYPE[$invoice->type] }}</td>
                             <td>@if($invoice->payment_type)
                                     {{ \App\Models\Invoice::Payment_Type[$invoice->payment_type] }}

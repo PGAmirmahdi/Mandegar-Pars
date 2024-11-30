@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\PriceRequest;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 
@@ -59,7 +61,14 @@ class PriceRequestController extends Controller
         $url = route('price-requests.index');
         Notification::send($notifiables, new SendMessage($notif_message, $url));
         // end notification sent to ceo
-
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ثبت درخواست قیمت',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') یک درخواست قیمت برای کالاها ثبت کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
         alert()->success('درخواست قیمت با موفقیت ثبت شد','ثبت درخواست قیمت');
         return redirect()->route('price-requests.index');
     }
@@ -109,7 +118,14 @@ class PriceRequestController extends Controller
         $url = route('price-requests.index');
         Notification::send($notifiables, new SendMessage($notif_message, $url));
         Notification::send($priceRequest->user, new SendMessage($notif_message, $url));
-
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'به‌روزرسانی درخواست قیمت',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') قیمت‌های درخواستی را به‌روزرسانی کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
         alert()->success('قیمت ها با موفقیت ثبت شدند', 'ثبت قیمت');
         return redirect()->route('price-requests.index');
     }

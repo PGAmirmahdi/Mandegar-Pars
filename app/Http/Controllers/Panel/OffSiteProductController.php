@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\OffSiteProduct;
 use Illuminate\Http\Request;
 use Mpdf\Tag\P;
@@ -41,7 +42,13 @@ class OffSiteProductController extends Controller
             default:
                 return back();
         }
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد محصول',
+            'description' => 'محصول جدید در وب‌سایت ' . ucfirst($request->website) . 'توسط' . auth()->user()->family . ' ثبت شد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('محصول مورد نظر با موفقیت ایجاد شد', 'ایجاد محصول');
         return redirect()->route('off-site-products.index', $request->website);
     }
@@ -86,7 +93,14 @@ class OffSiteProductController extends Controller
             default:
                 return back();
         }
-
+// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش محصول',
+            'description' => 'محصول با عنوان "' . $offSiteProduct->title . '" در وب‌سایت '  . ucfirst($offSiteProduct->website) . 'توسط' . auth()->user()->family . ' ویرایش شد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('محصول مورد نظر با موفقیت ویرایش شد', 'ویرایش محصول');
         return redirect()->route('off-site-products.index', $offSiteProduct->website);
     }
@@ -95,6 +109,13 @@ class OffSiteProductController extends Controller
     {
         $this->authorize('shops');
 
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف محصول',
+            'description' => 'محصول با عنوان "' . $offSiteProduct->title . '" در وب‌سایت ' . ucfirst($offSiteProduct->website) . 'توسط' . auth()->user()->family  . ' حذف شد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         $offSiteProduct->delete();
         return back();
     }

@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Models\Activity;
 use App\Models\Task;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
@@ -47,6 +49,13 @@ class TaskController extends Controller
         ]);
 
         $this->assignTask($task, $request);
+// ثبت فعالیت در جدول activities
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد وظیفه',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . optional(Auth::user()->role)->label . ') وظیفه‌ای به نام "' . $task->title . '" را ایجاد کرده است.',
+            'created_at' => now(),
+        ]);
 
         alert()->success('وظیفه مورد نظر با موفقیت ایجاد شد','ایجاد وظیفه');
         return redirect()->route('tasks.index');
@@ -82,6 +91,13 @@ class TaskController extends Controller
         ]);
 
         $this->assignTask($task, $request);
+        // ثبت فعالیت در جدول activities
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش وظیفه',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . optional(Auth::user()->role)->label . ') وظیفه‌ای به نام "' . $task->title . '" را ویرایش کرده است.',
+            'created_at' => now(),
+        ]);
 
         alert()->success('وظیفه مورد نظر با موفقیت ویرایش شد','ویرایش وظیفه');
         return redirect()->route('tasks.index');
@@ -95,7 +111,13 @@ class TaskController extends Controller
 
         // delete own task
         $this->authorize('delete-task', $task);
-
+        // ثبت فعالیت در جدول activities
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'حذف وظیفه',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . optional(Auth::user()->role)->label . ') وظیفه‌ای به نام "' . $task->title . '" را حذف کرده است.',
+            'created_at' => now(),
+        ]);
         $task->delete();
         return back();
     }
@@ -115,7 +137,13 @@ class TaskController extends Controller
         }
 
         $task->update(['status' => $task_status, 'done_at' => $done_at]);
-
+// ثبت فعالیت در جدول activities
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'تغییر وضعیت وظیفه',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . optional(Auth::user()->role)->label . ') وضعیت وظیفه "' . $task->first()->title . '" را از "' . ($task->first()->status == 'done' ? 'انجام شده' : 'انجام نشده') . '" به "' . $task_status . '" تغییر داد.',
+            'created_at' => now(),
+        ]);
         return response()->json(['task_status' => $task_status,'message' => $message]);
     }
 
@@ -123,6 +151,13 @@ class TaskController extends Controller
     {
         $task = DB::table('task_user')->where(['task_id' => $request->task_id, 'user_id' => auth()->id()]);
         $task->update(['description' => $request->description]);
+        // ثبت فعالیت در جدول activities
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'تغییر توضیحات وظیفه',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') توضیحات وظیفه "' . $task->first()->title . '" را تغییر داد.',
+            'created_at' => now(),
+        ]);
     }
     public function getDescription(Request $request)
     {
