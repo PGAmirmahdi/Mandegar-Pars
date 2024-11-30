@@ -300,9 +300,7 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-list');
 
-        $customers = auth()->user()->hasAnyRole(['Admin', 'WareHouseKeeper', 'Accountant', 'CEO', 'SalesManager'])
-            ? Customer::all(['id', 'name'])
-            : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+        $customers = Customer::all(['id', 'name']);
 
         $roles_id = Role::whereHas('permissions', function ($q) {
             $q->whereIn('permission_id', Permission::whereIn('name', [
