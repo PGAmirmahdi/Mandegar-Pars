@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePacketRequest;
 use App\Http\Requests\UpdatePacketRequest;
+use App\Models\Activity;
 use App\Models\Invoice;
 use App\Models\Packet;
 use Carbon\Carbon;
@@ -58,7 +59,13 @@ class PacketController extends Controller
             'sent_time' => $sent_time,
             'notif_time' => Carbon::parse($sent_time)->addDays(20),
         ]);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد بسته',
+            'description' => 'بسته‌ای برای فاکتور به شماره ' . $request->invoice . ' با وضعیت "' . $request->packet_status . '" توسط ' . auth()->user()->family . ' ایجاد شد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);  // ثبت فعالیت
         alert()->success('بسته مورد نظر با موفقیت ایجاد شد','ایجاد بسته');
         return redirect()->route('packets.index');
     }
@@ -106,6 +113,13 @@ class PacketController extends Controller
             'sent_time' => $sent_time,
             'notif_time' => Carbon::parse($sent_time)->addDays(20),
         ]);
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش بسته',
+            'description' => 'بسته‌ای برای فاکتور به شماره ' . $request->invoice . ' با وضعیت "' . $request->packet_status . '" توسط ' . auth()->user()->family . ' ویرایش شد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);  // ثبت فعالیت
 
         $url = $request->url;
 
@@ -116,7 +130,14 @@ class PacketController extends Controller
     public function destroy(Packet $packet)
     {
         $this->authorize('packets-delete');
-
+// ثبت فعالیت قبل از حذف بسته
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف بسته',
+            'description' => 'بسته‌ای برای فاکتور به شماره ' . $packet->invoice_id . ' با وضعیت "' . $packet->packet_status . '" توسط ' . auth()->user()->family . ' حذف شد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);  // ثبت فعالیت
         $packet->delete();
         return back();
     }
@@ -152,6 +173,14 @@ class PacketController extends Controller
 
     public function excel()
     {
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'دانلود فایل Excel بسته‌ها',
+            'description' => 'کاربر ' . auth()->user()->family . ' فایل Excel بسته‌ها را دانلود کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);  // ثبت فعالیت
         return Excel::download(new \App\Exports\PacketsExport, 'packets.xlsx');
     }
 

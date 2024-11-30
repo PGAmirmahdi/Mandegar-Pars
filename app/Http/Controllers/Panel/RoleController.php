@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Models\Activity;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
@@ -37,7 +39,14 @@ class RoleController extends Controller
         ]);
 
         $role->permissions()->sync($request->permissions);
-
+// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد نقش',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'نقش جدید با نام "' . $role->name . '" ایجاد کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('نقش مورد نظر با موفقیت ایجاد شد','ایجاد نقش');
         return redirect()->route('roles.index');
     }
@@ -65,7 +74,14 @@ class RoleController extends Controller
         ]);
 
         $role->permissions()->sync($request->permissions);
-
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش نقش',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'نقش "' . $role->name . '" را ویرایش کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('نقش مورد نظر با موفقیت ویرایش شد','ویرایش نقش');
         return redirect()->route('roles.index');
     }
@@ -75,6 +91,15 @@ class RoleController extends Controller
         $this->authorize('roles-delete');
 
         if (!$role->users()->exists()){
+            // ثبت فعالیت قبل از حذف نقش
+            $activityData = [
+                'user_id' => auth()->id(),
+                'action' => 'حذف نقش',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') ' . 'نقش "' . $role->name . '" را حذف کرد.',
+                'created_at' => now(),
+            ];
+            Activity::create($activityData);
+
             $role->permissions()->detach();
             $role->delete();
             return back();

@@ -124,23 +124,41 @@
                     </div>
                 </div>
                 @can('sms-list')
-                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-                    <div class="card border mb-0">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div>
-                                    <div class="icon-block icon-block-sm bg-danger icon-block-floating mr-2">
-                                        <i class="fa fa-cube"></i>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card border mb-0">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div>
+                                        <div class="icon-block icon-block-sm bg-warning icon-block-floating mr-2">
+                                            <i class="fa-solid fa-message"></i>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <span class="font-size-13">بسته های ارسالی</span>
-                                <h2 class="mb-0 ml-auto font-weight-bold text-danger primary-font line-height-30">{{ \App\Models\Packet::count() }}</h2>
+                                    <span class="font-size-13">اس ام اس های ارسال شده</span>
+                                    <h2 class="mb-0 ml-auto font-weight-bold text-warning primary-font line-height-30">{{ \App\Models\SMS::count() }}</h2>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    @endcan
-                </div>
+                @endcan
+                @can('whatsapp-list')
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card border mb-0">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div>
+                                        <div class="icon-block icon-block-sm bg-success icon-block-floating mr-2">
+                                            <i class="fa-brands fa-whatsapp"></i>
+                                        </div>
+                                    </div>
+
+                                    <span class="font-size-13">پیام های واتساپ</span>
+                                    <h2 class="mb-0 ml-auto font-weight-bold text-success primary-font line-height-30">{{ \App\Models\Whatsapp::count() }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endcan
             </div>
         </div>
     </div>
@@ -178,7 +196,8 @@
                             <div class="lines">
                                 <input type="text" name="note-title" class="title" value="{{ $note->title }}"
                                        maxlength="30" placeholder="عنوان یادداشت" disabled>
-                                <textarea class="text" name="note-text" spellcheck="false" placeholder="متن یادداشت..."
+                                <textarea class="text" name="note-text" spellcheck="false"
+                                          placeholder="متن یادداشت..."
                                           disabled>{{ $note->text }}</textarea>
                             </div>
                             <div class="holes hole-top"></div>
@@ -249,7 +268,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <h6 class="card-title m-b-20">آمار سفارشات محصولات</h6>
-                            <h6 class="card-title m-b-20">تعداد کل سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
+                            <h6 class="card-title m-b-20">تعداد کل
+                                سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
                         </div>
                         <canvas id="bar_chart_product_orders" style="width: auto"></canvas>
                     </div>
@@ -268,7 +288,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <h6 class="card-title m-b-20">آمار سفارشات مشتریان</h6>
-                            <h6 class="card-title m-b-20">تعداد کل سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
+                            <h6 class="card-title m-b-20">تعداد کل
+                                سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
                         </div>
                         <canvas id="bar_chart_customer_orders" style="width: auto"></canvas>
                     </div>
@@ -333,7 +354,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <h6 class="card-title m-b-20">موجودی محصولات در انبار</h6>
-                            <h6 class="card-title m-b-20">تعداد کل موجودی: {{ number_format($productCounts->sum()) }}</h6>
+                            <h6 class="card-title m-b-20">تعداد کل
+                                موجودی: {{ number_format($productCounts->sum()) }}</h6>
                         </div>
                         <canvas id="bar_chart_product_inventory" style="width: auto"></canvas>
                     </div>
@@ -378,7 +400,8 @@
                                 </tfoot>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-center">{{ $activities->appends(request()->all())->links() }}</div>
+                        <div
+                            class="d-flex justify-content-center">{{ $activities->appends(request()->all())->links() }}</div>
                     </div>
                 </div>
             @endcan
@@ -417,7 +440,8 @@
                                 </tfoot>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-center">{{ $smsData->appends(request()->all())->links() }}</div>
+                        <div
+                            class="d-flex justify-content-center">{{ $smsData->appends(request()->all())->links() }}</div>
                     </div>
                 </div>
             @endcan
@@ -528,7 +552,8 @@
                             </tfoot>
                         </table>
                     </div>
-                    <div class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
+                    <div
+                        class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
                 </div>
             </div>
         @endcan
@@ -708,7 +733,7 @@
                 return color;
             }
         });
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             var visitsDates = @json($visitsDates);  // دریافت تاریخ‌ها از کنترلر
             var visitsCounts = @json($visitsCounts);  // دریافت تعداد بازدیدها از کنترلر
 
@@ -752,7 +777,7 @@
                                     min: 0,
                                     fontSize: 15,
                                     fontColor: '#999',
-                                    callback: function(value) {
+                                    callback: function (value) {
                                         return value.toLocaleString('fa-IR');  // فرمت‌بندی اعداد به صورت سه‌رقمی
                                     }
                                 },
@@ -763,7 +788,7 @@
                         },
                         tooltips: {
                             callbacks: {
-                                label: function(tooltipItem, data) {
+                                label: function (tooltipItem, data) {
                                     var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                                     return value.toLocaleString('fa-IR') + ' بازدید ';
                                 }
@@ -812,7 +837,7 @@
                                     beginAtZero: true,
                                     fontSize: 15,
                                     color: '#999',
-                                    callback: function(value) {
+                                    callback: function (value) {
                                         return value.toLocaleString('fa-IR');
                                     }
                                 },
@@ -1418,7 +1443,7 @@
                 },
             });
         }
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var ctx = document.getElementById('sms_chart').getContext('2d');
 
             var data = {
@@ -1437,7 +1462,7 @@
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     var label = context.dataset.label || '';
                                     if (label) {
                                         label += ': ';
@@ -1471,7 +1496,7 @@
                             },
                             ticks: {
                                 beginAtZero: true, // برای اطمینان از اینکه محور Y از صفر شروع می‌شود
-                                callback: function(value) {
+                                callback: function (value) {
                                     return value.toLocaleString('fa-IR');
                                 }
                             },
@@ -1520,7 +1545,7 @@
                                     beginAtZero: true,
                                     fontSize: 15,
                                     color: '#999',
-                                    callback: function(value) {
+                                    callback: function (value) {
                                         return value.toLocaleString('fa-IR');
                                     }
                                 },
@@ -1582,7 +1607,7 @@
                                     beginAtZero: true,
                                     fontSize: 15,
                                     color: '#999',
-                                    callback: function(value) {
+                                    callback: function (value) {
                                         return value.toLocaleString('fa-IR');
                                     }
                                 },

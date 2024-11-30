@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Report;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -51,7 +53,14 @@ class ReportController extends Controller
             'items' => json_encode($items),
             'date' => $date
         ]);
-
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ثبت گزارش روزانه',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'گزارش روزانه خود را ثبت کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('گزارش روزانه با موفقیت ثبت شد','ثبت گزارش');
         return redirect()->route('reports.index');
     }
@@ -95,7 +104,14 @@ class ReportController extends Controller
             'items' => json_encode($items),
             'date' => $date
         ]);
-
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش گزارش روزانه',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') ' . 'گزارش روزانه را ویرایش کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('گزارش روزانه با موفقیت ویرایش شد','ویرایش گزارش');
         return redirect()->route('reports.index');
     }
@@ -103,7 +119,14 @@ class ReportController extends Controller
     public function destroy(Report $report)
     {
         $this->authorize('reports-delete');
-
+        // ثبت فعالیت قبل از حذف گزارش
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف گزارش روزانه',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') ' . 'گزارش روزانه را حذف کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         $report->delete();
         return back();
     }

@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Activity;
 use App\Models\Category;
 use App\Models\PriceHistory;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
@@ -61,7 +63,14 @@ class ProductController extends Controller
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
         ]);
-
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد محصول',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') محصول جدیدی به نام ' . $request->title . ' ایجاد کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ذخیره فعالیت
         alert()->success('محصول مورد نظر با موفقیت ایجاد شد', 'ایجاد محصول');
         return redirect()->route('products.index');
     }
@@ -111,7 +120,14 @@ class ProductController extends Controller
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
         ]);
-
+// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش محصول',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') محصول ' . $product->title . ' را ویرایش کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ذخیره فعالیت
         alert()->success('محصول مورد نظر با موفقیت ویرایش شد','ویرایش محصول');
         return redirect()->route('products.index');
     }
@@ -120,9 +136,19 @@ class ProductController extends Controller
     {
         $this->authorize('products-delete');
 
-        if ($product->invoices()->exists()){
-            return response('این محصول در سفارشاتی موجود است',500);
+        // بررسی وجود محصول در سفارشات
+        if ($product->invoices()->exists()) {
+            return response('این محصول در سفارشاتی موجود است', 500);
         }
+
+        // ثبت فعالیت قبل از حذف محصول
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف محصول',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') محصول ' . $product->title . ' را حذف کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ذخیره فعالیت
 
         $product->delete();
         return back();
@@ -158,7 +184,14 @@ class ProductController extends Controller
     }
 
     public function excel()
-    {
+    {// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'دانلود فایل محصولات',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'اکسل محصولات را دانلود کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         return Excel::download(new \App\Exports\ProductsExport, 'products.xlsx');
     }
 

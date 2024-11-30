@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Invoice;
 use App\Models\OrderStatus;
 use Dflydev\DotAccessData\Data;
@@ -52,6 +53,15 @@ class OrderStatusController extends Controller
             'created_at' => now(),
             'updated_at' => now()
         ]);
+        // ثبت فعالیت تغییر وضعیت فاکتور
+        $invoice = Invoice::find($request->invoice_id);  // فاکتور مورد نظر را پیدا می‌کنیم
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'تغییر وضعیت فاکتور',
+            'description' => 'وضعیت فاکتور با شماره ' . $invoice->id . "توسط" . auth()->user()->family .' به "' . $status . '" تغییر یافت.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);  // ثبت فعالیت
 
         return back();
     }

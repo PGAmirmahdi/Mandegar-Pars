@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\Sms;
 use Exception;
@@ -93,14 +94,20 @@ class SMSController extends Controller
             if (isset($responseDecoded['RetStatus'])) {
                 $status = $responseDecoded['RetStatus'];
 
-                Sms::create([
+                $sms = Sms::create([
                     'user_id' => auth()->id(),
                     'receiver_name' => $request->receiver_name,
                     'receiver_phone' => $request->receiver_phone,
                     'message' => $request->message,
                     'status' => $status,
                 ]);
-
+                // ثبت فعالیت در جدول activities
+                Activity::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'ارسال پیامک',
+                    'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . 'به فردی به نام ' . $sms->receiver_name . ' ارسال کرده است',
+                    'created_at' => now(),
+                ]);
                 Log::info('SMS Sent', [
                     'user_id' => auth()->id(),
                     'receiver_name' => $request->receiver_name,
@@ -171,7 +178,13 @@ class SMSController extends Controller
         $this->authorize('sms-delete');
         // یافتن پیامک با شناسه مورد نظر
         $sms = Sms::findOrFail($id);
-
+        // ثبت فعالیت در جدول activities
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'حذف پیامک',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . optional(Auth::user()->role)->label . ') پیامک کاربر ' . $sms->receiver_name . ' را حذف کرده است.',
+            'created_at' => now(),
+        ]);
         // حذف پیامک
         $sms->delete();
 
