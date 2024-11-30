@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
 use function Symfony\Component\String\b;
@@ -217,11 +218,17 @@ class FactorController extends Controller
 
     public function excel()
     {
-        Activity::create([
+        $data = [
             'user_id' => auth()->id(),
             'action' => 'خروجی اکسل از فاکتور',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') از فاکتور ها خروجی اکسل گرفت',
-        ]);
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') از فاکتور ها خروجی اکسل گرفت',
+        ];
+
+// لاگ کردن داده‌ها
+        Log::info('Activity Data:', $data);
+
+// ذخیره در دیتابیس
+        Activity::create($data);
         return Excel::download(new \App\Exports\FactorsExport, 'factors.xlsx');
     }
 
