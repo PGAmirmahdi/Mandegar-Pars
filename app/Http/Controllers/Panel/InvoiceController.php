@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
+use App\Models\Activity;
 use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\Factor;
@@ -375,6 +376,17 @@ class InvoiceController extends Controller
 
     public function excel()
     {
+        $data = [
+            'user_id' => auth()->id(),
+            'action' => 'خروجی اکسل از فاکتور سفارش فروش',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') از فاکتور های سفارش فروش خروجی اکسل گرفت',
+        ];
+
+// لاگ کردن داده‌ها
+        Log::info('Activity Data:', $data);
+
+// ذخیره در دیتابیس
+        Activity::create($data);
         return Excel::download(new \App\Exports\InvoicesExport, 'invoices.xlsx');
     }
 
