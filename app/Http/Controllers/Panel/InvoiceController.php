@@ -46,7 +46,7 @@ class InvoiceController extends Controller
             $q->whereIn('permission_id', $permissionsId);
         })->pluck('id');
 
-        $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isWareHouseKeeper() || auth()->user()->isSalesManager() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+        $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() || auth()->user()->isOrgan() || auth()->user()->isCEO() || auth()->user()->isWareHouseKeeper() || auth()->user()->isSalesManager() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
         return view('panel.invoices.index', compact('invoices','customers','roles_id'));
     }
@@ -300,7 +300,9 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-list');
 
-        $customers = Customer::all(['id', 'name']);
+        $customers = auth()->user()->hasAnyRole(['Admin', 'Organ', 'WareHouseKeeper', 'Accountant', 'CEO', 'SalesManager'])
+            ? Customer::all(['id', 'name'])
+            : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
         $roles_id = Role::whereHas('permissions', function ($q) {
             $q->whereIn('permission_id', Permission::whereIn('name', [
