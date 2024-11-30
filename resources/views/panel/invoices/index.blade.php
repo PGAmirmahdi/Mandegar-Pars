@@ -49,8 +49,9 @@
                             class="js-example-basic-single select2-hidden-accessible" data-select2-id="7">
                         <option value="all">خریدار (همه)</option>
                         @foreach($customers as $customer)
-                            <option
-                                value="{{ $customer->id }}" {{ request()->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                            <option value="{{ $customer->id }}" {{ request()->customer_id == $customer->id ? 'selected' : '' }}>
+                                {{ $customer->name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
