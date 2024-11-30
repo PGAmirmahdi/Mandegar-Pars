@@ -123,6 +123,24 @@
                         </div>
                     </div>
                 </div>
+                @can('sms-list')
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="card border mb-0">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div>
+                                    <div class="icon-block icon-block-sm bg-danger icon-block-floating mr-2">
+                                        <i class="fa fa-cube"></i>
+                                    </div>
+                                </div>
+
+                                <span class="font-size-13">بسته های ارسالی</span>
+                                <h2 class="mb-0 ml-auto font-weight-bold text-danger primary-font line-height-30">{{ \App\Models\Packet::count() }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    @endcan
+                </div>
             </div>
         </div>
     </div>
@@ -322,7 +340,7 @@
                 </div>
             </div>
             @can('activity-list')
-                <div class="card col-12">
+                <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
                     <div class="card-body">
                         <div class="card-title d-flex justify-content-between align-items-center">
                             <h6>آخرین فعالیت ها</h6>
@@ -345,7 +363,7 @@
                                         <td>{{ ++$key }}</td>
                                         <td>{{ $activity->user->name }}</td>
                                         <td>{{ $activity->action }}</td>
-                                        <td>{{ $activity->description }}</td>
+                                        <td>{{ \Illuminate\Support\Str::limit($activity->description, 50, '...') }}</td>
                                         <td>{{ verta($activity->created_at)->format('H:i - Y/m/d') }}</td>
                                     </tr>
                                 @empty
@@ -360,7 +378,46 @@
                                 </tfoot>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-center">{{ $bazdid->appends(request()->all())->links() }}</div>
+                        <div class="d-flex justify-content-center">{{ $activities->appends(request()->all())->links() }}</div>
+                    </div>
+                </div>
+            @endcan
+            @can('sms-list')
+                <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    <div class="card-body">
+                        <div class="card-title d-flex justify-content-between align-items-center">
+                            <h6>آمار پیامک‌های کاربران</h6>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>نام کاربر</th>
+                                    <th>تعداد SMS‌ها</th>
+                                    <th>آخرین ارسال</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($smsData as $key => $data)
+                                    @php
+                                        $user2 = $users2->find($data['user_id']);
+                                    @endphp
+                                    <tr>
+                                        <td>{{ ++$key }}</td>
+                                        <td>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</td>
+                                        <td>{{ $data['sms_count'] }}</td>
+                                        <td>{{ $data['last_sent_at'] }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-center">{{ $smsData->appends(request()->all())->links() }}</div>
                     </div>
                 </div>
             @endcan
@@ -435,45 +492,6 @@
                 </div>
             </div>
         </div>
-        @can('sms-list')
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title d-flex justify-content-between align-items-center">
-                        <h6>آمار پیامک‌های کاربران</h6>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>نام کاربر</th>
-                                <th>تعداد SMS‌ها</th>
-                                <th>آخرین ارسال</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($smsData as $key => $data)
-                                @php
-                                    $user2 = $users2->find($data['user_id']);
-                                @endphp
-                                <tr>
-                                    <td>{{ ++$key }}</td>
-                                    <td>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</td>
-                                    <td>{{ $data['sms_count'] }}</td>
-                                    <td>{{ $data['last_sent_at'] }}</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <div class="d-flex justify-content-center">{{ $smsData->appends(request()->all())->links() }}</div>
-                </div>
-            </div>
-        @endcan
         @can('UserVisit')
             <div class="card">
                 <div class="card-body">

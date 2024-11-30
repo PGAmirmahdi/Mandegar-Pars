@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\Whatsapp;
 use Illuminate\Http\Request;
@@ -113,6 +114,15 @@ www.instagram.com/artintoner.ir
                 'description' => $message,
                 'status' => $status,
             ]);
+            $data = [
+                'user_id' => auth()->id(),
+                'action' => 'ارسال پیام واتساپی',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . "یک پیام واتساپی ارسال کرد",
+            ];
+
+            Log::info('Activity Data:', $data);
+
+            Activity::create($data);
         }
         alert()->success('پیام‌ها با موفقیت ارسال شدند.', 'موفقیت');
         return redirect()->route('whatsapp.index');
@@ -138,6 +148,15 @@ www.instagram.com/artintoner.ir
     public function destroy($id)
     {
         $message = Whatsapp::findOrFail($id);
+        $data = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف پیام واتساپی',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . "پیام واتساپی ارسال شده به کاربر " . $message->receiver_name . ' را حذف کرد',
+        ];
+
+        Log::info('Activity Data:', $data);
+
+        Activity::create($data);
         $message->delete();
         alert()->success('پیام‌ها با موفقیت حذف شدند.', 'موفق');
         return redirect()->route('whatsapp.index');
@@ -196,7 +215,15 @@ www.instagram.com/artintoner.ir
             'description' => $message,
             'status' => $status,
         ]);
+        $data = [
+            'user_id' => auth()->id(),
+            'action' => 'ارسال پیام واتساپی',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . "یک پیام واتساپی ارسال کرد",
+        ];
 
+        Log::info('Activity Data:', $data);
+
+        Activity::create($data);
         if ($error) {
             alert()->error('خطا در ارسال پیام به گروه.', 'خطا');
             return redirect()->route('whatsapp.index');

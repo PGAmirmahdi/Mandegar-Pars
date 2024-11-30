@@ -486,7 +486,7 @@ class PanelController extends Controller
         $totalInvoices = $userInvoices->pluck('total_invoices');
         $totalPrices = $userInvoices->pluck('total_price');
         $bazdid= Visitor::latest()->paginate(10);
-        $activities = Activity::latest()->paginate(10);
+        $activities = Activity::latest()->paginate(4);
         return view('panel.index', [
             'labels' => $labels,
             'datasets' => $datasets,

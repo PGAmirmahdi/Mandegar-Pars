@@ -143,7 +143,7 @@ class SendWeeklyPriceList extends Command
         ]);
         // Register Activity for adding other product to the invoice
         Activity::create([
-            'user_id' => auth()->id(),
+            'user_id' => 191,
             'action' => 'پیام واتساپی سیستم',
             'description' => 'سیستم به صورت خودکار پیام واتساپی لیست قیمت محصولات در گروه گذاشت' ,
         ]);
