@@ -88,7 +88,15 @@ class InvoiceController extends Controller
             'description' => $request->description,
             'payment_type' => $request->payment_type
         ]);
+        $data = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد سفارش فروش',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش به شماره ' . $invoice->id . ' ایجاد کرد',
+        ];
 
+        Log::info('Activity Data:', $data);
+
+        Activity::create($data);
 //        $this->send_notif_to_accountants($invoice);
 //        $this->send_notif_to_sales_manager($invoice);
 
@@ -190,7 +198,15 @@ class InvoiceController extends Controller
             'description' => $request->description,
             'payment_type' => $request->payment_type
         ]);
+        $data = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش سفارش فروش',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش به شماره ' . $invoice->id . ' را ویرایش کرد',
+        ];
 
+        Log::info('Activity Data:', $data);
+
+        Activity::create($data);
         alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش');
         return redirect()->route('invoices.index');
     }
@@ -198,7 +214,15 @@ class InvoiceController extends Controller
     public function destroy(Invoice $invoice)
     {
         $this->authorize('invoices-delete');
+        $data = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف سفارش فروش',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش به شماره ' . $invoice->id . ' را حذف کرد',
+        ];
 
+        Log::info('Activity Data:', $data);
+
+        Activity::create($data);
         $invoice->coupons()->detach();
         $invoice->delete();
         return back();
@@ -275,43 +299,52 @@ class InvoiceController extends Controller
     public function search(Request $request)
     {
         $this->authorize('invoices-list');
-        $customers = auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
-        $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
-        $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
-            $q->whereIn('permission_id', $permissionsId);
+        $customers = auth()->user()->hasAnyRole(['Admin', 'WareHouseKeeper', 'Accountant', 'CEO', 'SalesManager'])
+            ? Customer::all(['id', 'name'])
+            : Customer::where('user_id', auth()->id())->get(['id', 'name']);
+
+        $roles_id = Role::whereHas('permissions', function ($q) {
+            $q->whereIn('permission_id', Permission::whereIn('name', [
+                'partner-tehran-user',
+                'partner-other-user',
+                'system-user',
+                'single-price-user'
+            ])->pluck('id'));
         })->pluck('id');
 
-        $customers_id = $request->customer_id == 'all' ? $customers->pluck('id') : [$request->customer_id];
-        $status = $request->status == 'all' ? ['pending','return','invoiced','order'] : [$request->status];
-        $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
-        $user_id = $request->user == 'all' || $request->user == null ? User::whereIn('role_id', $roles_id)->pluck('id') : [$request->user];
+        $invoices = Invoice::query()
+            ->when($request->customer_id && $request->customer_id !== 'all', function ($query) use ($request) {
+                $query->where('customer_id', $request->customer_id);
+            })
+            ->when($request->type && $request->type !== 'all', function ($query) use ($request) {
+                $query->where('type', $request->type);
+            })
+            ->when($request->province && $request->province !== 'all', function ($query) use ($request) {
+                $query->where('province', $request->province);
+            })
+            ->when($request->status && $request->status !== 'all', function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->payment_type && $request->payment_type !== 'all', function ($query) use ($request) {
+                $query->where('payment_type', $request->payment_type);
+            })
+            ->when($request->need_no, function ($query) use ($request) {
+                $query->where('need_no', $request->need_no);
+            })
+            ->when($request->user && $request->user !== 'all', function ($query) use ($request) {
+                $query->where('user_id', $request->user);
+            })
+            ->latest()
+            ->paginate(30);
 
-//        dd($user_id);
-        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager()){
-            $invoices = Invoice::when($request->need_no, function ($q) use($request){
-                    return $q->where('need_no', $request->need_no);
-                })
-                ->whereIn('user_id', $user_id)
-                ->whereIn('customer_id', $customers_id)
-                ->whereIn('status', $status)
-                ->whereIn('province', $province)
-                ->latest()->paginate(30);
-        }else{
-            $invoices = Invoice::when($request->need_no, function ($q) use($request){
-                    return $q->where('need_no', $request->need_no);
-                })                ->whereIn('customer_id', $customers_id)
-                ->whereIn('status', $status)
-                ->whereIn('province', $province)
-                ->where('user_id', auth()->id())
-                ->latest()->paginate(30);
-        }
-        $invoicespay = Invoice::when($request->payment_type && $request->payment_type !== 'all', function ($q) use ($request) {
-            return $q->where('payment_type', $request->payment_type);
-        })
-            ->latest()->paginate(30);
-        return view('panel.invoices.index', compact('invoices','customers','roles_id','invoicespay'));
+        return view('panel.invoices.index', [
+            'invoices' => $invoices,
+            'customers' => $customers,
+            'roles_id' => $roles_id,
+        ]);
     }
+
 
     public function applyDiscount(Request $request)
     {

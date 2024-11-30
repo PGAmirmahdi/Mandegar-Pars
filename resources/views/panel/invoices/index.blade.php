@@ -55,12 +55,12 @@
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="customer_id" form="search_form"
-                            class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
-                        <option value="all">نوع(همه)</option>
-                        @foreach($customers as $customer)
+                    <select name="type" form="search_form"
+                            class="js-example-basic-single select2-hidden-accessible" data-select2-id="8">
+                        <option value="all">نوع (همه)</option>
+                        @foreach(App\Models\Invoice::TYPE as $key => $value)
                             <option
-                                value="{{ $customer->id }}" {{ request()->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                                value="{{ $key }}" {{ request()->type == $key ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
                     </select>
                 </div>
