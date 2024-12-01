@@ -203,7 +203,7 @@ class InvoiceController extends Controller
         $data = [
             'user_id' => auth()->id(),
             'action' => 'ویرایش سفارش فروش',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . $invoice->id . ' را ویرایش کرد',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' را ویرایش کرد',
         ];
 
         Log::info('Activity Data:', $data);

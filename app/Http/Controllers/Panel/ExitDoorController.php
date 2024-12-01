@@ -54,7 +54,7 @@ class ExitDoorController extends Controller
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'ایجاد مشتری',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . 'خروج از انبار ثبت کرد',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . 'خروج از انبار ثبت کرد',
         ]);
         alert()->success('ثبت خروج محموله با موفقیت انجام شد','ثبت خروج');
         return redirect()->route('exit-door.index');
