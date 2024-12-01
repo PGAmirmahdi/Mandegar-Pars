@@ -51,19 +51,23 @@
                                     @if($order->status == 'bought')
                                         <form action="{{ route('buy-orders.changeStatus', $order->id) }}" method="post">
                                             @csrf
-                                            <button type="submit" class="btn btn-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</button>
+                                            <button type="submit"
+                                                    class="btn btn-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</button>
                                         </form>
                                     @else
                                         <form action="{{ route('buy-orders.changeStatus', $order->id) }}" method="post">
                                             @csrf
-                                            <button type="submit" class="btn btn-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</button>
+                                            <button type="submit"
+                                                    class="btn btn-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</button>
                                         </form>
                                     @endif
                                 @else
                                     @if($order->status == 'bought')
-                                        <span class="badge badge-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</span>
+                                        <span
+                                            class="badge badge-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</span>
                                     @else
-                                        <span class="badge badge-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</span>
+                                        <span
+                                            class="badge badge-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</span>
                                     @endif
                                 @endcan
                             </td>
@@ -77,22 +81,26 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="btn btn-info btn-floating" href="{{ route('buy-orders.comments.show', $order->id) }}">
+                                <a class="btn btn-info btn-floating"
+                                   href="{{ route('buy-orders.comments.show', $order->id) }}">
                                     <i class="fa fa-comments"></i>
                                 </a>
                             </td>
 
-                        @cannot('ceo')
+                            @cannot('ceo')
                                 @can('buy-orders-edit')
                                     <td>
-                                        <a class="btn btn-warning btn-floating {{ $order->status == 'bought' ? 'disabled' : '' }}" href="{{ route('buy-orders.edit', $order->id) }}">
+                                        <a class="btn btn-warning btn-floating {{ $order->status == 'bought' ? 'disabled' : '' }}"
+                                           href="{{ route('buy-orders.edit', $order->id) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                     </td>
                                 @endcan
                                 @can('buy-orders-delete')
                                     <td>
-                                        <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('buy-orders.destroy',$order->id) }}" data-id="{{ $order->id }}" {{ $order->status == 'bought' ? 'disabled' : '' }}>
+                                        <button class="btn btn-danger btn-floating trashRow"
+                                                data-url="{{ route('buy-orders.destroy',$order->id) }}"
+                                                data-id="{{ $order->id }}" {{ $order->status == 'bought' ? 'disabled' : '' }}>
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </td>

@@ -32,7 +32,14 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><input type="text" class="form-control" name="products[]" placeholder="HP 05A" required></td>
+                                    <td>  <select class="js-example-basic-single" name="products[]" required>
+                                            <option value="" disabled selected>انتخاب کنید
+                                            </option>
+                                            @foreach(\Product::all(['id','title','code']) as $item)
+                                                <option
+                                                    value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
+                                            @endforeach
+                                        </select></td>
                                     <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
                                     <td><input type="text" class="form-control" name="description[]" placeholder="توضیحات"></td>
                                     <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>

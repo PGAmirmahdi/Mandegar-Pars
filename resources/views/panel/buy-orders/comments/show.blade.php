@@ -10,6 +10,7 @@
         .fa-check-double, .fa-check {
             color: green !important;
         }
+
         .avatar {
             width: 30px; /* اندازه کوچک عکس پروفایل */
             height: 30px;
@@ -30,7 +31,11 @@
                     </div>
                     <div class="ml-auto d-flex">
                         <div class="mr-4">
-                            <span class="badge badge-warning">{{ $order->status }}</span>
+                            @if($order->status == 'order')
+                                <span class="badge badge-warning">ثبت سفارش</span>
+                            @elseif($order->status == 'bought')
+                                <span class="badge badge-success">خریداری شده</span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -40,7 +45,9 @@
                             <div class="message-item {{ $comment->user_id == auth()->id() ? '' : 'outgoing-message' }}">
                                 <!-- نمایش تصویر پروفایل -->
                                 <figure class="avatar avatar-sm m-r-10">
-                                    <img src="{{ $comment->user->profile ? asset('storage/'.$comment->user->profile) : asset('assets/media/image/avatar.png') }}" class="rounded-circle" alt="profile">
+                                    <img
+                                        src="{{ $comment->user->profile ? asset('storage/'.$comment->user->profile) : asset('assets/media/image/avatar.png') }}"
+                                        class="rounded-circle" alt="profile">
                                 </figure>
                                 <strong>{{ $comment->user->name }}:</strong>
                                 <p>{{ $comment->comment }}</p>
@@ -52,13 +59,27 @@
                     </div>
                 </div>
                 <div class="chat-body-footer">
-                    <form action="{{ route('buy-orders.comments.store', $order->id) }}" method="post" class="d-flex align-items-center">
+                    @if($order->status == 'order')
+                    <form action="{{ route('buy-orders.comments.store', $order->id) }}" method="post"
+                          class="d-flex align-items-center">
                         @csrf
-                        <input type="text" name="comment" class="form-control" placeholder="نظر خود را وارد کنید..." required>
+                        <input type="text" name="comment" class="form-control" placeholder="نظر خود را وارد کنید..."
+                               required>
                         <button type="submit" class="ml-3 btn btn-primary btn-floating">
                             <i class="fa fa-paper-plane"></i>
                         </button>
                     </form>
+                        @elseif($order->status == 'bought')
+                        <form action="#" method="post"
+                              class="d-flex align-items-center">
+                            @csrf
+                            <input type="text" name="comment" class="form-control" placeholder="امکان ارسال نظر هنگامی که وضعیت سفارش خریداری شده باشد وجود ندارد"
+                                   required disabled>
+                            <button type="submit" class="ml-3 btn btn-primary btn-floating disabled" disabled>
+                                <i class="fa fa-paper-plane disabled" disabled></i>
+                            </button>
+                        </form>
+                        @endif
                 </div>
             </div>
         </div>
