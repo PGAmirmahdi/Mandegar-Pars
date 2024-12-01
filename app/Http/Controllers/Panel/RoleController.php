@@ -43,7 +43,7 @@ class RoleController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ایجاد نقش',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'نقش جدید با نام "' . $role->name . '" ایجاد کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'نقش جدید با نام "' . $role->label . '" ایجاد کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
@@ -78,7 +78,7 @@ class RoleController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ویرایش نقش',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'نقش "' . $role->name . '" را ویرایش کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'نقش "' . $role->label . '" را ویرایش کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
@@ -95,7 +95,7 @@ class RoleController extends Controller
             $activityData = [
                 'user_id' => auth()->id(),
                 'action' => 'حذف نقش',
-                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') ' . 'نقش "' . $role->name . '" را حذف کرد.',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') ' . 'نقش "' . $role->label . '" را حذف کرد.',
                 'created_at' => now(),
             ];
             Activity::create($activityData);
