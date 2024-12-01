@@ -7,6 +7,7 @@ use App\Http\Controllers\Panel\ActivityController;
 use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BaseinfoController;
 use App\Http\Controllers\Panel\BotController;
+use App\Http\Controllers\Panel\BuyOrderCommentController;
 use App\Http\Controllers\Panel\BuyOrderController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\ChatsGPTController;
@@ -319,6 +320,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // WhatsApp
     Route::resource('whatsapp', WhatsAppController::class);
 
+    //Comment Order Product
+    Route::get('buy-orders/comments/{id}', [BuyOrderCommentController::class, 'show'])->name('buy-orders.comments.show');
+    Route::post('buy-orders/{buy_order}/comments', [BuyOrderCommentController::class, 'store'])->name('buy-orders.comments.store');
 });
 
 // Share File

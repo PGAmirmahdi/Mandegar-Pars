@@ -24,7 +24,7 @@ class StoreTicketRequest extends FormRequest
     public function rules()
     {
         return [
-            'receiver' => 'required',
+            'receiver' => 'nullable',
             'title' => 'required',
             'text' => 'required',
         ];

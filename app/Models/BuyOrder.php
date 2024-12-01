@@ -25,4 +25,8 @@ class BuyOrder extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+    public function comments()
+    {
+        return $this->hasMany(BuyOrderComment::class);
+    }
 }

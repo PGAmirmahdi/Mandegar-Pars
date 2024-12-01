@@ -28,6 +28,7 @@
                         @endcanany
                         <th>زمان ثبت</th>
                         <th>مشاهده</th>
+                        <th>چت درباره سفارش</th>
                         @cannot('ceo')
                             @can('buy-orders-edit')
                                 <th>ویرایش</th>
@@ -75,7 +76,13 @@
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </td>
-                            @cannot('ceo')
+                            <td>
+                                <a class="btn btn-info btn-floating" href="{{ route('buy-orders.comments.show', $order->id) }}">
+                                    <i class="fa fa-comments"></i>
+                                </a>
+                            </td>
+
+                        @cannot('ceo')
                                 @can('buy-orders-edit')
                                     <td>
                                         <a class="btn btn-warning btn-floating {{ $order->status == 'bought' ? 'disabled' : '' }}" href="{{ route('buy-orders.edit', $order->id) }}">

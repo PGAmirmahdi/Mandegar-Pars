@@ -17,6 +17,7 @@ class CreateTransportersTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('address');
+            $table->text('phone');
             $table->string('code', 10)->unique();
             $table->timestamps();
         });
