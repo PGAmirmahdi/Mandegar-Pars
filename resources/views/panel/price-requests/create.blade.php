@@ -35,7 +35,10 @@
                                     <td>  <select class="js-example-basic-single" name="products[]" required>
                                             <option value="" disabled selected>انتخاب کنید
                                             </option>
-                                            @foreach(\Product::all(['id','title','code']) as $item)
+                                            @php
+                                                use App\Models\Product;
+                                            @endphp
+                                            @foreach(Product::all(['id','title','code']) as $item)
                                                 <option
                                                     value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
                                             @endforeach
