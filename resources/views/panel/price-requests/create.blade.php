@@ -2,7 +2,7 @@
 @section('title', 'ثبت درخواست قیمت')
 @section('styles')
     <style>
-        table tbody tr td input{
+        table tbody tr td input {
             text-align: center;
         }
     </style>
@@ -22,40 +22,50 @@
                 <div class="form-row">
                     <div class="col-12 mb-3">
                         <table class="table table-striped table-bordered text-center">
+                            @php
+                                use App\Models\Product;
+                            @endphp
                             <thead class="bg-primary">
-                                <tr>
-                                    <th>عنوان کالا</th>
-                                    <th>تعداد</th>
-                                    <th>توضیحات</th>
-                                    <th>حذف</th>
-                                </tr>
+                            <tr>
+                                <th>عنوان کالا</th>
+                                <th>تعداد</th>
+                                <th>توضیحات</th>
+                                <th>حذف</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>  <select class="js-example-basic-single" name="products[]" required>
-                                            <option value="" disabled selected>انتخاب کنید
+                            <tr>
+                                <td>
+                                    <select class="js-example-basic-single" name="products[]" required>
+                                        <option value="" disabled selected>انتخاب کنید</option>
+                                        @foreach($products as $item)
+                                            <option
+                                                value="{{ $item->id }}"
+                                                {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
+                                                {{ $item->title }}
                                             </option>
-                                            @php
-                                                use App\Models\Product;
-                                            @endphp
-                                            @foreach(Product::all(['id','title','code']) as $item)
-                                                <option
-                                                    value="{{ $item->id }}" {{ $item->id == $productId ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
-                                            @endforeach
-                                        </select></td>
-                                    <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-                                    <td><input type="text" class="form-control" name="description[]" placeholder="توضیحات"></td>
-                                    <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
-                                </tr>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="number" class="form-control" name="counts[]" min="1" value="1"
+                                           required></td>
+                                <td><input type="text" class="form-control" name="description[]" placeholder="توضیحات">
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-floating btn_remove"><i
+                                            class="fa fa-trash"></i></button>
+                                </td>
+                            </tr>
                             </tbody>
                             <tfoot>
-                                <tr></tr>
+                            <tr></tr>
                             </tfoot>
                         </table>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="max_send_time">حداکثر زمان ثبت قیمت (ساعت)<span class="text-danger">*</span></label>
-                        <input type="number" name="max_send_time" class="form-control" id="max_send_time" value="{{ old('max_send_time') ?? 1 }}" min="1" max="100" required>
+                        <input type="number" name="max_send_time" class="form-control" id="max_send_time"
+                               value="{{ old('max_send_time') ?? 1 }}" min="1" max="100" required>
                         @error('max_send_time')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -73,19 +83,33 @@
             $(document).on('click', '#btn_add', function () {
                 $('table tbody').append(`
                     <tr>
-                        <td><input type="text" class="form-control" name="products[]" required></td>
-                        <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-                        <td><input type="text" class="form-control" name="description[]" placeholder="توضیحات"></td>
-                        <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
-                    </tr>
-                `)
-            })
+                        <td>
+                            <select class="js-example-basic-single" name="products[]" required>
+                                <option value="" disabled selected>انتخاب کنید</option>
+                                @foreach($products as $item)
+                <option value="{{ $item->id }}"
+                                        {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
+                                        {{ $item->code . ' - ' . $item->title }}
+                </option>
+@endforeach
+                </select>
+            </td>
+            <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
+            <td><input type="text" class="form-control" name="description[]" placeholder="توضیحات"></td>
+            <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
+        </tr>
+`);
+
+                // Reinitialize select2 after adding new row
+                $('.js-example-basic-single').select2();
+            });
 
             // remove item
             $(document).on('click', '.btn_remove', function () {
                 $(this).parent().parent().remove()
-            })
-        })
+            });
+        });
     </script>
 @endsection
+
 
