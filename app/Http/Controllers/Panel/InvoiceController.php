@@ -88,10 +88,11 @@ class InvoiceController extends Controller
             'description' => $request->description,
             'payment_type' => $request->payment_type
         ]);
+        $customer = $invoice->customer; // or get customer based on your structure
         $data = [
             'user_id' => auth()->id(),
             'action' => 'ایجاد سفارش فروش',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش به شماره ' . $invoice->id . ' ایجاد کرد',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' ایجاد کرد',
         ];
 
         Log::info('Activity Data:', $data);
@@ -198,10 +199,11 @@ class InvoiceController extends Controller
             'description' => $request->description,
             'payment_type' => $request->payment_type
         ]);
+        $customer = $invoice->customer; // or get customer based on your structure
         $data = [
             'user_id' => auth()->id(),
             'action' => 'ویرایش سفارش فروش',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش به شماره ' . $invoice->id . ' را ویرایش کرد',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . $invoice->id . ' را ویرایش کرد',
         ];
 
         Log::info('Activity Data:', $data);
@@ -214,10 +216,11 @@ class InvoiceController extends Controller
     public function destroy(Invoice $invoice)
     {
         $this->authorize('invoices-delete');
+        $customer = $invoice->customer; // or get customer based on your structure
         $data = [
             'user_id' => auth()->id(),
             'action' => 'حذف سفارش فروش',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش به شماره ' . $invoice->id . ' را حذف کرد',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . $invoice->id . ' را حذف کرد',
         ];
 
         Log::info('Activity Data:', $data);
@@ -403,14 +406,14 @@ class InvoiceController extends Controller
             'tax' => $tax,
             'invoice_net' => $invoice_net,
         ];
-        $data = [
+        $data2 = [
             'user_id' => auth()->id(),
             'action' => 'استفاده از کد تخفیف',
             'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') از کد تخفیف ' . $coupon->code . ' در سفارش ' . $request->invoice_id . ' استفاده کرد',
         ];
 
-        Log::info('Activity Data:', $data);
-        Activity::create($data);
+        Log::info('Activity Data:', $data2);
+        Activity::create($data2);
         return response()->json(['error' => 0, 'message' => 'کد تخفیف اعمال شد', 'data' => $data]);
     }
 
@@ -469,7 +472,8 @@ class InvoiceController extends Controller
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'تغییر وضعیت سفارش',
-                'description' => "کاربر " . auth()->user()->family . " وضعیت سفارش شماره {$invoice->id} را به '{$status}' تغییر داد.",
+
+                'description' => "کاربر " . auth()->user()->family . '(' . auth()->user()->role->label . ')' . " وضعیت سفارش شماره {$invoice->id} را به '{$status}' تغییر داد.",
             ]);
         }
 
@@ -490,11 +494,12 @@ class InvoiceController extends Controller
             'margin_top' => 2,
             'margin_bottom' => 0,
         ]);
+        $customer = $invoice->customer; // or get customer based on your structure
         // ثبت فعالیت
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'دانلود PDF',
-            'description' => "کاربر " . auth()->user()->family . " فایل PDF مربوط به سفارش شماره {$invoice->id} را دانلود کرد.",
+            'description' => "کاربر " . auth()->user()->family . '(' . auth()->user()->role->label . ')' . " فایل PDF مربوط به سفارش مشتری " . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' را دانلود کرد',
         ]);
         return $pdf->stream("order.pdf");
     }
@@ -528,10 +533,11 @@ class InvoiceController extends Controller
             $title = 'ثبت و ارسال به حسابدار';
             $message = 'تاییدیه شما به حسابداری ارسال شد';
             // ثبت فعالیت
+            $customer = $invoice->customer; // or get customer based on your structure
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ارسال پیش فاکتور به حسابدار',
-                'description' => "کاربر " . auth()->user()->family . " پیش فاکتور مربوط به سفارش شماره {$invoice->id} را به حسابداری ارسال کرد.",
+                'description' => "کاربر " . auth()->user()->family . '(' . auth()->user()->role->label . ')' . " پیش فاکتور مربوط به سفارش مشتری " . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' به حسابداری ارسال کرد',
             ]);
 
             //send notif to accountants
@@ -559,11 +565,12 @@ class InvoiceController extends Controller
 
             $title = 'ثبت و ارسال به انبار';
             $message = 'فاکتور مورد نظر با موفقیت به انبار ارسال شد';
+            $customer = $invoice->customer; // or get customer based on your structure
             // ثبت فعالیت
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ارسال فاکتور به انبار',
-                'description' => "کاربر " . auth()->user()->family . " فاکتور مربوط به سفارش شماره {$invoice->id} را به انبار ارسال کرد.",
+                'description' => "کاربر " . auth()->user()->family . '(' . auth()->user()->role->label . ')'  . " فاکتور مربوط به سفارش مشتری " . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' را به انبار ارسال کرد',
             ]);
 
             $invoice->update(['status' => 'invoiced']);

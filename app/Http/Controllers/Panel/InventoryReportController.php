@@ -107,7 +107,6 @@ class InventoryReportController extends Controller
                     $q->where('name', 'exit-door');
                 });
             })->get();
-
             $notif_message = 'یک خروج انبار توسط انباردار ثبت شد';
             $url = route('exit-door.index');
             Notification::send($notifiables, new SendMessage($notif_message, $url));

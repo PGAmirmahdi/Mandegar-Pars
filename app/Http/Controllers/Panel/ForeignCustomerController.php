@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Country;
 use App\Models\Customer;
 use App\Models\ForeignCustomer;
@@ -39,7 +40,7 @@ class ForeignCustomerController extends Controller
             }
         }
 
-        ForeignCustomer::create([
+        $foreigncustomer=ForeignCustomer::create([
             'website' => $request->website,
             'phone' => $request->phone,
             'email' => $request->email,
@@ -49,7 +50,13 @@ class ForeignCustomerController extends Controller
             'description' => $request->description,
             'docs' => count($files) ? json_encode($files) : null,
         ]);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد گارانتی',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') یک مشتری خارجی به شماره تلفن ' . $foreigncustomer->phone . ' ایجاد کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('مشتری مورد نظر با موفقیت ثبت شد','ثبت مشتری');
         return redirect()->route('foreign-customers.index');
     }
@@ -97,7 +104,13 @@ class ForeignCustomerController extends Controller
             'description' => $request->description,
             'docs' => count($files) ? json_encode($files) : $foreignCustomer->docs,
         ]);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش گارانتی',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') مشتری خارجی به شماره تلفن ' . $foreignCustomer->phone . ' را ویرایش کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('مشتری مورد نظر با موفقیت ویرایش شد','ویرایش مشتری');
         return redirect()->route('foreign-customers.index', ['page' => $request->page]);
     }
@@ -111,7 +124,13 @@ class ForeignCustomerController extends Controller
                 unlink(public_path($item));
             }
         }
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف گارانتی',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') مشتری خارجی به شماره تلفن ' . $foreignCustomer->phone . ' را حذف کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         $foreignCustomer->delete();
         return back();
     }
@@ -136,6 +155,13 @@ class ForeignCustomerController extends Controller
 
     public function excel()
     {
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'خروجی اکسل از مشتریان',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ')' . ' از مشتریان خارجی خروجی اکسل گرفت',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         return Excel::download(new \App\Exports\ForeignCustomersExport, 'foreign-customers.xlsx');
     }
 }

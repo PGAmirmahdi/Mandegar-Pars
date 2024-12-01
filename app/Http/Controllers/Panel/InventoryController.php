@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInventoryRequest;
 use App\Http\Requests\UpdateInventoryRequest;
+use App\Models\Activity;
 use App\Models\Inventory;
 use App\Models\InventoryReport;
 use App\Models\Warehouse;
@@ -42,7 +43,7 @@ class InventoryController extends Controller
             return back()->withErrors(['code' => 'این کد در انبار موجود است'])->withInput();
         }
 
-        Inventory::create([
+        $inventory=Inventory::create([
             'warehouse_id' => $warehouse_id,
             'title' => $request->title,
             'code' => $request->code,
@@ -50,7 +51,13 @@ class InventoryController extends Controller
             'current_count' => $request->count,
             'initial_count' => $request->count,
         ]);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد کالا',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') کالا با نام ' . $inventory->title . ' را ایجاد کرد',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('کالا مورد نظر با موفقیت ایجاد شد','ایجاد کالا');
         return redirect()->route('inventory.index', ['warehouse_id' => $warehouse_id]);
     }
@@ -89,7 +96,13 @@ class InventoryController extends Controller
 //            'current_count' => ($inventory->current_count - $inventory->initial_count) + $request->count,
             'current_count' => $request->count,
         ]);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش کالا',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') کالا با نام ' . $inventory->title . ' را ویرایش کرد',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('کالا مورد نظر با موفقیت ویرایش شد','ویرایش کالا');
         return redirect()->route('inventory.index', ['warehouse_id' => $warehouse_id]);
     }
@@ -124,7 +137,13 @@ class InventoryController extends Controller
     public function excel()
     {
         $warehouse_id = \request()->warehouse_id;
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'خروجی اکسل از  کالاها',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ' از کالا ها خروجی اکسل گرفت',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         return Excel::download(new \App\Exports\InventoryExport($warehouse_id), 'inventory.xlsx');
     }
 

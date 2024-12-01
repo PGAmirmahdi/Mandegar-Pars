@@ -173,7 +173,7 @@ class ArtinController extends Controller
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ایجاد محصول محصول در سایت',
-                'description' => 'کاربر ' . auth()->user()->family .  'محصول '  . $title . ' را برای سایت ایجاد کرد',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ')' .  'محصول '  . $title . ' را برای سایت ایجاد کرد',
             ]);
             // Redirect back with success message
             return redirect()->back()->with('success', 'Product created successfully.');
@@ -226,7 +226,7 @@ class ArtinController extends Controller
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'Delete product',
-                'description' => 'User ' . auth()->user()->family . ' deleted the product "' . $product_name . '".',
+                'description' => 'کاربر ' . auth()->user()->family. '(' . auth()->user()->role->label . ')' . ' محصول روبرو را حذف کرد "' . $product_name . '".',
             ]);
 
             // Close PDO connection

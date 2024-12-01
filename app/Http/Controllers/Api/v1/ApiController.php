@@ -101,7 +101,7 @@ class ApiController extends Controller
             $data3 = [
                 'user_id' => 173,
                 'action' => 'ایجاد سفارش فروش',
-                'description' => 'کاربر اسدی بیگزاد محله(ادمین) ' . 'برای مشتری به نام ' . $customer->first_name . ' ' . $customer->last_name  . "یک سفارش فروش به شماره " . $invoice->id . ' ایجاد کرد',
+                'description' => 'کاربر اسدی بیگزاد محله(ادمین) ' . 'برای مشتری به نام ' . $customer->name  . "یک سفارش فروش به شماره " . $invoice->id . ' ایجاد کرد',
             ];
 
             Log::info('Activity Data:', $data3);

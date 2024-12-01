@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\OrderStatus;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderStatusController extends Controller
 {
@@ -58,7 +59,7 @@ class OrderStatusController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'تغییر وضعیت فاکتور',
-            'description' => 'وضعیت فاکتور با شماره ' . $invoice->id . "توسط" . auth()->user()->family .' به "' . $status . '" تغییر یافت.',
+            'description' => 'وضعیت فاکتور با شماره ' . $invoice->id . "توسط" . auth()->user()->family .  '(' . Auth::user()->role->label . ')' .' به "' . $status . '" تغییر یافت.',
             'created_at' => now(),
         ];
         Activity::create($activityData);  // ثبت فعالیت
