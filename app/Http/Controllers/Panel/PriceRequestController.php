@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\PriceRequest;
+use App\Models\Product;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
@@ -26,8 +27,9 @@ class PriceRequestController extends Controller
     public function create()
     {
         $this->authorize('price-requests-create');
-
-        return view('panel.price-requests.create');
+        // گرفتن همه محصولات از دیتابیس
+        $products = Product::all();
+        return view('panel.price-requests.create',compact('products'));
     }
 
     public function store(Request $request)
