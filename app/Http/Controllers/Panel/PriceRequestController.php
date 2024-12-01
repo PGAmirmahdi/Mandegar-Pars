@@ -46,7 +46,9 @@ class PriceRequestController extends Controller
         PriceRequest::create([
             'user_id' => auth()->id(),
             'max_send_time' => $request->max_send_time,
-            'description' => $request->description,
+            'description' => is_array($request->description)
+                ? implode(', ', $request->description)
+                : $request->description,
             'items' => json_encode($items)
         ]);
 
