@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGuaranteeRequest;
 use App\Http\Requests\UpdateGuaranteeRequest;
+use App\Models\Activity;
 use App\Models\Guarantee;
 use Illuminate\Http\Request;
 
@@ -33,14 +34,20 @@ class GuaranteeController extends Controller
     {
         $this->authorize('guarantees-create');
 
-        Guarantee::create([
+        $guarantee=Guarantee::create([
             'serial' => $request->serial_number,
             'period' => $request->period,
             'status' => $request->status,
             'activated_at' => $request->status == 'active' ? now() : null,
             'expired_at' => $request->status == 'active' ? now()->addMonths($request->period) : null,
         ]);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد گارانتی',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') یک گارانتی به سریال ' . $guarantee->serial . ' ایجاد کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('گارانتی جدید با موفقیت ایجاد شد','ایجاد گارانتی');
         return redirect()->route('guarantees.index');
     }
@@ -68,7 +75,13 @@ class GuaranteeController extends Controller
             'activated_at' => $guarantee->activated_at == null ? ($request->status == 'active' ? now() : null) : $guarantee->activated_at,
             'expired_at' => $guarantee->expired_at == null ? ($request->status == 'active' ? now()->addMonths($request->period) : null) : $guarantee->expired_at,
         ]);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد گارانتی',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') گارانتی به سریال ' . $guarantee->serial . ' را ویرایش کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('گارانتی با موفقیت ویرایش شد','ویرایش گارانتی');
         return redirect()->route('guarantees.index');
     }

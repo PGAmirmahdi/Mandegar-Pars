@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\OffSiteProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Mpdf\Tag\P;
 
 class OffSiteProductController extends Controller
@@ -45,7 +46,7 @@ class OffSiteProductController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ایجاد محصول',
-            'description' => 'محصول جدید در وب‌سایت ' . ucfirst($request->website) . 'توسط' . auth()->user()->family . ' ثبت شد.',
+            'description' => 'محصول جدید در وب‌سایت ' . ucfirst($request->website) . 'توسط' . auth()->user()->family .  '(' . Auth::user()->role->label . ')' . ' ثبت شد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
@@ -97,7 +98,7 @@ class OffSiteProductController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ویرایش محصول',
-            'description' => 'محصول با عنوان "' . $offSiteProduct->title . '" در وب‌سایت '  . ucfirst($offSiteProduct->website) . 'توسط' . auth()->user()->family . ' ویرایش شد.',
+            'description' => 'محصول با عنوان "' . $offSiteProduct->title . '" در وب‌سایت '  . ucfirst($offSiteProduct->website) . 'توسط' . auth()->user()->family .  '(' . Auth::user()->role->label . ')' . ' ویرایش شد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
@@ -112,7 +113,7 @@ class OffSiteProductController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'حذف محصول',
-            'description' => 'محصول با عنوان "' . $offSiteProduct->title . '" در وب‌سایت ' . ucfirst($offSiteProduct->website) . 'توسط' . auth()->user()->family  . ' حذف شد.',
+            'description' => 'محصول با عنوان "' . $offSiteProduct->title . '" در وب‌سایت ' . ucfirst($offSiteProduct->website) . 'توسط' . auth()->user()->family  .  '(' . Auth::user()->role->label . ')' . ' حذف شد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);

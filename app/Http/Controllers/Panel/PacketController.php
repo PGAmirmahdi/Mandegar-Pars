@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use DOMDocument;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PacketController extends Controller
@@ -62,7 +63,7 @@ class PacketController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ایجاد بسته',
-            'description' => 'بسته‌ای برای فاکتور به شماره ' . $request->invoice . ' با وضعیت "' . $request->packet_status . '" توسط ' . auth()->user()->family . ' ایجاد شد.',
+            'description' => 'بسته‌ای برای فاکتور به شماره ' . $request->invoice . ' با وضعیت "' . $request->packet_status . '" توسط ' . auth()->user()->family .  '(' . Auth::user()->role->label . ')' . ' ایجاد شد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);  // ثبت فعالیت
@@ -116,7 +117,7 @@ class PacketController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ویرایش بسته',
-            'description' => 'بسته‌ای برای فاکتور به شماره ' . $request->invoice . ' با وضعیت "' . $request->packet_status . '" توسط ' . auth()->user()->family . ' ویرایش شد.',
+            'description' => 'بسته‌ای برای فاکتور به شماره ' . $request->invoice . ' با وضعیت "' . $request->packet_status . '" توسط ' . auth()->user()->family .  '(' . Auth::user()->role->label . ')' . ' ویرایش شد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);  // ثبت فعالیت
@@ -134,7 +135,7 @@ class PacketController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'حذف بسته',
-            'description' => 'بسته‌ای برای فاکتور به شماره ' . $packet->invoice_id . ' با وضعیت "' . $packet->packet_status . '" توسط ' . auth()->user()->family . ' حذف شد.',
+            'description' => 'بسته‌ای برای فاکتور به شماره ' . $packet->invoice_id . ' با وضعیت "' . $packet->packet_status . '" توسط ' . auth()->user()->family .  '(' . Auth::user()->role->label . ')' . ' حذف شد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);  // ثبت فعالیت
@@ -177,7 +178,7 @@ class PacketController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'دانلود فایل Excel بسته‌ها',
-            'description' => 'کاربر ' . auth()->user()->family . ' فایل Excel بسته‌ها را دانلود کرد.',
+            'description' => 'کاربر ' . auth()->user()->family .  '(' . Auth::user()->role->label . ')' . ' فایل Excel بسته‌ها را دانلود کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);  // ثبت فعالیت

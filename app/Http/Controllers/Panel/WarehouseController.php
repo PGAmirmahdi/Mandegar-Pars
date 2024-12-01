@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WarehouseController extends Controller
 {
@@ -29,10 +31,17 @@ class WarehouseController extends Controller
 
         $request->validate(['name' => 'required']);
 
-        Warehouse::create([
+        $warehouse=Warehouse::create([
             'name' => $request->name
         ]);
-
+// ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'description' => 'کاربر ' . auth()->user()->family  . '(' . Auth::user()->role->label . ')'  . ' انباری با نام ' . $warehouse->name . ' ایجاد کرد',
+            'action' => 'ایجاد انبار',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('انبار با موفقیت ایجاد شد','ایجاد انبار');
         return redirect()->route('warehouses.index');
     }
@@ -58,6 +67,14 @@ class WarehouseController extends Controller
         $warehouse->update([
             'name' => $request->name
         ]);
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' انبار با نام قبلی ' . $warehouse->getOriginal('name') . ' را به ' . $warehouse->name . ' تغییر داد',
+            'action' => 'ویرایش انبار',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
 
         alert()->success('انبار با موفقیت ویرایش شد','ویرایش انبار');
         return redirect()->route('warehouses.index');
@@ -67,11 +84,31 @@ class WarehouseController extends Controller
     {
         $this->authorize('warehouses-delete');
 
-        if (!$warehouse->inventories()->exists()){
+        if (!$warehouse->inventories()->exists()) {
+            $warehouseName = $warehouse->name; // ذخیره نام انبار قبل از حذف
             $warehouse->delete();
+
+            // ثبت فعالیت
+            $activityData = [
+                'user_id' => auth()->id(),
+                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . ' انبار با نام ' . $warehouseName . ' را حذف کرد',
+                'action' => 'حذف انبار',
+                'created_at' => now(),
+            ];
+            Activity::create($activityData);
+
             return back();
-        }else{
-            return response('پیش از حذف ابتدا کالاهای موجود در این انبار را انتقال دهید',500);
+        } else {
+            // ثبت تلاش ناموفق برای حذف
+            $activityData = [
+                'user_id' => auth()->id(),
+                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . ' تلاش کرد انبار با نام ' . $warehouse->name . ' را حذف کند، اما این انبار شامل کالاهایی است',
+                'action' => 'تلاش ناموفق برای حذف انبار',
+                'created_at' => now(),
+            ];
+            Activity::create($activityData);
+
+            return response('پیش از حذف ابتدا کالاهای موجود در این انبار را انتقال دهید', 500);
         }
     }
 }

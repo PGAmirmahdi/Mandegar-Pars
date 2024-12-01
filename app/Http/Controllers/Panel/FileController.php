@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Models\File;
 use Illuminate\Support\Facades\Log;
@@ -67,6 +68,13 @@ class FileController extends Controller
             'parent_folder_id' => $request->parent_folder_id,
             'user_role' => Auth::user()->role->name, // ذخیره نقش کاربر
         ]);
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'بارگذاری فایل',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') فایل در مدیریت فایل بارگذاری کرد',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('فایل با موفقیت بارگذاری شد', 'بارگذاری فایل');
         return redirect()->route('files.index')->with('success', 'فایل با موفقیت بارگذاری شد.');
     }
@@ -78,13 +86,20 @@ class FileController extends Controller
             'folder_name' => 'required|string|max:255',
         ]);
 
-        File::create([
+        $filecontrol=File::create([
             'user_id' => Auth::id(),
             'file_name' => $request->folder_name,
             'file_type' => 'folder',
             'parent_folder_id' => $request->parent_folder_id,
             'user_role' => Auth::user()->role->name,
         ]);
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد فولدر',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') فولدر در مدیریت فایل به نام ' . $filecontrol->file_name . ' ایجاد کرد',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         alert()->success('فولدر با موفقیت ایجاد شد', 'ایجاد فولدر');
         return redirect()->route('files.index')->with('success', 'فولدر با موفقیت ایجاد شد.');
     }
@@ -93,7 +108,13 @@ class FileController extends Controller
     public function destroy($id)
     {
         $file = File::findOrFail($id);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'حذف فایل یا فولدر',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') فولدر یا فایل در مدیریت فایل به نام ' . $file->file_name . ' را حذف کرد',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         if ($file->file_type != 'folder') {
             Storage::delete($file->file_path);
         }
@@ -107,7 +128,13 @@ class FileController extends Controller
     public function download($id)
     {
         $file = File::findOrFail($id);
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'دانلود فایل',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') فایل ' . $file->file_name . ' را دانلود کرد',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         if ($file->file_type == 'folder') {
             return redirect()->route('files.index')->with('error', 'شما نمیتوانید فولدر را دانلود کنید.');
         }
@@ -140,6 +167,13 @@ class FileController extends Controller
     public function getShareLink($id)
     {
         $file = File::findOrFail($id);
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'اشتراک گذاری فایل',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ')روی دکمه فایل به نام ' . $file->file_name . ' برای به اشتراک گذاری کلیک کرد',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         $shareLink = route('files.download', $file->id); // لینک مستقیم دانلود فایل
 
         return response()->json(['link' => $shareLink]);

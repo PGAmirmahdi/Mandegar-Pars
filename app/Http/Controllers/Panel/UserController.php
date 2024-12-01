@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Activity;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -76,7 +78,14 @@ class UserController extends Controller
 
         // به‌روزرسانی کاربر در دیتابیس
         $user->update($dataToUpdate);
-
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' اطلاعات کاربر ' . $user->family . ' را ویرایش کرد',
+            'action' => 'ویرایش کاربر',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         // پیام موفقیت و بازگرداندن کاربر به صفحه لیست کاربران
         alert()->success('پروفایل شما با موفقیت ویرایش شد', 'ویرایش پروفایل');
         return redirect()->route('users.index');
@@ -94,7 +103,14 @@ class UserController extends Controller
             'role_id' => $request->role,
             'password' => bcrypt($request->password),
         ]);
-
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' کاربر جدیدی با نام ' . $user->family . ' ایجاد کرد',
+            'action' => 'ایجاد کاربر',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         // ارسال پیام موفقیت
         alert()->success('کاربر با موفقیت ساخته شد', 'ساخت کاربر');
 
@@ -123,7 +139,13 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $this->authorize('users-delete');
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' کاربر با نام ' . $user->family . ' را حذف کرد',
+            'action' => 'حذف کاربر',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         $user->delete();
         return back();
     }
