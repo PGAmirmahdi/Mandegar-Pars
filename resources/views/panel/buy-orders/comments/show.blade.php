@@ -10,6 +10,11 @@
         .fa-check-double, .fa-check {
             color: green !important;
         }
+        .avatar {
+            width: 30px; /* اندازه کوچک عکس پروفایل */
+            height: 30px;
+            object-fit: cover;
+        }
     </style>
 @endsection
 
@@ -33,6 +38,10 @@
                     <div class="message-items">
                         @foreach ($comments as $comment)
                             <div class="message-item {{ $comment->user_id == auth()->id() ? '' : 'outgoing-message' }}">
+                                <!-- نمایش تصویر پروفایل -->
+                                <figure class="avatar avatar-sm m-r-10">
+                                    <img src="{{ $comment->user->profile ? asset('storage/'.$comment->user->profile) : asset('assets/media/image/avatar.png') }}" class="rounded-circle" alt="profile">
+                                </figure>
                                 <strong>{{ $comment->user->name }}:</strong>
                                 <p>{{ $comment->comment }}</p>
                                 <small class="message-item-date text-muted">
