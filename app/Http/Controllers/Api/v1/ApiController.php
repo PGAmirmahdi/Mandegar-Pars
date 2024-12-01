@@ -86,7 +86,7 @@ class ApiController extends Controller
             $data2 = [
                 'user_id' => 173,
                 'action' => 'ایجاد مشتری',
-                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . "یک مشتری به نام " . $customer->name . ' ایجاد کرد',
+                'description' => 'کاربر اسدی بیگزاد محله(ادمین) ' . "یک مشتری به نام " . $customer->name . ' ایجاد کرد',
             ];
 
             Log::info('Activity Data:', $data2);
@@ -110,7 +110,7 @@ class ApiController extends Controller
             $data3 = [
                 'user_id' => 173,
                 'action' => 'ایجاد سفارش فروش',
-                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . "یک سفارش فروش به شماره " . $invoice->id . ' ایجاد کرد',
+                'description' => 'کاربر اسدی بیگزاد محله(ادمین) ' . "یک سفارش فروش به شماره " . $invoice->id . ' ایجاد کرد',
             ];
 
             Log::info('Activity Data:', $data3);
