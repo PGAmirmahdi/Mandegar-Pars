@@ -1,6 +1,6 @@
 @extends('panel.layouts.master')
 
-@section('title', 'عملیات تایید نهایی حسابداری حمل و نقل')
+@section('title', 'عملیات حسابداری حمل و نقل')
 
 @section('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/all.css">
@@ -94,15 +94,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-
-                <!-- بررسی وجود فایل -->
-                <div class="col-12 mt-4">
-                    @if($widgetPath)
-                        <p>فایل بیجک: <a href="{{ asset('storage/' . $widgetPath) }}" target="_blank">نمایش فایل</a></p>
-                    @else
-                        <p>فایلی برای نمایش وجود ندارد.</p>
-                    @endif
                 </div>
 
                 <button class="btn btn-primary" type="submit">انتخاب و ارسال به انباردار</button>
