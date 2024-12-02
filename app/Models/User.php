@@ -40,11 +40,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    public function groups()
-    {
-        return $this->belongsToMany(Group::class);
-    }
 
+    public function transport()
+    {
+
+    }
     public function hasAnyRole(array $roles)
     {
         return in_array($this->role->name, $roles);

@@ -316,7 +316,17 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('transporters', TransporterController::class);
 
     // Transport
-    Route::resource('transport', TransportController::class);
+    Route::resource('transports', TransportController::class);
+    Route::post('get-invoice-info/{invoice_id}',[ TransportController::class, 'getInvoiceInfo'])->name('getInvoiceInfo');
+// عملیات حسابداری برای حمل و نقل (فقط برای حسابدار)
+    Route::get('panel/transports/{id}/accounting', [TransportController::class, 'accounting'])->name('transports.accounting');
+    Route::put('panel/transports/{id}/accountantupdate', [TransportController::class, 'accountantupdate'])->name('transports.accountantupdate.accounting');
+
+    Route::get('panel/transports/{id}/bijak', [TransportController::class, 'bijak'])->name('transports.bijak');
+    Route::put('panel/transports/{id}/storeBijak', [TransportController::class, 'storeBijak'])->name('transports.storeBijak');
+
+    Route::get('panel/transports/{id}/finalaccounting', [TransportController::class, 'finalaccounting'])->name('transports.finalaccounting');
+    Route::put('panel/transports/{id}/finalaccountantupdate', [TransportController::class, 'finalaccountantupdate'])->name('transports.finalaccountantupdate.finalaccounting');
 
     // File Control
     Route::resource('files', FileController::class)->middleware('auth');
