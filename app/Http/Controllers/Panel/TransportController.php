@@ -215,7 +215,7 @@ class TransportController extends Controller
         $invoice = $transport->invoice; // پیدا کردن فاکتور مرتبط
         $transportItems = TransportItem::where('transport_id', $transport->id)->get(); // پیدا کردن آیتم‌های حمل و نقل
         // دریافت مسیر فایل ویجت
-        $widgetPath = $transport->widget_path;
+        $widgetPath = $transport->bijak_path;
         return view('panel.transport.finalaccept', compact('transport', 'invoice', 'transportItems','widgetPath'));
     }
     public function finalaccountantupdate(Request $request, $id)
