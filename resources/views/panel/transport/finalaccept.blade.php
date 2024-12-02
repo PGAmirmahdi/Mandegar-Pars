@@ -99,8 +99,8 @@
                 <!-- نمایش لینک فایل در صورت وجود -->
                 <div class="col-12 mt-4">
                     @if($widgetPath)
-                        <a href="{{ $widgetPath->bijak_path ?? '' }}">
-                            <img src="{{ $widgetPath->bijak_path ?? '' }}" class="sign" alt="sign" width="75px"
+                        <a href="{{ $widgetPath ?? '' }}">
+                            <img src="{{ $widgetPath ?? '' }}" class="sign" alt="sign" width="75px"
                                  height="75px">
                         </a>
                     @else
