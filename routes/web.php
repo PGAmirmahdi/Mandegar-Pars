@@ -44,6 +44,8 @@ use App\Http\Controllers\Panel\SmsHistoryController;
 use App\Http\Controllers\Panel\SoftwareUpdateController;
 use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\TicketController;
+use App\Http\Controllers\Panel\TransportController;
+use App\Http\Controllers\Panel\TransporterController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\Panel\WarehouseController;
 use App\Http\Controllers\PanelController;
@@ -309,6 +311,12 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('sms', SMSController::class)->except('edit','update');
     Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
     Route::get('/send-test-event/{userId}', [InvoiceController::class, 'testEvent']);
+
+    // Transporters
+    Route::resource('transporters', TransporterController::class);
+
+    // Transport
+    Route::resource('transport', TransportController::class);
 
     // File Control
     Route::resource('files', FileController::class)->middleware('auth');

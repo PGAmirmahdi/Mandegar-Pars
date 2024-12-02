@@ -132,7 +132,7 @@ class BuyOrderController extends Controller
         // ثبت فعالیت
         Activity::create([
             'user_id' => auth()->id(),
-            'action' => 'ویرایش سفارش خرید',
+            'action' => 'حذف سفارش خرید',
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید برای مشتری ' . $customerName . ' را حذف کرد.',
         ]);
 
@@ -164,7 +164,7 @@ class BuyOrderController extends Controller
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'ویرایش وضعیت سفارش خرید',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role . ') وضعیت سفارش خرید برای مشتری ' . $customerName . 'را تغییر داد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') وضعیت سفارش خرید برای مشتری ' . $customerName . 'را تغییر داد.',
         ]);
         alert()->success('وضعیت سفارش با موفقیت تغییر کرد','تغییر وضعیت سفارش');
         return back();

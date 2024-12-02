@@ -20,6 +20,7 @@ class Inventory extends Model
         'ribbon' => 'ریبون',
         'label' => 'لیبل',
         'drum' => 'درام',
+        'paper'=>'کاغذ',
     ];
 
     public function warehouse()
