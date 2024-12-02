@@ -1,6 +1,13 @@
-@php use App\Models\Customer;use App\Models\Product;use App\Models\Province;use App\Models\invoice @endphp
+@php
+    use App\Models\Customer;
+    use App\Models\Transporter;
+    use App\Models\Invoice;
+    use App\Models\Transport;
+@endphp
 @extends('panel.layouts.master')
+
 @section('title', 'ثبت حمل و نقل')
+
 @section('styles')
     <style>
         #products_table input, #products_table select {
@@ -12,40 +19,49 @@
         }
     </style>
 @endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
+            <form action="{{ route('transports.store') }}" method="POST">
+                @csrf {{-- توکن CSRF برای امنیت --}}
             <div class="col-12 mb-4 text-center">
                 <h4>مشخصات خریدار</h4>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                <label for="buyer_name">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
-                <select name="buyer_name" id="buyer_name"
-                        class="js-example-basic-single select2-hidden-accessible" data-select2-id="5"
-                        tabindex="-2" aria-hidden="true">
-                    <option value="" disabled selected>انتخاب کنید</option>
-                    @foreach(Invoice::all(['id','name','code']) as $customer)
-                        <option
-                            value="{{ $customer->id }}" {{ old('buyer_name') == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
-                    @endforeach
-                </select>
-                @error('buyer_name')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                <label for="customer">نام مشتری<span class="text-danger">*</span></label>
-                <input name="customer" id="customer" class="form-control" readonly>
-                @error('customer')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                <label for="address">نشانی<span class="text-danger">*</span></label>
-                <textarea name="address" id="address" class="form-control" readonly>{{ old('address') }}</textarea>
-                @error('address')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
+            <div class="col-12 row justify-content-around">
+                <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                    <label for="invoice_id">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
+                    <select name="invoice_id" id="invoice_id"
+                            class="js-example-basic-single select2-hidden-accessible" data-select2-id="5"
+                            tabindex="-2" aria-hidden="true">
+                        <option value="" disabled selected>انتخاب کنید</option>
+                        @foreach(Invoice::with('customer:id,name')->get(['id', 'customer_id']) as $invoice)
+                            <option value="{{ $invoice->id }}">
+                                {{ $invoice->customer->name }}
+                            </option>
+                        @endforeach
+
+                    </select>
+                    @error('invoice_id')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                    <label for="customer">نام مشتری<span class="text-danger">*</span></label>
+                    <input name="customer" id="customer" class="form-control col-12" readonly>
+                    @error('customer')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                    <label for="address">نشانی<span class="text-danger">*</span></label>
+                    <input name="address" id="address" class="form-control col-12" readonly>
+                    @error('address')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
             <div class="col-12 mt-2 text-center">
                 <h5>حمل و نقل کننده ها</h5>
@@ -74,9 +90,9 @@
                                         <select class="js-example-basic-single" name="transporters[]" required>
                                             <option value="" disabled selected>انتخاب کنید
                                             </option>
-                                            @foreach(Product::all(['id','title','code']) as $item)
+                                            @foreach(Transporter::all(['id','name']) as $item)
                                                 <option
-                                                    value="{{ $item->id }}" {{ $item->id == $transporterId ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
+                                                    value="{{ $item->id }}" {{ $item->id == $transporterId ? 'selected' : '' }}>{{ $item->name }}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -92,6 +108,10 @@
                                             @endforeach
                                         </select>
                                     </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm remove-row"><i
+                                                class="fa fa-trash"></i></button>
+                                    </td>
                                 </tr>
                             @endforeach
                         @endif
@@ -99,96 +119,77 @@
                     </table>
                 </div>
             </div>
+                <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
+            </form>
         </div>
-        <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
-        <div class="card chat-app-wrapper">
-            <div class="row chat-app">
-                <div class="col-xl-12 col-md-12 chat-body">
-                    <div class="chat-body-header">
-                        <div>
-                            <h6 class="mb-1 primary-font line-height-18">
-                                حمل و نقل سفارش {{ $invoice->id }} - {{ $invoice->customer->name }}
-                            </h6>
-                        </div>
-                        <div class="ml-auto d-flex">
-                            <div class="mr-4">
-                                @if($transport->status == 'payment_incomplete')
-                                    <span class="badge badge-warning">درحال گفت و گو</span>
-                                @elseif($transport->status == 'payment_complete')
-                                    <span class="badge badge-success">پرداخت شده!</span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-body-messages">
-                        <div class="message-items">
-                            @foreach ($comments as $comment)
-                                <div class="message-item {{ $comment->user_id == auth()->id() ? '' : 'outgoing-message' }}">
-                                    <!-- نمایش تصویر پروفایل -->
-                                    <figure class="avatar avatar-sm m-r-10">
-                                        <img
-                                            src="{{ $comment->user->profile ? asset('storage/'.$comment->user->profile) : asset('assets/media/image/avatar.png') }}"
-                                            class="rounded-circle" alt="profile">
-                                    </figure>
-                                    <strong>{{ $comment->user->name }}:</strong>
-                                    <p>{{ $comment->comment }}</p>
-                                    <small class="message-item-date text-muted">
-                                        {{ verta($comment->created_at)->format('H:i - Y/m/d') }}
-                                    </small>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    <div class="chat-body-footer">
-                        @if($transport->status == 'payment_incomplete')
-                            <form action="{{ route('buy-orders.comments.store', $transport->id) }}" method="post"
-                                  class="d-flex align-items-center">
-                                @csrf
-                                <input type="text" name="comment" class="form-control" placeholder="نظر خود را وارد کنید..."
-                                       required>
-                                <button type="submit" class="ml-3 btn btn-primary btn-floating">
-                                    <i class="fa fa-paper-plane"></i>
-                                </button>
-                            </form>
-                        @elseif($transport->status == 'payment_complete')
-                            <form action="#" method="post"
-                                  class="d-flex align-items-center">
-                                @csrf
-                                <input type="text" name="comment" class="form-control" placeholder="امکان ارسال نظر هنگامی که وضعیت سفارش خریداری شده باشد وجود ندارد"
-                                       required disabled>
-                                <button type="submit" class="ml-3 btn btn-primary btn-floating disabled" disabled>
-                                    <i class="fa fa-paper-plane disabled" disabled></i>
-                                </button>
-                            </form>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-        </form>
-    </div>
     </div>
 @endsection
 
 @section('scripts')
     <script>
-        $('.js-example-basic-single').select2(); // تنظیم انتخابگر select2 برای انتخاب محصولات
-        })
-        ;
-        $(document).on('change', 'select[name="buyer_name"]', function () {
-            let invoice_id = this.value;
+        $('.js-example-basic-single').select2(); // تنظیم select2 برای انتخاب حمل و نقل‌کنندگان
 
+        // رویداد تغییر برای انتخاب خریدار
+        $(document).on('change', 'select[name="invoice_id"]', function () {
+            let invoice_id = this.value;
+            console.log(invoice_id); // برای اطمینان از مقدار انتخابی
             $.ajax({
-                url: '/panel/get-invoice-info/' + invoice_id,
+                url: '/panel/get-invoice-info/' + invoice_id, // آدرس API برای دریافت اطلاعات
                 type: 'post',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
                 success: function (res) {
-                    $('#name').val(res.data.name);
-                    $('#address').val(res.data.address1);
+                    if (res.success) {
+                        $('#customer').val(res.data.name); // پر کردن نام مشتری
+                        $('#address').val(res.data.address); // پر کردن آدرس مشتری
+                    } else {
+                        $('#customer').val('');
+                        $('#address').val('');
+                        alert(res.message);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                    alert('خطا در دریافت اطلاعات');
                 }
             });
-        })
+        });
 
+        // افزودن حمل و نقل کننده جدید
+        $('#btn_add').click(function () {
+            let rowCount = $('#products_table tbody tr').length;
+            let newRow = `<tr>
+                <td>
+                    <select class="js-example-basic-single" name="transporters[]" required>
+                        <option value="" disabled selected>انتخاب کنید</option>
+                        @foreach(Transporter::all(['id','name']) as $item)
+            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach
+            </select>
+        </td>
+        <td>
+            <input type="number" name="prices[]" class="form-control w-100" min="0" required>
+        </td>
+        <td>
+            <select class="form-control w-100" name="payment_type[]">
+@foreach(App\Models\Transport::Payment_Type as $key => $value)
+            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+            </select>
+        </td>
+        <td>
+            <button type="button" class="btn-floating btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button>
+        </td>
+    </tr>`;
+
+            $('#products_table tbody').append(newRow);
+            $('.js-example-basic-single').select2();
+        });
+
+        // حذف ردیف حمل و نقل
+        $(document).on('click', '.remove-row', function () {
+            $(this).closest('tr').remove();
+        });
     </script>
 @endsection
-
-

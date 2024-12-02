@@ -22,7 +22,7 @@
             </li>
             @endcanany
             @canany(['packets-list','transporters-list'])
-                <li class="{{ active_sidebar(['transporters','transporters/create','transporters/{transporter}/edit','search/transporters','packets','packets/create','packets/{packet}/edit','search/packets']) ? 'active' : '' }}" data-toggle="tooltip" title="بسته های ارسالی">
+                <li class="{{ active_sidebar(['transports/{transport}/finalaccountantupdate','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports','transporters','transporters/create','transporters/{transporter}/edit','search/transporters','packets','packets/create','packets/{packet}/edit','search/packets']) ? 'active' : '' }}" data-toggle="tooltip" title="بسته های ارسالی">
                     <a href="#navigationPackets" title="بسته های ارسالی">
                         <i class="icon ti-package"></i>
                     </a>
@@ -224,7 +224,7 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationPackets" class="{{ active_sidebar(['transporters','transporters/create','transporters/{transporter}/edit','search/transporters','packets','packets/create','packets/{packet}/edit','search/packets']) ? 'navigation-active' : '' }}">
+        <ul id="navigationPackets" class="{{ active_sidebar(['transports/{transport}/finalaccountantupdate','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports','transporters','transporters/create','transporters/{transporter}/edit','search/transporters','packets','packets/create','packets/{packet}/edit','search/packets']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">بسته های ارسالی</li>
             @can('packets-list')
                 <li>
@@ -234,6 +234,11 @@
             @can('transporters-list')
                 <li>
                     <a class="{{ active_sidebar(['transporters','transporters/create','transporters/{transporter}/edit','search/transporters']) ? 'active' : '' }}" href="{{ route('transporters.index') }}">تعاونی ارسال بار</a>
+                </li>
+            @endcan
+            @can('transport-list')
+                <li>
+                    <a class="{{ active_sidebar(['transports/{transport}/finalaccountantupdate','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports']) ? 'active' : '' }}" href="{{ route('transports.index') }}">حمل و نقل</a>
                 </li>
             @endcan
         </ul>

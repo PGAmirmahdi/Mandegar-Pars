@@ -22,4 +22,9 @@ class Transporter extends Model
     {
         return str_pad(rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
     }
+    // روابط دیگر مدل
+    public function transports()
+    {
+        return $this->hasMany(Transport::class);
+    }
 }
