@@ -51,6 +51,19 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="brand">برند<span class="text-danger">*</span></label>
+                        <select class="form-control" name="brand" id="brand">
+                            <option disabled selected>انتخاب کنید</option>
+                            @foreach(\App\Models\ProductModel::all() as $model)
+                                <option
+                                    value="{{ $model->id }}" {{ old('brand') == $model->id ? 'selected' : '' }}>{{ $model->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('brand')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>
                         <input type="text" name="system_price" class="form-control" id="system_price" value="{{ $product->system_price }}">
                         <small id="system_price_words" class="text-primary"></small>

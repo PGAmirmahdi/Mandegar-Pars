@@ -73,6 +73,13 @@ class Product extends Model
 
     public function productModels()
     {
-        return $this->hasMany(ProductModel::class);
+        return $this->belongsTo(ProductModel::class);
     }
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'analyse_products')
+            ->withPivot('quantity')
+            ->withTimestamps();
+    }
+
 }

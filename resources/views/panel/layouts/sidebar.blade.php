@@ -172,14 +172,17 @@
                 <li>
                     <a class="{{ active_sidebar(['artin-products']) ? 'active' : '' }}" href="{{ route('artin.products') }}">محصولات آرتین</a>
                 </li>
+                <li>
+                    <a class="{{ active_sidebar(['analyse']) ? 'active' : '' }}" href="{{ route('analyse.step1') }}">آنالیز</a>
+                </li>
             @endcan
             @can('prices-list')
                 <li>
                     <a class="{{ active_sidebar(['prices-list']) ? 'active' : '' }}" href="{{ route('prices-list') }}">لیست قیمت ماندگار پارس</a>
                 </li>
-                <li>
-                    <a class="{{ active_sidebar(['other-prices-list']) ? 'active' : '' }}" href="{{ route('other-prices-list') }}">لیست قیمت تامین کنندگان</a>
-                </li>
+{{--                <li>--}}
+{{--                    <a class="{{ active_sidebar(['other-prices-list']) ? 'active' : '' }}" href="{{ route('other-prices-list') }}">لیست قیمت تامین کنندگان</a>--}}
+{{--                </li>--}}
             @endcan
             @can('price-history')
                 <li>

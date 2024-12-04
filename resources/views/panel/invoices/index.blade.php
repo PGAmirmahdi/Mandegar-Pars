@@ -142,7 +142,7 @@
                         @canany('warehouse-keeper','partner-tehran')
                             <th>فاکتور</th>
                         @else
-                            @canany(['sales-manager','accountant','Organ'])
+                            @canany(['sales-manager','accountant','Organ','partner-city'])
                                 <th>اقدام</th>
                             @endcanany
                         @endcanany
@@ -208,7 +208,7 @@
                                     </a>
                                 </td>
                             @else
-                                @canany(['sales-manager','accountant','Organ'])
+                                @canany(['sales-manager','accountant','Organ','partner-city'])
                                     <td>
                                         <a class="btn btn-primary btn-floating @cannot('accountant') {{ $invoice->action ? '' : 'disabled' }} @endcannot"
                                            href="{{ route('invoice.action', $invoice->id) }}">
