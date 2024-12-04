@@ -70,4 +70,9 @@ class Product extends Model
             return $this->single_price;
         }
     }
+
+    public function productModels()
+    {
+        return $this->hasMany(ProductModel::class);
+    }
 }

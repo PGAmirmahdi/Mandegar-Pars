@@ -66,7 +66,7 @@
     </style>
 @endsection
 @section('content')
-    {{-- Add Model Modal --}}
+    {{-- Add ProductModel Modal --}}
     <div class="modal fade" id="addModelModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -90,7 +90,7 @@
             </div>
         </div>
     </div>
-    {{-- end Add Model Modal --}}
+    {{-- end Add ProductModel Modal --}}
     {{-- Add Seller Modal --}}
     <div class="modal fade" id="addSellerModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -139,7 +139,7 @@
         </div>
     </div>
     {{-- end Remove Seller Modal --}}
-    {{-- Remove Model Modal --}}
+    {{-- Remove ProductModel Modal --}}
     <div class="modal fade" id="removeModelModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -161,7 +161,7 @@
             </div>
         </div>
     </div>
-    {{-- end Remove Model Modal --}}
+    {{-- end Remove ProductModel Modal --}}
     <div class="card">
         <div class="card-body">
             <h3 class="text-center mb-4">لیست قیمت ها - (ریال)</h3>

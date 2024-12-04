@@ -48,11 +48,11 @@
                                     <div>
                                         <strong>{{ $item->transporter->name }}</strong>
                                         - مبلغ: {{ number_format($item->price) . ' ریال ' }}
-                                        - نوع پرداخت:
+                                        - نوع کرایه:
                                         @if($item->payment_type == 'prepaid')
-                                            <span class="badge badge-info">پیش پرداخت</span>
+                                            <span class="badge badge-info">پیش کرایه</span>
                                         @elseif($item->payment_type == 'paid')
-                                            <span class="badge badge-primary">پس پرداخت</span>
+                                            <span class="badge badge-primary">پس کرایه</span>
                                         @endif
                                     </div>
                                 @endforeach
@@ -61,9 +61,9 @@
                             <td>{{ number_format($transport->items->sum('price')) . ' ریال ' }}</td>
                             <td>
                                 @if($transport->status == 'level1')
-                                    <span class="badge badge-warning">منتظر انتخاب حسابدار</span>
+                                    <span class="badge badge-warning">منتظر تایید حسابدار</span>
                                 @elseif($transport->status == 'level2')
-                                    <span class="badge badge-warning">منتظر پرداخت</span>
+                                    <span class="badge badge-warning">منتظر پرداخت کرایه</span>
                                 @elseif($transport->status == 'level3')
                                     <span class="badge badge-warning">منتظر تایید نهایی</span>
                                 @elseif($transport->status == 'level4')
@@ -112,7 +112,7 @@
                                 @elseif($transport->status == 'level4')
                                     <td><span class="badge badge-success">تکمیل شده</span></td>
                                     @else
-                                    <td><span class="badge badge-warning">منتظر انباردار</span></td>  <!-- اگر وضعیت 'level1' نباشد، دکمه نمایش داده نمی‌شود -->
+                                    <td><span class="badge badge-warning">منتظر واحد حمل و نقل</span></td>  <!-- اگر وضعیت 'level1' نباشد، دکمه نمایش داده نمی‌شود -->
                                 @endif
                             @endcan
 

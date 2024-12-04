@@ -4,11 +4,14 @@ use App\Events\TestEvent;
 use App\Http\Controllers\Api\v1\WhatsappController;
 use App\Http\Controllers\Auth\PusherAuthController;
 use App\Http\Controllers\Panel\ActivityController;
+use App\Http\Controllers\Panel\AnalysisController;
 use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BaseinfoController;
 use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\BuyOrderCommentController;
 use App\Http\Controllers\Panel\BuyOrderController;
+use App\Http\Controllers\Panel\CategoryAnalyseController;
+use App\Http\Controllers\Panel\CategoryController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\ChatsGPTController;
 use App\Http\Controllers\Panel\ChequeController;
@@ -34,6 +37,7 @@ use App\Http\Controllers\Panel\PriceController;
 use App\Http\Controllers\Panel\PriceRequestController;
 use App\Http\Controllers\Panel\PrinterController;
 use App\Http\Controllers\Panel\ProductController;
+use App\Http\Controllers\Panel\ProductModelController;
 use App\Http\Controllers\Panel\ReportController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\SaleReportController;
@@ -128,7 +132,10 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('roles', RoleController::class)->except('show');
 
     // Categories
-//    Route::resource('categories',CategoryController::class)->except('show');
+    Route::resource('categories',CategoryController::class)->except('show');
+
+    // ProductModel
+    Route::resource('productsModel',ProductModelController::class)->except('show');
 
     // Products
     Route::resource('products', ProductController::class)->except('show');
@@ -341,6 +348,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     //Comment Order Product
     Route::get('buy-orders/comments/{id}', [BuyOrderCommentController::class, 'show'])->name('buy-orders.comments.show');
     Route::post('buy-orders/{buy_order}/comments', [BuyOrderCommentController::class, 'store'])->name('buy-orders.comments.store');
+
 });
 
 // Share File

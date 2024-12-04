@@ -8,11 +8,12 @@
                 </a>
             </li>
             @canany(['categories-list','products-list','printers-list','prices-list'])
-                <li class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history', 'artin-products', 'other-prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="محصولات">
+                <li class="{{ active_sidebar(['productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history', 'artin-products', 'other-prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="محصولات">
                     <a href="#navigationProducts" title="محصولات">
                         <i class="icon ti-view-list"></i>
                     </a>
                 </li>
+
             @endcanany
             @canany(['invoices-list','sale-reports-list','price-requests','buy-orders','delivery-day'])
             <li class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days']) ? 'active' : '' }}" data-toggle="tooltip" title="سفارشات و فروش">
@@ -147,16 +148,21 @@
                 </li>
             @endcan
                 <li>
-                    <a class="{{ active_sidebar(['baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'active' : '' }}" href="{{ route('baseinfo.index') }}">اطلاعات</a>
+                    <a class="{{ active_sidebar(['product_models','product_models/create','product_models/{product_model}/edit','baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'active' : '' }}" href="{{ route('baseinfo.index') }}">اطلاعات</a>
                 </li>
         </ul>
-        <ul id="navigationProducts" class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
+        <ul id="navigationProducts" class="{{ active_sidebar(['productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">محصولات</li>
-{{--            @can('categories-list')--}}
-{{--                <li>--}}
-{{--                    <a class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit']) ? 'active' : '' }}" href="{{ route('categories.index') }}">دسته بندی ها</a>--}}
-{{--                </li>--}}
-{{--            @endcan--}}
+            @can('categories-list')
+                <li>
+                    <a class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit']) ? 'active' : '' }}" href="{{ route('categories.index') }}">دسته بندی ها</a>
+                </li>
+            @endcan
+            @can('productsModel-list')
+                <li>
+                    <a class="{{ active_sidebar(['productsModel','productsModel/create','productsModel/{productsModel}/edit']) ? 'active' : '' }}" href="{{ route('productsModel.index') }}">مدل ها</a>
+                </li>
+            @endcan
             @can('products-list')
                 <li>
                     <a class="{{ active_sidebar(['products','products/create','products/{product}/edit','search/products']) ? 'active' : '' }}" href="{{ route('products.index') }}">محصولات</a>
