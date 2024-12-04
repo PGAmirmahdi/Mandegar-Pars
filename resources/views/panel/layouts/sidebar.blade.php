@@ -160,7 +160,7 @@
             @endcan
             @can('productsModel-list')
                 <li>
-                    <a class="{{ active_sidebar(['productsModel','productsModel/create','productsModel/{productsModel}/edit']) ? 'active' : '' }}" href="{{ route('productsModel.index') }}">مدل ها</a>
+                    <a class="{{ active_sidebar(['productsModel','productsModel/create','productsModel/{productsModel}/edit']) ? 'active' : '' }}" href="{{ route('productsModel.index') }}">برند ها</a>
                 </li>
             @endcan
             @can('products-list')
