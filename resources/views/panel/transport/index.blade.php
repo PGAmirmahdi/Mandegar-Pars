@@ -88,11 +88,7 @@
                                         </a>
                                     </td>
                                     @else
-                                    <td>
-                                        <a class="btn btn-primary btn-floating disabled" href="#" disabled>
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                    </td>
+                                    <td><span class="badge badge-warning">منتظر واحد حسابداری</span></td>
                                     @endif
                             @endcan
 

@@ -1,14 +1,14 @@
 @extends('panel.layouts.master')
-@section('title', 'مدل ها')
+@section('title', 'برند ها')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>مدل ها</h6>
-                @can('products-create')
+                <h6>برند ها</h6>
+                @can('productsModel-create')
                     <a href="{{ route('productsModel.create') }}" class="btn btn-primary">
                         <i class="fa fa-plus mr-2"></i>
-                        ایجاد مدل
+                        ایجاد برند
                     </a>
                 @endcan
             </div>
@@ -17,7 +17,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>نام مدل</th>
+                        <th>نام برند</th>
                         <th>اسلاگ</th>
                         <th>دسته بندی</th>
                         <th>تاریخ ایجاد</th>
