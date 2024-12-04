@@ -4,6 +4,7 @@ use App\Events\TestEvent;
 use App\Http\Controllers\Api\v1\WhatsappController;
 use App\Http\Controllers\Auth\PusherAuthController;
 use App\Http\Controllers\Panel\ActivityController;
+use App\Http\Controllers\Panel\AnalyseController;
 use App\Http\Controllers\Panel\AnalysisController;
 use App\Http\Controllers\Panel\ArtinController;
 use App\Http\Controllers\Panel\BaseinfoController;
@@ -313,6 +314,19 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
         event(new TestEvent('This is a test message!'));
         return 'Event has been sent!';
     });
+
+    // analyse
+    Route::get('/analyse/step1', [AnalyseController::class, 'step1'])->name('analyse.step1');
+    Route::post('/analyse/step1', [AnalyseController::class, 'postStep1'])->name('analyse.step1.post');
+
+    Route::get('/analyse/step2', [AnalyseController::class, 'step2'])->name('analyse.step2');
+    Route::post('/analyse/step2', [AnalyseController::class, 'postStep2'])->name('analyse.step2.post');
+
+    Route::get('/analyse/step3', [AnalyseController::class, 'step3'])->name('analyse.step3');
+    Route::post('/analyse/step3', [AnalyseController::class, 'postStep3'])->name('analyse.step3.post');
+
+    Route::get('/analyse/step4', [AnalyseController::class, 'step4'])->name('analyse.step4');
+    Route::post('/analyse/submit', [AnalyseController::class, 'submit'])->name('analyse.submit');
 
     // Sms
     Route::resource('sms', SMSController::class)->except('edit','update');

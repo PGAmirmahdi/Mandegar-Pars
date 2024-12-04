@@ -20,4 +20,5 @@ class ProductModel extends Model
     {
         return $this->hasMany(Product::class);
     }
+
 }

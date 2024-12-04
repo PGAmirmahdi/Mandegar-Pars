@@ -455,7 +455,9 @@ class InvoiceController extends Controller
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'تغییر وضعیت سفارش',
-                'description' => "کاربر " . auth()->user()->family . " وضعیت سفارش شماره {$invoice->id} را به '{$status}' تغییر داد.",
+                'description' => "کاربر " . auth()->user()->family . " (" . auth()->user()->role->label . ") " .
+                    "وضعیت سفارش مشتری {$invoice->customer->name} " .
+                    "به شماره سفارش {$invoice->id} را به وضعیت {$status} تغییر داد",
             ]);
             Notification::send($invoice->user, new SendMessage($message, $url));
             Notification::send($sales_manager, new SendMessage($message, $url));
@@ -472,8 +474,9 @@ class InvoiceController extends Controller
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'تغییر وضعیت سفارش',
-
-                'description' => "کاربر " . auth()->user()->family . '(' . auth()->user()->role->label . ')' . " وضعیت سفارش شماره {$invoice->id} را به '{$status}' تغییر داد.",
+                'description' => "کاربر " . auth()->user()->family . " (" . auth()->user()->role->label . ") " .
+                    "وضعیت سفارش مشتری {$invoice->customer->name} " .
+                    "به شماره سفارش {$invoice->id} را به وضعیت {$status} تغییر داد",
             ]);
         }
 
@@ -605,7 +608,9 @@ class InvoiceController extends Controller
                 Activity::create([
                     'user_id' => auth()->id(),
                     'action' => 'ارسال پیش فاکتور به همکار فروش',
-                    'description' => "کاربر " . auth()->user()->family . " پیش فاکتور مربوط به سفارش شماره {$invoice->id} را ارسال کرد.",
+                    'description' => "کاربر " . auth()->user()->family . " (" . auth()->user()->role->label . ") " .
+                        " پیش فاکتور سفارش مشتری {$invoice->customer->name} " .
+                        "به شماره سفارش {$invoice->id} را به همکار ارسال کرد ",
                 ]);
 
                 //send notif
@@ -637,7 +642,9 @@ class InvoiceController extends Controller
                 Activity::create([
                     'user_id' => auth()->id(),
                     'action' => 'ارسال فاکتور به انبار',
-                    'description' => "کاربر " . auth()->user()->family . " فاکتور مربوط به سفارش شماره {$invoice->id} را ارسال کرد.",
+                    'description' => "کاربر " . auth()->user()->family . " (" . auth()->user()->role->label . ") " .
+                        " فاکتور سفارش مشتری {$invoice->customer->name} " .
+                        "به شماره سفارش {$invoice->id} را به انبار دار ارسال کرد ",
                 ]);
 
                 //send notif to warehouse-keeper and sales-manager

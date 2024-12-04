@@ -36,4 +36,20 @@ class StoreProductRequest extends FormRequest
             'image' => 'nullable|mimes:jpg,png,jpeg|max:5000',
         ];
     }
+    public function messages()
+    {
+        return [
+            'title.required' => 'عنوان الزامی است.',
+            'code.required' => 'کد الزامی است.',
+            'description.required' => 'توضیحات الزامی است.',
+            'category.required' => 'دسته‌بندی الزامی است.',
+            'brand.required' => 'برند الزامی است.',
+            'image.mimes' => 'تصویر باید از نوع jpg، png یا jpeg باشد.',
+            'image.max' => 'اندازه تصویر نباید بیشتر از 5000 کیلوبایت باشد.',
+            'system_price.required' => 'قیمت سیستم الزامی است.',
+            'partner_price_tehran.required' => 'قیمت همکار (تهران) الزامی است.',
+            'partner_price_other.required' => 'قیمت همکار (سایر مناطق) الزامی است.',
+            'single_price.required' => 'قیمت تک‌فروشی الزامی است.',
+        ];
+    }
 }

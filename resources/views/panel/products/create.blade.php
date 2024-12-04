@@ -1,4 +1,4 @@
-@php use App\Models\Category;use App\Models\Product; @endphp
+@php use App\Models\Category;use App\Models\Product;use App\Models\ProductModel; @endphp
 @extends('panel.layouts.master')
 @section('title', 'ایجاد محصول')
 @section('content')
@@ -48,6 +48,18 @@
                             @endforeach
                         </select>
                         @error('category')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="brand">برند<span class="text-danger">*</span></label>
+                        <select class="form-control" name="model" id="model">
+                            @foreach(ProductModel::all() as $model)
+                                <option
+                                    value="{{ $model->id }}" {{ old('model') == $model->id ? 'selected' : '' }}>{{ $model->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('model')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>

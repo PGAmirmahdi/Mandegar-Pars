@@ -53,7 +53,7 @@ class ExitDoorController extends Controller
         ]);
         Activity::create([
             'user_id' => auth()->id(),
-            'action' => 'ایجاد مشتری',
+            'action' => 'خروج انبار',
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . 'خروج از انبار ثبت کرد',
         ]);
         alert()->success('ثبت خروج محموله با موفقیت انجام شد','ثبت خروج');
