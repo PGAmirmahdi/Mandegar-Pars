@@ -11,8 +11,8 @@ class Transport extends Model
     // فیلدهای قابل پر شدن
     protected $fillable = ['invoice_id', 'status', 'user_id'];
     const Payment_Type= [
-        'prepaid' => 'پیش پرداخت',
-        'paid'=>'پس پرداخت'
+        'prepaid' => 'پیش کرایه',
+        'paid'=>'پس کرایه'
     ];
 
     // رابطه با مدل Invoice
