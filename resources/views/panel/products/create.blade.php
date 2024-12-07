@@ -53,11 +53,11 @@
 {{--                    </div>--}}
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="brand">برند<span class="text-danger">*</span></label>
-                        <select class="form-control" name="model" id="model">
-                            @foreach(ProductModel::all() as $model)
-                                <option
-                                    value="{{ $model->id }}" {{ old('model') == $model->id ? 'selected' : '' }}>{{ $model->name }}</option>
-                            @endforeach
+                        <select class="form-control" name="brand" id="brand">
+                            <option value="">انتخاب کنید</option>
+                            @if(old('brand'))
+                                <option value="{{ old('brand') }}" selected>{{ old('brand_name') }}</option>
+                            @endif
                         </select>
                         @error('model')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -258,6 +258,36 @@
                 $('#compatible_printers_sec').removeClass('d-none')
             }
         }
+        $(document).ready(function () {
+            $('select[name="category"]').on('change', function () {
+                let categoryId = $(this).val();
+                let brandSelect = $('select[name="brand"]'); // تغییر از 'model' به 'brand'
+
+                // پاک کردن گزینه‌های قبلی
+                brandSelect.empty();
+
+                if (categoryId) {
+                    $.ajax({
+                        url: '{{ route('get.models.by.category') }}',
+                        type: 'POST',
+                        data: {
+                            category_id: categoryId,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (data) {
+                            // اضافه کردن گزینه‌های جدید به لیست برندها
+                            $.each(data, function (key, value) {
+                                brandSelect.append(`<option value="${value.id}">${value.name}</option>`);
+                            });
+                        },
+                        error: function () {
+                            alert('مشکلی در دریافت اطلاعات رخ داده است.');
+                        }
+                    });
+                }
+            });
+        });
+
     </script>
 @endsection
 

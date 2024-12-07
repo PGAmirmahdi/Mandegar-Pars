@@ -30,28 +30,26 @@
                     <tr>
                         <th>#</th>
                         <th>برند</th>
-                        <th>تاریخ آنالیز</th>
+                        <th>تاریخ آخرین آنالیز</th>
                         <th>نام محصول</th>
-                        <th>تعداد</th>
+                        <th>تعداد کل</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($analyses as $index => $analyse)
-                        @foreach($analyse->analyseProducts as $product) <!-- اضافه کردن این خط برای جدا کردن محصولات -->
+                    @foreach($groupedProducts as $index => $groupedProduct)
+                        @php
+                            $product = \App\Models\Product::find($groupedProduct->product_id); // دریافت اطلاعات محصول
+                            $lastAnalyse = \App\Models\Analyse::find($groupedProduct->last_analyse_id); // دریافت آخرین آنالیز
+                        @endphp
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $analyse->brand->slug ?? 'نامشخص' }}</td>
-                            <td>{{ $analyse->date }}</td>
-                            <td>{{ $product->product->title ?? 'نامشخص' }}</td> <!-- نام محصول -->
-                            <td>{{ $product->quantity }}</td> <!-- تعداد محصول -->
+                            <td>{{ $lastAnalyse->brand->slug ?? 'نامشخص' }}</td>
+                            <td>{{ $lastAnalyse->date ?? 'نامشخص' }}</td>
+                            <td>{{ $product->title ?? 'نامشخص' }}</td>
+                            <td>{{ $groupedProduct->total_quantity }}</td>
                         </tr>
-                        @endforeach
                     @endforeach
                     </tbody>
-                    <tfoot>
-                    <tr>
-                    </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>

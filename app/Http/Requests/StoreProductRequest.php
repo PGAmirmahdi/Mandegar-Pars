@@ -26,13 +26,12 @@ class StoreProductRequest extends FormRequest
         return [
             'title' => 'required',
             'code' => 'required|unique:products',
-            'description'=>'required',
+            'description'=>'nullable',
 //            'slug' => 'required|unique:products',
-            'category' => 'required',
-            'system_price' => 'required',
-            'partner_price_tehran' => 'required',
-            'partner_price_other' => 'required',
-            'single_price' => 'required',
+            'system_price' => 'nullable',
+            'partner_price_tehran' => 'nullable',
+            'partner_price_other' => 'nullable',
+            'single_price' => 'nullable',
             'image' => 'nullable|mimes:jpg,png,jpeg|max:5000',
         ];
     }
@@ -41,15 +40,9 @@ class StoreProductRequest extends FormRequest
         return [
             'title.required' => 'عنوان الزامی است.',
             'code.required' => 'کد الزامی است.',
-            'description.required' => 'توضیحات الزامی است.',
-            'category.required' => 'دسته‌بندی الزامی است.',
             'brand.required' => 'برند الزامی است.',
             'image.mimes' => 'تصویر باید از نوع jpg، png یا jpeg باشد.',
             'image.max' => 'اندازه تصویر نباید بیشتر از 5000 کیلوبایت باشد.',
-            'system_price.required' => 'قیمت سیستم الزامی است.',
-            'partner_price_tehran.required' => 'قیمت همکار (تهران) الزامی است.',
-            'partner_price_other.required' => 'قیمت همکار (سایر مناطق) الزامی است.',
-            'single_price.required' => 'قیمت تک‌فروشی الزامی است.',
         ];
     }
 }
