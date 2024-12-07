@@ -182,12 +182,12 @@
                 </li>
             @endcan
             @can('prices-list')
-                <li>
-                    <a class="{{ active_sidebar(['prices-list']) ? 'active' : '' }}" href="{{ route('prices-list') }}">لیست قیمت ماندگار پارس</a>
-                </li>
 {{--                <li>--}}
-{{--                    <a class="{{ active_sidebar(['other-prices-list']) ? 'active' : '' }}" href="{{ route('other-prices-list') }}">لیست قیمت تامین کنندگان</a>--}}
+{{--                    <a class="{{ active_sidebar(['prices-list']) ? 'active' : '' }}" href="{{ route('prices-list') }}">لیست قیمت ماندگار پارس</a>--}}
 {{--                </li>--}}
+                <li>
+                    <a class="{{ active_sidebar(['other-prices-list']) ? 'active' : '' }}" href="{{ route('other-prices-list') }}">لیست قیمت ماندگار پارس</a>
+                </li>
             @endcan
             @can('price-history')
                 <li>

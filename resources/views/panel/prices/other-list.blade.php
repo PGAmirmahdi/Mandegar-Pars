@@ -2,6 +2,7 @@
 @section('title','لیست قیمت ها')
 @php
     $sellers = \Illuminate\Support\Facades\DB::table('price_list_sellers')->get();
+    $products = \Illuminate\Support\Facades\DB::table('products')->get(); // محصولات را از جدول products دریافت می‌کنیم
 @endphp
 @section('styles')
     <style>
@@ -116,52 +117,6 @@
         </div>
     </div>
     {{-- end Add Seller Modal --}}
-    {{-- Remove Seller Modal --}}
-    <div class="modal fade" id="removeSellerModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="removeSellerModalLabel">حذف تامین کننده</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
-                        <i class="ti-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <h5 class="text-center">می خواهید این تامین کننده را حذف کنید؟</h5>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                    <button type="button" class="btn btn-danger" id="btn_remove_seller">حذف</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{-- end Remove Seller Modal --}}
-    {{-- Remove ProductModel Modal --}}
-    <div class="modal fade" id="removeModelModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="removeModelModalLabel">حذف مدل</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
-                        <i class="ti-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <h5 class="text-center">می خواهید این مدل را حذف کنید؟</h5>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-                    <button type="button" class="btn btn-danger" id="btn_remove_model">حذف</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{-- end Remove ProductModel Modal --}}
     <div class="card">
         <div class="card-body">
             <h3 class="text-center mb-4">لیست قیمت ها - (ریال)</h3>
@@ -178,32 +133,34 @@
                     <tr>
                         <th>
                             <div style="display: block ruby">
-                                <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addModelModal" id="btn_model"></i>
-                                <span>برند/مدل</span>
+                                <span>مدل</span>
                             </div>
                         </th>
                         @foreach($sellers as $seller)
                             <th class="seller">
-                                <i class="fa fa-times text-danger btn_remove_seller mr-2" data-toggle="modal" data-target="#removeSellerModal"></i>
+                                <i class="fa fa-times text-danger btn_remove_seller mr-2" data-toggle="modal" data-target="#removeSellerModal" data-seller_id="{{ $seller->id }}"></i>
                                 <span>{{ $seller->name }}</span>
                             </th>
                         @endforeach
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach(\Illuminate\Support\Facades\DB::table('price_list_models')->get() as $model)
-                        <tr>
-                            <th style="display: block ruby">
-                                <i class="fa fa-times text-danger btn_remove_model mr-2" data-toggle="modal" data-target="#removeModelModal"></i>
-                                <span>{{ $model->name }}</span>
-                            </th>
-                            @for($i = 0; $i < \Illuminate\Support\Facades\DB::table('price_list_sellers')->count(); $i++)
-                                @php $item = \Illuminate\Support\Facades\DB::table('price_list')->where(['model_id' => $model->id, 'seller_id' => $sellers[$i]->id])->first() @endphp
-                                <td>
-                                    <input type="text" class="item" data-model_id="{{ $model->id }}" data-seller_id="{{ $sellers[$i]->id }}" value="{{ $item ? number_format($item->price) : '-' }}">
-                                </td>
-                            @endfor
-                        </tr>
+                    @foreach($products as $product) {{-- استفاده از جدول محصولات --}}
+                    <tr>
+                        <th style="display: block ruby">
+                            <span>{{ $product->title }}</span>
+                        </th>
+                        @for($i = 0; $i < \Illuminate\Support\Facades\DB::table('price_list_sellers')->count(); $i++)
+                            @php
+                                $item = \Illuminate\Support\Facades\DB::table('price_list')
+                                    ->where(['product_id' => $product->id, 'seller_id' => $sellers[$i]->id])
+                                    ->first();
+                            @endphp
+                            <td>
+                                <input type="text" class="item" data-product_id="{{ $product->id }}" data-seller_id="{{ $sellers[$i]->id }}" value="{{ $item ? number_format($item->price) : '-' }}">
+                            </td>
+                        @endfor
+                    </tr>
                     @endforeach
                     </tbody>
                     <tfoot>
@@ -233,11 +190,10 @@
                 $.each($('#price_table .item'), function (i, item) {
                     items.push({
                         'seller_id': $(item).data('seller_id'),
-                        'model_id': $(item).data('model_id'),
+                        'product_id': $(item).data('product_id'), // استفاده از product_id به جای model_id
                         'price': $(item).val(),
                     })
                 })
-                // console.log(items)
 
                 $.ajax({
                     url: "{{ route('updatePrice') }}",
@@ -264,7 +220,6 @@
                                 content: 'left-gap',
                             }
                         })
-                        // console.log(res)
                     }
                 })
             })
@@ -280,7 +235,6 @@
 
             // for thousands grouping
             function addCommas(nStr) {
-                // event handlers
                 let thisElementValue = nStr
                 thisElementValue = thisElementValue.replace(/,/g, "");
 
@@ -289,7 +243,6 @@
                 seperatedNumber = seperatedNumber.split("");
 
                 let tmpSeperatedNumber = "";
-
                 j = 0;
                 for (let i = 0; i < seperatedNumber.length; i++) {
                     tmpSeperatedNumber += seperatedNumber[i];
@@ -304,174 +257,115 @@
                 if(seperatedNumber[0] === ",") seperatedNumber = seperatedNumber.replace("," , "");
                 return seperatedNumber;
             }
-
-            // add model
-            $(document).on('click', '#btn_add_model', function () {
-                let model_name = $('#model').val();
-
-                if(model_name === ''){
-                    $('#model_error').text('وارد کردن عنوان مدل الزامی است')
-                }else{
-                    $('#model_error').text('')
-
-                    $.ajax({
-                        url: '/panel/add-model',
-                        type: 'post',
-                        data: {
-                            name: model_name
-                        },
-                        success: function (res) {
-                            if(res.data === undefined){
-                                $('tbody:not(.internal_tels)').html($(res).find('tbody:not(.internal_tels)').html());
-                                $('#addModelModal').hide();
-                                $('.modal-backdrop').remove();
-                                $('body').removeClass('modal-open');
-
-                                Swal.fire({
-                                    title: 'با موفقیت اضافه شد',
-                                    icon: 'success',
-                                    showConfirmButton: false,
-                                    toast: true,
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    position: 'top-start',
-                                    customClass: {
-                                        popup: 'my-toast',
-                                        icon: 'icon-center',
-                                        title: 'left-gap',
-                                        content: 'left-gap',
-                                    }
-                                })
-                            }else{
-                                $('#model_error').text(res.data.message)
-                            }
-                        }
-                    })
-                }
-            })
-
-            // add seller
-            $(document).on('click', '#btn_add_seller', function () {
-                let seller_name = $('#seller').val();
-
-                if(seller_name === ''){
-                    $('#seller_error').text('وارد کردن نام تامین کننده الزامی است')
-                }else{
-                    $('#seller_error').text('')
-
-                    $.ajax({
-                        url: '/panel/add-seller',
-                        type: 'post',
-                        data: {
-                            name: seller_name
-                        },
-                        success: function (res) {
-                            if(res.data === undefined){
-                                $('#price_table').html($(res).find('#price_table').html());
-                                $('#addSellerModal').hide();
-                                $('.modal-backdrop').remove();
-                                $('body').removeClass('modal-open');
-
-                                Swal.fire({
-                                    title: 'با موفقیت اضافه شد',
-                                    icon: 'success',
-                                    showConfirmButton: false,
-                                    toast: true,
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    position: 'top-start',
-                                    customClass: {
-                                        popup: 'my-toast',
-                                        icon: 'icon-center',
-                                        title: 'left-gap',
-                                        content: 'left-gap',
-                                    }
-                                })
-                            }else{
-                                $('#seller_error').text(res.data.message)
-                            }
-                        }
-                    })
-                }
-            })
-
-            // remove seller and model
-            var seller;
-            var model;
-
-            $(document).on('click', '.btn_remove_seller', function () {
-                seller = $(this).parent().find('span').text();
-            })
-
-            $(document).on('click', '.btn_remove_model', function () {
-                model = $(this).parent().find('span').text();
-            })
-
-            $(document).on('click','#btn_remove_seller', function () {
-                $.ajax({
-                    url: '/panel/remove-seller',
-                    type: 'post',
-                    data: {
-                        name: seller
-                    },
-                    success: function (res) {
-                        $('#removeSellerModal').hide();
-                        $('.modal-backdrop').remove();
-                        $('body').removeClass('modal-open');
-
-                        $('#price_table').html($(res).find('#price_table').html());
-
-                        Swal.fire({
-                            title: 'با موفقیت حذف شد',
-                            icon: 'success',
-                            showConfirmButton: false,
-                            toast: true,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            position: 'top-start',
-                            customClass: {
-                                popup: 'my-toast',
-                                icon: 'icon-center',
-                                title: 'left-gap',
-                                content: 'left-gap',
-                            }
-                        })
-                    }
-                })
-            })
-
-            $(document).on('click','#btn_remove_model', function () {
-                $.ajax({
-                    url: '/panel/remove-model',
-                    type: 'post',
-                    data: {
-                        name: model
-                    },
-                    success: function (res) {
-                        $('#removeModelModal').hide();
-                        $('.modal-backdrop').remove();
-                        $('body').removeClass('modal-open');
-
-                        $('#price_table').html($(res).find('#price_table').html());
-
-                        Swal.fire({
-                            title: 'با موفقیت حذف شد',
-                            icon: 'success',
-                            showConfirmButton: false,
-                            toast: true,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            position: 'top-start',
-                            customClass: {
-                                popup: 'my-toast',
-                                icon: 'icon-center',
-                                title: 'left-gap',
-                                content: 'left-gap',
-                            }
-                        })
-                    }
-                })
-            })
         })
+        // add seller
+        // هنگام افزودن فروشنده جدید
+        $(document).on('click', '#btn_add_seller', function () {
+            let seller_name = $('#seller').val();
+
+            if (seller_name === '') {
+                $('#seller_error').text('وارد کردن نام تامین کننده الزامی است');
+            } else {
+                $('#seller_error').text('');
+
+                $.ajax({
+                    url: '/panel/add-seller',
+                    type: 'POST',
+                    data: {
+                        name: seller_name,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (res) {
+                        if (res.data) {
+                            // پس از موفقیت در افزودن فروشنده جدید، دکمه حذف آن را به جدول اضافه می‌کنیم
+                            let newSeller = `
+                        <th class="seller">
+                            <i class="fa fa-times text-danger btn_remove_seller mr-2" data-toggle="modal" data-target="#removeSellerModal" data-seller_id="${res.data.seller_id}"></i>
+                            <span>${seller_name}</span>
+                        </th>
+                    `;
+                            // اضافه کردن به جدول
+                            $('#price_table thead tr:eq(1)').append(newSeller);
+                            $('#addSellerModal').modal('hide');
+                            Swal.fire({
+                                title: 'با موفقیت اضافه شد',
+                                icon: 'success',
+                                toast: true,
+                                timer: 2000,
+                                position: 'top-start'
+                            });
+                        } else {
+                            $('#seller_error').text(res.message);  // نمایش خطا در صورت بروز مشکل
+                        }
+                    },
+                    error: function () {
+                        alert('خطا در افزودن فروشنده');
+                    }
+                });
+            }
+        });
+        // اصلاحات مربوط به دکمه حذف فروشنده
+        $(document).on('click', '.btn_remove_seller', function () {
+            // چاپ داده‌ها برای بررسی
+            var sellerId = $(this).data('seller_id');  // استخراج seller_id از data-seller_id
+            console.log("Seller ID: ", sellerId);  // چاپ sellerId برای بررسی
+
+            // چک کنید که sellerId دریافت شده است
+            if (!sellerId) {
+                console.log("شناسه فروشنده یافت نشد");
+                return;
+            }
+
+            // حذف فروشنده
+            Swal.fire({
+                title: 'آیا از حذف این فروشنده مطمئن هستید؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'حذف',
+                cancelButtonText: 'انصراف'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/panel/remove-seller',
+                        type: 'POST',
+                        data: {
+                            seller_id: sellerId,
+                            _token: "{{ csrf_token() }}"  // ارسال CSRF Token برای درخواست امن
+                        },
+                        success: function (res) {
+                            // در صورت موفقیت، جدول به‌روزرسانی می‌شود
+                            console.log("Response: ", res);  // چاپ پاسخ سرور
+                            if (res.status === 'success') {
+                                $('#price_table').html($(res).find('#price_table').html());  // به‌روزرسانی جدول
+                                Swal.fire({
+                                    title: 'با موفقیت حذف شد',
+                                    icon: 'success',
+                                    toast: true,
+                                    timer: 2000,
+                                    position: 'top-start'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'خطا در حذف فروشنده',
+                                    icon: 'error',
+                                    toast: true,
+                                    timer: 2000,
+                                    position: 'top-start'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'خطا در ارسال درخواست',
+                                icon: 'error',
+                                toast: true,
+                                timer: 2000,
+                                position: 'top-start'
+                            });
+                        }
+                    });
+                }
+            });
+        });
     </script>
 @endsection
