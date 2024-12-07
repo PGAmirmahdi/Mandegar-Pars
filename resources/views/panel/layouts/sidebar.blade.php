@@ -8,8 +8,8 @@
                 </a>
             </li>
             @canany(['categories-list','products-list','printers-list','prices-list'])
-                <li class="{{ active_sidebar(['productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history', 'artin-products', 'other-prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="لیست تمامی کالاها">
-                    <a href="#navigationProducts" title="لیست تمامی کالاها">
+                <li class="{{ active_sidebar(['productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history', 'artin-products', 'other-prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="محصولات">
+                    <a href="#navigationProducts" title="محصولات">
                         <i class="icon ti-view-list"></i>
                     </a>
                 </li>
@@ -152,7 +152,7 @@
                 </li>
         </ul>
         <ul id="navigationProducts" class="{{ active_sidebar(['productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
-            <li class="navigation-divider">لیست تمامی کالاها</li>
+            <li class="navigation-divider">محصولات</li>
             @can('categories-list')
                 <li>
                     <a class="{{ active_sidebar(['categories','categories/create','categories/{category}/edit']) ? 'active' : '' }}" href="{{ route('categories.index') }}">دسته بندی ها</a>
@@ -165,12 +165,12 @@
             @endcan
             @can('products-list')
                 <li>
-                    <a class="{{ active_sidebar(['products','products/create','products/{product}/edit','search/products']) ? 'active' : '' }}" href="{{ route('products.index') }}">لیست تمامی کالاها</a>
+                    <a class="{{ active_sidebar(['products','products/create','products/{product}/edit','search/products']) ? 'active' : '' }}" href="{{ route('products.index') }}">محصولات</a>
                 </li>
             @endcan
             @can('artin-products-list')
                 <li>
-                    <a class="{{ active_sidebar(['artin-products']) ? 'active' : '' }}" href="{{ route('artin.products') }}">کالاهای آرتین</a>
+                    <a class="{{ active_sidebar(['artin-products']) ? 'active' : '' }}" href="{{ route('artin.products') }}">محصولات آرتین</a>
                 </li>
                 <li>
                     <a class="{{ active_sidebar(['analyse']) ? 'active' : '' }}" href="{{ route('analyse.step1') }}">آنالیز</a>
@@ -186,7 +186,12 @@
             @endcan
             @can('price-history')
                 <li>
-                    <a class="{{ active_sidebar(['price-history']) ? 'active' : '' }}" href="{{ route('price-history') }}">آرشیو قیمت ها</a>
+                    <a class="{{ active_sidebar(['price-history']) ? 'active' : '' }}" href="{{ route('price-history') }}">تاریخچه قیمت ها</a>
+                </li>
+            @endcan
+            @can('printers-list')
+                <li>
+                    <a class="{{ active_sidebar(['printers','printers/create','printers/{printer}/edit','search/printers']) ? 'active' : '' }}" href="{{ route('printers.index') }}">پرینتر ها</a>
                 </li>
             @endcan
             @can('coupons-list')
@@ -247,17 +252,17 @@
             @endcan
         </ul>
         <ul id="navigationCustomers" class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','sms','sms/create','sms/{sms}/edit','sms.search','sms/{sms}','whatsapp','whatsapp/create','whatsapp/createGroup','whatsapp/{whatsapp}']) ? 'navigation-active' : '' }}">
-            <li class="navigation-divider">لیست مشتریان</li>
+            <li class="navigation-divider">مشتریان</li>
             @can('customers-list')
                 <li>
-                    <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}" href="{{ route('customers.index') }}">لیست مشتریان</a>
+                    <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}" href="{{ route('customers.index') }}">مشتریان</a>
                 </li>
             @endcan
-{{--            @can('foreign-customers-list')--}}
-{{--                <li>--}}
-{{--                    <a class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers']) ? 'active' : '' }}" href="{{ route('foreign-customers.index') }}">مشتریان خارجی</a>--}}
-{{--                </li>--}}
-{{--            @endcan--}}
+            @can('foreign-customers-list')
+                <li>
+                    <a class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers']) ? 'active' : '' }}" href="{{ route('foreign-customers.index') }}">مشتریان خارجی</a>
+                </li>
+            @endcan
             @can('sms-list')
                 <li>
                     <a class="{{ active_sidebar(['sms','sms/create','sms/{sms}']) ? 'active' : '' }}" href="{{ route('sms.index') }}">پنل پیامکی</a>
