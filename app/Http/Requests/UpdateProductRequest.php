@@ -25,7 +25,6 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'code' => 'required',
 //            'slug' => 'required|unique:products,slug,'.$this->product->id,
             'description' => 'nullable',
             'category' => 'required',
@@ -37,7 +36,6 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'title.required' => 'عنوان الزامی است.',
-            'code.required' => 'کد الزامی است.',
             'category.required' => 'دسته‌بندی الزامی است.',
             'brand.required' => 'برند الزامی است.',
             'image.mimes' => 'تصویر باید از نوع jpg، png یا jpeg باشد.',
