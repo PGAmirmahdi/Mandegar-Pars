@@ -73,7 +73,7 @@ class Product extends Model
 
     public function productModels()
     {
-        return $this->belongsTo(ProductModel::class);
+        return $this->belongsTo(ProductModel::class,'brand_id');
     }
     public function products()
     {

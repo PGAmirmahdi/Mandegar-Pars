@@ -61,7 +61,7 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $product->code }}</td>
-                            <td>{{ $product->category->name ?? 'برند نامشخص' }}</td>
+                            <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
                             <td>{{ $product->title }}</td>
                             <td>{{ $product->productModels->name ?? 'برند نامشخص' }}</td>
                             @can('admin')
