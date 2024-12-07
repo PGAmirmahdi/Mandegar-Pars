@@ -23,7 +23,7 @@ class AnalyseController extends Controller
         // دریافت آنالیزها
         $analyses = $query->get();
 
-        return view('panel.analyse.step1', compact('analyses')); // ارسال متغیر analyses به ویو
+        return view('panel.analyse.index', compact('analyses')); // ارسال متغیر analyses به ویو
     }
 
     public function postStep1(Request $request)

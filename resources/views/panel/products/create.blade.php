@@ -1,17 +1,29 @@
 @php use App\Models\Category;use App\Models\Product;use App\Models\ProductModel; @endphp
 @extends('panel.layouts.master')
-@section('title', 'ایجاد محصول')
+@section('title', 'ایجاد کالا')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>ایجاد محصول</h6>
+                <h6>ایجاد کالا</h6>
             </div>
             <form action="{{ route('products.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="title">عنوان محصول<span class="text-danger">*</span></label>
+                        <label for="category">شرح کالا<span class="text-danger">*</span></label>
+                        <select class="form-control" name="category" id="category">
+                            @foreach(Category::all() as $category)
+                                <option
+                                    value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('category')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="title">مدل<span class="text-danger">*</span></label>
                         <input type="text" name="title" class="form-control" id="title" value="{{ old('title') }}"
                                placeholder="پرینتر HP">
                         @error('title')
@@ -19,7 +31,7 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="code">کد محصول<span class="text-danger">*</span></label>
+                        <label for="code">کد کالا<span class="text-danger">*</span></label>
                         <input type="text" name="code" class="form-control" id="code" value="{{ old('code') }}">
                         @error('code')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -32,25 +44,13 @@
                     {{--                            <div class="invalid-feedback d-block">{{ $message }}</div>--}}
                     {{--                        @enderror--}}
                     {{--                    </div>--}}
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="image">تصویر</label>
-                        <input type="file" name="image" class="form-control" id="image" value="{{ old('image') }}">
-                        @error('image')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="category">دسته بندی <span class="text-danger">*</span></label>
-                        <select class="form-control" name="category" id="category">
-                            @foreach(Category::all() as $category)
-                                <option
-                                    value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('category')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
+{{--                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">--}}
+{{--                        <label for="image">تصویر</label>--}}
+{{--                        <input type="file" name="image" class="form-control" id="image" value="{{ old('image') }}">--}}
+{{--                        @error('image')--}}
+{{--                        <div class="invalid-feedback d-block">{{ $message }}</div>--}}
+{{--                        @enderror--}}
+{{--                    </div>--}}
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="brand">برند<span class="text-danger">*</span></label>
                         <select class="form-control" name="model" id="model">
@@ -64,39 +64,39 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>
-                        <input type="text" name="system_price" class="form-control" id="system_price"
+{{--                        <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>--}}
+                        <input type="hidden" name="system_price" class="form-control" id="system_price"
                                value="{{ old('system_price') }}">
-                        <small id="system_price_words" class="text-primary"></small>
+{{--                        <small id="system_price_words" class="text-primary"></small>--}}
                         @error('system_price')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="partner_price_tehran">قیمت همکار - تهران (ریال)<span
-                                class="text-danger">*</span></label>
-                        <input type="text" name="partner_price_tehran" class="form-control" id="partner_price_tehran"
+{{--                        <label for="partner_price_tehran">قیمت همکار - تهران (ریال)<span--}}
+{{--                                class="text-danger">*</span></label>--}}
+                        <input type="hidden" name="partner_price_tehran" class="form-control" id="partner_price_tehran"
                                value="{{ old('partner_price_tehran') }}">
-                        <small id="partner_price_tehran_words" class="text-primary"></small>
+{{--                        <small id="partner_price_tehran_words" class="text-primary"></small>--}}
                         @error('partner_price_tehran')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="partner_price_other">قیمت همکار - شهرستان (ریال)<span
-                                class="text-danger">*</span></label>
-                        <input type="text" name="partner_price_other" class="form-control" id="partner_price_other"
+{{--                        <label for="partner_price_other">قیمت همکار - شهرستان (ریال)<span--}}
+{{--                                class="text-danger">*</span></label>--}}
+                        <input type="hidden" name="partner_price_other" class="form-control" id="partner_price_other"
                                value="{{ old('partner_price_other') }}">
-                        <small id="partner_price_other_words" class="text-primary"></small>
+{{--                        <small id="partner_price_other_words" class="text-primary"></small>--}}
                         @error('partner_price_other')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="single_price">قیمت تک فروشی (ریال)<span class="text-danger">*</span></label>
-                        <input type="text" name="single_price" class="form-control" id="single_price"
+{{--                        <label for="single_price">قیمت تک فروشی (ریال)<span class="text-danger">*</span></label>--}}
+                        <input type="hidden" name="single_price" class="form-control" id="single_price"
                                value="{{ old('single_price') }}">
-                        <small id="single_price_words" class="text-primary"></small>
+{{--                        <small id="single_price_words" class="text-primary"></small>--}}
                         @error('single_price')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -110,7 +110,7 @@
                     </div>
                     <div class="col-xl-6 col-lg-8 col-md-6 col-sm-12 mb-3" id="printer_properties">
                         <div class="d-flex justify-content-between mb-3">
-                            <label>ویژگی های محصول </label>
+                            <label>ویژگی های کالا </label>
                             <button class="btn btn-outline-success" type="button" id="btn_add"><i
                                     class="fa fa-plus mr-2"></i> افزودن ویژگی
                             </button>
