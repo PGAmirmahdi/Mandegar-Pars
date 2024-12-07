@@ -41,7 +41,7 @@
                         </div>
                     @endcan
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="name">نام حقیقی/حقوقی <span class="text-danger">*</span></label>
+                        <label for="name">نام سازمان/فروشگاه <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" id="name" value="{{ old('name') }}">
                         @error('name')
                             <div class="invalid-feedback d-block">{{ $message }}</div>

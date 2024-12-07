@@ -1,10 +1,10 @@
 @extends('panel.layouts.master')
-@section('title', 'مشتریان')
+@section('title', 'لیست تمامی مشتریان')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>مشتریان</h6>
+                <h6>لیست تمامی مشتریان</h6>
                 <div>
                     <form action="{{ route('customers.excel') }}" method="post" id="excel_form">
                         @csrf
@@ -31,6 +31,7 @@
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری" value="{{ request()->name ?? null }}">
                 </div>
+                @can('admin')
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
                         <option value="all">استان (همه)</option>
@@ -47,6 +48,7 @@
                         @endforeach
                     </select>
                 </div>
+                @endcan
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="type" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">
                         <option value="all">نوع (همه)</option>
@@ -64,14 +66,16 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>نام حقیقی/حقوقی</th>
                         <th>کد مشتری</th>
+                        <th>نام سازمان/فروشگاه</th>
                         <th>نوع</th>
-                        <th>مشتری</th>
-                        <th>استان</th>
+                        @can('admin')
                         <th>شماره تماس 1</th>
+                        @endcan
                         <th>تعداد سفارش</th>
+                        @can('admin')
                         <th>تاریخ ایجاد</th>
+                        @endcan
                         @can('customers-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -84,14 +88,16 @@
                     @foreach($customers as $key => $customer)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $customer->name }}</td>
                             <td>{{ $customer->code ?? '---' }}</td>
+                            <td>{{ $customer->name }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
-                            <td>{{ \App\Models\Customer::CUSTOMER_TYPE[$customer->customer_type] }}</td>
-                            <td>{{ $customer->province }}</td>
+                            @can('admin')
                             <td>{{ $customer->phone1 }}</td>
+                            @endcan
                             <td>{{ $customer->invoices()->count() }}</td>
+                            @can('admin')
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>
+                            @endcan
                             @can('customers-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating" href="{{ route('customers.edit', ['customer' => $customer->id, 'url' => request()->getRequestUri()]) }}">

@@ -40,9 +40,10 @@
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
                     <tr>
-                        <th>#</th>
+                        <th>ردیف</th>
                         <th>کد کالا</th>
                         <th>شرح کالا</th>
+                        <th>مدل</th>
                         <th>برند</th>
                         @can('admin')
                         <th>تاریخ ایجاد</th>
@@ -60,6 +61,7 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $product->code }}</td>
+                            <td>{{ $product->category->name ?? 'برند نامشخص' }}</td>
                             <td>{{ $product->title }}</td>
                             <td>{{ $product->productModels->name ?? 'برند نامشخص' }}</td>
                             @can('admin')

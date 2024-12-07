@@ -11,14 +11,25 @@
                 @method('PATCH')
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="title">عنوان محصول<span class="text-danger">*</span></label>
+                        <label for="category">شرح کالا<span class="text-danger">*</span></label>
+                        <select class="form-control" name="category" id="category">
+                            @foreach(\App\Models\Category::all() as $category)
+                                <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('category')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="title">مدل<span class="text-danger">*</span></label>
                         <input type="text" name="title" class="form-control" id="title" value="{{ $product->title }}" placeholder="پرینتر HP">
                         @error('title')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="code">کد محصول<span class="text-danger">*</span></label>
+                        <label for="code">کد کالا<span class="text-danger">*</span></label>
                         <input type="text" name="code" class="form-control" id="code" value="{{ $product->code }}">
                         @error('code')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -31,25 +42,14 @@
 {{--                            <div class="invalid-feedback d-block">{{ $message }}</div>--}}
 {{--                        @enderror--}}
 {{--                    </div>--}}
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="image">تصویر<span class="text-danger">*</span></label>
-                        <input type="file" name="image" class="form-control" id="image">
-                        <a href="{{ $product->image }}" target="_blank" class="btn btn-link">مشاهده تصویر</a>
-                        @error('image')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="category">دسته بندی <span class="text-danger">*</span></label>
-                        <select class="form-control" name="category" id="category">
-                            @foreach(\App\Models\Category::all() as $category)
-                                <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('category')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
+{{--                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">--}}
+{{--                        <label for="image">تصویر<span class="text-danger">*</span></label>--}}
+{{--                        <input type="file" name="image" class="form-control" id="image">--}}
+{{--                        <a href="{{ $product->image }}" target="_blank" class="btn btn-link">مشاهده تصویر</a>--}}
+{{--                        @error('image')--}}
+{{--                            <div class="invalid-feedback d-block">{{ $message }}</div>--}}
+{{--                        @enderror--}}
+{{--                    </div>--}}
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="brand">برند<span class="text-danger">*</span></label>
                         <select class="form-control" name="brand" id="brand">
@@ -64,16 +64,16 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>
-                        <input type="text" name="system_price" class="form-control" id="system_price" value="{{ $product->system_price }}">
+{{--                        <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>--}}
+                        <input type="hidden" name="system_price" class="form-control" id="system_price" value="{{ $product->system_price }}">
                         <small id="system_price_words" class="text-primary"></small>
                         @error('system_price')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="partner_price_tehran">قیمت همکار - تهران (ریال)<span class="text-danger">*</span></label>
-                        <input type="text" name="partner_price_tehran" class="form-control" id="partner_price_tehran" value="{{ $product->partner_price_tehran }}">
+{{--                        <label for="partner_price_tehran">قیمت همکار - تهران (ریال)<span class="text-danger">*</span></label>--}}
+                        <input type="hidden" name="partner_price_tehran" class="form-control" id="partner_price_tehran" value="{{ $product->partner_price_tehran }}">
                         <small id="partner_price_tehran_words" class="text-primary"></small>
                         @error('partner_price_tehran')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -81,15 +81,15 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="partner_price_other">قیمت همکار - شهرستان (ریال)<span class="text-danger">*</span></label>
-                        <input type="text" name="partner_price_other" class="form-control" id="partner_price_other" value="{{ $product->partner_price_other }}">
+                        <input type="hidden" name="partner_price_other" class="form-control" id="partner_price_other" value="{{ $product->partner_price_other }}">
                         <small id="partner_price_other_words" class="text-primary"></small>
                         @error('partner_price_other')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="single_price">قیمت تک فروشی (ریال)<span class="text-danger">*</span></label>
-                        <input type="text" name="single_price" class="form-control" id="single_price" value="{{ $product->single_price }}">
+{{--                        <label for="single_price">قیمت تک فروشی (ریال)<span class="text-danger">*</span></label>--}}
+                        <input type="hidden" name="single_price" class="form-control" id="single_price" value="{{ $product->single_price }}">
                         <small id="single_price_words" class="text-primary"></small>
                         @error('single_price')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -104,7 +104,7 @@
                     </div>
                     <div class="col-xl-6 col-lg-8 col-md-6 col-sm-12 mb-3" id="printer_properties">
                         <div class="d-flex justify-content-between mb-3">
-                            <label>ویژگی های محصول </label>
+                            <label>ویژگی های کالا </label>
                             <button class="btn btn-outline-success" type="button" id="btn_add"><i class="fa fa-plus mr-2"></i> افزودن ویژگی</button>
                         </div>
                         <div class="table-responsive">
