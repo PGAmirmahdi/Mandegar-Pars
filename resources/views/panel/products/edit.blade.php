@@ -66,7 +66,7 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
 {{--                        <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>--}}
                         <input type="hidden" name="system_price" class="form-control" id="system_price" value="{{ $product->system_price }}">
-                        <small id="system_price_words" class="text-primary"></small>
+{{--                        <small id="system_price_words" class="text-primary"></small>--}}
                         @error('system_price')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -74,15 +74,15 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
 {{--                        <label for="partner_price_tehran">قیمت همکار - تهران (ریال)<span class="text-danger">*</span></label>--}}
                         <input type="hidden" name="partner_price_tehran" class="form-control" id="partner_price_tehran" value="{{ $product->partner_price_tehran }}">
-                        <small id="partner_price_tehran_words" class="text-primary"></small>
+{{--                        <small id="partner_price_tehran_words" class="text-primary"></small>--}}
                         @error('partner_price_tehran')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="partner_price_other">قیمت همکار - شهرستان (ریال)<span class="text-danger">*</span></label>
+{{--                        <label for="partner_price_other">قیمت همکار - شهرستان (ریال)<span class="text-danger">*</span></label>--}}
                         <input type="hidden" name="partner_price_other" class="form-control" id="partner_price_other" value="{{ $product->partner_price_other }}">
-                        <small id="partner_price_other_words" class="text-primary"></small>
+{{--                        <small id="partner_price_other_words" class="text-primary"></small>--}}
                         @error('partner_price_other')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
