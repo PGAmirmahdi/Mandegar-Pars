@@ -42,30 +42,35 @@ class PriceController extends Controller
             'created_at' => now(),
         ];
         Activity::create($activityData);
+
         foreach ($items as $item) {
-            $price = trim(str_replace('-',null,$item['price']));
-            $price = trim(str_replace(',',null,$price));
+            $price = trim(str_replace('-', null, $item['price']));
+            $price = trim(str_replace(',', null, $price));
             $price = $price == '' ? null : $price;
 
-            if ($price){
+            if ($price) {
                 DB::table('price_list')->where([
                     'seller_id' => $item['seller_id'],
-                    'model_id' => $item['model_id']
+                    'product_id' => $item['product_id'] // تغییر از model_id به product_id
                 ])->updateOrInsert([
                     'seller_id' => $item['seller_id'],
-                    'model_id' => $item['model_id'],
-                ],[
+                    'product_id' => $item['product_id'] // تغییر از model_id به product_id
+                ], [
                     'seller_id' => $item['seller_id'],
-                    'model_id' => $item['model_id'],
+                    'product_id' => $item['product_id'], // تغییر از model_id به product_id
                     'price' => $price
                 ]);
-            }else{
-                DB::table('price_list')->where(['seller_id' => $item['seller_id'], 'model_id' => $item['model_id']])->delete();
+            } else {
+                DB::table('price_list')->where([
+                    'seller_id' => $item['seller_id'],
+                    'product_id' => $item['product_id'] // تغییر از model_id به product_id
+                ])->delete();
             }
         }
 
         return 'ok';
     }
+
     public function updatePrice2(Request $request)
     {
         $this->authorize('price-list-mandegar');
@@ -182,22 +187,41 @@ class PriceController extends Controller
     public function removeSeller(Request $request)
     {
         $this->authorize('prices-list');
-// ثبت فعالیت برای حذف تامین‌کننده
-        $activityDescription = 'کاربر ' . auth()->user()->family .'(' . Auth::user()->role->label . ')' . ' اقدام به حذف تامین‌کننده با نام "' . $request->name . '" از لیست تامین‌کنندگان نمود.';
+
+        // دریافت seller_id از درخواست
+        $sellerId = $request->input('seller_id');
+
+        // چک کردن وجود فروشنده با شناسه
+        $seller = DB::table('price_list_sellers')->where('id', $sellerId)->first();
+
+        if (!$seller) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'فروشنده پیدا نشد',
+            ], 404);
+        }
+
+        // ثبت فعالیت برای حذف تامین‌کننده
+        $activityDescription = 'کاربر ' . auth()->user()->family .'(' . Auth::user()->role->label . ')' . ' اقدام به حذف تامین‌کننده با نام "' . $seller->name . '" از لیست تامین‌کنندگان نمود.';
 
         // حذف قیمت‌های مربوطه به تامین‌کننده
-        $seller = DB::table('price_list_sellers')->where('name', $request->name)->first();
         DB::table('price_list')->where('seller_id', $seller->id)->delete();
-        DB::table('price_list_sellers')->where('name', $request->name)->delete();
-// ثبت فعالیت حذف تامین‌کننده
+        DB::table('price_list_sellers')->where('id', $seller->id)->delete();
+
+        // ثبت فعالیت حذف تامین‌کننده
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'حذف تامین‌کننده',
             'description' => $activityDescription,
             'created_at' => now(),
         ]);
-        return back();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'فروشنده با موفقیت حذف شد',
+        ]);
     }
+
 
     public function removeModel(Request $request)
     {

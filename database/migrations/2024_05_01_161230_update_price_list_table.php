@@ -4,8 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateProducts10Table extends Migration
+class UpdatePriceListTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     /**
      * Run the migrations.
      *
@@ -13,10 +18,11 @@ class UpdateProducts10Table extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('model_id')->constrained('product_models')->onDelete('cascade');
-            $table->timestamps();
+        Schema::table('price_list', function (Blueprint $table) {
+
+            $table->unsignedBigInteger('product_id')->nullable();
+
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 
@@ -27,6 +33,5 @@ class UpdateProducts10Table extends Migration
      */
     public function down()
     {
-        //
     }
 }

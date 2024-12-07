@@ -141,7 +141,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Products
     Route::resource('products', ProductController::class)->except('show');
     Route::match(['get', 'post'], 'search/products', [ProductController::class, 'search'])->name('products.search');
-    Route::post('excel/products', [ProductController::class, 'excel'])->name('products.excel');Route::post('/get-models-by-category', [YourController::class, 'getModelsByCategory'])->name('get.models.by.category');
+    Route::post('excel/products', [ProductController::class, 'excel'])->name('products.excel');
     Route::post('/get-models-by-category', [ProductController::class, 'getModelsByCategory'])->name('get.models.by.category');
 
 
