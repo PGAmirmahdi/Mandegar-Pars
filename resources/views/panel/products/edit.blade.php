@@ -55,7 +55,6 @@
                             @if(old('brand', $product->brand))
                                 <option value="{{ old('brand', $product->brand ? $product->brand->id : '') }}"
                                         selected>{{ old('brand_name', $product->brand ? $product->brand->name : 'انتخاب کنید') }}</option>
-
                             @endif
                         </select>
                         @error('brand')
