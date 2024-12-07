@@ -25,7 +25,6 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'code' => 'required|unique:products',
             'description'=>'nullable',
 //            'slug' => 'required|unique:products',
             'system_price' => 'nullable',
@@ -39,7 +38,6 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'title.required' => 'عنوان الزامی است.',
-            'code.required' => 'کد الزامی است.',
             'brand.required' => 'برند الزامی است.',
             'image.mimes' => 'تصویر باید از نوع jpg، png یا jpeg باشد.',
             'image.max' => 'اندازه تصویر نباید بیشتر از 5000 کیلوبایت باشد.',
