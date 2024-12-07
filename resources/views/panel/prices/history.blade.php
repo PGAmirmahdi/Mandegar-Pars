@@ -1,10 +1,10 @@
 @extends('panel.layouts.master')
-@section('title', 'تاریخچه قیمت ها')
+@section('title', 'آرشیو قیمت ها')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>تاریخچه قیمت ها</h6>
+                <h6>آرشیو قیمت ها</h6>
             </div>
             <form action="" method="post" id="search_form">
                 @csrf

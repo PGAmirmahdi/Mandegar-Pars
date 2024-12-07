@@ -1,10 +1,10 @@
 @extends('panel.layouts.master')
-@section('title', 'محصولات')
+@section('title', 'لیست کالاها')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>محصولات</h6>
+                <h6>لیست کالاها</h6>
                 <div>
                     <form action="{{ route('products.excel') }}" method="post" id="excel_form">
                         @csrf
@@ -18,7 +18,7 @@
                     @can('products-create')
                         <a href="{{ route('products.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            ایجاد محصول
+                            ایجاد کالا
                         </a>
                     @endcan
                 </div>
@@ -41,13 +41,12 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>تصویر محصول</th>
-                        <th>عنوان محصول</th>
-                        <th>کد محصول</th>
-                        <th>دسته بندی</th>
+                        <th>کد کالا</th>
+                        <th>شرح کالا</th>
                         <th>برند</th>
-                        <th>قیمت</th>
+                        @can('admin')
                         <th>تاریخ ایجاد</th>
+                        @endcan
                         @can('products-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -60,21 +59,12 @@
                     @foreach($products as $key => $product)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>
-                                @if($product->image)
-                                <a href="{{ $product->image }}" target="_blank">
-                                    <img data-src="{{ $product->image }}" class="lazyload" width="40px">
-                                </a>
-                                    @else
-                                    عکس ندارد
-                                @endif
-                            </td>
-                            <td>{{ $product->title }}</td>
                             <td>{{ $product->code }}</td>
-                            <td>{{ $product->category->name }}</td>
+                            <td>{{ $product->title }}</td>
                             <td>{{ $product->productModels->name ?? 'برند نامشخص' }}</td>
-                            <td>{{ number_format($product->market_price) }}</td>
+                            @can('admin')
                             <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
+                            @endcan
                             @can('products-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating" href="{{ route('products.edit', $product->id) }}">

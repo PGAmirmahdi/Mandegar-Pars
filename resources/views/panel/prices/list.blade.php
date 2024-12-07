@@ -62,6 +62,22 @@
                         <th class="bg-primary"></th>
                         <th>
                             <a href="{{ route('prices-list-pdf', ['type' => 'system_price']) }}"><i class="fa fa-download text-info"></i></a>
+                            زمانی
+                        </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'system_price']) }}"><i class="fa fa-download text-info"></i></a>
+                            رمضانی
+                        </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'system_price']) }}"><i class="fa fa-download text-info"></i></a>
+                            موسوی
+                        </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'system_price']) }}"><i class="fa fa-download text-info"></i></a>
+                            سامانه
+                        </th>
+                        <th>
+                            <a href="{{ route('prices-list-pdf', ['type' => 'system_price']) }}"><i class="fa fa-download text-info"></i></a>
                             سامانه
                         </th>
                         <th>

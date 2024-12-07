@@ -172,7 +172,7 @@
                         <th class="bg-primary"></th>
                         <th colspan="{{ \Illuminate\Support\Facades\DB::table('price_list_sellers')->count() }}">
                             <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addSellerModal" id="btn_seller"></i>
-                            تامین کننده
+                            فروشنده
                         </th>
                     </tr>
                     <tr>
