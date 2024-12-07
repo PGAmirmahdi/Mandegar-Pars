@@ -90,7 +90,7 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
 {{--                        <label for="single_price">قیمت تک فروشی (ریال)<span class="text-danger">*</span></label>--}}
                         <input type="hidden" name="single_price" class="form-control" id="single_price" value="{{ $product->single_price }}">
-                        <small id="single_price_words" class="text-primary"></small>
+{{--                        <small id="single_price_words" class="text-primary"></small>--}}
                         @error('single_price')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
