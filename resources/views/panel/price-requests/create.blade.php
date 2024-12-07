@@ -21,7 +21,7 @@
                             <thead class="bg-primary">
                             <tr>
                                 <th>عنوان کالا</th>
-                                <th>قیمت قدیم</th>
+                                <th>قیمت قبلی</th>
                                 <th>توضیحات</th>
                                 <th>قیمت جدید</th>
                             </tr>
