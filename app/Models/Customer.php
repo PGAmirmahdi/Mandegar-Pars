@@ -12,8 +12,8 @@ class Customer extends Model
     protected $guarded = [];
 
     const TYPE = [
-        'government' => 'دولتی',
-        'private' => 'خصوصی',
+        'government' => 'سازمانی/دولتی/نیروهای مسلح',
+        'private' => 'بازار/تهران/شهرستان',
     ];
 
     const CUSTOMER_TYPE = [
