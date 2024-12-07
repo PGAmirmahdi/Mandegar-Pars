@@ -103,9 +103,6 @@ class ProductController extends Controller
             $image = upload_file($request->image, 'Products');
         }
 
-        // Update price history
-        $this->priceHistory($product, $request);
-
         // Update product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
