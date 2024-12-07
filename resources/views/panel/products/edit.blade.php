@@ -23,16 +23,13 @@
                         <select class="form-control" name="category" id="category">
                             @foreach(Category::all() as $category)
                                 <option
-                                    value="{{ $category->id }}" {{ old('category', $product->category_id) == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
+                                    value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
                         </select>
                         @error('category')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="title">مدل<span class="text-danger">*</span></label>
                         <input type="text" name="title" class="form-control" id="title"
@@ -56,8 +53,9 @@
                         <select class="form-control" name="brand" id="brand">
                             <option value="">انتخاب کنید</option>
                             @if(old('brand', $product->brand))
-                                <option value="{{ old('brand', $product->brand) }}"
-                                        selected>{{ old('brand_name', $product->brand->name) }}</option>
+                                <option value="{{ old('brand', $product->brand ? $product->brand->id : '') }}"
+                                        selected>{{ old('brand_name', $product->brand ? $product->brand->name : 'انتخاب کنید') }}</option>
+
                             @endif
                         </select>
                         @error('brand')
@@ -100,28 +98,47 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($product->properties as $property)
+                                @if(!$product->properties)
                                     <tr>
                                         <td>
                                             <select class="form-control" name="colors[]">
-                                                @foreach(Product::COLORS as $key => $value)
-                                                    <option
-                                                        value="{{ $key }}" {{ $property->color == $key ? 'selected' : '' }}>
-                                                        {{ $value }}
-                                                    </option>
+                                                @foreach(\App\Models\Product::COLORS as $key => $value)
+                                                    <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </td>
-                                        <td><input type="number" name="print_count[]" class="form-control"
-                                                   value="{{ $property->print_count }}" min="0" required></td>
-                                        <td><input type="number" name="counts[]" class="form-control"
-                                                   value="{{ $property->count }}" min="0" required></td>
                                         <td>
-                                            <button class="btn btn-danger btn-floating btn_remove" type="button"><i
-                                                    class="fa fa-trash"></i></button>
+                                            <input type="number" name="print_count[]" class="form-control" min="0" value="0" required>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="counts[]" class="form-control" min="0" value="0" required>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @else
+                                    @foreach(json_decode($product->properties) as $property)
+                                        <tr>
+                                            <td>
+                                                <select class="form-control" name="colors[]">
+                                                    @foreach(\App\Models\Product::COLORS as $key => $value)
+                                                        <option value="{{ $key }}" {{ $property->color == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="print_count[]" class="form-control" min="0" value="{{ $property->print_count }}" required>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="counts[]" class="form-control" min="0" value="{{ $property->counts }}" required>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 </tbody>
                             </table>
                         </div>
@@ -138,6 +155,7 @@
     <script src="{{ asset('/assets/js/number2word.js') }}" type="text/javascript"></script>
     <script>
         var number2Word = new Number2Word();
+
         var printer_category_id = "{{ Category::where('slug','printer')->first()->id }}";
         var colors = [];
 
@@ -149,9 +167,11 @@
         @endforeach
 
         var options_html;
+
         $.each(colors, function (i, item) {
             options_html = `<option value="${item.key}">${item.value}</option>`
         })
+
 
         $(document).ready(function () {
             printers_properties($('select[name="category"]').val());
@@ -159,50 +179,78 @@
             // add property
             $('#btn_add').on('click', function () {
                 $('#properties_table tbody').append(`
-                    <tr>
-                        <td><select class="form-control" name="colors[]">${options_html}</select></td>
-                        <td><input type="number" name="print_count[]" class="form-control" min="0" value="0" required></td>
-                        <td><input type="number" name="counts[]" class="form-control" min="0" value="0" required></td>
-                        <td><button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button></td>
-                    </tr>
-                `);
-            });
+                        <tr>
+                            <td>
+                                <select class="form-control" name="colors[]">${options_html}</select>
+                            </td>
+                            <td><input type="number" name="print_count[]" class="form-control" min="0" value="0" required></td>
+                            <td><input type="number" name="counts[]" class="form-control" min="0" value="0" required></td>
+                            <td><button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                    `);
+            })
+            // end add property
 
             // remove property
             $(document).on('click', '.btn_remove', function () {
                 $(this).parent().parent().remove();
-            });
+            })
+            // end remove property
 
             // change category
             $('select[name="category"]').on('change', function () {
                 printers_properties(this.value);
-            });
+            })
+            // end change category
 
             // Number To Words
-            function numberToWords(inputSelector, outputSelector) {
-                $(document).on('keyup', inputSelector, function () {
-                    let price = number2Word.numberToWords(this.value) + ' ریال ';
-                    $(outputSelector).text(price);
-                });
-            }
 
-            numberToWords('#system_price', '#system_price_words');
-            numberToWords('#partner_price_tehran', '#partner_price_tehran_words');
-            numberToWords('#partner_price_other', '#partner_price_other_words');
-            numberToWords('#single_price', '#single_price_words');
-        });
+            // when document was ready
+            let system_price = number2Word.numberToWords($('#system_price').val()) + ' ریال '
+            $('#system_price_words').text(system_price)
+
+            let partner_price_tehran = number2Word.numberToWords($('#partner_price_tehran').val()) + ' ریال '
+            $('#partner_price_tehran_words').text(partner_price_tehran)
+
+            let partner_price_other = number2Word.numberToWords($('#partner_price_other').val()) + ' ریال '
+            $('#partner_price_other_words').text(partner_price_other)
+
+            let single_price = number2Word.numberToWords($('#single_price').val()) + ' ریال '
+            $('#single_price_words').text(single_price)
+
+            // when change the inputs
+            $(document).on('keyup', '#system_price', function () {
+                let price = number2Word.numberToWords(this.value) + ' ریال '
+                $('#system_price_words').text(price)
+            })
+
+            $(document).on('keyup', '#partner_price_tehran', function () {
+                let price = number2Word.numberToWords(this.value) + ' ریال '
+                $('#partner_price_tehran_words').text(price)
+            })
+
+            $(document).on('keyup', '#partner_price_other', function () {
+                let price = number2Word.numberToWords(this.value) + ' ریال '
+                $('#partner_price_other_words').text(price)
+            })
+
+            $(document).on('keyup', '#single_price', function () {
+                let price = number2Word.numberToWords(this.value) + ' ریال '
+                $('#single_price_words').text(price)
+            })
+            // end Number To Words
+
+        })
 
         function printers_properties(value) {
             if (value != printer_category_id) {
-                $('#printer_properties').addClass('d-none');
+                $('#printer_properties').addClass('d-none')
+                $('#compatible_printers_sec').addClass('d-none')
             } else {
-                $('#printer_properties').removeClass('d-none');
+                $('#printer_properties').removeClass('d-none')
+                $('#compatible_printers_sec').removeClass('d-none')
             }
         }
-    </script>
-@endsection
-@section('script')
-    <script>
         $(document).ready(function () {
             $('select[name="category"]').on('change', function () {
                 let categoryId = $(this).val();
@@ -232,5 +280,7 @@
                 }
             });
         });
+
     </script>
 @endsection
+
