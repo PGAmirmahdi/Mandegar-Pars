@@ -9,6 +9,7 @@ use App\Models\Activity;
 use App\Models\Category;
 use App\Models\PriceHistory;
 use App\Models\Product;
+use App\Models\ProductModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,9 +38,9 @@ class ProductController extends Controller
     {
         $this->authorize('products-create');
 
+
         $image = null; // مقدار پیش‌فرض برای تصویر
-        if ($request->has('image'))
-        {
+        if ($request->has('image')) {
             $image = upload_file($request->image, 'Products');
         }
 
@@ -50,11 +51,10 @@ class ProductController extends Controller
         // create product
         Product::create([
             'title' => $request->title,
-//            'slug' => make_slug($request->title)
             'code' => $request->code,
             'image' => $image,
             'category_id' => $request->category,
-            'brand_id' => $request->brand,
+            'brand_id' => $request->brand, // تغییر از 'model' به 'brand'
             'properties' => $properties,
             'description' => $request->description,
             'system_price' => $request->system_price,
@@ -64,17 +64,21 @@ class ProductController extends Controller
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
         ]);
+
+
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'ایجاد محصول',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') محصول جدیدی به نام ' . $request->title . ' ایجاد کرد.',
+            'action' => 'ایجاد کالا',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') کالای جدیدی به نام ' . $request->title . ' ایجاد کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData); // ذخیره فعالیت
-        alert()->success('محصول مورد نظر با موفقیت ایجاد شد', 'ایجاد محصول');
+
+        alert()->success('کالا مورد نظر با موفقیت ایجاد شد', 'ایجاد کالا');
         return redirect()->route('products.index');
     }
+
 
 
     public function show(Product $product)
@@ -92,25 +96,25 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $this->authorize('products-edit');
-        $image = null; // مقدار پیش‌فرض برای تصویر
-        if ($request->has('image'))
-        {
+
+        // Handle image upload
+        $image = $product->image; // Default to the current image
+        if ($request->hasFile('image')) {
             $image = upload_file($request->image, 'Products');
         }
 
-        // price history
+        // Update price history
         $this->priceHistory($product, $request);
 
-        // product properties
+        // Update product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
 
-        // create product
+        // Update product details
         $product->update([
             'title' => $request->title,
-//            'slug' => make_slug($request->slug),
             'code' => $request->code,
-            'image' => $image ?? $product->image,
+            'image' => $image,
             'category_id' => $request->category,
             'brand_id' => $request->brand,
             'properties' => $properties,
@@ -122,15 +126,16 @@ class ProductController extends Controller
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
         ]);
-// ثبت فعالیت
-        $activityData = [
+
+        // Log activity
+        Activity::create([
             'user_id' => auth()->id(),
-            'action' => 'ویرایش محصول',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') محصول ' . $product->title . ' را ویرایش کرد.',
+            'action' => 'ویرایش کالا',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') کالا ' . $product->title . ' را ویرایش کرد.',
             'created_at' => now(),
-        ];
-        Activity::create($activityData); // ذخیره فعالیت
-        alert()->success('محصول مورد نظر با موفقیت ویرایش شد','ویرایش محصول');
+        ]);
+
+        alert()->success('کالا با موفقیت ویرایش شد', 'ویرایش کالا');
         return redirect()->route('products.index');
     }
 
@@ -140,14 +145,14 @@ class ProductController extends Controller
 
         // بررسی وجود محصول در سفارشات
         if ($product->invoices()->exists()) {
-            return response('این محصول در سفارشاتی موجود است', 500);
+            return response('این کالا در سفارشاتی موجود است', 500);
         }
 
         // ثبت فعالیت قبل از حذف محصول
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'حذف محصول',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') محصول ' . $product->title . ' را حذف کرد.',
+            'action' => 'حذف کالا',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') کالا ' . $product->title . ' را حذف کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData); // ذخیره فعالیت
@@ -189,8 +194,8 @@ class ProductController extends Controller
     {// ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'دانلود فایل محصولات',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'اکسل محصولات را دانلود کرد.',
+            'action' => 'دانلود فایل کالاها',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'اکسل کالاها را دانلود کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
@@ -240,4 +245,10 @@ class ProductController extends Controller
             ]);
         }
     }
+    public function getModelsByCategory(Request $request)
+    {
+        $models = ProductModel::where('category_id', $request->category_id)->get();
+        return response()->json($models);
+    }
+
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Analyse;
+use App\Models\AnalyseProducts;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductModel;
@@ -13,17 +14,21 @@ class AnalyseController extends Controller
 {
     public function step1(Request $request)
     {
-        $query = Analyse::query();
+        $query = AnalyseProducts::query()
+            ->selectRaw('product_id, SUM(quantity) as total_quantity, MAX(analyse_id) as last_analyse_id')
+            ->groupBy('product_id');
 
-        // فیلتر تاریخ از و تا
+        // اعمال فیلتر تاریخ (در صورت نیاز)
         if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('date', [$request->start_date, $request->end_date]);
+            $query->whereHas('analyse', function ($subQuery) use ($request) {
+                $subQuery->whereBetween('date', [$request->start_date, $request->end_date]);
+            });
         }
 
-        // دریافت آنالیزها
-        $analyses = $query->get();
+        // دریافت نتایج
+        $groupedProducts = $query->get();
 
-        return view('panel.analyse.index', compact('analyses')); // ارسال متغیر analyses به ویو
+        return view('panel.analyse.index', compact('groupedProducts'));
     }
 
     public function postStep1(Request $request)
