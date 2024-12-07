@@ -51,7 +51,7 @@ class ProductController extends Controller
         // create product
         Product::create([
             'title' => $request->title,
-            'code' => $request->code,
+            'code' => 'MP' . random_int(10000, 99999),
             'image' => $image,
             'category_id' => $request->category,
             'brand_id' => $request->brand, // تغییر از 'model' به 'brand'
@@ -110,7 +110,6 @@ class ProductController extends Controller
         // Update product details
         $product->update([
             'title' => $request->title,
-            'code' => $request->code,
             'image' => $image,
             'category_id' => $request->category,
             'brand_id' => $request->brand,

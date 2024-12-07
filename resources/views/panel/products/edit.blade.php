@@ -38,16 +38,6 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="code">کد کالا<span class="text-danger">*</span></label>
-                        <input type="text" name="code" class="form-control" id="code"
-                               value="{{ old('code', $product->code) }}">
-                        @error('code')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
-
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="brand">برند<span class="text-danger">*</span></label>
                         <select class="form-control" name="brand" id="brand">
