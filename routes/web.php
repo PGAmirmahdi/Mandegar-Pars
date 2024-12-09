@@ -183,6 +183,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Suppliers
     Route::resource('suppliers', SupplierController::class);
+    Route::post('excel/suppliers', [SupplierController::class, 'excel'])->name('suppliers.excel');
+    Route::post('get-supplier-info/{supplier}', [SupplierController::class, 'getSupplierInfo'])->name('getSupplierInfo');
 
     // Notifications
     Route::get('read-notifications/{notification?}', [PanelController::class, 'readNotification'])->name('notifications.read');
@@ -206,6 +208,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Price List
     Route::get('prices-list', [PriceController::class, 'index'])->name('prices-list');
     Route::get('other-prices-list', [PriceController::class, 'otherList'])->name('other-prices-list');
+    Route::post('other-prices-list', [PriceController::class, 'otherList'])->name('other-prices-list');
     Route::post('update-price', [PriceController::class, 'updatePrice'])->name('updatePrice');
     Route::post('update-price2', [PriceController::class, 'updatePrice2'])->name('updatePrice2');
     Route::post('add-model', [PriceController::class, 'addModel'])->name('addModel');

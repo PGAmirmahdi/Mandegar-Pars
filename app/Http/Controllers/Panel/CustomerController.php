@@ -127,6 +127,7 @@ class CustomerController extends Controller
 
     public function search(Request $request)
     {
+        $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
         $type = $request->type == 'all' ? array_keys(Customer::TYPE) : [$request->type];
         $customers = Customer::when($request->code, function ($q) use($request){
                 $q->where('code', $request->code);
@@ -134,6 +135,7 @@ class CustomerController extends Controller
             ->when($request->name, function ($q) use($request){
             $q->where('name','like', "%$request->name%");
         })
+            ->whereIn('province', $province)
             ->whereIn('type', $type)
             ->orderByRaw('-code DESC')->paginate(30);
 

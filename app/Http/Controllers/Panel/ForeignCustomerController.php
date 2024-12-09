@@ -52,7 +52,7 @@ class ForeignCustomerController extends Controller
         ]);
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'ایجاد گارانتی',
+            'action' => 'ایجاد مشتری خارجی',
             'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') یک مشتری خارجی به شماره تلفن ' . $foreigncustomer->phone . ' ایجاد کرد.',
             'created_at' => now(),
         ];
@@ -106,7 +106,7 @@ class ForeignCustomerController extends Controller
         ]);
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'ویرایش گارانتی',
+            'action' => 'ویرایش مشتری خارجی',
             'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') مشتری خارجی به شماره تلفن ' . $foreignCustomer->phone . ' را ویرایش کرد.',
             'created_at' => now(),
         ];
@@ -126,7 +126,7 @@ class ForeignCustomerController extends Controller
         }
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'حذف گارانتی',
+            'action' => 'حذف مشتری خارجی',
             'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') مشتری خارجی به شماره تلفن ' . $foreignCustomer->phone . ' را حذف کرد.',
             'created_at' => now(),
         ];
@@ -157,7 +157,7 @@ class ForeignCustomerController extends Controller
     {
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'خروجی اکسل از مشتریان',
+            'action' => 'خروجی اکسل از مشتریان خارجی',
             'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ')' . ' از مشتریان خارجی خروجی اکسل گرفت',
             'created_at' => now(),
         ];

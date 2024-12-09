@@ -155,7 +155,7 @@
             <li class="navigation-divider">هاب لیست</li>
             @can('customers-list')
                 <li>
-                    <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}" href="{{ route('customers.index') }}">لیست تمامی مشتریان</a>
+                    <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}" href="{{ route('customers.index') }}">لیست تمامی مشتریان داخلی</a>
                 </li>
             @endcan
             @can('foreign-customers-list')

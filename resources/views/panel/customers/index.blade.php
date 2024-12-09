@@ -26,31 +26,36 @@
             <form action="{{ route('customers.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <input type="text" name="code" form="search_form" class="form-control" placeholder="کد مشتری" value="{{ request()->code ?? null }}">
+                    <input type="text" name="code" form="search_form" class="form-control" placeholder="کد مشتری"
+                           value="{{ request()->code ?? null }}">
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری" value="{{ request()->name ?? null }}">
+                    <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری"
+                           value="{{ request()->name ?? null }}">
                 </div>
-                @can('admin')
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                    <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="1">
                         <option value="all">استان (همه)</option>
                         @foreach(\App\Models\Province::all() as $province)
                             <option value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="customer_type" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
-                        <option value="all">مشتری (همه)</option>
-                        @foreach(\App\Models\Customer::CUSTOMER_TYPE as $key => $value)
-                            <option value="{{ $key }}" {{ request()->customer_type == $key ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                @can('admin')
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <select name="customer_type" form="search_form"
+                                class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
+                            <option value="all">مشتری (همه)</option>
+                            @foreach(\App\Models\Customer::CUSTOMER_TYPE as $key => $value)
+                                <option value="{{ $key }}" {{ request()->customer_type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 @endcan
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="type" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">
+                    <select name="type" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="3">
                         <option value="all">نوع (همه)</option>
                         @foreach(\App\Models\Customer::TYPE as $key => $value)
                             <option value="{{ $key }}" {{ request()->type == $key ? 'selected' : '' }}>{{ $value }}</option>
@@ -69,10 +74,11 @@
                         <th>کد مشتری</th>
                         <th>نام سازمان/فروشگاه</th>
                         <th>نوع</th>
+                        <th>استان</th>
                         <th>شماره تماس 1</th>
                         <th>تعداد سفارش</th>
                         <th>تاریخ ایجاد</th>
-                            <th>جزئیات</th>
+                        <th>جزئیات</th>
                         @can('customers-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -88,24 +94,29 @@
                             <td>{{ $customer->code ?? '---' }}</td>
                             <td>{{ $customer->name }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
+                            <td>{{$customer->province}}</td>
                             <td>{{ $customer->phone1 }}</td>
                             <td>{{ $customer->invoices()->count() }}</td>
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
-                                <a class="btn btn-info btn-floating" href="{{ route('customers.show', ['customer' => $customer->id, 'url' => request()->getRequestUri()]) }}">
+                                <a class="btn btn-info btn-floating"
+                                   href="{{ route('customers.show', ['customer' => $customer->id, 'url' => request()->getRequestUri()]) }}">
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </td>
                             @can('customers-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('customers.edit', ['customer' => $customer->id, 'url' => request()->getRequestUri()]) }}">
+                                    <a class="btn btn-warning btn-floating"
+                                       href="{{ route('customers.edit', ['customer' => $customer->id, 'url' => request()->getRequestUri()]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                             @endcan
                             @can('customers-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('customers.destroy',$customer->id) }}" data-id="{{ $customer->id }}">
+                                    <button class="btn btn-danger btn-floating trashRow"
+                                            data-url="{{ route('customers.destroy',$customer->id) }}"
+                                            data-id="{{ $customer->id }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
