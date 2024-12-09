@@ -145,7 +145,7 @@
     <script>
         var number2Word = new Number2Word();
 
-        var printer_category_id = "{{ Category::where('slug','printer')->first()->id }}";
+        var printer_category_id = "{{ \App\Models\Category::where('slug','printer')->first()->id }}";
         var colors = [];
 
         @foreach(Product::COLORS as $key => $value)
