@@ -123,9 +123,6 @@
             <div class="mb-3">
                 <input type="text" id="productSearch" class="form-control" placeholder="جستجوی محصولات...">
             </div>
-            <div class="d-flex justify-content-center">
-                {{ $products->links() }}
-            </div>
             <div style="overflow-x: auto" class="tableFixHead">
                 <table class="table table-striped table-bordered dtr-inline text-center" id="price_table">
                     <thead>
