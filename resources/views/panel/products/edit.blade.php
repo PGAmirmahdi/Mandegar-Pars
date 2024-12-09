@@ -144,8 +144,9 @@
     <script src="{{ asset('/assets/js/number2word.js') }}" type="text/javascript"></script>
     <script>
         var number2Word = new Number2Word();
-
+        @if(\App\Models\Category::where('slug','printer')->first()->id)
         var printer_category_id = "{{ \App\Models\Category::where('slug','printer')->first()->id }}";
+
         var colors = [];
 
         @foreach(Product::COLORS as $key => $value)
@@ -154,7 +155,7 @@
             "value": "{{ $value }}",
         })
         @endforeach
-
+        @endif
         var options_html;
 
         $.each(colors, function (i, item) {
