@@ -94,17 +94,30 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addSellerModalLabel">افزودن تامین کننده</h5>
+                    <h5 class="modal-title" id="addSellerModalLabel">افزودن فروشنده</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
                         <i class="ti-close"></i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="seller">نام تامین کننده <span class="text-danger">*</span></label>
-                        <input type="text" id="seller" class="form-control">
-                        <span class="invalid-feedback d-block" id="seller_error"></span>
-                    </div>
+                    <form id="addSellerForm">
+                        <div class="form-group">
+                            <label for="seller">نام فروشنده <span class="text-danger">*</span></label>
+                            <input type="text" id="seller" name="seller" class="form-control">
+                            <span class="invalid-feedback d-block" id="seller_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">دسته‌بندی</label>
+                            <select id="category" name="category" class="js-example-basic-single form-control">
+                                <option value="all">دسته بندی (همه)</option>
+                                @foreach(\App\Models\Category::all(['id','name']) as $category)
+                                    <option value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
@@ -306,47 +319,55 @@
         // هنگام افزودن فروشنده جدید
         $(document).on('click', '#btn_add_seller', function () {
             let seller_name = $('#seller').val();
+            let category_id = $('#category').val();
 
             if (seller_name === '') {
-                $('#seller_error').text('وارد کردن نام تامین کننده الزامی است');
+                $('#seller_error').text('وارد کردن نام فروشنده الزامی است');
+                return;
             } else {
                 $('#seller_error').text('');
-
-                $.ajax({
-                    url: '/panel/add-seller',
-                    type: 'POST',
-                    data: {
-                        name: seller_name,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function (res) {
-                        if (res.data) {
-                            // پس از موفقیت در افزودن فروشنده جدید، دکمه حذف آن را به جدول اضافه می‌کنیم
-                            let newSeller = `
-                        <th class="seller">
-                            <i class="fa fa-times text-danger btn_remove_seller mr-2" data-toggle="modal" data-target="#removeSellerModal" data-seller_id="${res.data.seller_id}"></i>
-                            <span>${seller_name}</span>
-                        </th>
-                    `;
-                            // اضافه کردن به جدول
-                            $('#price_table thead tr:eq(1)').append(newSeller);
-                            $('#addSellerModal').modal('hide');
-                            Swal.fire({
-                                title: 'با موفقیت اضافه شد',
-                                icon: 'success',
-                                toast: true,
-                                timer: 2000,
-                                position: 'top-start'
-                            });
-                        } else {
-                            $('#seller_error').text(res.message);  // نمایش خطا در صورت بروز مشکل
-                        }
-                    },
-                    error: function () {
-                        alert('خطا در افزودن فروشنده');
-                    }
-                });
             }
+
+            if (category_id === 'all' || category_id === null) {
+                $('#category_error').text('لطفاً یک دسته‌بندی معتبر انتخاب کنید');
+                return;
+            } else {
+                $('#category_error').text('');
+            }
+
+            $.ajax({
+                url: '/panel/add-seller',
+                type: 'POST',
+                data: {
+                    name: seller_name,
+                    category: category_id,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (res) {
+                    if (res.data) {
+                        // اضافه کردن فروشنده جدید به جدول
+                        let newSeller = `
+                <th class="seller">
+                    <i class="fa fa-times text-danger btn_remove_seller mr-2" data-toggle="modal" data-target="#removeSellerModal" data-seller_id="${res.data.seller_id}"></i>
+                    <span>${seller_name}</span>
+                </th>`;
+                        $('#price_table thead tr:eq(1)').append(newSeller);
+                        $('#addSellerModal').modal('hide');
+                        Swal.fire({
+                            title: 'با موفقیت اضافه شد',
+                            icon: 'success',
+                            toast: true,
+                            timer: 2000,
+                            position: 'top-start'
+                        });
+                    } else {
+                        $('#seller_error').text(res.message); // نمایش پیام خطا
+                    }
+                },
+                error: function () {
+                    alert('خطا در افزودن فروشنده');
+                }
+            });
         });
         // اصلاحات مربوط به دکمه حذف فروشنده
         $(document).on('click', '.btn_remove_seller', function () {
