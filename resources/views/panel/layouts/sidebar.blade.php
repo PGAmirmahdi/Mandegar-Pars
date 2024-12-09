@@ -7,7 +7,7 @@
                     <i class="icon ti-dashboard"></i>
                 </a>
             </li>
-            @canany(['categories-list','products-list','printers-list','prices-list'])
+            @canany(['categories-list','products-list','printers-list','prices-list','foreign-customers-list','customers-list'])
                 <li class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history', 'artin-products', 'other-prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="هاب لیست">
                     <a href="#navigationProducts" title="هاب لیست">
                         <i class="icon ti-view-list"></i>
@@ -29,7 +29,7 @@
                     </a>
                 </li>
             @endcanany
-            @canany(['customers-list','foreign-customers-list'])
+            @canany(['sms-list','whatsapp-list'])
                 <li class="{{ active_sidebar(['sms','sms/create','sms/{sms}/edit','sms.search','sms/{sms}','whatsapp','whatsapp/create','whatsapp/createGroup','whatsapp/{whatsapp}']) ? 'active' : '' }}" data-toggle="tooltip" title="پنل">
                     <a href="#navigationCustomers" title="پنل">
                         <i class="icon ti-user"></i>
@@ -151,11 +151,16 @@
                     <a class="{{ active_sidebar(['product_models','product_models/create','product_models/{product_model}/edit','baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'active' : '' }}" href="{{ route('baseinfo.index') }}">اطلاعات</a>
                 </li>
         </ul>
-        <ul id="navigationProducts" class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
+        <ul id="navigationProducts" class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">هاب لیست</li>
             @can('customers-list')
                 <li>
                     <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}" href="{{ route('customers.index') }}">لیست تمامی مشتریان</a>
+                </li>
+            @endcan
+            @can('foreign-customers-list')
+                <li>
+                    <a class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers']) ? 'active' : '' }}" href="{{ route('foreign-customers.index') }}">لیست تمامی مشتریان خارجی</a>
                 </li>
             @endcan
             @can('printers-list')
@@ -256,13 +261,8 @@
                 </li>
             @endcan
         </ul>
-        <ul id="navigationCustomers" class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','sms','sms/create','sms/{sms}/edit','sms.search','sms/{sms}','whatsapp','whatsapp/create','whatsapp/createGroup','whatsapp/{whatsapp}']) ? 'navigation-active' : '' }}">
+        <ul id="navigationCustomers" class="{{ active_sidebar(['sms','sms/create','sms/{sms}/edit','sms.search','sms/{sms}','whatsapp','whatsapp/create','whatsapp/createGroup','whatsapp/{whatsapp}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">پنل</li>
-{{--            @can('foreign-customers-list')--}}
-{{--                <li>--}}
-{{--                    <a class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers']) ? 'active' : '' }}" href="{{ route('foreign-customers.index') }}">مشتریان خارجی</a>--}}
-{{--                </li>--}}
-{{--            @endcan--}}
             @can('sms-list')
                 <li>
                     <a class="{{ active_sidebar(['sms','sms/create','sms/{sms}']) ? 'active' : '' }}" href="{{ route('sms.index') }}">پنل پیامکی</a>

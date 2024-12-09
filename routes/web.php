@@ -47,6 +47,7 @@ use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\SMSController;
 use App\Http\Controllers\Panel\SmsHistoryController;
 use App\Http\Controllers\Panel\SoftwareUpdateController;
+use App\Http\Controllers\Panel\SupplierController;
 use App\Http\Controllers\Panel\TaskController;
 use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\TransportController;
@@ -179,6 +180,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::match(['get', 'post'], 'search/customers', [CustomerController::class, 'search'])->name('customers.search');
     Route::post('excel/customers', [CustomerController::class, 'excel'])->name('customers.excel');
     Route::get('relevant-customers', [CustomerController::class, 'getRelevantCustomers'])->name('customers.relevant');
+
+    // Suppliers
+    Route::resource('suppliers', SupplierController::class);
 
     // Notifications
     Route::get('read-notifications/{notification?}', [PanelController::class, 'readNotification'])->name('notifications.read');

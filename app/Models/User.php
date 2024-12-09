@@ -40,7 +40,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
+    public function supplier()
+    {
+        return $this->hasMany(Sms::class);
+    }
     public function transport()
     {
 
