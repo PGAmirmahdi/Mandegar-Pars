@@ -118,7 +118,7 @@
         <div class="card-body">
             <div class="d-flex row justify-content-between align-items-center px-4">
                 <h3 class="text-left mb-4 d-inline">لیست قیمت ها - (ریال)</h3>
-                <h3 class="text-right mb-4 d-inline">{{ verta(now())->format('Y/m/d') }}</h3>
+                <h3 class="text-right mb-4 d-inline">{{ verta(now())->format('l - Y/m/d') }}</h3>
             </div>
             <form action="{{ route('other-prices-list') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
@@ -161,8 +161,12 @@
                     </tr>
                     <tr>
                         <th>
+                            <strong class="bolder">ردیف</strong>
+                        </th>
+                        <th>
                             <div style="display: block ruby">
-                                <span>مدل</span>
+                                <strong class="bolder">مدل</strong>
+                                <span class="bolder">(برند)</span>
                             </div>
                         </th>
                         @foreach($sellers as $seller)
@@ -175,11 +179,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($products as $product)
+                    @foreach($products as $key => $product)
                         {{-- استفاده از جدول محصولات --}}
                         <tr>
+                            <th>
+                                <strong class="bolder" style="font-family:sans-serif !important">{{ ++$key }}</strong>
+                            </th>
                             <th style="display: block ruby">
-                                <span>{{ $product->title }}</span>
+                                <strong class="bolder" style="font-family:sans-serif !important">{{ $product->title }}</strong>
+                                <strong class="bolder" style="font-family:sans-serif !important">({{ $product->productModels->slug }})</strong>
                             </th>
                             @for($i = 0; $i < $sellers->count(); $i++)
                                 @php
@@ -202,9 +210,9 @@
                     </tfoot>
                 </table>
             </div>
-{{--            <div class="d-flex justify-content-center">--}}
-{{--                {{ $products->links() }}--}}
-{{--            </div>--}}
+            {{--            <div class="d-flex justify-content-center">--}}
+            {{--                {{ $products->links() }}--}}
+            {{--            </div>--}}
             <button class="btn btn-primary my-3 mx-1" id="btn_save">
                 <i class="fa fa-check mr-2"></i>
                 <span>ذخیره</span>

@@ -27,10 +27,21 @@
             <form action="{{ route('products.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
-                    <input type="text" name="code" class="form-control" placeholder="کد محصول" value="{{ request()->code ?? null }}" form="search_form">
+                    <input type="text" name="code" class="form-control" placeholder="کد کالا" value="{{ request()->code ?? null }}" form="search_form">
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="category" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="1">
+                        <option value="all">شرح کالا (همه)</option>
+                        @foreach(\App\Models\Category::all(['id','name']) as $category)
+                            <option value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
-                    <input type="text" name="title" class="form-control" placeholder="عنوان محصول" value="{{ request()->title ?? null }}" form="search_form">
+                    <input type="text" name="title" class="form-control" placeholder="مدل کالا" value="{{ request()->title ?? null }}" form="search_form">
                 </div>
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>

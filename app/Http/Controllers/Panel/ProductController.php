@@ -80,7 +80,6 @@ class ProductController extends Controller
     }
 
 
-
     public function show(Product $product)
     {
         //
@@ -161,9 +160,13 @@ class ProductController extends Controller
     {
         $this->authorize('products-list');
 
-        $products = Product::where('title', 'like', "%$request->title%")->when($request->code, function ($query) use ($request) {
-            return $query->where('code', $request->code);
-        })->latest()->paginate(30);
+        $products = Product::where('title', 'like', "%$request->title%")
+            ->when($request->code, function ($query) use ($request) {
+                return $query->where('code', $request->code);
+            })
+            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                $query->where('category_id', $request->category);
+            })->latest()->paginate(30);
 
         return view('panel.products.index', compact('products'));
     }
@@ -180,7 +183,7 @@ class ProductController extends Controller
     {
         $this->authorize('price-history');
 
-        $products_id = Product::where('title','like', "%$request->title%")->pluck('id');
+        $products_id = Product::where('title', 'like', "%$request->title%")->pluck('id');
         $pricesHistory = PriceHistory::whereIn('product_id', $products_id)->latest()->paginate(30);
 
         return view('panel.prices.history', compact('pricesHistory'));
@@ -198,9 +201,10 @@ class ProductController extends Controller
         return Excel::download(new \App\Exports\ProductsExport, 'products.xlsx');
     }
 
-    private function json_properties($request){
+    private function json_properties($request)
+    {
         $items = [];
-        foreach ($request->colors as $key => $color){
+        foreach ($request->colors as $key => $color) {
             $items[] = [
                 'color' => $color,
                 'print_count' => $request->print_count[$key],
@@ -212,28 +216,28 @@ class ProductController extends Controller
 
     private function priceHistory($product, $request)
     {
-        if ($request->system_price != $product->system_price){
+        if ($request->system_price != $product->system_price) {
             $product->histories()->create([
                 'price_field' => 'system_price',
                 'price_amount_from' => $product->system_price,
                 'price_amount_to' => $request->system_price,
             ]);
         }
-        if ($request->partner_price_tehran != $product->partner_price_tehran){
+        if ($request->partner_price_tehran != $product->partner_price_tehran) {
             $product->histories()->create([
                 'price_field' => 'partner_price_tehran',
                 'price_amount_from' => $product->partner_price_tehran,
                 'price_amount_to' => $request->partner_price_tehran,
             ]);
         }
-        if ($request->partner_price_other != $product->partner_price_other){
+        if ($request->partner_price_other != $product->partner_price_other) {
             $product->histories()->create([
                 'price_field' => 'partner_price_other',
                 'price_amount_from' => $product->partner_price_other,
                 'price_amount_to' => $request->partner_price_other,
             ]);
         }
-        if ($request->single_price != $product->single_price){
+        if ($request->single_price != $product->single_price) {
             $product->histories()->create([
                 'price_field' => 'single_price',
                 'price_amount_from' => $product->single_price,
@@ -241,6 +245,7 @@ class ProductController extends Controller
             ]);
         }
     }
+
     public function getModelsByCategory(Request $request)
     {
         $models = ProductModel::where('category_id', $request->category_id)->get();
