@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PDF;
 
 class PriceController extends Controller
@@ -22,8 +23,13 @@ class PriceController extends Controller
     {
         $this->authorize('prices-list');
 
-        if (auth()->user()->isCEO() || auth()->user()->isAdmin() || auth()->user()->isOrgan()){
-            $sellers = DB::table('price_list_sellers')->get();
+        if (auth()->user()->isCEO() || auth()->user()->isAdmin() || auth()->user()->isOrgan()) {
+            // فیلتر دسته‌بندی روی فروشنده‌ها
+            $sellers = DB::table('price_list_sellers')
+                ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                    $query->where('category_id', $request->category);
+                })
+                ->get();
             $products = Product::query()
                 ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                     $query->where('category_id', $request->category);
@@ -31,10 +37,10 @@ class PriceController extends Controller
                 ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
                     $query->where('id', $request->product_id);
                 })
-                ->latest()->get();
+                ->orderByDesc('brand_id')->get();
 
-            return view('panel.prices.other-list',compact('sellers','products'));
-        }else{
+            return view('panel.prices.other-list', compact('sellers', 'products'));
+        } else {
             return view('panel.prices.other-list-printable');
         }
     }
@@ -44,40 +50,56 @@ class PriceController extends Controller
         $this->authorize('prices-list');
 
         $items = json_decode($request->items, true);
+
+        // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'بروزرسانی قیمت‌ها',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . ' قیمت‌ها را برای '. ' کالاها بروزرسانی کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') قیمت‌ها را برای کالاها بروزرسانی کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
 
         foreach ($items as $item) {
-            $price = trim(str_replace('-', null, $item['price']));
-            $price = trim(str_replace(',', null, $price));
-            $price = $price == '' ? null : $price;
+            try {
+                // حذف فرمت‌های اضافی از قیمت
+                $price = trim(str_replace(['-', ','], '', $item['price']));
+                $price = $price === '' ? null : $price;
 
-            if ($price) {
-                DB::table('price_list')->where([
+                if ($price) {
+                    // درج یا بروزرسانی قیمت در جدول price_list
+                    DB::table('price_list')->updateOrInsert(
+                        [
+                            'seller_id' => $item['seller_id'],
+                            'product_id' => $item['product_id']
+                        ],
+                        [
+                            'price' => $price,
+                            'updated_at' => now(),
+                        ]
+                    );
+
+                    // به‌روزرسانی فیلد market_price در جدول محصولات
+                    Product::where('id', $item['product_id'])->update(['market_price' => $price]);
+                } else {
+                    // حذف رکورد اگر قیمت null است
+                    DB::table('price_list')->where([
+                        'seller_id' => $item['seller_id'],
+                        'product_id' => $item['product_id']
+                    ])->delete();
+                }
+            } catch (\Exception $e) {
+                // ثبت خطا در لاگ
+                Log::error('خطا در بروزرسانی قیمت', [
                     'seller_id' => $item['seller_id'],
-                    'product_id' => $item['product_id'] // تغییر از model_id به product_id
-                ])->updateOrInsert([
-                    'seller_id' => $item['seller_id'],
-                    'product_id' => $item['product_id'] // تغییر از model_id به product_id
-                ], [
-                    'seller_id' => $item['seller_id'],
-                    'product_id' => $item['product_id'], // تغییر از model_id به product_id
-                    'price' => $price
+                    'product_id' => $item['product_id'],
+                    'price' => $item['price'],
+                    'error' => $e->getMessage()
                 ]);
-            } else {
-                DB::table('price_list')->where([
-                    'seller_id' => $item['seller_id'],
-                    'product_id' => $item['product_id'] // تغییر از model_id به product_id
-                ])->delete();
             }
         }
 
-        return 'ok';
+        return response()->json(['message' => 'قیمت‌ها با موفقیت به‌روزرسانی شدند'], 200);
     }
 
     public function updatePrice2(Request $request)
@@ -90,7 +112,7 @@ class PriceController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'بروزرسانی قیمت‌ها',
-            'description' => 'کاربر ' . auth()->user()->family .'(' . Auth::user()->role->label . ')' . ' قیمت‌ها را برای ' . ' محصولات ماندگار بروزرسانی کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . ' قیمت‌ها را برای ' . ' محصولات ماندگار بروزرسانی کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);  // ثبت فعالیت
@@ -104,14 +126,14 @@ class PriceController extends Controller
             DB::table('products')->where('id', $item['id'])->update([$item['field'] => $price]);
 
             // ذخیره تغییرات در تاریخچه قیمت‌ها
-            \App\Models\PriceHistory::updateOrCreate(
+            \App\Models\PriceHistory::create(
                 [
                     'product_id' => $item['id'],
                     'price_field' => $item['field'],
                 ],
                 [
-                    'price_amount_from' => $price,  // تغییر این قسمت با توجه به نیاز
-                    'price_amount_to' => $price,    // تغییر این قسمت با توجه به نیاز
+                    'price_amount_from' => $price,
+                    'price_amount_to' => $price,
                 ]
             );
         }
@@ -148,7 +170,7 @@ class PriceController extends Controller
         ]);
 
 
-        $name = 'لیست '.Product::PRICE_TYPE[$type];
+        $name = 'لیست ' . Product::PRICE_TYPE[$type];
 
         return $pdf->stream("$name.pdf");
     }
@@ -157,7 +179,7 @@ class PriceController extends Controller
     {
         $this->authorize('prices-list');
 
-        if (!DB::table('price_list_models')->where('name', $request->name)->exists()){
+        if (!DB::table('price_list_models')->where('name', $request->name)->exists()) {
             DB::table('price_list_models')->insert(['name' => $request->name]);
             $activityDescription = ' مدل با نام "' . $request->name . ' توسط کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . '" با موفقیت اضافه شد.';
             Activity::create([
@@ -167,7 +189,7 @@ class PriceController extends Controller
                 'created_at' => now(),
             ]);
             return back();
-        }else{
+        } else {
             return response()->json(['data' => ['message' => 'این مدل موجود می باشد']]);
         }
     }
@@ -175,23 +197,39 @@ class PriceController extends Controller
     public function addSeller(Request $request)
     {
         $this->authorize('prices-list');
-        if (!DB::table('price_list_sellers')->where('name', $request->name)->exists()){
-            DB::table('price_list_sellers')->insert(['name' => $request->name]);
-            // ثبت موفقیت‌آمیز در فعالیت‌ها
-            $activityDescription = ' تامین‌کننده با نام "'  . $request->name . ' توسط کاربر ' . auth()->user()->family .'(' . Auth::user()->role->label . ')' . '" با موفقیت اضافه شد.';
+
+        // اعتبارسنجی داده‌های ورودی
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|exists:categories,id',
+        ], [
+            'name.required' => 'نام فروشنده الزامی است.',
+            'category.required' => 'دسته‌بندی الزامی است.',
+            'category.exists' => 'دسته‌بندی انتخاب شده معتبر نیست.',
+        ]);
+
+        // بررسی وجود فروشنده
+        if (!DB::table('price_list_sellers')->where('name', $validated['name'])->exists()) {
+            DB::table('price_list_sellers')->insert([
+                'name' => $validated['name'],
+                'category_id' => $validated['category'],
+            ]);
 
             // ثبت فعالیت
+            $activityDescription = 'تامین‌کننده با نام "' . $validated['name'] . '" توسط کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . '" با موفقیت اضافه شد.';
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'افزودن تامین‌کننده جدید',
                 'description' => $activityDescription,
                 'created_at' => now(),
             ]);
-            return back();
-        }else{
-            return response()->json(['data' => ['message' => 'این تامین کننده موجود می باشد']]);
+
+            return response()->json(['data' => ['seller_id' => DB::getPdo()->lastInsertId()]]);
+        } else {
+            return response()->json(['data' => null, 'message' => 'این تامین‌کننده موجود است.']);
         }
     }
+
 
     public function removeSeller(Request $request)
     {
@@ -211,7 +249,7 @@ class PriceController extends Controller
         }
 
         // ثبت فعالیت برای حذف تامین‌کننده
-        $activityDescription = 'کاربر ' . auth()->user()->family .'(' . Auth::user()->role->label . ')' . ' اقدام به حذف تامین‌کننده با نام "' . $seller->name . '" از لیست تامین‌کنندگان نمود.';
+        $activityDescription = 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . ' اقدام به حذف تامین‌کننده با نام "' . $seller->name . '" از لیست تامین‌کنندگان نمود.';
 
         // حذف قیمت‌های مربوطه به تامین‌کننده
         DB::table('price_list')->where('seller_id', $seller->id)->delete();
@@ -236,7 +274,7 @@ class PriceController extends Controller
     {
         $this->authorize('prices-list');
         // ثبت فعالیت برای حذف مدل
-        $activityDescription = 'کاربر ' . auth()->user()->family .'(' . Auth::user()->role->label . ')' . ' اقدام به حذف مدل با نام "' . $request->name . '" از لیست مدل‌ها نمود.';
+        $activityDescription = 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')' . ' اقدام به حذف مدل با نام "' . $request->name . '" از لیست مدل‌ها نمود.';
         $model = DB::table('price_list_models')->where('name', $request->name)->first();
         DB::table('price_list')->where('model_id', $model->id)->delete();
         DB::table('price_list_models')->where('name', $request->name)->delete();
