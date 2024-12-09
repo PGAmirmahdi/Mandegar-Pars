@@ -174,7 +174,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('get-post-status', [PacketController::class, 'getPostStatus'])->name('get-post-status');
 
     // Customers
-    Route::resource('customers', CustomerController::class)->except('show');
+    Route::resource('customers', CustomerController::class);
     Route::post('get-customer-info/{customer}', [CustomerController::class, 'getCustomerInfo'])->name('getCustomerInfo');
     Route::match(['get', 'post'], 'search/customers', [CustomerController::class, 'search'])->name('customers.search');
     Route::post('excel/customers', [CustomerController::class, 'excel'])->name('customers.excel');

@@ -69,13 +69,10 @@
                         <th>کد مشتری</th>
                         <th>نام سازمان/فروشگاه</th>
                         <th>نوع</th>
-                        @can('admin')
                         <th>شماره تماس 1</th>
-                        @endcan
                         <th>تعداد سفارش</th>
-                        @can('admin')
                         <th>تاریخ ایجاد</th>
-                        @endcan
+                            <th>جزئیات</th>
                         @can('customers-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -91,13 +88,14 @@
                             <td>{{ $customer->code ?? '---' }}</td>
                             <td>{{ $customer->name }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
-                            @can('admin')
                             <td>{{ $customer->phone1 }}</td>
-                            @endcan
                             <td>{{ $customer->invoices()->count() }}</td>
-                            @can('admin')
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>
-                            @endcan
+                            <td>
+                                <a class="btn btn-info btn-floating" href="{{ route('customers.show', ['customer' => $customer->id, 'url' => request()->getRequestUri()]) }}">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </td>
                             @can('customers-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating" href="{{ route('customers.edit', ['customer' => $customer->id, 'url' => request()->getRequestUri()]) }}">
