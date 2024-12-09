@@ -12,12 +12,12 @@
                     <thead>
                     <tr>
                         <th class="bg-primary"></th>
-                        <th colspan="{{ \Illuminate\Support\Facades\DB::table('price_list_sellers')->count() }}">تامین کننده</th>
+                        <th colspan="{{ \Illuminate\Support\Facades\DB::table('price_list_sellers')->count() }}">فروشنده</th>
                     </tr>
                     <tr>
                         <th>
                             <div style="display: block ruby">
-                                <span>برند/مدل</span>
+                                <span>برند/کالا</span>
                             </div>
                         </th>
                         @foreach($sellers as $seller)
