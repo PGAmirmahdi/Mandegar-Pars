@@ -2,7 +2,7 @@
 @section('title','لیست قیمت ها')
 @php
     $sellers = \Illuminate\Support\Facades\DB::table('price_list_sellers')->get();
-    $products = \Illuminate\Support\Facades\DB::table('products')->get(); // محصولات را از جدول products دریافت می‌کنیم
+    $products = \Illuminate\Support\Facades\DB::table('products')->paginate(20); // محصولات را از جدول products دریافت می‌کنیم
 @endphp
 @section('styles')
     <style>
@@ -120,12 +120,18 @@
     <div class="card">
         <div class="card-body">
             <h3 class="text-center mb-4">لیست قیمت ها - (ریال)</h3>
+            <div class="mb-3">
+                <input type="text" id="productSearch" class="form-control" placeholder="جستجوی محصولات...">
+            </div>
+            <div class="d-flex justify-content-center">
+                {{ $products->links() }}
+            </div>
             <div style="overflow-x: auto" class="tableFixHead">
                 <table class="table table-striped table-bordered dtr-inline text-center" id="price_table">
                     <thead>
                     <tr>
                         <th class="bg-primary"></th>
-                        <th colspan="{{ \Illuminate\Support\Facades\DB::table('price_list_sellers')->count() }}">
+                        <th colspan="{{$sellers->count()}}">
                             <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addSellerModal" id="btn_seller"></i>
                             فروشنده
                         </th>
@@ -150,7 +156,7 @@
                         <th style="display: block ruby">
                             <span>{{ $product->title }}</span>
                         </th>
-                        @for($i = 0; $i < \Illuminate\Support\Facades\DB::table('price_list_sellers')->count(); $i++)
+                        @for($i = 0; $i < $sellers->count(); $i++)
                             @php
                                 $item = \Illuminate\Support\Facades\DB::table('price_list')
                                     ->where(['product_id' => $product->id, 'seller_id' => $sellers[$i]->id])
@@ -168,6 +174,9 @@
                     </tr>
                     </tfoot>
                 </table>
+            </div>
+            <div class="d-flex justify-content-center">
+                {{ $products->links() }}
             </div>
             <button class="btn btn-primary my-3 mx-1" id="btn_save">
                 <i class="fa fa-check mr-2"></i>
@@ -364,6 +373,22 @@
                             });
                         }
                     });
+                }
+            });
+        });
+        // جستجوی محصولات
+        $('#productSearch').on('keyup', function () {
+            let query = $(this).val();
+
+            $.ajax({
+                url: '/panel/search-products',
+                type: 'GET',
+                data: { query: query },
+                success: function (res) {
+                    $('#productTableContainer').html(res.view);
+                },
+                error: function () {
+                    alert('خطا در بارگذاری محصولات');
                 }
             });
         });
