@@ -144,7 +144,7 @@
     <script src="{{ asset('/assets/js/number2word.js') }}" type="text/javascript"></script>
     <script>
         var number2Word = new Number2Word();
-        @if(\App\Models\Category::where('slug','printer')->first()->id)
+        @if(\App\Models\Category::where('slug','printer')->first()->id != null)
         var printer_category_id = "{{ \App\Models\Category::where('slug','printer')->first()->id }}";
 
         var colors = [];
