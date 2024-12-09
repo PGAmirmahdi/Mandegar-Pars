@@ -134,6 +134,17 @@
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="product_id" form="search_form"
+                            class="js-example-basic-single select2-hidden-accessible" data-select2-id="7">
+                        <option value="all">نام کالا</option>
+                        @foreach($products as $product)
+                            <option value="{{ $product->id }}" {{ request()->product_id == $product->id ? 'selected' : '' }}>
+                                {{ $product->title }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
             </div>
@@ -191,9 +202,9 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="d-flex justify-content-center">
-                {{ $products->links() }}
-            </div>
+{{--            <div class="d-flex justify-content-center">--}}
+{{--                {{ $products->links() }}--}}
+{{--            </div>--}}
             <button class="btn btn-primary my-3 mx-1" id="btn_save">
                 <i class="fa fa-check mr-2"></i>
                 <span>ذخیره</span>

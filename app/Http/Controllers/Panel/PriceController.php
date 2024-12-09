@@ -24,7 +24,15 @@ class PriceController extends Controller
 
         if (auth()->user()->isCEO() || auth()->user()->isAdmin() || auth()->user()->isOrgan()){
             $sellers = DB::table('price_list_sellers')->get();
-            $products = Product::where('category_id', 'like', "%$request->category%")->latest()->paginate(30);
+            $products = Product::query()
+                ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                    $query->where('category_id', $request->category);
+                })
+                ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
+                    $query->where('id', $request->product_id);
+                })
+                ->latest()->get();
+
             return view('panel.prices.other-list',compact('sellers','products'));
         }else{
             return view('panel.prices.other-list-printable');
