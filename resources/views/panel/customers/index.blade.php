@@ -94,7 +94,7 @@
                             <td>{{ $customer->code ?? '---' }}</td>
                             <td>{{ $customer->name }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
-                            <td>{{$customer->province}}</td>
+                            <td>{{ $customer->province }}</td>
                             <td>{{ $customer->phone1 }}</td>
                             <td>{{ $customer->invoices()->count() }}</td>
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>
