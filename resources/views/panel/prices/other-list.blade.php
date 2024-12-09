@@ -131,7 +131,7 @@
         <div class="card-body">
             <div class="d-flex row justify-content-between align-items-center px-4">
                 <h3 class="text-left mb-4 d-inline">لیست قیمت ها - (ریال)</h3>
-                <h3 class="text-right mb-4 d-inline">{{ verta(now())->format('l - Y/m/d') }}</h3>
+                <h3 class="text-right mb-4 d-inline">{{ verta(now())->format('Y/m/d') . ' - ' .  verta(now())->format('l')}}</h3>
             </div>
             <form action="{{ route('other-prices-list') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
