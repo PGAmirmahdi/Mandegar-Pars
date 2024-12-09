@@ -43,8 +43,8 @@
                         <th>ردیف</th>
                         <th>کد کالا</th>
                         <th>شرح کالا</th>
-                        <th>مدل</th>
                         <th>برند</th>
+                        <th>مدل</th>
                         @can('admin')
                         <th>تاریخ ایجاد</th>
                         @endcan
@@ -62,8 +62,8 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $product->code }}</td>
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
-                            <td>{{ $product->title }}</td>
                             <td>{{ $product->productModels->name ?? 'برند نامشخص' }}</td>
+                            <td>{{ $product->title }}</td>
                             @can('admin')
                             <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
                             @endcan
