@@ -15,16 +15,17 @@ class PriceController extends Controller
     public function index()
     {
         $this->authorize('prices-list');
-
         return view('panel.prices.list');
     }
 
-    public function otherList()
+    public function otherList(Request $request)
     {
         $this->authorize('prices-list');
 
         if (auth()->user()->isCEO() || auth()->user()->isAdmin() || auth()->user()->isOrgan()){
-            return view('panel.prices.other-list');
+            $sellers = DB::table('price_list_sellers')->get();
+            $products = Product::where('category_id', 'like', "%$request->category%")->latest()->paginate(30);
+            return view('panel.prices.other-list',compact('sellers','products'));
         }else{
             return view('panel.prices.other-list-printable');
         }

@@ -1,26 +1,22 @@
 @extends('panel.layouts.master')
 @section('title','لیست قیمت ها')
-@php
-    $sellers = \Illuminate\Support\Facades\DB::table('price_list_sellers')->get();
-    $products = \Illuminate\Support\Facades\DB::table('products')->paginate(20); // محصولات را از جدول products دریافت می‌کنیم
-@endphp
 @section('styles')
     <style>
-        #price_table td:hover{
+        #price_table td:hover {
             background-color: #e3daff !important;
         }
 
-        #price_table .item{
+        #price_table .item {
             text-align: center;
             background: transparent;
             border: 0;
         }
 
-        #price_table .item:focus{
+        #price_table .item:focus {
             border-bottom: 2px solid #5d4a9c;
         }
 
-        #btn_save{
+        #btn_save {
             width: 100%;
             justify-content: center;
             border-radius: 0;
@@ -28,11 +24,11 @@
             font-size: larger;
         }
 
-        #price_table{
+        #price_table {
             box-shadow: 0 5px 5px 0 lightgray;
         }
 
-        #btn_model, #btn_seller, .btn_remove_seller, .btn_remove_model{
+        #btn_model, #btn_seller, .btn_remove_seller, .btn_remove_model {
             vertical-align: middle;
             cursor: pointer;
         }
@@ -43,7 +39,7 @@
             height: 800px !important;
         }
 
-        .tableFixHead thead th{
+        .tableFixHead thead th {
             position: sticky !important;
             top: 0 !important;
             z-index: 1 !important;
@@ -63,6 +59,7 @@
             background: #fff !important;
             border: 1px solid #dee2e6 !important;
         }
+
         /* table th sticky */
     </style>
 @endsection
@@ -119,9 +116,26 @@
     {{-- end Add Seller Modal --}}
     <div class="card">
         <div class="card-body">
-            <h3 class="text-center mb-4">لیست قیمت ها - (ریال)</h3>
-            <div class="mb-3">
-                <input type="text" id="productSearch" class="form-control" placeholder="جستجوی محصولات...">
+            <div class="d-flex row justify-content-between align-items-center px-4">
+                <h3 class="text-left mb-4 d-inline">لیست قیمت ها - (ریال)</h3>
+                <h3 class="text-right mb-4 d-inline">{{ verta(now())->format('Y/m/d') }}</h3>
+            </div>
+            <form action="{{ route('other-prices-list') }}" method="get" id="search_form"></form>
+            <div class="row mb-3">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="category" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="1">
+                        <option value="all">دسته بندی (همه)</option>
+                        @foreach(\App\Models\Category::all(['id','name']) as $category)
+                            <option value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
             </div>
             <div style="overflow-x: auto" class="tableFixHead">
                 <table class="table table-striped table-bordered dtr-inline text-center" id="price_table">
@@ -129,7 +143,8 @@
                     <tr>
                         <th class="bg-primary"></th>
                         <th colspan="{{$sellers->count()}}">
-                            <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addSellerModal" id="btn_seller"></i>
+                            <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addSellerModal"
+                               id="btn_seller"></i>
                             فروشنده
                         </th>
                     </tr>
@@ -141,29 +156,33 @@
                         </th>
                         @foreach($sellers as $seller)
                             <th class="seller">
-                                <i class="fa fa-times text-danger btn_remove_seller mr-2" data-toggle="modal" data-target="#removeSellerModal" data-seller_id="{{ $seller->id }}"></i>
+                                <i class="fa fa-times text-danger btn_remove_seller mr-2" data-toggle="modal"
+                                   data-target="#removeSellerModal" data-seller_id="{{ $seller->id }}"></i>
                                 <span>{{ $seller->name }}</span>
                             </th>
                         @endforeach
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($products as $product) {{-- استفاده از جدول محصولات --}}
-                    <tr>
-                        <th style="display: block ruby">
-                            <span>{{ $product->title }}</span>
-                        </th>
-                        @for($i = 0; $i < $sellers->count(); $i++)
-                            @php
-                                $item = \Illuminate\Support\Facades\DB::table('price_list')
-                                    ->where(['product_id' => $product->id, 'seller_id' => $sellers[$i]->id])
-                                    ->first();
-                            @endphp
-                            <td>
-                                <input type="text" class="item" data-product_id="{{ $product->id }}" data-seller_id="{{ $sellers[$i]->id }}" value="{{ $item ? number_format($item->price) : '-' }}">
-                            </td>
-                        @endfor
-                    </tr>
+                    @foreach($products as $product)
+                        {{-- استفاده از جدول محصولات --}}
+                        <tr>
+                            <th style="display: block ruby">
+                                <span>{{ $product->title }}</span>
+                            </th>
+                            @for($i = 0; $i < $sellers->count(); $i++)
+                                @php
+                                    $item = \Illuminate\Support\Facades\DB::table('price_list')
+                                        ->where(['product_id' => $product->id, 'seller_id' => $sellers[$i]->id])
+                                        ->first();
+                                @endphp
+                                <td>
+                                    <input type="text" class="item" data-product_id="{{ $product->id }}"
+                                           data-seller_id="{{ $sellers[$i]->id }}"
+                                           value="{{ $item ? number_format($item->price) : '-' }}">
+                                </td>
+                            @endfor
+                        </tr>
                     @endforeach
                     </tbody>
                     <tfoot>
@@ -189,7 +208,7 @@
         $(document).ready(function () {
             // btn save
             $('#btn_save').on('click', function () {
-                $(this).attr('disabled','disabled');
+                $(this).attr('disabled', 'disabled');
                 $('#btn_save span').text('درحال ذخیره سازی...')
                 let items = [];
 
@@ -231,7 +250,7 @@
             })
 
             // item changed
-            $(document).on('keyup','.item', function () {
+            $(document).on('keyup', '.item', function () {
                 $(this).val(addCommas($(this).val()))
             })
 
@@ -260,7 +279,7 @@
                 }
 
                 seperatedNumber = funcReverseString(tmpSeperatedNumber);
-                if(seperatedNumber[0] === ",") seperatedNumber = seperatedNumber.replace("," , "");
+                if (seperatedNumber[0] === ",") seperatedNumber = seperatedNumber.replace(",", "");
                 return seperatedNumber;
             }
         })
@@ -380,7 +399,7 @@
             $.ajax({
                 url: '/panel/search-products',
                 type: 'GET',
-                data: { query: query },
+                data: {query: query},
                 success: function (res) {
                     $('#productTableContainer').html(res.view);
                 },

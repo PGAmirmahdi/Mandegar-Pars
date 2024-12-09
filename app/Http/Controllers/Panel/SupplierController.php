@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Activity;
 use App\Models\Customer;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -17,29 +19,29 @@ class SupplierController extends Controller
 {
     public function index()
     {
-        $this->authorize('customers-list');
+        $this->authorize('suppliers-list');
 
-        $customers = Customer::orderByRaw('-code DESC')->paginate(30);
-        return view('panel.customers.index', compact('customers'));
+        $suppliers = Supplier::orderByRaw('-code DESC')->paginate(30);
+
+        return view('panel.suppliers.index', compact('suppliers'));
     }
 
     public function create()
     {
-        $this->authorize('customers-create');
+        $this->authorize('suppliers-create');
 
-        return view('panel.customers.create');
+        return view('panel.suppliers.create');
     }
 
-    public function store(StoreCustomerRequest $request)
+    public function store(StoreSupplierRequest $request)
     {
-        $this->authorize('customers-create');
+        $this->authorize('suppliers-create');
 
-        Customer::create([
+        Supplier::create([
             'user_id' => auth()->id(),
             'name' => $request->name,
-            'code' => $request->customer_code,
-            'type' => $request->type,
-            'customer_type' => $request->customer_type,
+            'code' => 'SU-' . random_int(10000000, 99999999),
+            'supplier_type'=> $request->supplier_type,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
             'postal_code' => $request->postal_code,
@@ -47,49 +49,46 @@ class SupplierController extends Controller
             'city' => $request->city,
             'phone1' => $request->phone1,
             'phone2' => $request->phone2,
-            'phone3' => $request->phone3,
             'address1' => $request->address1,
             'address2' => $request->address2,
             'description' => $request->description,
         ]);
         Activity::create([
             'user_id' => auth()->id(),
-            'action' => 'ایجاد مشتری',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  مشتری ' . $request->name . ' را ایجاد کرد.',
+            'action' => 'ایجاد تامین کننده',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  تامین کننده به نام ' . $request->name . ' را ایجاد کرد.',
         ]);
-        alert()->success('مشتری مورد نظر با موفقیت ایجاد شد','ایجاد مشتری');
-        return redirect()->route('customers.index');
+        alert()->success('تامین کننده مورد نظر با موفقیت ایجاد شد','ایجاد تامین کننده');
+        return redirect()->route('suppliers.index');
     }
 
-    public function show(Customer $customer)
+    public function show(Supplier $suppliers)
     {
         $url = \request()->url;
 
-        return view('panel.customers.show', compact('customer','url'));
+        return view('panel.suppliers.show', compact('suppliers','url'));
     }
 
-    public function edit(Customer $customer)
+    public function edit(Supplier $suppliers)
     {
-        $this->authorize('customers-edit');
+        $this->authorize('suppliers-edit');
 
         $url = \request()->url;
 
-        return view('panel.customers.edit', compact('customer','url'));
+        return view('panel.suppliers.edit', compact('suppliers','url'));
     }
 
-    public function update(UpdateCustomerRequest $request, Customer $customer)
+    public function update(UpdateCustomerRequest $request, Supplier $suppliers)
     {
         $this->authorize('customers-edit');
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'ایجاد مشتری',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  مشتری ' . $customer->name . ' را ویرایش کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  مشتری ' . $suppliers->name . ' را ویرایش کرد.',
         ]);
-        $customer->update([
+        $suppliers->update([
             'name' => $request->name,
-            'code' => Gate::allows('sales-manager') ? $request->customer_code : $customer->code,
-            'type' => $request->type,
-            'customer_type' => $request->customer_type,
+            'code' => Gate::allows('sales-manager') ? $request->customer_code : $suppliers->code,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
             'postal_code' => $request->postal_code,
@@ -97,14 +96,13 @@ class SupplierController extends Controller
             'city' => $request->city,
             'phone1' => $request->phone1,
             'phone2' => $request->phone2,
-            'phone3' => $request->phone3,
             'address1' => $request->address1,
             'address2' => $request->address2,
             'description' => $request->description,
         ]);
         $url = $request->url;
 
-        alert()->success('مشتری مورد نظر با موفقیت ویرایش شد','ویرایش مشتری');
+        alert()->success('تامین کننده مورد نظر با موفقیت ویرایش شد','ویرایش تامین کننده');
         return redirect($url);
     }
 
@@ -143,26 +141,26 @@ class SupplierController extends Controller
     {
         Log::build([
             'driver' => 'single',
-            'path' => storage_path('logs/customers-list.log'),
+            'path' => storage_path('logs/suppliers-list.log'),
         ])->info(\request()->ip());
 
-        $customers = Customer::paginate(30);
+        $suppliers = Supplier::paginate(30);
 
-        return view('panel.customers.list', compact('customers'));
+        return view('panel.suppliers.list', compact('suppliers'));
     }
 
-    public function getCustomerInfo(Customer $customer)
+    public function getSupplierInfo(Supplier $supplier)
     {
-        return response()->json(['data' => $customer]);
+        return response()->json(['data' => $supplier]);
     }
 
     public function excel()
     {
         Activity::create([
             'user_id' => auth()->id(),
-            'action' => 'خروجی اکسل از مشتریان',
+            'action' => 'خروجی اکسل از تامین کنندگان',
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ' از مشتریان خروجی اکسل گرفت',
         ]);
-        return Excel::download(new \App\Exports\CustomersExport, 'customers.xlsx');
+        return Excel::download(new \App\Exports\SuppliersExport, 'suppliers.xlsx');
     }
 }
