@@ -64,7 +64,9 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
-        //
+        $url = \request()->url;
+
+        return view('panel.customers.show', compact('customer','url'));
     }
 
     public function edit(Customer $customer)
@@ -125,10 +127,6 @@ class CustomerController extends Controller
 
     public function search(Request $request)
     {
-        $this->authorize('customers-list');
-
-        $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
-        $customer_type = $request->customer_type == 'all' ? array_keys(Customer::CUSTOMER_TYPE) : [$request->customer_type];
         $type = $request->type == 'all' ? array_keys(Customer::TYPE) : [$request->type];
         $customers = Customer::when($request->code, function ($q) use($request){
                 $q->where('code', $request->code);
@@ -136,8 +134,6 @@ class CustomerController extends Controller
             ->when($request->name, function ($q) use($request){
             $q->where('name','like', "%$request->name%");
         })
-            ->whereIn('province', $province)
-            ->whereIn('customer_type', $customer_type)
             ->whereIn('type', $type)
             ->orderByRaw('-code DESC')->paginate(30);
 
