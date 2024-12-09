@@ -54,8 +54,10 @@
                         <th>شماره واتساپ</th>
                         <th>ایمیل</th>
                         <th>کشور</th>
+                        @can('admin')
                         <th>وضعیت</th>
                         <th>پیوست</th>
+                        @endcan
                         <th>تاریخ ایجاد</th>
                         @can('foreign-customers-edit')
                             <th>ویرایش</th>
@@ -91,6 +93,7 @@
                                 @endif
                             </td>
                             <td>{{ $customer->country ?? '---' }}</td>
+                            @can('admin')
                             <td>
                                 <span class="badge badge-{{ \App\Models\ForeignCustomer::STATUS_COLOR[$customer->status] }}">{{ \App\Models\ForeignCustomer::STATUS[$customer->status] }}</span>
                             </td>
@@ -101,6 +104,7 @@
                                     <span class="badge badge-warning">ندارد</span>
                                 @endif
                             </td>
+                            @endcan
                             <td>{{ verta($customer->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('foreign-customers-edit')
                                 <td>
