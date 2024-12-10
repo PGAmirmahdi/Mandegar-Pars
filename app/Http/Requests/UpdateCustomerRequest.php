@@ -25,7 +25,6 @@ class UpdateCustomerRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:customers,name,'.$this->customer->id,
-            'customer_code' => 'nullable|unique:customers,code,'.$this->customer->id,
             'type' => 'required',
             'national_number' => 'required|numeric',
             'postal_code' => 'required|numeric',
