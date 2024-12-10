@@ -103,7 +103,7 @@ class PriceController extends Controller
                     \App\Models\PriceHistory::create([
                         'user_id' => auth()->id(),
                         'product_id' => $item['product_id'],
-                        'price_field' => \App\Models\Seller::find($item['seller_id'])->name, // دریافت نام فروشنده
+                        'price_field' => \App\Models\PriceListSeller::find($item['seller_id'])->name, // دریافت نام فروشنده
                         'price_amount_from' => $previousPrice ?? 0, // مقدار قبلی
                         'price_amount_to' => $price, // مقدار جدید
                     ]));

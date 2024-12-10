@@ -37,7 +37,7 @@
                             <td>{{$item->price_field }}</td>
                             <td>{{ number_format($item->price_amount_from) . ' ريال ' }}</td>
                             <td>{{ number_format($item->price_amount_to) . ' ريال '  }}</td>
-                            <td>{{ verta($item->created_at)->format('H:i - l - Y/m/d') . ' توسط '  . $item->user->name . ' ' . $item->user->family}}</td>
+                            <td>{{ verta($item->created_at)->format('H:i - l - Y/m/d') . ' توسط '  . '(' . $item->user->name . ' ' . $item->user->family . ')'}}</td>
                         </tr>
                     @endforeach
                     </tbody>
