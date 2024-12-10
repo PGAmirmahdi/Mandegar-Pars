@@ -10,9 +10,8 @@
                 @csrf
             </form>
             <div class="row mb-3">
-                <div class="form-group">
-                    <label for="product">انتخاب محصول</label>
-                    <select id="product" name="product_id" class="js-example-basic-single form-control">
+                <div class="form-group w-50">
+                    <select id="productsearch" name="productsearch_id" class="js-example-basic-single form-control">
                         <option value="" disabled selected>محصول مورد نظر را انتخاب کنید</option>
                         @foreach($products as $product)
                             <option value="{{ $product->id }}">{{ $product->title }}</option>
@@ -41,9 +40,9 @@
                         <div class="modal-body">
                             <form id="chartForm">
                                 <div class="form-group">
-                                    <label for="seller">انتخاب محصول</label>
+                                    <label for="seller">انتخاب فروشنده</label>
                                     <select id="seller" name="seller_id" class="js-example-basic-single form-control">
-                                        <option value="" disabled selected>محصول مورد نظر را انتخاب کنید</option>
+                                        <option value="" disabled selected>فروشنده مورد نظر را انتخاب کنید</option>
                                         @foreach($sellers as $seller)
                                             <option value="{{ $seller->id }}">{{ $seller->name }}</option>
                                         @endforeach
