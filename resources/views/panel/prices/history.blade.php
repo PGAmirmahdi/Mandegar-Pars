@@ -10,11 +10,82 @@
                 @csrf
             </form>
             <div class="row mb-3">
-                <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
-                    <input type="text" name="title" class="form-control" placeholder="عنوان کالا" value="{{ request()->title ?? null }}" form="search_form">
+                <div class="form-group">
+                    <label for="product">انتخاب محصول</label>
+                    <select id="product" name="product_id" class="js-example-basic-single form-control">
+                        <option value="" disabled selected>محصول مورد نظر را انتخاب کنید</option>
+                        @foreach($products as $product)
+                            <option value="{{ $product->id }}">{{ $product->title }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                </div>
+                <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#priceChartModal">
+                        مشاهده نمودار تغییرات قیمت
+                    </button>
+                </div>
+            </div>
+            <div class="modal fade" id="priceChartModal" tabindex="-1" role="dialog"
+                 aria-labelledby="priceChartModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="priceChartModalLabel">مشاهده نمودار تغییرات قیمت</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="chartForm">
+                                <div class="form-group">
+                                    <label for="seller">انتخاب محصول</label>
+                                    <select id="seller" name="seller_id" class="js-example-basic-single form-control">
+                                        <option value="" disabled selected>محصول مورد نظر را انتخاب کنید</option>
+                                        @foreach($sellers as $seller)
+                                            <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <!-- انتخاب محصول -->
+                                <div class="form-group">
+                                    <label for="product">انتخاب محصول</label>
+                                    <select id="product" name="product_id" class="js-example-basic-single form-control">
+                                        <option value="" disabled selected>محصول مورد نظر را انتخاب کنید</option>
+                                        @foreach($products as $product)
+                                            <option value="{{ $product->id }}">{{ $product->title }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- تاریخ شروع -->
+                                <div class="form-group">
+                                    <label for="startDate">تاریخ شروع</label>
+                                    <input type="text" class="form-control date-picker-shamsi-list" id="startDate"
+                                           name="start_date" required>
+                                </div>
+
+                                <!-- تاریخ پایان -->
+                                <div class="form-group">
+                                    <label for="endDate">تاریخ پایان</label>
+                                    <input type="text" class="form-control date-picker-shamsi-list" id="endDate"
+                                           name="end_date" required>
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                            <button type="button" class="btn btn-primary" id="generateChart">نمایش نمودار</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-5">
+                <div id="chartContainer" class="m-5" style="display: none;">
+                    <canvas id="priceChart"></canvas>
                 </div>
             </div>
             <div class="table-responsive">
@@ -54,4 +125,101 @@
 @endsection
 @section('scripts')
     <script src="{{ asset('assets/js/lazysizes.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        console.log(window.priceChart);
+        $(document).ready(function () {
+            // رویداد کلیک برای دکمه "نمایش نمودار"
+            $('#generateChart').on('click', function () {
+                const productId = $('#product').val();
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+                const sellerId = $('#seller').val(); // فروشنده انتخاب‌شده
+
+                // بررسی اینکه آیا تمام فیلدها پر شده‌اند
+                if (!productId || !startDate || !endDate) {
+                    alert('لطفاً تمام فیلدها را پر کنید');
+                    return;
+                }
+
+                // ارسال درخواست AJAX به سرور
+                $.ajax({
+                    url: '{{ route("prices.chart.data") }}',
+                    method: 'POST',
+                    data: {
+                        product_id: productId,
+                        start_date: startDate,
+                        end_date: endDate,
+                        seller_id: sellerId, // ارسال فروشنده
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#chartContainer').show(); // نمایش کانتینر نمودار
+                            renderChart(response.data.labels, response.data.prices, response.data.productName, response.data.sellerNames); // رندر کردن نمودار
+                            $('#priceChartModal').modal('hide'); // بستن مدال
+                        } else {
+                            alert(response.message || 'خطایی رخ داده است'); // نمایش پیام خطا
+                        }
+                    },
+                    error: function () {
+                        alert('خطا در ارسال درخواست'); // نمایش پیام خطا در صورت بروز مشکل
+                    }
+                });
+            });
+
+            function renderChart(labels, data, productName, sellerNames) {
+                const ctx = document.getElementById('priceChart').getContext('2d');
+
+                // ایجاد نمودار جدید
+                window.priceChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'قیمت محصول',
+                            data: data,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 2,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `نمودار قیمت محصول: ${productName} - فروشنده: ${sellerNames}`, // تغییر اینجا
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return tooltipItem.raw.toLocaleString() + ' ریال';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return value.toLocaleString() + ' ریال';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
 @endsection

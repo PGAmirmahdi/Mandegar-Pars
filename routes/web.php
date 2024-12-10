@@ -216,6 +216,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('remove-seller', [PriceController::class, 'removeSeller'])->name('removeSeller');
     Route::post('remove-model', [PriceController::class, 'removeModel'])->name('removeModel');
     Route::get('prices-list/pdf/{type}', [PriceController::class, 'priceList'])->name('prices-list-pdf');
+    Route::post('/prices/chart-data', [PriceController::class, 'getPriceChartData'])->name('prices.chart.data');
+
 
     // Price History
     Route::get('price-history', [ProductController::class, 'pricesHistory'])->name('price-history');
