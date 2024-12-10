@@ -4,6 +4,67 @@
     $sellers = \Illuminate\Support\Facades\DB::table('price_list_sellers')->get();
 @endphp
 @section('content')
+    <style>
+        #price_table td:hover {
+            background-color: #e3daff !important;
+        }
+
+        #price_table .item {
+            text-align: center;
+            background: transparent;
+            border: 0;
+        }
+
+        #price_table .item:focus {
+            border-bottom: 2px solid #5d4a9c;
+        }
+
+        #btn_save {
+            width: 100%;
+            justify-content: center;
+            border-radius: 0;
+            padding: .8rem;
+            font-size: larger;
+        }
+
+        #price_table {
+            box-shadow: 0 5px 5px 0 lightgray;
+        }
+
+        #btn_model, #btn_seller, .btn_remove_seller, .btn_remove_model {
+            vertical-align: middle;
+            cursor: pointer;
+        }
+
+        /* table th sticky */
+        .tableFixHead {
+            overflow: auto !important;
+            height: 800px !important;
+        }
+
+        .tableFixHead thead th {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1 !important;
+        }
+
+        /* Just common table stuff. Really. */
+        table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+        }
+
+        th, td {
+            padding: 8px 16px !important;
+        }
+
+        .tableFixHead thead th {
+            background: #fff !important;
+            border: 1px solid #dee2e6 !important;
+        }
+
+        /* table th sticky */
+    </style>
     <div class="card">
         <div class="card-body">
             <div class="d-flex row justify-content-between align-items-center px-4">
