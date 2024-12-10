@@ -19,7 +19,10 @@ class PriceHistory extends Model
         'domestic_price' => 'قیمت داخلی',
         'market_price'=>'قیمت بازار',
     ];
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function product()
     {
         return $this->belongsTo(Product::class);
