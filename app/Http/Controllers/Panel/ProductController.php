@@ -166,7 +166,11 @@ class ProductController extends Controller
             })
             ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                 $query->where('category_id', $request->category);
+            })
+            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+                $query->where('brand_id', $request->model);
             })->latest()->paginate(30);
+
 
         return view('panel.products.index', compact('products'));
     }

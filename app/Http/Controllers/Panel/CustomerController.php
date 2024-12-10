@@ -20,7 +20,7 @@ class CustomerController extends Controller
     {
         $this->authorize('customers-list');
 
-        $customers = Customer::orderByRaw('-code DESC')->paginate(30);
+        $customers = Customer::orderByDesc('id')->paginate(30);
         return view('panel.customers.index', compact('customers'));
     }
 
@@ -38,7 +38,7 @@ class CustomerController extends Controller
         Customer::create([
             'user_id' => auth()->id(),
             'name' => $request->name,
-            'code' => $request->customer_code,
+            'code' => 'CU-' . random_int(100000000, 999999999),
             'type' => $request->type,
             'customer_type' => $request->customer_type,
             'economical_number' => $request->economical_number,
@@ -88,7 +88,6 @@ class CustomerController extends Controller
         ]);
         $customer->update([
             'name' => $request->name,
-            'code' => Gate::allows('sales-manager') ? $request->customer_code : $customer->code,
             'type' => $request->type,
             'customer_type' => $request->customer_type,
             'economical_number' => $request->economical_number,
