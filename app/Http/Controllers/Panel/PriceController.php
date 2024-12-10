@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\PriceHistory;
+use App\Models\PriceListSeller;
 use App\Models\Product;
+use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Morilog\Jalali\Jalalian;
 use PDF;
 
 class PriceController extends Controller
@@ -317,4 +321,53 @@ class PriceController extends Controller
         ]);
         return back();
     }
+    public function getPriceChartData(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        // تبدیل تاریخ‌ها به فرمت میلادی
+        $startDate = Verta::parse($request->start_date)->datetime();
+        $endDate = Verta::parse($request->end_date)->datetime();
+
+        // دریافت تاریخچه قیمت‌ها
+        $prices = PriceHistory::where('product_id', $request->product_id)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('created_at')
+            ->get();
+
+        if ($prices->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'داده‌ای برای این بازه وجود ندارد.']);
+        }
+
+        // آماده‌سازی داده‌ها برای نمودار
+        $labels = $prices->map(function ($price) {
+            return verta($price->created_at)->format('Y/m/d');
+        });
+
+        $pricesData = $prices->map(function ($price) {
+            return $price->price_amount_to;
+        });
+
+        // دریافت نام محصول
+        $product = Product::find($request->product_id);
+
+        // نام فروشنده‌ها را از هر رکورد قیمت دریافت می‌کنیم
+        $sellerNames = $prices->pluck('price_field')->first(); // دریافت نام فروشنده‌ها و حذف تکراری‌ها
+
+        // بازگشت پاسخ
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'labels' => $labels,
+                'prices' => $pricesData,
+                'productName' => $product->title,
+                'sellerNames' => $sellerNames, // لیست نام فروشنده‌ها
+            ]
+        ]);
+    }
+
 }
