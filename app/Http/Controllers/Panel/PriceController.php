@@ -55,7 +55,7 @@ class PriceController extends Controller
                     $query->where('id', $request->product_id);
                 })
                 ->orderByDesc('brand_id')->get();
-            return view('panel.prices.other-list-printable');
+            return view('panel.prices.other-list-printable', compact('sellers', 'products'));
         }
     }
 
