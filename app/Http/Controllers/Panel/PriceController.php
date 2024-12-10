@@ -325,6 +325,7 @@ class PriceController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
+            'seller_id' => 'nullable|exists:price_list_sellers,id', // اعتبارسنجی فروشنده
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
@@ -333,11 +334,19 @@ class PriceController extends Controller
         $startDate = Verta::parse($request->start_date)->datetime();
         $endDate = Verta::parse($request->end_date)->datetime();
 
+        // شروع کوئری برای دریافت تاریخچه قیمت‌ها
+        $query = PriceHistory::where('product_id', $request->product_id)
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        // فیلتر بر اساس نام فروشنده
+        if ($request->filled('seller_id')) {
+            // گرفتن نام فروشنده از آیدی
+            $sellerName = PriceListSeller::find($request->seller_id)->name; // فرض بر این است که نام فروشنده در فیلد 'name' ذخیره شده است
+            $query->where('price_field', $sellerName); // فیلتر بر اساس نام فروشنده
+        }
+
         // دریافت تاریخچه قیمت‌ها
-        $prices = PriceHistory::where('product_id', $request->product_id)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->orderBy('created_at')
-            ->get();
+        $prices = $query->orderBy('created_at')->get();
 
         if ($prices->isEmpty()) {
             return response()->json(['success' => false, 'message' => 'داده‌ای برای این بازه وجود ندارد.']);
@@ -355,8 +364,8 @@ class PriceController extends Controller
         // دریافت نام محصول
         $product = Product::find($request->product_id);
 
-        // نام فروشنده‌ها را از هر رکورد قیمت دریافت می‌کنیم
-        $sellerNames = $prices->pluck('price_field')->first(); // دریافت نام فروشنده‌ها و حذف تکراری‌ها
+        // دریافت نام فروشنده (فقط اولین نام فروشنده را می‌گیرد، اگر چند فروشنده وجود داشته باشد)
+        $sellerNames = $prices->pluck('price_field')->unique()->toArray();
 
         // بازگشت پاسخ
         return response()->json([
