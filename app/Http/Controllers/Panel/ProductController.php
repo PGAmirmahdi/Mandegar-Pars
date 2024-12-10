@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Activity;
 use App\Models\Category;
 use App\Models\PriceHistory;
+use App\Models\PriceListSeller;
 use App\Models\Product;
 use App\Models\ProductModel;
 use Illuminate\Http\Request;
@@ -178,16 +179,17 @@ class ProductController extends Controller
     public function pricesHistory()
     {
         $this->authorize('price-history');
-
+        $products= Product::all();
+        $sellers=PriceListSeller::all();
         $pricesHistory = PriceHistory::latest()->paginate(30);
-        return view('panel.prices.history', compact('pricesHistory'));
+        return view('panel.prices.history', compact('pricesHistory','products','sellers'));
     }
 
     public function pricesHistorySearch(Request $request)
     {
         $this->authorize('price-history');
 
-        $products_id = Product::where('title', 'like', "%$request->title%")->pluck('id');
+        $products_id = Product::where('id', 'like', "%$request->product_id%")->pluck('id');
         $pricesHistory = PriceHistory::whereIn('product_id', $products_id)->latest()->paginate(30);
 
         return view('panel.prices.history', compact('pricesHistory'));
