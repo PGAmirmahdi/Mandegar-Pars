@@ -11,7 +11,7 @@
             </form>
             <div class="row mb-3">
                 <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
-                    <input type="text" name="title" class="form-control" placeholder="عنوان محصول" value="{{ request()->title ?? null }}" form="search_form">
+                    <input type="text" name="title" class="form-control" placeholder="عنوان کالا" value="{{ request()->title ?? null }}" form="search_form">
                 </div>
                 <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
@@ -22,7 +22,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>عنوان محصول</th>
+                        <th>عنوان کالا</th>
                         <th>فیلد قیمت</th>
                         <th>قیمت قبلی</th>
                         <th>قیمت تغییر داده شده</th>
@@ -34,10 +34,10 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $item->product->title }}</td>
-                            <td>{{ \App\Models\PriceHistory::FIELDS[$item->price_field] }}</td>
-                            <td>{{ number_format($item->price_amount_from) }}</td>
-                            <td>{{ number_format($item->price_amount_to) }}</td>
-                            <td>{{ verta($item->created_at)->format('Y/m/d') }}</td>
+                            <td>{{$item->price_field }}</td>
+                            <td>{{ number_format($item->price_amount_from) . ' ريال ' }}</td>
+                            <td>{{ number_format($item->price_amount_to) . ' ريال '  }}</td>
+                            <td>{{ verta($item->created_at)->format('H:i - l - Y/m/d') . ' توسط '  . $item->user->name . ' ' . $item->user->family}}</td>
                         </tr>
                     @endforeach
                     </tbody>

@@ -38,7 +38,7 @@ class CustomerController extends Controller
         Customer::create([
             'user_id' => auth()->id(),
             'name' => $request->name,
-            'code' => 'CU-' . random_int(100000000, 999999999),
+            'code' => 'CU-' . random_int(1000000, 9999999),
             'type' => $request->type,
             'customer_type' => $request->customer_type,
             'economical_number' => $request->economical_number,

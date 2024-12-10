@@ -140,6 +140,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sms::class);
     }
+    public function pricehistory()
+    {
+        return $this->hasMany(Pricehistory::class);
+    }
     public function leavesCount()
     {
         $this->leavesUpdate();

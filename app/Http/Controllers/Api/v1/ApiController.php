@@ -82,6 +82,7 @@ class ApiController extends Controller
                 'postal_code' => $data['postal_code'],
                 'phone1' => $data['phone'],
                 'customer_type' => 'single-sale',
+                'code' => 'CU-' . random_int(1000000, 9999999),
             ]);
             $invoice = \App\Models\Invoice::create([
                 'user_id' => $single_price_user->id,

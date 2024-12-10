@@ -41,6 +41,20 @@ class PriceController extends Controller
 
             return view('panel.prices.other-list', compact('sellers', 'products'));
         } else {
+            // فیلتر دسته‌بندی روی فروشنده‌ها
+            $sellers = DB::table('price_list_sellers')
+                ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                    $query->where('category_id', $request->category);
+                })
+                ->get();
+            $products = Product::query()
+                ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                    $query->where('category_id', $request->category);
+                })
+                ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
+                    $query->where('id', $request->product_id);
+                })
+                ->orderByDesc('brand_id')->get();
             return view('panel.prices.other-list-printable');
         }
     }
@@ -67,6 +81,11 @@ class PriceController extends Controller
                 $price = $price === '' ? null : $price;
 
                 if ($price) {
+                    // دریافت قیمت قبلی
+                    $previousPrice = DB::table('price_list')
+                        ->where(['seller_id' => $item['seller_id'], 'product_id' => $item['product_id']])
+                        ->value('price');
+
                     // درج یا بروزرسانی قیمت در جدول price_list
                     DB::table('price_list')->updateOrInsert(
                         [
@@ -78,6 +97,17 @@ class PriceController extends Controller
                             'updated_at' => now(),
                         ]
                     );
+                    if ($previousPrice == $price) {
+                        continue;
+                    } else(
+                    \App\Models\PriceHistory::create([
+                        'user_id' => auth()->id(),
+                        'product_id' => $item['product_id'],
+                        'price_field' => \App\Models\Seller::find($item['seller_id'])->name, // دریافت نام فروشنده
+                        'price_amount_from' => $previousPrice ?? 0, // مقدار قبلی
+                        'price_amount_to' => $price, // مقدار جدید
+                    ]));
+
 
                     // به‌روزرسانی فیلد market_price در جدول محصولات
                     Product::where('id', $item['product_id'])->update(['market_price' => $price]);
