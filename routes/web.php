@@ -16,6 +16,7 @@ use App\Http\Controllers\Panel\CategoryController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\ChatsGPTController;
 use App\Http\Controllers\Panel\ChequeController;
+use App\Http\Controllers\Panel\CostController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\DeliveryDayController;
@@ -55,11 +56,14 @@ use App\Http\Controllers\Panel\TransporterController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\Panel\WarehouseController;
 use App\Http\Controllers\PanelController;
+use App\Models\User;
 use App\Models\UserVisit;
 use App\Models\Visitor;
+use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use PDF as PDF;
 
@@ -80,6 +84,13 @@ Route::get('/', function () {
         return redirect()->to('/panel');
     }
     return view('auth.login');
+});
+Route::get('notif', function () {
+    $url = 'https://google.com';
+    $message = "salam";
+    $user = User::find(173);
+//    dd($user);
+   return Notification::send($user, new SendMessage($message, $url));
 });
 
 //Route::get('test/{id?}', function ($id = null) {
@@ -129,15 +140,15 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('users', UserController::class)->except('show');
     Route::get('/file/user/{filename}', [UserController::class, 'userFile'])->name('us.file.show');
 
-    Route::resource('chat_messages', ChatsGPTController::class)->except('edit','delete','destroy');
+    Route::resource('chat_messages', ChatsGPTController::class)->except('edit', 'delete', 'destroy');
     // Roles
     Route::resource('roles', RoleController::class)->except('show');
 
     // Categories
-    Route::resource('categories',CategoryController::class)->except('show');
+    Route::resource('categories', CategoryController::class)->except('show');
 
     // ProductModel
-    Route::resource('productsModel',ProductModelController::class)->except('show');
+    Route::resource('productsModel', ProductModelController::class)->except('show');
 
     // Products
     Route::resource('products', ProductController::class)->except('show');
@@ -327,20 +338,15 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     });
 
     // analyse
-    Route::get('/analyse/step1', [AnalyseController::class, 'step1'])->name('analyse.step1');
-    Route::post('/analyse/step1', [AnalyseController::class, 'postStep1'])->name('analyse.step1.post');
+    Route::resource('analyse', AnalyseController::class)->except(['edit', 'update', 'show']);
+    Route::get('/get-products', [AnalyseController::class, 'getProducts'])->name('get.products');
 
-    Route::get('/analyse/step2', [AnalyseController::class, 'step2'])->name('analyse.step2');
-    Route::post('/analyse/step2', [AnalyseController::class, 'postStep2'])->name('analyse.step2.post');
-
-    Route::get('/analyse/step3', [AnalyseController::class, 'step3'])->name('analyse.step3');
-    Route::post('/analyse/step3', [AnalyseController::class, 'postStep3'])->name('analyse.step3.post');
-
-    Route::get('/analyse/step4', [AnalyseController::class, 'step4'])->name('analyse.step4');
-    Route::post('/analyse/submit', [AnalyseController::class, 'submit'])->name('analyse.submit');
+    // Cost
+    Route::resource('costs', CostController::class);
+    Route::post('excel/costs', [CostController::class, 'excel'])->name('costs.excel');
 
     // Sms
-    Route::resource('sms', SMSController::class)->except('edit','update');
+    Route::resource('sms', SMSController::class)->except('edit', 'update');
     Route::match(['get', 'post'], 'search/sms', [SMSController::class, 'search'])->name('sms.search');
     Route::get('/send-test-event/{userId}', [InvoiceController::class, 'testEvent']);
 
@@ -349,7 +355,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Transport
     Route::resource('transports', TransportController::class);
-    Route::post('get-invoice-info/{invoice_id}',[ TransportController::class, 'getInvoiceInfo'])->name('getInvoiceInfo');
+    Route::post('get-invoice-info/{invoice_id}', [TransportController::class, 'getInvoiceInfo'])->name('getInvoiceInfo');
 // عملیات حسابداری برای حمل و نقل (فقط برای حسابدار)
     Route::get('panel/transports/{id}/accounting', [TransportController::class, 'accounting'])->name('transports.accounting');
     Route::put('panel/transports/{id}/accountantupdate', [TransportController::class, 'accountantupdate'])->name('transports.accountantupdate.accounting');
@@ -379,7 +385,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 // Share File
 Route::get('/files/share/{id}', [FileController::class, 'getShareLink'])->name('files.share');
 Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
-Route::get('/user-visits', function() {
+Route::get('/user-visits', function () {
     $userVisits = UserVisit::selectRaw('DATE(created_at) as date, COUNT(*) as visits')
         ->groupBy('date')
         ->get();
