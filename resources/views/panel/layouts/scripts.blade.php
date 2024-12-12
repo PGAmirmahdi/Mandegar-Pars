@@ -112,6 +112,7 @@
 
 </script>
 <script>
+    console.log('----------------------------------------------/dlsjfb;jdfjdsbf=-----------------[')
     {{-- ajax setup --}}
     $.ajaxSetup({
         headers: {
@@ -201,39 +202,39 @@
 
     // realtime notification
     var audio = new Audio('/audio/notification.wav');
-    Echo.channel('presence-notification.'+userId)
-        .listen('SendMessage', (e) =>{
-            $('#notification_sec a').addClass('nav-link-notify')
-            $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
-            $(".timeline").prepend(`<div class="timeline-item">
-                                        <div>
-                                            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-													<i class="fa fa-bell font-size-20"></i>
-												</span>
-                                            </figure>
-                                        </div>
-                                        <div>
-                                            <p class="m-b-5">
-                                                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-                                            </p>
-                                            <small class="text-muted">
-                                                <i class="fa fa-clock-o m-r-5"></i>الان
-                                                </small>
-                                            </div>
-                                        </div>`)
-            audio.play();
-        });
+    // Echo.channel('presence-notification.'+userId)
+    //     .listen('SendMessage', (e) =>{
+    //         $('#notification_sec a').addClass('nav-link-notify')
+    //         $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
+    //         $(".timeline").prepend(`<div class="timeline-item">
+    //                                     <div>
+    //                                         <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+	// 											<span class="avatar-title bg-primary-bright text-primary rounded-circle">
+	// 												<i class="fa fa-bell font-size-20"></i>
+	// 											</span>
+    //                                         </figure>
+    //                                     </div>
+    //                                     <div>
+    //                                         <p class="m-b-5">
+    //                                             <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+    //                                         </p>
+    //                                         <small class="text-muted">
+    //                                             <i class="fa fa-clock-o m-r-5"></i>الان
+    //                                             </small>
+    //                                         </div>
+    //                                     </div>`)
+    //         audio.play();
+    //     });
     // end realtime
 
     // firebase push notification
     var firebaseConfig = {
-        apiKey: "AIzaSyCUdU7PnQmzrkcJDFOJsIGcpe7CZV1GBrA",
-        authDomain: "mandegarpars-5e075.firebaseapp.com",
-        projectId: "mandegarpars-5e075",
-        storageBucket: "mandegarpars-5e075.appspot.com",
-        messagingSenderId: "11452789862",
-        appId: "1:11452789862:web:8ee1465cf4e374fcbde9a7"
+        apiKey: "AIzaSyDM5ZCt_ibX3EmgaSQAsaxykeEXgbWgf5w",
+        authDomain: "mandegarpars2-9e7d9.firebaseapp.com",
+        projectId: "mandegarpars2-9e7d9",
+        storageBucket: "mandegarpars2-9e7d9.firebasestorage.app",
+        messagingSenderId: "778812623421",
+        appId: "1:778812623421:web:913b44ef07f2a7432eb854"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -246,7 +247,7 @@
                 return messaging.getToken()
             })
             .then(function(token) {
-                // console.log(token);
+                console.log(token);
 
                 $.ajax({
                     url: '/panel/saveFcmToken',

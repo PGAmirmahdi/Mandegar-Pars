@@ -16,6 +16,8 @@
         "carlos-meneses/laravel-mpdf": "^2.1",
         "doctrine/dbal": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
+        "google/apiclient": "^2.18",
+        "google/auth": "^1.44",
         "guzzlehttp/guzzle": "^7.9",
         "hekmatinasser/verta": "^8.3",
         "jenssegers/agent": "*",
