@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class AnalyseController extends Controller
 {
-    public function step1(Request $request)
+    public function index(Request $request)
     {
         $query = AnalyseProducts::query()
             ->selectRaw('product_id, SUM(quantity) as total_quantity, MAX(analyse_id) as last_analyse_id')
@@ -31,72 +31,52 @@ class AnalyseController extends Controller
         return view('panel.analyse.index', compact('groupedProducts'));
     }
 
-    public function postStep1(Request $request)
+    public function create()
     {
-        $request->validate(['date' => 'required|date']);
-        session(['analyse.date' => $request->date]); // ذخیره تاریخ در سشن
-        return redirect()->route('analyse.step2'); // انتقال به مرحله بعد
+        $categories=Category::all();
+        $brands=ProductModel::all();
+        $products = []; // متغیر خالی برای محصولات
+        return view('panel.analyse.create',compact('categories','brands','products'));
     }
-
-    public function step2()
+    public function store(Request $request)
     {
-        $categories = Category::all(); // دریافت دسته‌بندی‌ها
-        return view('panel.analyse.step2', compact('categories'));
-    }
-
-    public function postStep2(Request $request)
-    {
-        $request->validate(['category_id' => 'required|exists:categories,id']);
-        session(['analyse.category_id' => $request->category_id]); // ذخیره دسته‌بندی در سشن
-        return redirect()->route('analyse.step3');
-    }
-
-    public function step3()
-    {
-        $categoryId = session('analyse.category_id');
-        $brands = ProductModel::where('category_id', $categoryId)->get();
-        return view('panel.analyse.step3', compact('brands'));
-    }
-
-    public function postStep3(Request $request)
-    {
-        $request->validate(['brand_id' => 'required|exists:product_models,id']);
-        session(['analyse.brand_id' => $request->brand_id]); // ذخیره برند در سشن
-        return redirect()->route('analyse.step4');
-    }
-
-    public function step4()
-    {
-        $categoryId = session('analyse.category_id');
-        $brandId = session('analyse.brand_id');
-        $products = Product::where('category_id', $categoryId)
-            ->where('brand_id', $brandId)
-            ->get();
-        return view('panel.analyse.step4', compact('products'));
-    }
-
-    public function submit(Request $request)
-    {
-        $request->validate(['products' => 'required|array', 'products.*' => 'numeric|min:1']);
-
-        $invoice = Analyse::create([
-            'date' => session('analyse.date'),
-            'category_id' => session('analyse.category_id'),
-            'brand_id' => session('analyse.brand_id'),
+        $analyse = Analyse::create([
+            'date' =>$request->date ,
+            'category_id' =>$request->category_id,
+            'brand_id' => $request->brand_id,
             'creator_id' => auth()->id(),
         ]);
-
         foreach ($request->products as $productId => $quantity) {
             $product = Product::find($productId);
             if ($product) {
-                $invoice->products()->attach($productId, [
+                $analyse->products()->attach($productId, [
                     'quantity' => $quantity,
                 ]);
             }
         }
+        alert()->success('آنالیز با موفقیت ثبت شد','ثبت آنالیز');
+        return redirect()->route('analyse.index');
+    }
+    public function destroy(Analyse $analyse)
+    {
+        $analyse->delete();
+        alert()->success('آنالیز با موفقیت حذف شد','حذف آنالیز');
+        return back();
+    }
+    public function getProducts(Request $request)
+    {
+        $category_id = $request->input('category_id');
+        $brand_id = $request->input('brand_id');
 
-        session()->forget('analyse'); // پاک کردن اطلاعات سشن
-        return redirect()->route('analyse.step1')->with('success', 'پیش‌فاکتور ثبت شد!');
+        if (!$category_id || !$brand_id) {
+            return response()->json(['products' => []]); // اگر ورودی معتبر نیست، آرایه خالی برگردانید
+        }
+
+        $products = Product::where('category_id', $category_id)
+            ->where('brand_id', $brand_id)
+            ->get();
+
+        return response()->json(['products' => $products]);
     }
 
 }

@@ -189,10 +189,9 @@ class ProductController extends Controller
     {
         $this->authorize('price-history');
 
-        $products_id = Product::where('id', 'like', $request->productsearch_id)->paginate(30);
-        $pricesHistory = PriceHistory::whereIn('product_id', $products_id)->latest()->paginate(30);
-
-        return view('panel.prices.history', compact('pricesHistory'));
+        $sellers=PriceListSeller::all();
+        $products=Product::all();
+        return view('panel.prices.history', compact('products','sellers'));
     }
 
     public function excel()
