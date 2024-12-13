@@ -794,9 +794,9 @@ class InvoiceController extends Controller
     public function testEvent($userId)
     {
         Log::info("testEvent called with userId: {$userId}");
-
+        event(new SendMessage($userId, 'Test notification'));
         try {
-            event(new SendMessage($userId, 'Test notification'));
+
             Log::info("Event SendMessage triggered successfully.");
         } catch (\Exception $e) {
             Log::error("Error triggering SendMessage event: " . $e->getMessage(), [

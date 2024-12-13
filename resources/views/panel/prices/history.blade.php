@@ -1,6 +1,15 @@
 @extends('panel.layouts.master')
 @section('title', 'آرشیو قیمت ها')
 @section('content')
+    <style>
+        .modal {
+            z-index: 1050; /* یا عددی بزرگتر */
+        }
+
+        .date-picker-shamsi-list {
+            z-index: 1000; /* یا عددی کوچکتر */
+        }
+    </style>
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -10,17 +19,17 @@
                 @csrf
             </form>
             <div class="row mb-3">
-                <div class="form-group w-50">
-                    <select id="productsearch" name="productsearch_id" class="js-example-basic-single form-control">
-                        <option value="" disabled selected>محصول مورد نظر را انتخاب کنید</option>
-                        @foreach($products as $product)
-                            <option value="{{ $product->id }}">{{ $product->title }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
-                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
-                </div>
+{{--                <div class="form-group w-50">--}}
+{{--                    <select id="productsearch" name="productsearch" class="js-example-basic-single form-control">--}}
+{{--                        <option value="" disabled selected>محصول مورد نظر را انتخاب کنید</option>--}}
+{{--                        @foreach($products as $product)--}}
+{{--                            <option value="{{ $product->id }}">{{ $product->title }}</option>--}}
+{{--                        @endforeach--}}
+{{--                    </select>--}}
+{{--                </div>--}}
+{{--                <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">--}}
+{{--                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>--}}
+{{--                </div>--}}
                 <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#priceChartModal">
                         مشاهده نمودار تغییرات قیمت
@@ -63,14 +72,14 @@
                                 <div class="form-group">
                                     <label for="startDate">تاریخ شروع</label>
                                     <input type="text" class="form-control date-picker-shamsi-list" id="startDate"
-                                           name="start_date" required>
+                                           name="start_date" autocomplete="off" required>
                                 </div>
 
                                 <!-- تاریخ پایان -->
                                 <div class="form-group">
                                     <label for="endDate">تاریخ پایان</label>
                                     <input type="text" class="form-control date-picker-shamsi-list" id="endDate"
-                                           name="end_date" required>
+                                           name="end_date" autocomplete="off" required>
                                 </div>
                             </form>
 
