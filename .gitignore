@@ -33,3 +33,4 @@ composer.lock
 .bash_history
 mail/
 etc/
+/vendor.zip
