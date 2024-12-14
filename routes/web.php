@@ -85,13 +85,13 @@ Route::get('/', function () {
     }
     return view('auth.login');
 });
-Route::get('notif', function () {
-    $url = 'https://google.com';
-    $message = "salam";
-    $user = User::find(173);
+//      Route::get('notif', function () {
+//    $url = 'https://google.com';
+//    $message = "salam";
+//    $user = User::find(173);
 //    dd($user);
-   return Notification::send($user, new SendMessage($message, $url));
-});
+//   return Notification::send($user, new SendMessage($message, $url));
+//});
 
 //Route::get('test/{id?}', function ($id = null) {
 
