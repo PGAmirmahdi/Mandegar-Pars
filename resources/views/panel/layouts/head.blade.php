@@ -17,7 +17,7 @@
         href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
         type="text/css"
     />
-
+    <link rel="manifest" href="/manifest.json">
     <!-- Theme Color -->
     <meta name="theme-color" content="#5867dd">
 

@@ -187,10 +187,10 @@
                 <li>
                     <a class="{{ active_sidebar(['artin-products']) ? 'active' : '' }}" href="{{ route('artin.products') }}">کالاهای آرتین</a>
                 </li>
-                <li>
-                    <a class="{{ active_sidebar(['analyse','analyse/create','analyse/{analyse}/edit','search/analyse']) ? 'active' : '' }}" href="{{ route('analyse.index') }}">آنالیز</a>
-                </li>
             @endcan
+            <li>
+                <a class="{{ active_sidebar(['analyse','analyse/create','analyse/{analyse}/edit','search/analyse']) ? 'active' : '' }}" href="{{ route('analyse.index') }}">آنالیز</a>
+            </li>
             @can('prices-list')
 {{--                <li>--}}
 {{--                    <a class="{{ active_sidebar(['prices-list']) ? 'active' : '' }}" href="{{ route('prices-list') }}">لیست قیمت ماندگار پارس</a>--}}

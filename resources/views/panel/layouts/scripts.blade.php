@@ -280,3 +280,10 @@
         new Notification(noteTitle, noteOptions);
     });
 </script>
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/serviceworker.js')
+            .then(() => console.log('سرویس ورکر رجیستر شد'))
+            .catch(error => console.error('سرویس ورکر رجیستر نشد مشکل:', error));
+    }
+</script>
