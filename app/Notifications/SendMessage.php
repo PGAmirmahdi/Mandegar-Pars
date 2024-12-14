@@ -77,14 +77,12 @@ class SendMessage extends Notification
         $credential = new ServiceAccountCredentials(
             "https://www.googleapis.com/auth/firebase.messaging",
             json_decode(file_get_contents(public_path('firebase-private-key.json')), true)
-
         );
 
-        $token = $credential->fetchAuthToken(HttpHandlerFactory::build());
-        dd($token);
+        $token = $credential->fetchAuthToken(\Google\Auth\HttpHandler\HttpHandlerFactory::build());
+
         $ch = curl_init("https://fcm.googleapis.com/v1/projects/mandegarpars2-9e7d9/messages:send");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
             'Authorization: Bearer ' . $token['access_token']
@@ -97,7 +95,7 @@ class SendMessage extends Notification
                     "notification" => [
                         "title" => "",
                         "body" => $message,
-                        "icon" => asset('/assets/images/logo-sm.png')
+                        "icon" => asset('assets/images/logo-sm.png')
                     ],
                 ]
             ]
@@ -105,15 +103,7 @@ class SendMessage extends Notification
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "post");
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            // در صورت بروز خطا
-            echo 'Error:' . curl_error($ch);
-        } else {
-            // پردازش پاسخ
-            echo 'Response: ' . $response;
-        }
-
+        curl_exec($ch);
         curl_close($ch);
 
     }
