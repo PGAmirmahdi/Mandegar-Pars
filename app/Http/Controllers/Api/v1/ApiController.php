@@ -68,7 +68,7 @@ class ApiController extends Controller
             }
 
             $url = route('invoices.index');
-            Notification::send($notifiables, new SendMessage($notif_message, $url));
+//            Notification::send($notifiables, new SendMessage($notif_message, $url));
 
             $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
                 'user_id' => $single_price_user->id,
