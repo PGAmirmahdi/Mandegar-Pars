@@ -71,11 +71,12 @@ class TicketController extends Controller
             'file' => isset($file) ? json_encode($file_info) : null,
         ]);
 
-//        $message = 'تیکتی با عنوان "' . $ticket->title . '" به شما ارسال شده است';
-//        $url = route('tickets.edit', $ticket->id);
+        $title='تیکت';
+        $message = 'تیکتی با عنوان "' . $ticket->title . '" به شما ارسال شده است';
+        $url = route('tickets.edit', $ticket->id);
 
         // اطمینان حاصل کنید که $url یک رشته است و به درستی به SendMessage ارسال می‌شود
-//        Notification::send($ticket->receiver, new SendMessage($message, $url));
+        Notification::send($ticket->receiver, new SendMessage($title,$message, $url));
 
 
 
@@ -106,12 +107,13 @@ class TicketController extends Controller
 
         // prevent from send sequence notification
         $first_message = $ticket->messages()->orderBy('created_at', 'desc')->first();
-//        if ($first_message != null && $first_message->user_id != auth()->id()){
-//            $message = 'پاسخی برای تیکت "'.$ticket->title.'" ثبت شده است';
-//            $url = route('tickets.edit', $ticket->id);
-//            $receiver = auth()->id() == $ticket->sender_id ? $ticket->receiver : $ticket->sender;
-//            Notification::send($receiver, new SendMessage($message, $url));
-//        }
+        if ($first_message != null && $first_message->user_id != auth()->id()){
+            $title='تیکت';
+            $message = 'پاسخی برای تیکت "'.$ticket->title.'" ثبت شده است';
+            $url = route('tickets.edit', $ticket->id);
+            $receiver = auth()->id() == $ticket->sender_id ? $ticket->receiver : $ticket->sender;
+            Notification::send($receiver, new SendMessage($title,$message, $url));
+        }
         // end prevent from send sequence notification
 
         if ($request->file){
@@ -175,10 +177,11 @@ class TicketController extends Controller
 
             // send notif
             $status = Ticket::STATUS[$ticket->status];
+            $title='تیکت';
             $message = "وضعیت تیکت '$ticket->title' به '$status' تغییر یافت";
             $url = route('tickets.index');
             $receiver = auth()->id() == $ticket->sender_id ? $ticket->receiver : $ticket->sender;
-//            Notification::send($receiver, new SendMessage($message, $url));
+            Notification::send($receiver, new SendMessage($title,$message, $url));
             // end send notif
 
             // ذخیره فعالیت
