@@ -75,8 +75,15 @@ class AnalyseController extends Controller
         $products = Product::where('category_id', $category_id)
             ->where('brand_id', $brand_id)
             ->get();
-
-        return response()->json(['products' => $products]);
+        // اضافه کردن مقدار quantity برای هر محصول
+        $productsWithQuantity = $products->map(function ($product) {
+            // پیدا کردن quantity مربوط به هر محصول
+            $quantity = AnalyseProducts::where('product_id', $product->id)->select('quantity')->first();
+            // افزودن quantity به هر محصول
+            $product->quantity = $quantity ? $quantity->quantity : 0; // اگر quantity یافت نشد، 0 را تنظیم می‌کنیم
+            return $product;
+        });
+        return response()->json(['products' => $productsWithQuantity]);
     }
 
 }
