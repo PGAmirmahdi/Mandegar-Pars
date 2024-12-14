@@ -68,10 +68,11 @@
                                 $('#products-table-body').append(
                                     '<tr>' +
                                     '<td>' + product.title + '</td>' +
-                                    '<td><input type="number" name="products[' + product.id + ']" min="0" class="form-control"></td>' +
+                                    '<td><input type="number" name="products[' + product.id + '][quantity]" min="0" class="form-control"></td>' +
                                     '</tr>'
                                 );
                             });
+
                         },
                         error: function (xhr, status, error) {
                             console.error(error); // نمایش خطا در کنسول برای دیباگ
