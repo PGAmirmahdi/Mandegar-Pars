@@ -71,11 +71,11 @@ class TicketController extends Controller
             'file' => isset($file) ? json_encode($file_info) : null,
         ]);
 
-        $message = 'تیکتی با عنوان "' . $ticket->title . '" به شما ارسال شده است';
-        $url = route('tickets.edit', $ticket->id);
+//        $message = 'تیکتی با عنوان "' . $ticket->title . '" به شما ارسال شده است';
+//        $url = route('tickets.edit', $ticket->id);
 
         // اطمینان حاصل کنید که $url یک رشته است و به درستی به SendMessage ارسال می‌شود
-        Notification::send($ticket->receiver, new SendMessage($message, $url));
+//        Notification::send($ticket->receiver, new SendMessage($message, $url));
 
 
 
