@@ -102,6 +102,8 @@
                     <tr>
                         <th>#</th>
                         <th>عنوان کالا</th>
+                        <th>دسته بندی</th>
+                        <th>برند</th>
                         <th>فیلد قیمت</th>
                         <th>قیمت قبلی</th>
                         <th>قیمت تغییر داده شده</th>
@@ -113,6 +115,8 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $item->product->title }}</td>
+                            <td>{{ $item->product->category->name }}</td>
+                            <td>{{ $item->product->productModels->name }}</td>
                             <td>{{$item->price_field }}</td>
                             <td>{{ number_format($item->price_amount_from) . ' ريال ' }}</td>
                             <td>{{ number_format($item->price_amount_to) . ' ريال '  }}</td>
