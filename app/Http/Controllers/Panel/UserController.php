@@ -19,6 +19,7 @@ class UserController extends Controller
     public function index()
     {
         if (auth()->user()->isAdmin()) {
+            // اگر کاربر ادمین است، همه کاربران را بگیرید
             $users = User::latest()->paginate(10);
         } else {
             // در غیر این صورت، فقط کاربر جاری را بگیرید
@@ -36,6 +37,8 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
+        $this->authorize('users-edit');
+
         // به‌روزرسانی اطلاعات کاربر
         $dataToUpdate = [
             'name' => $request->name,
