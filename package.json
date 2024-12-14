@@ -23,6 +23,7 @@
         "axios": "^1.2.1",
         "bootstrap": "^5.3.3",
         "chartjs-plugin-datalabels": "^2.2.0",
+        "git-filter-repo": "^0.0.30",
         "jalali-moment": "^3.3.11",
         "laravel-echo": "^1.16.1"
     }
