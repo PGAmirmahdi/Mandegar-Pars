@@ -92,7 +92,7 @@
     var userId = {{ Auth::user()->id }}; // شناسه کاربر لاگین شده
 
     // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
+    Pusher.logToConsole = false;
 
     var pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
         cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
@@ -112,7 +112,6 @@
 
 </script>
 <script>
-    console.log('----------------------------------------------/dlsjfb;jdfjdsbf=-----------------[')
     {{-- ajax setup --}}
     $.ajaxSetup({
         headers: {
