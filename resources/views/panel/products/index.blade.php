@@ -51,8 +51,15 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
-                    <input type="text" name="title" class="form-control" placeholder="مدل کالا" value="{{ request()->title ?? null }}" form="search_form">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">
+                        <option value="all">مدل کالا (همه)</option>
+                        @foreach(\App\Models\Product::all(['id','title']) as $product)
+                            <option value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>
+                                {{ $product->title }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>

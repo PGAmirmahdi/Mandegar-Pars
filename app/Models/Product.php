@@ -81,5 +81,10 @@ class Product extends Model
             ->withPivot('quantity')
             ->withTimestamps();
     }
-
+    public function analyses()
+    {
+        return $this->belongsToMany(Analyse::class, 'analyse_products')
+            ->withPivot('quantity') // دسترسی به ستون quantity از جدول میانی
+            ->withTimestamps();
+    }
 }

@@ -161,7 +161,10 @@ class ProductController extends Controller
     {
         $this->authorize('products-list');
 
-        $products = Product::where('title', 'like', "%$request->title%")
+        $products = Product::query()
+            ->when($request->product && $request->product !== 'all', function ($query) use ($request) {
+                $query->where('id', $request->product);
+            })
             ->when($request->code, function ($query) use ($request) {
                 return $query->where('code', $request->code);
             })
@@ -176,22 +179,39 @@ class ProductController extends Controller
         return view('panel.products.index', compact('products'));
     }
 
-    public function pricesHistory()
+    public function pricesHistory(Request $request)
     {
         $this->authorize('price-history');
-        $products= Product::all();
-        $sellers=PriceListSeller::all();
-        $pricesHistory = PriceHistory::latest()->paginate(30);
-        return view('panel.prices.history', compact('pricesHistory','products','sellers'));
-    }
+        $pricesHistory = PriceHistory::query()
+            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                // فیلتر بر اساس دسته‌بندی
+                $query->whereHas('product', function ($query) use ($request) {
+                    $query->where('category_id', $request->category);
+                });
+            })
+            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+                // فیلتر بر اساس مدل
+                $query->whereHas('product', function ($query) use ($request) {
+                    $query->where('brand_id', $request->model);
+                });
+            })
+            ->when($request->product && $request->product !== 'all', function ($query) use ($request) {
+                // فیلتر بر اساس محصول
+                $query->where('product_id', $request->product);
+            })
+            ->when($request->seller && $request->seller !== 'all', function ($query) use ($request) {
+                // فیلتر بر اساس نام فروشنده
+                $query->where('price_field', $request->seller);
+            })
+            ->orderByDesc('updated_at')
+            ->paginate(30);
 
-    public function pricesHistorySearch(Request $request)
-    {
-        $this->authorize('price-history');
-
+        // ارسال داده‌ها به ویو
+        $categories = Category::all();
+        $models = ProductModel::all();
+        $products = Product::all();
         $sellers=PriceListSeller::all();
-        $products=Product::all();
-        return view('panel.prices.history', compact('products','sellers'));
+        return view('panel.prices.history', compact('pricesHistory','products','sellers','categories','models'));
     }
 
     public function excel()

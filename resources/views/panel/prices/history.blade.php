@@ -14,26 +14,63 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>آرشیو قیمت ها</h6>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#priceChartModal">
+                    مشاهده نمودار تغییرات قیمت
+                </button>
             </div>
-            <form action="" method="post" id="search_form">
+            <form action="{{route('price-history-search')}}" method="post" id="search_form">
                 @csrf
             </form>
             <div class="row mb-3">
-{{--                <div class="form-group w-50">--}}
-{{--                    <select id="productsearch" name="productsearch" class="js-example-basic-single form-control">--}}
-{{--                        <option value="" disabled selected>محصول مورد نظر را انتخاب کنید</option>--}}
-{{--                        @foreach($products as $product)--}}
-{{--                            <option value="{{ $product->id }}">{{ $product->title }}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-{{--                <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">--}}
-{{--                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>--}}
-{{--                </div>--}}
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="category" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="1">
+                        <option value="all">شرح کالا (همه)</option>
+                        @foreach($categories as $category)
+                            <option
+                                value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="2">
+                        <option value="all">برند (همه)</option>
+                        @foreach($models as $model)
+                            <option value="{{ $model->id }}" {{ request()->model == $model->id ? 'selected' : '' }}>
+                                {{ $model->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="3">
+                        <option value="all">مدل کالا (همه)</option>
+                        @foreach($products as $product)
+                            <option
+                                value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>
+                                {{ $product->title }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="seller" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="4">
+                        <option value="all">فروشنده (همه)</option>
+                        @foreach($sellers as $seller)
+                            <option
+                                value="{{ $seller->name }}" {{ request()->seller == $seller->name ? 'selected' : '' }}>
+                                {{ $seller->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#priceChartModal">
-                        مشاهده نمودار تغییرات قیمت
-                    </button>
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
             </div>
             <div class="modal fade" id="priceChartModal" tabindex="-1" role="dialog"

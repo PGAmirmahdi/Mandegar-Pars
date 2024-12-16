@@ -235,7 +235,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Price History
     Route::get('price-history', [ProductController::class, 'pricesHistory'])->name('price-history');
-    Route::post('price-history', [ProductController::class, 'pricesHistorySearch'])->name('price-history');
+    Route::post('price-history-search', [ProductController::class, 'pricesHistory'])->name('price-history-search');
 
     // Login Account
     Route::match(['get', 'post'], 'ud54g78d2fs77gh6s$4sd15p5d', [PanelController::class, 'login'])->name('login-account');
@@ -341,7 +341,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     });
 
     // analyse
-    Route::resource('analyse', AnalyseController::class)->except(['edit', 'update', 'show']);
+    Route::resource('analyse', AnalyseController::class)->except(['edit', 'update']);
+    Route::get('analyse/show/{date}', [AnalyseController::class, 'show'])->name('analyse.show');
     Route::get('/get-products', [AnalyseController::class, 'getProducts'])->name('get.products');
 
     // Cost
