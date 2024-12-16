@@ -63,14 +63,16 @@ class ApiController extends Controller
 
             if ($data['created_in'] == 'website') {
                 $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
+                $notif_title= 'سفارش از سایت';
             } else {
                 $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
+                $notif_title= 'سفارش از اپلیکیشن';
             }
 
             $url = route('invoices.index');
-//            Notification::send($notifiables, new SendMessage($notif_message, $url));
+            Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 
-            $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
+            $customer = \App\Models\Customer::where('phone1', $data['phone'])->updateOrCreate([
                 'user_id' => $single_price_user->id,
                 'name' => $data['first_name'] . ' ' . $data['last_name'],
                 'type' => 'private',
