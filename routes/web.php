@@ -11,7 +11,6 @@ use App\Http\Controllers\Panel\BaseinfoController;
 use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\BuyOrderCommentController;
 use App\Http\Controllers\Panel\BuyOrderController;
-use App\Http\Controllers\Panel\CategoryAnalyseController;
 use App\Http\Controllers\Panel\CategoryController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\ChatsGPTController;
@@ -85,13 +84,17 @@ Route::get('/', function () {
     }
     return view('auth.login');
 });
-//      Route::get('notif', function () {
-//    $url = 'https://google.com';
-//    $message = "salam";
-//    $user = User::find(173);
-//    dd($user);
-//   return Notification::send($user, new SendMessage($message, $url));
-//});
+Route::get('notif', function () {
+    $url = 'https://google.com';
+    $title = 'test';
+    $message = "salam";
+
+    // پیدا کردن کاربر با ID مشخص
+    $user = User::find(173);
+
+    // ارسال نوتیفیکیشن به کاربر
+    return Notification::send($user, new SendMessage($title, $message, $url));
+});
 
 //Route::get('test/{id?}', function ($id = null) {
 
