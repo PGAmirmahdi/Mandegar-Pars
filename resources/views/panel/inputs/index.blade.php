@@ -20,8 +20,10 @@
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="inventory_id" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
                         <option value="all">فیلتر بر اساس کالا (همه)</option>
-                        @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->pluck('title','id') as $id => $title)
-                            <option value="{{ $id }}" {{ request()->inventory_id == $id ? 'selected' : '' }}>{{ $title }}</option>
+                        @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get() as $inventory)
+                            <option value="{{ $inventory->id }}" {{ request()->inventory_id == $inventory->id ? 'selected' : '' }}>
+                                {{ $inventory->product->title }}
+                            </option>
                         @endforeach
                     </select>
                 </div>

@@ -1,5 +1,8 @@
 @extends('panel.layouts.master')
 @section('title', 'ثبت ورودی')
+@php
+    $inventory_id = $inventory_id ?? null;
+@endphp
 @section('content')
     <div class="card">
         <div class="card-body">
@@ -43,12 +46,14 @@
                                 </thead>
                                 <tbody>
                                     @if($errors->any())
-                                        @foreach(old('inventory_id') as $key => $inventory_id)
+                                        @foreach(old('inventory_id', []) as $key => $inventory_id)
                                             <tr>
                                                 <td>
                                                     <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                        @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get(['id','title','type']) as $item)
-                                                            <option value="{{ $item->id }}" {{ $inventory_id == $item->id ? 'selected' : '' }}>{{ \App\Models\Inventory::TYPE[$item->type].' - '.$item->title }}</option>
+                                                        @foreach($inventories as $item)
+                                                            <option value="{{ $item->id }}" {{ $inventory_id == $item->id ? 'selected' : '' }}>
+                                                                {{ $item->product->title }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
@@ -64,10 +69,14 @@
                                         <tr>
                                             <td>
                                                 <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                    @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get(['id','title','type']) as $item)
-                                                        <option value="{{ $item->id }}">{{ \App\Models\Inventory::TYPE[$item->type].' - '.$item->title }}</option>
+                                                    @foreach($inventories as $item)
+                                                        <option value="{{ $item->id }}"
+                                                            {{ in_array($item->id, old('inventory_id', [])) ? 'selected' : '' }}>
+                                                            {{ $item->product->title }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
+
                                             </td>
                                             <td>
                                                 <input type="number" name="counts[]" class="form-control" min="1" value="1" required>
@@ -98,20 +107,19 @@
 @section('scripts')
     <script>
         var inventory = [];
+        var options_html = ''; // مقداردهی اولیه به options_html
 
-        var options_html;
-
-        @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get(['id','title','type']) as $item)
-            inventory.push({
-                "id": "{{ $item->id }}",
-                "title": "{{ $item->title }}",
-                "type": "{{ \App\Models\Inventory::TYPE[$item->type] }}",
-            })
+        @foreach(\App\Models\Inventory::with('product')->where('warehouse_id', $warehouse_id)->get() as $item)
+        inventory.push({
+            "id": "{{ $item->id }}",
+            "title": "{{ $item->product->title }}",
+        })
         @endforeach
 
         $.each(inventory, function (i, item) {
-            options_html += `<option value="${item.id}">${item.type} - ${item.title}</option>`
+            options_html += `<option value="${item.id}">${item.title}</option>`;
         })
+
 
         $(document).ready(function () {
             // add property

@@ -83,24 +83,17 @@ class InventoryController extends Controller
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
         $this->authorize('inventory-edit');
-
-        $code = $request->code;
-        $warehouse_id = $inventory->warehouse_id;
-
-        if ($exist = Inventory::where(['warehouse_id' => $warehouse_id, 'code' => $code])->first()){
-            if ($exist->id != $inventory->id){
-                return back()->withErrors(['code' => 'این کد در انبار موجود است'])->withInput();
-            }
+        $product_id = $request->product_id;
+        $warehouse_id = $request->warehouse_id;
+        // بررسی اینکه آیا این محصول قبلاً در این انبار ثبت شده است یا خیر
+        if (Inventory::where(['warehouse_id' => $warehouse_id, 'product_id' => $product_id])->exists()) {
+            return back()->withErrors(['product_id' => 'این محصول قبلاً در این انبار ثبت شده است'])->withInput();
         }
 
         $inventory->update([
-            'warehouse_id' => $warehouse_id,
-            'title' => $request->title,
-            'code' => $request->code,
-            'type' => $request->type,
+            'current_count' => $request->count,
             'initial_count' => $request->count,
 //            'current_count' => ($inventory->current_count - $inventory->initial_count) + $request->count,
-            'current_count' => $request->count,
         ]);
         $activityData = [
             'user_id' => auth()->id(),

@@ -18,7 +18,7 @@
                             <label for="person"> تحویل دهنده <span class="text-danger">*</span></label>
                             <input type="text" name="person" class="form-control" id="person" value="{{ $inventoryReport->person }}">
                             @error('person')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
@@ -43,23 +43,23 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($inventoryReport->in_outs as $item)
-                                        <tr>
-                                            <td>
-                                                <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                    @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get(['id','title','type']) as $inventory)
-                                                        <option value="{{ $inventory->id }}" {{ $item->inventory_id == $inventory->id ? 'selected' : '' }}>{{ \App\Models\Inventory::TYPE[$inventory->type].' - '.$inventory->title }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="counts[]" class="form-control" min="0" value="{{ $item->count }}" required>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                @foreach($inventoryReport->in_outs as $item)
+                                    <tr>
+                                        <td>
+                                            <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
+                                                @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get() as $inventory)
+                                                    <option value="{{ $inventory->id }}" {{ $item->inventory_id == $inventory->id ? 'selected' : '' }}>{{ $inventory->product->title }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="counts[]" class="form-control" min="0" value="{{ $item->count }}" required>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -81,35 +81,33 @@
 @section('scripts')
     <script>
         var inventory = [];
+        var options_html = ''; // مقداردهی اولیه به options_html
 
-        var options_html;
-
-        @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get(['id','title','type']) as $item)
+        @foreach(\App\Models\Inventory::where('warehouse_id',$warehouse_id)->get() as $item)
         inventory.push({
             "id": "{{ $item->id }}",
-            "title": "{{ $item->title }}",
-            "type": "{{ \App\Models\Inventory::TYPE[$item->type] }}",
+            "title": "{{ $item->product->title }}",
         })
         @endforeach
 
         $.each(inventory, function (i, item) {
-            options_html += `<option value="${item.id}">${item.type} - ${item.title}</option>`
+            options_html += `<option value="${item.id}">${item.title}</option>`;
         })
 
         $(document).ready(function () {
             // add property
             $('#btn_add').on('click', function () {
                 $('#properties_table tbody').append(`
-                <tr>
-                    <td>
-                        <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">${options_html}</select>
-                    </td>
-                    <td><input type="number" name="counts[]" class="form-control" min="0" value="0" required></td>
-                    <td><button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button></td>
-                </tr>
-            `);
+                    <tr>
+                        <td>
+                            <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">${options_html}</select>
+                        </td>
+                        <td><input type="number" name="counts[]" class="form-control" min="0" value="0" required></td>
+                        <td><button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button></td>
+                    </tr>
+                `);
 
-            $('.js-example-basic-single').select2()
+                $('.js-example-basic-single').select2();
             })
             // end add property
 
@@ -121,4 +119,3 @@
         })
     </script>
 @endsection
-
