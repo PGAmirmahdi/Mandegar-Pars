@@ -143,17 +143,16 @@ class InventoryController extends Controller
             })
             // فیلتر برای دسته بندی
             ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
-                return $query->where('category_id', $request->category);
+                return $query->whereHas('product.category', function ($query) use ($request) {
+                    $query->where('id', $request->category);
+                });
             })
             // فیلتر برای مدل (brand)
             ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
-                return $query->where('brand_id', $request->model);
+                return $query->whereHas('product.productModel', function ($query) use ($request) {
+                    $query->where('id', $request->model);
+                });
             })
-            // فیلتر برای نوع (type) که قبلاً تعریف شده است
-            ->when($type, function ($query) use ($type) {
-                return $query->whereIn('type', $type);
-            })
-            // مرتب سازی به ترتیب آخرین‌ها
             ->latest()
             // صفحه بندی با 30 مورد در هر صفحه
             ->paginate(30);
@@ -161,6 +160,7 @@ class InventoryController extends Controller
         // بازگشت به ویو با ارسال داده‌ها
         return view('panel.inventory.index', compact('data', 'warehouse_id'));
     }
+
 
 
     public function excel()
