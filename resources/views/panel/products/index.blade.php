@@ -1,6 +1,12 @@
 @extends('panel.layouts.master')
 @section('title', 'لیست کالاها')
 @section('content')
+    <style>
+        .table-warning {
+            background-color: #fff3cd; /* رنگ پس‌زمینه زرد */
+            color: #856404; /* رنگ متن برای بهتر دیده شدن */
+        }
+    </style>
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -74,6 +80,9 @@
                         <th>شرح کالا</th>
                         <th>برند</th>
                         <th>مدل</th>
+                        @canany(['admin','accountant','office-manager'])
+                        <th>موجودی</th>
+                        @endcanany
                         @can('admin')
                         <th>تاریخ ایجاد</th>
                         @endcan
@@ -87,14 +96,15 @@
                     </thead>
                     <tbody>
                     @foreach($products as $key => $product)
-                        <tr>
+                        <tr @if($product->latestInventory() < 10) class="table-warning" @endif>
                             <td>{{ ++$key }}</td>
                             <td>{{ $product->code }}</td>
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
                             <td>{{ $product->productModels->name ?? 'برند نامشخص' }}</td>
                             <td>{{ $product->title }}</td>
+                            <td>{{ $product->latestInventory() }}</td>
                             @can('admin')
-                            <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
+                                <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
                             @endcan
                             @can('products-edit')
                                 <td>
@@ -112,6 +122,7 @@
                             @endcan
                         </tr>
                     @endforeach
+
                     </tbody>
                     <tfoot>
                     <tr>

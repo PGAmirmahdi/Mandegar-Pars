@@ -75,6 +75,13 @@ class Product extends Model
     {
         return $this->belongsTo(ProductModel::class,'brand_id');
     }
+
+    public function latestInventory()
+    {
+        // گرفتن آخرین موجودی برای این محصول
+        return $this->inventories()->latest()->first()->current_count ?? 0;
+    }
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'analyse_products')
@@ -86,5 +93,9 @@ class Product extends Model
         return $this->belongsToMany(Analyse::class, 'analyse_products')
             ->withPivot('quantity') // دسترسی به ستون quantity از جدول میانی
             ->withTimestamps();
+    }
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
     }
 }
