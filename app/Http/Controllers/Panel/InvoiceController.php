@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Activity;
 use App\Models\Coupon;
 use App\Models\Customer;
+use App\Models\Debtor;
 use App\Models\Factor;
 use App\Models\Invoice;
 use App\Models\InvoiceAction;
@@ -59,57 +60,68 @@ class InvoiceController extends Controller
         return view('panel.invoices.create', compact('seller'));
     }
 
-    public function store(StoreInvoiceRequest $request)
-    {
-        $this->authorize('invoices-create');
+        public function store(StoreInvoiceRequest $request)
+        {
+            $this->authorize('invoices-create');
 
-        $type = $request->type;
-        $req_for = $request->req_for;
+            $type = $request->type;
+            $req_for = $request->req_for;
 
-        $seller = Seller::first();
+            $seller = Seller::first();
 
-        $invoice = Invoice::create([
-            'user_id' => auth()->id(),
-            'seller_id' => $seller ? $seller->id : null,
-            'customer_id' => $request->buyer_name,
-            'economical_number' => $request->economical_number,
-            'national_number' => $request->national_number,
-            'need_no' => $request->need_no,
-            'postal_code' => $request->postal_code,
-            'phone' => $request->phone,
-            'province' => $request->province,
-            'city' => $request->city,
-            'address' => $request->address,
-            'created_in' => 'automation',
-            'type' => $type,
-            'req_for' => $req_for,
-//            'status' => $request->status,
-            'discount' => $request->final_discount,
-            'description' => $request->description,
-            'payment_type' => $request->payment_type
-        ]);
-        $customer = $invoice->customer; // or get customer based on your structure
-        $data = [
-            'user_id' => auth()->id(),
-            'action' => 'ایجاد سفارش فروش',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' ایجاد کرد',
-        ];
+            $invoice = Invoice::create([
+                'user_id' => auth()->id(),
+                'seller_id' => $seller ? $seller->id : null,
+                'customer_id' => $request->buyer_name,
+                'economical_number' => $request->economical_number,
+                'national_number' => $request->national_number,
+                'need_no' => $request->need_no,
+                'postal_code' => $request->postal_code,
+                'phone' => $request->phone,
+                'province' => $request->province,
+                'city' => $request->city,
+                'address' => $request->address,
+                'created_in' => 'automation',
+                'type' => $type,
+                'req_for' => $req_for,
+    //            'status' => $request->status,
+                'discount' => $request->final_discount,
+                'description' => $request->description,
+                'payment_type' => $request->payment_type
+            ]);
+            $customer = $invoice->customer; // or get customer based on your structure
+            $data = [
+                'user_id' => auth()->id(),
+                'action' => 'ایجاد سفارش فروش',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' ایجاد کرد',
+            ];
+            // ذخیره محصولات فاکتور و دریافت مبلغ کل
+            $totalOrderCost = $this->storeInvoiceProducts($invoice, $request);
 
-        Log::info('Activity Data:', $data);
+            // افزودن مشتری به عنوان بدهکار با مقدار کل
+            if ($invoice->customer_id) {
+                Debtor::create([
+                    'customer_id' => $invoice->customer_id,
+                    'price' => $totalOrderCost, // ثبت مبلغ کل محاسبه‌شده
+                    'status' => 'unpaid',
+                    'description' => 'بدهکاری مربوط به فاکتور شماره ' . $invoice->id,
+                ]);
+            }
+            Log::info('Activity Data:', $data);
 
-        Activity::create($data);
-        $this->send_notif_to_accountants($invoice);
-        $this->send_notif_to_sales_manager($invoice);
+            Activity::create($data);
+            $this->send_notif_to_accountants($invoice);
+            $this->send_notif_to_sales_manager($invoice);
 
-        // create products for invoice
-        $this->storeInvoiceProducts($invoice, $request);
+            // create products for invoice
+            $this->storeInvoiceProducts($invoice, $request);
 
-        // create order status
-        $invoice->order_status()->create(['order' => 1, 'status' => 'register']);
+            // create order status
+            $invoice->order_status()->create(['order' => 1, 'status' => 'register']);
 
-        alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش');
-        return redirect()->route('invoices.edit', $invoice->id);
-    }
+            alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش');
+            return redirect()->route('invoices.edit', $invoice->id);
+        }
 
     public function show(Invoice $invoice)
     {
@@ -709,6 +721,7 @@ class InvoiceController extends Controller
         Log::info('Products in request: ', ['products' => $request->products ?: 'No products found']);
         Log::info('other_products in request: ', ['products' => $request->other_products ?: 'No other_products found']);
 
+        $total_invoice_net = 0; // مجموع مبلغ کل سفارش
 
         if ($request->products) {
             foreach ($request->products as $key => $product_id) {
@@ -731,7 +744,9 @@ class InvoiceController extends Controller
                 }
 
                 $product->update(['total_count' => $product->total_count -= $request->counts[$key]]);
-
+                // ذخیره در invoice_product
+                $invoice_net = $request->invoice_nets[$key];
+                $total_invoice_net += $invoice_net;
                 // ذخیره در invoice_product
                 $invoice->products()->attach($product_id, [
                     'color' => $request->colors[$key],
@@ -753,6 +768,8 @@ class InvoiceController extends Controller
 
         if ($request->other_products){
             foreach ($request->other_products as $key => $product){
+                $invoice_net = $request->other_invoice_nets[$key];
+                $total_invoice_net += $invoice_net;
                 $invoice->other_products()->create([
                     'title' => $product,
                     'color' => $request->other_colors[$key],
@@ -767,6 +784,7 @@ class InvoiceController extends Controller
                 ]);
             }
         }
+        return $total_invoice_net; // بازگرداندن مبلغ کل سفارش
     }
 
     private function send_notif_to_accountants(Invoice $invoice)

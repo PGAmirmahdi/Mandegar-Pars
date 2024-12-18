@@ -18,6 +18,7 @@ use App\Http\Controllers\Panel\ChequeController;
 use App\Http\Controllers\Panel\CostController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
+use App\Http\Controllers\Panel\DebtorController;
 use App\Http\Controllers\Panel\DeliveryDayController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
@@ -344,6 +345,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('analyse', AnalyseController::class)->except(['edit', 'update']);
     Route::get('analyse/show/{date}', [AnalyseController::class, 'show'])->name('analyse.show');
     Route::get('/get-products', [AnalyseController::class, 'getProducts'])->name('get.products');
+
+    // Debtors
+    Route::resource('debtors', DebtorController::class);
 
     // Cost
     Route::resource('costs', CostController::class);

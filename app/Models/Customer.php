@@ -22,7 +22,10 @@ class Customer extends Model
         'city' => 'شهرستان',
         'single-sale' => 'تک فروشی',
     ];
-
+    public function debtor()
+    {
+        return $this->hasMany(Debtor::class);
+    }
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
