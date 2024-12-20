@@ -123,7 +123,7 @@ class PriceController extends Controller
 
 
                     // به‌روزرسانی فیلد market_price در جدول محصولات
-                    Product::where('id', $item['product_id'])->update(['market_price' => $price]);
+                    Product::where('id', $item['product_id'])->update(['market_price' => $price , 'single_price' => $price]);
                 } else {
                     // حذف رکورد اگر قیمت null است
                     DB::table('price_list')->where([

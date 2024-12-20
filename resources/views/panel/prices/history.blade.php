@@ -40,7 +40,7 @@
                         <option value="all">برند (همه)</option>
                         @foreach($models as $model)
                             <option value="{{ $model->id }}" {{ request()->model == $model->id ? 'selected' : '' }}>
-                                {{ $model->name }}
+                                {{ $model->slug }}
                             </option>
                         @endforeach
                     </select>

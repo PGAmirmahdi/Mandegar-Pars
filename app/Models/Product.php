@@ -9,16 +9,17 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-
     const COLORS = [
         'black' => 'مشکی'
     ];
-
+    const STATUS = [
+        'approved' => 'تایید شده',
+        'pending' => 'منتظر تایید',
+        'rejected' => 'رد شده',
+    ];
     const UNITS = [
         'number' => 'عدد'
     ];
-
     const PRICE_TYPE = [
         'system_price' => 'قیمت سامانه',
         'partner_price_tehran' => 'قیمت همکار - تهران',
@@ -27,6 +28,7 @@ class Product extends Model
         'market_price' => 'قیمت بازار',
         'domestic_price' => 'قیمت داخلی',
     ];
+    protected $guarded = [];
 
     public function category()
     {
@@ -60,20 +62,20 @@ class Product extends Model
 
     public function getPrice()
     {
-        if (auth()->user()->hasPermission('system-user')){
+        if (auth()->user()->hasPermission('system-user')) {
             return $this->system_price;
-        }elseif (auth()->user()->hasPermission('partner-other-user')){
+        } elseif (auth()->user()->hasPermission('partner-other-user')) {
             return $this->partner_price_other;
-        }elseif (auth()->user()->hasPermission('partner-tehran-user')){
+        } elseif (auth()->user()->hasPermission('partner-tehran-user')) {
             return $this->partner_price_tehran;
-        }else{
+        } else {
             return $this->single_price;
         }
     }
 
     public function productModels()
     {
-        return $this->belongsTo(ProductModel::class,'brand_id');
+        return $this->belongsTo(ProductModel::class, 'brand_id');
     }
 
     public function latestInventory()
@@ -82,20 +84,22 @@ class Product extends Model
         return $this->inventories()->latest()->first()->current_count ?? 0;
     }
 
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'analyse_products')
             ->withPivot('quantity')
             ->withTimestamps();
     }
+
     public function analyses()
     {
         return $this->belongsToMany(Analyse::class, 'analyse_products')
             ->withPivot('quantity') // دسترسی به ستون quantity از جدول میانی
             ->withTimestamps();
-    }
-    public function inventories()
-    {
-        return $this->hasMany(Inventory::class);
     }
 }

@@ -129,10 +129,10 @@
                     @foreach($data as $key => $item)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $item->product->category->slug }}</td>
-                            <td>{{ $item->product->productModels->slug }}</td>
-                            <td>{{ $item->product->title }}</td>
-                            <td>{{ $item->product->code }}</td>
+                            <td>{{ $item->product->category->name }}</td>
+                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $item->product->productModels->slug }}</td>
+                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $item->product->title }}</td>
+                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $item->product->code }}</td>
                             <td>{{ number_format($item->initial_count) }}</td>
                             <td>{{ number_format($item->current_count) }}</td>
                             <td>{{ number_format($item->getInputCount()) }}</td>
