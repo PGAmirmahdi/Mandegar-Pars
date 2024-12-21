@@ -54,7 +54,7 @@
                     @can('inventory-create')
                         <a href="{{ route('inventory.create', ['warehouse_id' => $warehouse_id]) }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            افزودن کالا
+                             افزودن کالا از لیست تمامی کالاها
                         </a>
                     @endcan
                 </div>
@@ -64,16 +64,37 @@
             </form>
             <div class="row mb-3">
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
-                    <input type="text" name="code" class="form-control" placeholder="کد محصول" value="{{ request()->code ?? null }}" form="search_form">
-                </div>
-                <div class="col-xl-3 xl-lg-3 col-md-4 col-sm-12">
-                    <input type="text" name="title" class="form-control" placeholder="عنوان محصول" value="{{ request()->title ?? null }}" form="search_form">
+                    <input type="text" name="code" class="form-control" placeholder="کد کالا" value="{{ request()->code ?? null }}" form="search_form">
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="type" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
-                        <option value="all">نوع (همه)</option>
-                        @foreach(\App\Models\Inventory::TYPE as $key => $value)
-                            <option value="{{ $key }}" {{ request()->type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                    <select name="category" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="1">
+                        <option value="all">شرح کالا (همه)</option>
+                        @foreach(\App\Models\Category::all(['id','name']) as $category)
+                            <option value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="2">
+                        <option value="all">برند (همه)</option>
+                        @foreach(\App\Models\ProductModel::all(['id','name']) as $model)
+                            <option value="{{ $model->id }}" {{ request()->model ==  $model->id ? 'selected' : '' }}>
+                                {{ $model->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">
+                        <option value="all">مدل کالا (همه)</option>
+                        @foreach(\App\Models\Product::all(['id','title']) as $product)
+                            <option value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>
+                                {{ $product->title }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -86,9 +107,10 @@
                     <thead>
                     <tr>
                         <th>#</th>
+                        <td>دسته بندی کالا</td>
+                        <td>برند کالا</td>
                         <th>عنوان کالا</th>
                         <th>کد کالا</th>
-                        <th>نوع</th>
                         <th>موجودی اولیه</th>
                         <th>موجودی فعلی</th>
                         <th>تعداد ورود</th>
@@ -107,9 +129,10 @@
                     @foreach($data as $key => $item)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $item->title }}</td>
-                            <td>{{ $item->code }}</td>
-                            <td>{{ \App\Models\Inventory::TYPE[$item->type] }}</td>
+                            <td>{{ $item->product->category->name }}</td>
+                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $item->product->productModels->slug }}</td>
+                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $item->product->title }}</td>
+                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $item->product->code }}</td>
                             <td>{{ number_format($item->initial_count) }}</td>
                             <td>{{ number_format($item->current_count) }}</td>
                             <td>{{ number_format($item->getInputCount()) }}</td>

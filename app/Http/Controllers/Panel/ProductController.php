@@ -13,7 +13,6 @@ use App\Models\Product;
 use App\Models\ProductModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
@@ -25,14 +24,6 @@ class ProductController extends Controller
 
         $products = Product::latest()->paginate(30);
         return view('panel.products.index', compact('products'));
-    }
-
-    public function create()
-    {
-        $this->authorize('products-create');
-
-        $categories = Category::all();
-        return view('panel.products.create', compact('categories'));
     }
 
     public function store(StoreProductRequest $request)
@@ -48,7 +39,7 @@ class ProductController extends Controller
         // product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
-
+        $status = auth()->user()->role === 'admin' ? $request->status : 'pending';
         // create product
         Product::create([
             'title' => $request->title,
@@ -64,6 +55,7 @@ class ProductController extends Controller
             'single_price' => $request->single_price,
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
+            'status' => $status,
         ]);
 
 
@@ -80,6 +72,26 @@ class ProductController extends Controller
         return redirect()->route('products.index');
     }
 
+    private function json_properties($request)
+    {
+        $items = [];
+        foreach ($request->colors as $key => $color) {
+            $items[] = [
+                'color' => $color,
+                'print_count' => $request->print_count[$key],
+                'counts' => $request->counts[$key],
+            ];
+        }
+        return json_encode($items);
+    }
+
+    public function create()
+    {
+        $this->authorize('products-create');
+
+        $categories = Category::all();
+        return view('panel.products.create', compact('categories'));
+    }
 
     public function show(Product $product)
     {
@@ -91,48 +103,6 @@ class ProductController extends Controller
         $this->authorize('products-edit');
 
         return view('panel.products.edit', compact('product'));
-    }
-
-    public function update(UpdateProductRequest $request, Product $product)
-    {
-        $this->authorize('products-edit');
-
-        // Handle image upload
-        $image = $product->image; // Default to the current image
-        if ($request->hasFile('image')) {
-            $image = upload_file($request->image, 'Products');
-        }
-
-        // Update product properties
-        $properties = $this->json_properties($request);
-        $total_count = array_sum($request->counts);
-
-        // Update product details
-        $product->update([
-            'title' => $request->title,
-            'image' => $image,
-            'category_id' => $request->category,
-            'brand_id' => $request->brand,
-            'properties' => $properties,
-            'description' => $request->description,
-            'system_price' => $request->system_price,
-            'partner_price_tehran' => $request->partner_price_tehran,
-            'partner_price_other' => $request->partner_price_other,
-            'single_price' => $request->single_price,
-            'creator_id' => auth()->id(),
-            'total_count' => $total_count,
-        ]);
-
-        // Log activity
-        Activity::create([
-            'user_id' => auth()->id(),
-            'action' => 'ویرایش کالا',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') کالا ' . $product->title . ' را ویرایش کرد.',
-            'created_at' => now(),
-        ]);
-
-        alert()->success('کالا با موفقیت ویرایش شد', 'ویرایش کالا');
-        return redirect()->route('products.index');
     }
 
     public function destroy(Product $product)
@@ -161,7 +131,10 @@ class ProductController extends Controller
     {
         $this->authorize('products-list');
 
-        $products = Product::where('title', 'like', "%$request->title%")
+        $products = Product::query()
+            ->when($request->product && $request->product !== 'all', function ($query) use ($request) {
+                $query->where('id', $request->product);
+            })
             ->when($request->code, function ($query) use ($request) {
                 return $query->where('code', $request->code);
             })
@@ -175,23 +148,66 @@ class ProductController extends Controller
 
         return view('panel.products.index', compact('products'));
     }
-
-    public function pricesHistory()
+    public function search2(Request $request)
     {
-        $this->authorize('price-history');
-        $products= Product::all();
-        $sellers=PriceListSeller::all();
-        $pricesHistory = PriceHistory::latest()->paginate(30);
-        return view('panel.prices.history', compact('pricesHistory','products','sellers'));
+        $this->authorize('products-list');
+
+        $products = Product::query()
+            ->when(!auth()->user()->isAdmin(), function ($query) {
+                // اگر کاربر ادمین نباشد، فقط محصولات خودش را ببیند
+                $query->where('creator_id', auth()->id());
+            })
+            ->when($request->product && $request->product !== 'all', function ($query) use ($request) {
+                $query->where('id', $request->product);
+            })
+            ->when($request->code, function ($query) use ($request) {
+                return $query->where('code', $request->code);
+            })
+            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                $query->where('category_id', $request->category);
+            })
+            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+                $query->where('brand_id', $request->model);
+            })
+            ->latest()
+            ->paginate(30);
+
+        return view('panel.products.ProductAccept.index', compact('products'));
     }
 
-    public function pricesHistorySearch(Request $request)
+    public function pricesHistory(Request $request)
     {
         $this->authorize('price-history');
+        $pricesHistory = PriceHistory::query()
+            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                // فیلتر بر اساس دسته‌بندی
+                $query->whereHas('product', function ($query) use ($request) {
+                    $query->where('category_id', $request->category);
+                });
+            })
+            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+                // فیلتر بر اساس مدل
+                $query->whereHas('product', function ($query) use ($request) {
+                    $query->where('brand_id', $request->model);
+                });
+            })
+            ->when($request->product && $request->product !== 'all', function ($query) use ($request) {
+                // فیلتر بر اساس محصول
+                $query->where('product_id', $request->product);
+            })
+            ->when($request->seller && $request->seller !== 'all', function ($query) use ($request) {
+                // فیلتر بر اساس نام فروشنده
+                $query->where('price_field', $request->seller);
+            })
+            ->orderByDesc('updated_at')
+            ->paginate(30);
 
-        $sellers=PriceListSeller::all();
-        $products=Product::all();
-        return view('panel.prices.history', compact('products','sellers'));
+        // ارسال داده‌ها به ویو
+        $categories = Category::all();
+        $models = ProductModel::all();
+        $products = Product::all();
+        $sellers = PriceListSeller::all();
+        return view('panel.prices.history', compact('pricesHistory', 'products', 'sellers', 'categories', 'models'));
     }
 
     public function excel()
@@ -206,17 +222,88 @@ class ProductController extends Controller
         return Excel::download(new \App\Exports\ProductsExport, 'products.xlsx');
     }
 
-    private function json_properties($request)
+    public function getModelsByCategory(Request $request)
     {
-        $items = [];
-        foreach ($request->colors as $key => $color) {
-            $items[] = [
-                'color' => $color,
-                'print_count' => $request->print_count[$key],
-                'counts' => $request->counts[$key],
-            ];
+        $models = ProductModel::where('category_id', $request->category_id)->get();
+        return response()->json($models);
+    }
+
+    public function approve(Product $product)
+    {
+        $this->authorize('products-approve'); // تنظیم مجوز
+        $product->update(['status' => 'approved']);
+
+        // ثبت فعالیت
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'تأیید کالا',
+            'description' => 'کالا ' . $product->title . ' توسط مدیر تأیید شد.',
+            'created_at' => now(),
+        ]);
+
+        alert()->success('محصول تأیید شد', 'تأیید محصول');
+        return redirect()->route('products.index');
+    }
+
+    public function update(UpdateProductRequest $request, Product $product)
+    {
+        $this->authorize('products-edit');
+
+        // Handle image upload
+        $image = $product->image; // Default to the current image
+        if ($request->hasFile('image')) {
+            $image = upload_file($request->image, 'Products');
         }
-        return json_encode($items);
+
+        // Update product properties
+        $properties = $this->json_properties($request);
+        $total_count = array_sum($request->counts);
+
+        $status = auth()->user()->role === 'admin' ? $request->status : 'pending';
+        // Update product details
+        $product->update([
+            'title' => $request->title,
+            'image' => $image,
+            'category_id' => $request->category,
+            'brand_id' => $request->brand,
+            'properties' => $properties,
+            'description' => $request->description,
+            'system_price' => $request->system_price,
+            'partner_price_tehran' => $request->partner_price_tehran,
+            'partner_price_other' => $request->partner_price_other,
+            'single_price' => $request->single_price,
+            'creator_id' => auth()->id(),
+            'total_count' => $total_count,
+            'status' => $status,
+        ]);
+
+        // Log activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'ویرایش کالا',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') کالا ' . $product->title . ' را ویرایش کرد.',
+            'created_at' => now(),
+        ]);
+
+        alert()->success('کالا با موفقیت ویرایش شد', 'ویرایش کالا');
+        return redirect()->route('products.index');
+    }
+
+    public function reject(Product $product)
+    {
+        $this->authorize('products-reject'); // تنظیم مجوز
+        $product->update(['status' => 'rejected']);
+
+        // ثبت فعالیت
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'رد کالا',
+            'description' => 'کالا ' . $product->title . ' توسط مدیر رد شد.',
+            'created_at' => now(),
+        ]);
+
+        alert()->error('محصول رد شد', 'رد محصول');
+        return redirect()->route('products.index');
     }
 
     private function priceHistory($product, $request)
@@ -249,12 +336,6 @@ class ProductController extends Controller
                 'price_amount_to' => $request->single_price,
             ]);
         }
-    }
-
-    public function getModelsByCategory(Request $request)
-    {
-        $models = ProductModel::where('category_id', $request->category_id)->get();
-        return response()->json($models);
     }
 
 }

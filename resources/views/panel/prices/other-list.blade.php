@@ -147,6 +147,29 @@
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="2">
+                        <option value="all">برند (همه)</option>
+                        @foreach($models as $model)
+                            <option value="{{ $model->id }}" {{ request()->model == $model->id ? 'selected' : '' }}>
+                                {{ $model->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="seller" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="4">
+                        <option value="all">فروشنده (همه)</option>
+                        @foreach($sellers as $seller)
+                            <option
+                                value="{{ $seller->name }}" {{ request()->seller == $seller->name ? 'selected' : '' }}>
+                                {{ $seller->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="product_id" form="search_form"
                             class="js-example-basic-single select2-hidden-accessible" data-select2-id="7">
                         <option value="all">نام کالا</option>

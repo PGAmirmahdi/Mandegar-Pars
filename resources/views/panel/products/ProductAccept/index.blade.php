@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'لیست کالاها')
+@section('title', auth()->user()->role === 'admin' ? 'لیست درخواست ثبت کالا' : 'لیست درخواست ثبت کالای من')
 @section('content')
     <style>
         .table-warning {
@@ -10,27 +10,17 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>لیست کالاها</h6>
+                <h6>{{auth()->user()->role === 'admin' ? 'لیست درخواست ثبت کالا' : 'لیست درخواست ثبت کالای من'}}</h6>
                 <div>
-                    <form action="{{ route('products.excel') }}" method="post" id="excel_form">
-                        @csrf
-                    </form>
-
-                    <button class="btn btn-success" form="excel_form">
-                        <i class="fa fa-file-excel mr-2"></i>
-                        دریافت اکسل
-                    </button>
-
-                    @can('products-create')
+                    @can('products-user-create')
                         <a href="{{ route('products.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            ایجاد کالا
+                            ایجاد درخواست ثبت
                         </a>
                     @endcan
                 </div>
-
             </div>
-            <form action="{{ route('products.search') }}" method="get" id="search_form"></form>
+            <form action="{{ route('products.search2') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
                     <input type="text" name="code" class="form-control" placeholder="کد کالا"

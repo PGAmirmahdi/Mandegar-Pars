@@ -63,27 +63,32 @@ class ApiController extends Controller
 
             if ($data['created_in'] == 'website') {
                 $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
+                $notif_title= 'سفارش از سایت';
             } else {
                 $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
+                $notif_title= 'سفارش از اپلیکیشن';
             }
 
             $url = route('invoices.index');
-//            Notification::send($notifiables, new SendMessage($notif_message, $url));
+            Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 
-            $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
-                'user_id' => $single_price_user->id,
-                'name' => $data['first_name'] . ' ' . $data['last_name'],
-                'type' => 'private',
-                'economical_number' => 0,
-                'province' => $data['province'],
-                'city' => $data['city'],
-                'national_number'=>$data['national_number'],
-                'address1' => $data['address_1'],
-                'postal_code' => $data['postal_code'],
-                'phone1' => $data['phone'],
-                'customer_type' => 'single-sale',
-                'code' => 'CU-' . random_int(1000000, 9999999),
-            ]);
+            $customer = \App\Models\Customer::updateOrCreate(
+                ['phone1' => $data['phone']],
+                [
+                    'user_id' => $single_price_user->id,
+                    'name' => $data['first_name'] . ' ' . $data['last_name'],
+                    'type' => 'private',
+                    'economical_number' => 0,
+                    'province' => $data['province'],
+                    'city' => $data['city'],
+                    'national_number' => $data['national_number'],
+                    'address1' => $data['address_1'],
+                    'postal_code' => $data['postal_code'],
+                    'phone1' => $data['phone'],
+                    'customer_type' => 'single-sale',
+                    'code' => 'CU-' . random_int(1000000, 9999999),
+                ]
+            );
             $invoice = \App\Models\Invoice::create([
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,

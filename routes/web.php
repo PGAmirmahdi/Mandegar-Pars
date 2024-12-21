@@ -11,7 +11,6 @@ use App\Http\Controllers\Panel\BaseinfoController;
 use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\BuyOrderCommentController;
 use App\Http\Controllers\Panel\BuyOrderController;
-use App\Http\Controllers\Panel\CategoryAnalyseController;
 use App\Http\Controllers\Panel\CategoryController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\ChatsGPTController;
@@ -19,6 +18,7 @@ use App\Http\Controllers\Panel\ChequeController;
 use App\Http\Controllers\Panel\CostController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
+use App\Http\Controllers\Panel\DebtorController;
 use App\Http\Controllers\Panel\DeliveryDayController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
@@ -85,13 +85,17 @@ Route::get('/', function () {
     }
     return view('auth.login');
 });
-//      Route::get('notif', function () {
-//    $url = 'https://google.com';
-//    $message = "salam";
-//    $user = User::find(173);
-//    dd($user);
-//   return Notification::send($user, new SendMessage($message, $url));
-//});
+Route::get('notif', function () {
+    $url = 'https://google.com';
+    $title = 'test';
+    $message = "salam";
+
+    // پیدا کردن کاربر با ID مشخص
+    $user = User::find(173);
+
+    // ارسال نوتیفیکیشن به کاربر
+    return Notification::send($user, new SendMessage($title, $message, $url));
+});
 
 //Route::get('test/{id?}', function ($id = null) {
 
@@ -153,6 +157,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Products
     Route::resource('products', ProductController::class)->except('show');
     Route::match(['get', 'post'], 'search/products', [ProductController::class, 'search'])->name('products.search');
+    Route::match(['get', 'post'], 'search2/products', [ProductController::class, 'search2'])->name('products.search2');
     Route::post('excel/products', [ProductController::class, 'excel'])->name('products.excel');
     Route::post('/get-models-by-category', [ProductController::class, 'getModelsByCategory'])->name('get.models.by.category');
 
@@ -232,7 +237,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Price History
     Route::get('price-history', [ProductController::class, 'pricesHistory'])->name('price-history');
-    Route::post('price-history', [ProductController::class, 'pricesHistorySearch'])->name('price-history');
+    Route::post('price-history-search', [ProductController::class, 'pricesHistory'])->name('price-history-search');
 
     // Login Account
     Route::match(['get', 'post'], 'ud54g78d2fs77gh6s$4sd15p5d', [PanelController::class, 'login'])->name('login-account');
@@ -338,8 +343,12 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     });
 
     // analyse
-    Route::resource('analyse', AnalyseController::class)->except(['edit', 'update', 'show']);
+    Route::resource('analyse', AnalyseController::class)->except(['edit', 'update']);
+    Route::get('analyse/show/{date}', [AnalyseController::class, 'show'])->name('analyse.show');
     Route::get('/get-products', [AnalyseController::class, 'getProducts'])->name('get.products');
+
+    // Debtors
+    Route::resource('debtors', DebtorController::class);
 
     // Cost
     Route::resource('costs', CostController::class);
