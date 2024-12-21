@@ -172,13 +172,14 @@ body.load {
     }
 }
 #No1, #No2, #No3 {
+    color:#fff;
     opacity: 0;
     visibility: hidden;
     transition: 0.5s;
 }
 
 #No1 {
-    font-size: 50px;
+    font-size: 40px;
 }
 
 #No1, #No2 {

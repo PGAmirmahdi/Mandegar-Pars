@@ -5,8 +5,8 @@ const assets = [
     "/index.html",
     "/assets/css/style.css",
     "/assets/js/script.js",
-    "/assets/media/image/icon-192x192.png",
-    "/assets/media/image/icon-512x512.png",
+    "/assets/media/image/logo-192x192.png",
+    "/assets/media/image/logo-512x512.png",
     "/assets/fallback.html"
 ];
 
