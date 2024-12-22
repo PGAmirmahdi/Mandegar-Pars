@@ -292,7 +292,7 @@
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-bordered dataTable dtr-inline text-center"
+                                <table class="table table-striped table-bordered dataTable dtr-inline text-center overflow-auto"
                                        style="width: 100%">
                                     <thead>
                                     <tr>
