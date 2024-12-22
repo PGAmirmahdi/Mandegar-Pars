@@ -120,7 +120,9 @@
             top: 72px;
             left: 40px;
         }
-
+        .modal {
+            z-index: 1050 !important;
+        }
         .lds-roller div:nth-child(5) {
             animation-delay: -0.18s;
         }
