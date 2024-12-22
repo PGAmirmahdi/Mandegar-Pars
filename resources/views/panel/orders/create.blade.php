@@ -15,8 +15,8 @@
     </style>
 @endsection
 @section('content')
-    <div class="content">
-        <div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
             <!-- start page title -->
             <div class="row">
                 <div class="col-12">
@@ -64,8 +64,8 @@
                                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                             <label class="form-label" for="buyer_name">مشتری حقیقی/حقوقی<span
                                                     class="text-danger">*</span></label>
-                                            <select name="buyer_name" id="buyer_name" class="form-control"
-                                                    data-toggle="select2">
+                                            <select name="buyer_name" id="buyer_name" class="form-control select2-hidden-accessible"
+                                                    data-select2-id="select2">
                                                 <option value="" disabled selected>انتخاب کنید...</option>
                                                 @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
                                                     <option
