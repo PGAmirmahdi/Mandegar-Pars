@@ -177,6 +177,45 @@
 
 @endsection
 @section('content')
+    <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="timelineModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- تایم‌لاین عمودی -->
+                    <div class="d-flex flex-column position-relative">
+
+                        <!-- مرحله 1 (متن در چپ) -->
+                        <div class="timeline-content" style="display: none;">
+                        </div>
+
+
+                        <div class="loading">
+                            <div class="lds-roller">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="content">
         <div class="container-fluid">
             <!-- start page title -->
@@ -448,46 +487,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="timelineModalLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="بستن"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- تایم‌لاین عمودی -->
-                    <div class="d-flex flex-column position-relative">
 
-                        <!-- مرحله 1 (متن در چپ) -->
-                        <div class="timeline-content" style="display: none;">
-                        </div>
-
-
-                        <div class="loading">
-                            <div class="lds-roller">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @section('scripts')
