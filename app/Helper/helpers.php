@@ -181,3 +181,33 @@ if (!function_exists('sendSMS')) {
 // --------------------------------------------------- //
     }
 }
+function getPaperSizeFromPdf($pdfFile)
+{
+    $inputPdfPath = $pdfFile->getPathName();
+
+    $mpdf = new \Mpdf\Mpdf([
+        'tempDir' => storage_path('app/mpdf-temp'),
+    ]);
+
+    $pageCount = $mpdf->SetSourceFile($inputPdfPath);
+
+    $page = $mpdf->ImportPage(1);
+
+    $pageSize = $mpdf->getTemplateSize($page);
+
+
+    $width = round($pageSize['width']);
+    $height = round($pageSize['height']);
+
+    $A3Width = 420;
+    $A3Height = 297;
+    $A4Width =  297;
+    $A4Height = 210;
+
+    if ($width >= $A3Width || $height >= $A3Height) {
+        return 'A3';
+    } else {
+        return 'A4';
+    }
+}
+
