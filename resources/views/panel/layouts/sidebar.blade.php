@@ -224,7 +224,17 @@
             @endcan
             @can('invoices-list')
                 <li>
-                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">سفارشات فروش</a>
+                    <a class="{{ active_sidebar(['invoices','invoices/create','invoices/{invoice}/edit','search/invoices','invoice-action/{invoice}','orders-status/{invoice}']) ? 'active' : '' }}" href="{{ route('invoices.index') }}">پیش فاکتور ها</a>
+                </li>
+            @endcan
+            @can('customer-order-list')
+                <li>
+                    <a class="{{ active_sidebar(['orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','order-action/{order}']) ? 'active' : '' }}" href="{{ route('orders.index') }}">پیش فاکتور ها</a>
+                </li>
+            @endcan
+            @can('setad-fee-list')
+                <li>
+                    <a class="{{ active_sidebar(['setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}']) ? 'active' : '' }}" href="{{ route('setad-fee.index') }}">پیش فاکتور ها</a>
                 </li>
             @endcan
             @can('buy-orders-list')

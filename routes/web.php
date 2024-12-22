@@ -44,6 +44,7 @@ use App\Http\Controllers\Panel\ReportController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
+use App\Http\Controllers\Panel\SetadFeeController;
 use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\SMSController;
 use App\Http\Controllers\Panel\SmsHistoryController;
@@ -161,10 +162,24 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('excel/products', [ProductController::class, 'excel'])->name('products.excel');
     Route::post('/get-models-by-category', [ProductController::class, 'getModelsByCategory'])->name('get.models.by.category');
 
+    // Customer Order
+    Route::resource('/orders', OrderController::class);
+    Route::get('order-action/{order}', [OrderController::class, 'orderAction'])->name('order.action');
+    Route::post('order-action/{invoice}', [OrderController::class, 'actionStore'])->name('order.action.store');
+    Route::put('order-invoice-file/{order_action}/delete', [OrderController::class, 'deleteInvoiceFile'])->name('order.invoice.action.delete');
+    Route::put('order-factor-file/{order_action}/delete', [OrderController::class, 'deleteFactorFile'])->name('order.factor.action.delete');
+
+    // Setad
+    Route::resource('setad-fee', SetadFeeController::class);
+    Route::get('search-setad-fee/{order}', [SetadFeeController::class, 'search']);
+    Route::get('setad-fee/{order}/action', [SetadFeeController::class, 'action'])->name('setad-fee.action');
+    Route::post('setad-fee/{order}/action/store', [SetadFeeController::class, 'actionStore'])->name('setad-fee.store.action');
+    Route::put('receipt-file/{id}/delete', [SetadFeeController::class, 'deleteReceiptFile'])->name('receipt.action.delete');
 
     // Printers
     Route::resource('printers', PrinterController::class)->except('show');
     Route::match(['get', 'post'], 'search/printers', [PrinterController::class, 'search'])->name('printers.search');
+
 
     // Invoices
     Route::resource('invoices', InvoiceController::class);

@@ -46,7 +46,76 @@ if (!function_exists('upload_file')) {
         }
     }
 }
+if (!function_exists('upload_file_factor')) {
+    function upload_file_factor($file, $folder)
+    {
+        if ($file) {
+            try {
+                $pdfFile = $file;
+                $paperFormat = getPaperSizeFromPdf($file);
+                $inputPdfPath = $pdfFile->getPathName();
 
+                $outputPdfTempPath = storage_path('app/public/temp-processed-pdf.pdf');
+
+                $imagePath = public_path('assets/media/image/stamp.png');
+
+                $mpdf = new \Mpdf\Mpdf([
+                    'tempDir' => storage_path('app/mpdf-temp'),
+                    'format' => $paperFormat,
+                ]);
+
+                $pageCount = $mpdf->SetSourceFile($inputPdfPath);
+
+                list($imgWidth, $imgHeight) = getimagesize($imagePath);
+
+                $imgWidthMm = $imgWidth * 0.264583;
+                $imgHeightMm = $imgHeight * 0.264583;
+
+                if ($paperFormat == 'A4'){
+                    $x = 280 - $imgWidthMm;
+                    $y = 180 - $imgHeightMm;
+                }else{
+                    $x = 350 - $imgWidthMm;
+                    $y = 220 - $imgHeightMm;
+                }
+
+
+                for ($i = 1; $i <= $pageCount; $i++) {
+                    $templateId = $mpdf->ImportPage($i);
+                    $mpdf->AddPage('L');
+                    $mpdf->UseTemplate($templateId);
+
+                    if ($i == $pageCount) {
+                        $mpdf->Image($imagePath, $x, $y, $imgWidthMm, $imgHeightMm);
+                    }
+                }
+
+                $mpdf->Output($outputPdfTempPath, 'F');
+
+                $year = Carbon::now()->year;
+                $month = Carbon::now()->month;
+                $uploadPath = public_path("/uploads/{$folder}/{$year}/{$month}/");
+
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
+                }
+
+                $filename = time() . '-processed.pdf';
+                $finalPath = $uploadPath . $filename;
+                rename($outputPdfTempPath, $finalPath);
+
+                $img = "/uploads/{$folder}/{$year}/{$month}/" . $filename;
+
+                return $img;
+            } catch (Exception $e) {
+                alert()->warning('خطا در آپلود فایل', 'خطا');
+                return redirect()->to(route('invoices.index'));
+            }
+
+
+        }
+    }
+}
 if (!function_exists('formatBytes')) {
     function formatBytes($size, $precision = 2)
     {
