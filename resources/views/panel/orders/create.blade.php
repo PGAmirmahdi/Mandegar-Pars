@@ -60,7 +60,7 @@
                                     <div class="col-12 mb-4 text-center">
                                         <h4>مشخصات مشتری</h4>
                                     </div>
-                                    <div class="row mb-4">
+                                    <div class="col-6 row mb-4">
                                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                             <label class="form-label" for="buyer_name">مشتری حقیقی/حقوقی<span
                                                     class="text-danger">*</span></label>
@@ -77,7 +77,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="row mb-4">
+                                    <div class="col-12 row mb-4">
                                         <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
                                             <label class="form-label" for="description">توضیحات بیشتر</label>
                                             <textarea  name="description" id="description" class="description form-control" rows="10">{{ old('description') }}</textarea>
