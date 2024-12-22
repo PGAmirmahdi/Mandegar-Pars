@@ -184,8 +184,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="timelineModalLabel"></h5>
-                    <button type="button" class="btn btn-secondary close-btn-niceee" data-bs-dismiss="modal">بستن
-                    </button>
+
 
                 </div>
                 <div class="modal-body">
@@ -214,7 +213,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" class="btn btn-secondary close-btn-niceee" data-bs-dismiss="modal">بستن
+                    </button>
                 </div>
             </div>
         </div>
