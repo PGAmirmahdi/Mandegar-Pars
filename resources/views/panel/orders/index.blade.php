@@ -177,45 +177,45 @@
 
 @endsection
 @section('content')
-    <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="timelineModalLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="بستن"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- تایم‌لاین عمودی -->
-                    <div class="d-flex flex-column position-relative">
-
-                        <!-- مرحله 1 (متن در چپ) -->
-                        <div class="timeline-content" style="display: none;">
-                        </div>
-
-
-                        <div class="loading">
-                            <div class="lds-roller">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-                        </div>
-
-
+        <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="timelineModalLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="بستن"></button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    <div class="modal-body">
+                        <!-- تایم‌لاین عمودی -->
+                        <div class="d-flex flex-column position-relative">
+
+                            <!-- مرحله 1 (متن در چپ) -->
+                            <div class="timeline-content" style="display: none;">
+                            </div>
+
+
+                            <div class="loading">
+                                <div class="lds-roller">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <div class="content">
         <div class="container-fluid">
             <!-- start page title -->
@@ -496,11 +496,22 @@
             $(document).on('click', '.show-status', function () {
                 var id = $(this).data('id');
                 var code = $(this).data('code');
-                $('#timelineModalLabel').text(`وضعیت سفارش ${code}`)
+
+                // لاگ کردن مقادیر data-id و data-code
+                console.log('Clicked button with ID:', id);
+                console.log('Order code:', code);
+
+                // تغییر عنوان مدال
+                $('#timelineModalLabel').text(`وضعیت سفارش ${code}`);
+
                 var loading = $('.loading');
                 var timelineContent = $('.timeline-content');
                 timelineContent.empty();
                 loading.show();
+
+                // لاگ کردن هنگام شروع درخواست AJAX
+                console.log('Sending AJAX request to get order status...');
+
                 $.ajax({
                     url: '/panel/get-customer-order-status/' + id,
                     type: 'GET',
@@ -508,6 +519,11 @@
                     success: function (response) {
                         loading.hide();
                         console.log('Response:', response);
+
+                        if (!response || response.length === 0) {
+                            console.log('No stages found in the response');
+                        }
+
                         response.forEach((stage, index) => {
                             const hasDate = stage.date !== '';
                             const stageClass = stage.pending ? 'bg-warning' : hasDate ? 'bg-success' : 'bg-secondary';
@@ -535,8 +551,8 @@
                         });
 
                         timelineContent.show();
-                    }
-                    ,
+                        console.log('Timeline content updated');
+                    },
 
                     error: function (xhr, status, error) {
                         console.log('Error:', error);
@@ -548,5 +564,6 @@
         });
     </script>
 @endsection
+
 
 
