@@ -182,8 +182,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="timelineModalLabel"></h5>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                                aria-label="بستن"></button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+
                     </div>
                     <div class="modal-body">
                         <!-- تایم‌لاین عمودی -->
@@ -491,8 +491,6 @@
 @endsection
 
 @section('scripts')
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.misdeliver.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
             $(document).on('click', '.show-status', function () {
