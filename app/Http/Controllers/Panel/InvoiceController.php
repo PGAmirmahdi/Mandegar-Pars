@@ -254,7 +254,7 @@ class InvoiceController extends Controller
         ])->first();
 
         $product = Product::find($request->product_id);
-        $price = $product->getPrice();
+        $price = $product->market_price;
 
         $total_price = $price * $request->count;
 
