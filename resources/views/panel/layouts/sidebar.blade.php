@@ -229,12 +229,12 @@
             @endcan
             @can('customer-order-list')
                 <li>
-                    <a class="{{ active_sidebar(['orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','order-action/{order}']) ? 'active' : '' }}" href="{{ route('orders.index') }}">پیش فاکتور ها</a>
+                    <a class="{{ active_sidebar(['orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','order-action/{order}']) ? 'active' : '' }}" href="{{ route('orders.index') }}">سفارش مشتری</a>
                 </li>
             @endcan
             @can('setad-fee-list')
                 <li>
-                    <a class="{{ active_sidebar(['setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}']) ? 'active' : '' }}" href="{{ route('setad-fee.index') }}">پیش فاکتور ها</a>
+                    <a class="{{ active_sidebar(['setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}']) ? 'active' : '' }}" href="{{ route('setad-fee.index') }}">کارمزد ستاد</a>
                 </li>
             @endcan
             @can('buy-orders-list')
