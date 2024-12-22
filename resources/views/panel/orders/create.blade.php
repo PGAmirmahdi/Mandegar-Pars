@@ -64,8 +64,8 @@
                                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                             <label class="form-label" for="buyer_name">مشتری حقیقی/حقوقی<span
                                                     class="text-danger">*</span></label>
-                                            <select name="buyer_name" id="buyer_name" class="form-control select2-hidden-accessible"
-                                                    data-select2-id="select2">
+                                            <select name="buyer_name" id="buyer_name" class="js-example-basic-single  select2-hidden-accessible"
+                                                    data-select2-id="1">
                                                 <option value="" disabled selected>انتخاب کنید...</option>
                                                 @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
                                                     <option
