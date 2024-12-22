@@ -182,7 +182,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="timelineModalLabel"></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
                                 aria-label="بستن"></button>
                     </div>
                     <div class="modal-body">
@@ -494,6 +494,7 @@
     <script>
         $(document).ready(function () {
             $(document).on('click', '.show-status', function () {
+                $('#timelineModal').modal('show');
                 var id = $(this).data('id');
                 var code = $(this).data('code');
 
@@ -549,7 +550,6 @@
 
                             timelineContent.append(stageTemplate);
                         });
-
                         timelineContent.show();
                         console.log('Timeline content updated');
                     },
