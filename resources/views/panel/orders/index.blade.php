@@ -120,9 +120,11 @@
             top: 72px;
             left: 40px;
         }
+
         .modal {
             z-index: 1050 !important;
         }
+
         .lds-roller div:nth-child(5) {
             animation-delay: -0.18s;
         }
@@ -177,45 +179,46 @@
 
 @endsection
 @section('content')
-        <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="timelineModalLabel"></h5>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+    <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="timelineModalLabel"></h5>
+                    <button type="button" class="btn btn-secondary close-btn-niceee" data-bs-dismiss="modal">بستن
+                    </button>
 
-                    </div>
-                    <div class="modal-body">
-                        <!-- تایم‌لاین عمودی -->
-                        <div class="d-flex flex-column position-relative">
+                </div>
+                <div class="modal-body">
+                    <!-- تایم‌لاین عمودی -->
+                    <div class="d-flex flex-column position-relative">
 
-                            <!-- مرحله 1 (متن در چپ) -->
-                            <div class="timeline-content" style="display: none;">
-                            </div>
-
-
-                            <div class="loading">
-                                <div class="lds-roller">
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                </div>
-                            </div>
-
-
+                        <!-- مرحله 1 (متن در چپ) -->
+                        <div class="timeline-content" style="display: none;">
                         </div>
+
+
+                        <div class="loading">
+                            <div class="lds-roller">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+
+
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
                 </div>
             </div>
         </div>
+    </div>
     <div class="content">
         <div class="container-fluid">
             <!-- start page title -->
@@ -245,7 +248,8 @@
                                 <div class="alert alert-info">
                                     <i class="fa fa-info-circle font-size-20 align-middle"></i>
                                     <strong>توجه!</strong>
-                                  حسابدار گرامی قیمت کالا ها ، به صورت قیمت تمام شده (به همراه مالیات ، ارزش افزوده و ...) محاسبه شده است . در صورت نیاز به اطلاعات بیشتر با واحد فروش ارتباط برقرار کنید.
+                                    حسابدار گرامی قیمت کالا ها ، به صورت قیمت تمام شده (به همراه مالیات ، ارزش افزوده و
+                                    ...) محاسبه شده است . در صورت نیاز به اطلاعات بیشتر با واحد فروش ارتباط برقرار کنید.
                                 </div>
                             @endcan
                             <div class="card-title d-flex justify-content-end">
@@ -331,8 +335,9 @@
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-bordered dataTable dtr-inline text-center overflow-auto"
-                                       style="width: 100%">
+                                <table
+                                    class="table table-striped table-bordered dataTable dtr-inline text-center overflow-auto"
+                                    style="width: 100%">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -401,7 +406,7 @@
                                                    data-bs-toggle="modal"
                                                    data-bs-target="#timelineModal" data-id="{{$order->id}}"
                                                    data-code="{{$order->code}}">
-                                                    <i class="fa fa-info"></i>
+                                                    <i class="fa fa-info text-light"></i>
                                                 </a>
                                             </td>
                                             {{--                            @canany(['accountant','admin','ceo'])--}}
@@ -498,10 +503,6 @@
                 var id = $(this).data('id');
                 var code = $(this).data('code');
 
-                // لاگ کردن مقادیر data-id و data-code
-                console.log('Clicked button with ID:', id);
-                console.log('Order code:', code);
-
                 // تغییر عنوان مدال
                 $('#timelineModalLabel').text(`وضعیت سفارش ${code}`);
 
@@ -510,20 +511,12 @@
                 timelineContent.empty();
                 loading.show();
 
-                // لاگ کردن هنگام شروع درخواست AJAX
-                console.log('Sending AJAX request to get order status...');
-
                 $.ajax({
                     url: '/panel/get-customer-order-status/' + id,
                     type: 'GET',
                     dataType: 'json',
                     success: function (response) {
                         loading.hide();
-                        console.log('Response:', response);
-
-                        if (!response || response.length === 0) {
-                            console.log('No stages found in the response');
-                        }
 
                         response.forEach((stage, index) => {
                             const hasDate = stage.date !== '';
@@ -551,15 +544,17 @@
                             timelineContent.append(stageTemplate);
                         });
                         timelineContent.show();
-                        console.log('Timeline content updated');
+
                     },
 
                     error: function (xhr, status, error) {
-                        console.log('Error:', error);
                         loading.hide();
                     }
                 });
 
+            });
+            $(document).on('click', '.close-btn-niceee', function () {
+                $('#timelineModal').modal('hide');
             });
         });
     </script>
