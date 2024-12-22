@@ -13,6 +13,7 @@ class Invoice extends Model
 
     const STATUS = [
         'order' => 'ثبت سفارش',
+        'orders' => 'ثبت سفارش',
         'pending' => 'پیش فاکتور شده',
         'invoiced' => 'فاکتور شده',
 //        'return' => 'عودت داده شده',
