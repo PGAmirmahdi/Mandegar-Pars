@@ -491,6 +491,8 @@
 @endsection
 
 @section('scripts')
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.misdeliver.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
             $(document).on('click', '.show-status', function () {
