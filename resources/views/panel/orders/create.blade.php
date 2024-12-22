@@ -12,6 +12,11 @@
         .description{
 
         }
+        .btn-check{
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+            pointer-events: none;
+        }
     </style>
 @endsection
 @section('content')
@@ -60,7 +65,7 @@
                                     <div class="col-12 mb-4 text-center">
                                         <h4>مشخصات مشتری</h4>
                                     </div>
-                                    <div class="col-6 row mb-4">
+                                    <div class="col-12 row mb-4">
                                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                             <label class="form-label" for="buyer_name">مشتری حقیقی/حقوقی<span
                                                     class="text-danger">*</span></label>
