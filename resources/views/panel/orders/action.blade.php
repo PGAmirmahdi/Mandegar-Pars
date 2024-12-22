@@ -6,6 +6,11 @@
             box-shadow: 0 0 !important;
             -webkit-box-shadow: 0 0 !important;
         }
+        .btn-check {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+            pointer-events: none;
+        }
     </style>
 @endsection
 @php
