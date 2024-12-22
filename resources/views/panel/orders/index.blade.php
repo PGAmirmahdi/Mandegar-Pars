@@ -494,58 +494,72 @@
     <script>
         $(document).ready(function () {
             $(document).on('click', '.show-status', function () {
-                var id = $(this).data('id');
-                var code = $(this).data('code');
-                $('#timelineModalLabel').text(`وضعیت سفارش ${code}`)
-                var loading = $('.loading');
-                var timelineContent = $('.timeline-content');
-                timelineContent.empty();
-                loading.show();
+                const id = $(this).data('id');
+                const code = $(this).data('code');
+
+                // تنظیم عنوان مدال
+                $('#timelineModalLabel').text(`وضعیت سفارش ${code}`);
+
+                const $loading = $('.loading');
+                const $timelineContent = $('.timeline-content');
+
+                // پاک‌سازی و نمایش انیمیشن بارگذاری
+                $timelineContent.empty().hide();
+                $loading.show();
+
+                // ارسال درخواست Ajax
                 $.ajax({
-                    url: '/panel/get-customer-order-status/' + id,
+                    url: `/panel/get-customer-order-status/${id}`,
                     type: 'GET',
                     dataType: 'json',
                     success: function (response) {
-                        loading.hide();
-                        console.log('Response:', response);
+                        $loading.hide(); // مخفی‌کردن انیمیشن بارگذاری
+
+                        if (response.length === 0) {
+                            $timelineContent.append('<p class="text-muted">اطلاعاتی موجود نیست.</p>').show();
+                            return;
+                        }
+
                         response.forEach((stage, index) => {
                             const hasDate = stage.date !== '';
                             const stageClass = stage.pending ? 'bg-warning' : hasDate ? 'bg-success' : 'bg-secondary';
                             const icon = stage.pending ? '<i class="fa fa-undo rotate-icon"></i>' : hasDate ? '✓' : '✖';
                             const date = stage.pending ? 'در حال بررسی' : hasDate ? stage.date : '';
 
+                            // نوار پیشرفت بین مراحل (به جز مرحله اول)
                             const progressBar = index === 0 ? '' : `
-                            <div class="progress progress-vertical ${stageClass}">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated ${stageClass}" role="progressbar" style="height: 100%;"></div>
-                            </div>
-                        `;
+                        <div class="progress progress-vertical ${stageClass}">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated ${stageClass}" role="progressbar" style="height: 100%;"></div>
+                        </div>
+                    `;
 
+                            // قالب مرحله
                             const stageTemplate = `
-                            ${progressBar}
-                            <div class="timeline-stage stage-left d-flex align-items-center">
-                                <div class="rounded-circle ${stageClass} text-white stage-circle me-2">${icon}</div>
-                                <div>
-                                    <h6 class="stage-text" style="font-weight: bolder;font-size: medium;">${stage.status_label}</h6>
-                                    <small class="stage-text">${date}</small>
-                                </div>
+                        ${progressBar}
+                        <div class="timeline-stage stage-left d-flex align-items-center">
+                            <div class="rounded-circle ${stageClass} text-white stage-circle me-2">${icon}</div>
+                            <div>
+                                <h6 class="stage-text fw-bold">${stage.status_label}</h6>
+                                <small class="stage-text">${date}</small>
                             </div>
-                        `;
+                        </div>
+                    `;
 
-                            timelineContent.append(stageTemplate);
+                            // افزودن مرحله به تایم‌لاین
+                            $timelineContent.append(stageTemplate);
                         });
 
-                        timelineContent.show();
-                    }
-                    ,
-
+                        $timelineContent.show(); // نمایش محتوای تایم‌لاین
+                    },
                     error: function (xhr, status, error) {
-                        console.log('Error:', error);
-                        loading.hide();
+                        console.error('Error:', error);
+                        $loading.hide();
+                        $timelineContent.append('<p class="text-danger">خطا در دریافت اطلاعات. لطفاً دوباره تلاش کنید.</p>').show();
                     }
                 });
-
             });
         });
+
     </script>
 @endsection
 
