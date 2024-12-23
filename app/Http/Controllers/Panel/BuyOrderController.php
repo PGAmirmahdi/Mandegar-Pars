@@ -28,12 +28,6 @@ class BuyOrderController extends Controller
 
     public function create()
     {
-        $this->authorize('buy-orders-create');
-
-        if (Gate::allows('ceo')){
-            return back();
-        }
-
         return view('panel.buy-orders.create');
     }
 
