@@ -38,55 +38,41 @@ class PriceRequestController extends Controller
 
         $items = [];
 
-        // Check if products and new_prices are provided
-        if ($request->has('products') && $request->has('new_prices') && count($request->products) > 0) {
-            foreach ($request->products as $key => $productId) {
-                // Get product model by ID
-                $product = Product::find($productId);
-                if (!$product) {
-                    continue;  // Skip if the product doesn't exist
-                }
-
-                // Get new price or fallback to old price if new price is not provided
-                $new_price = isset($request->new_prices[$key]) && $request->new_prices[$key] != ''
-                    ? str_replace(',', '', $request->new_prices[$key])  // if new price is provided
-                    : $product->market_price;  // otherwise, use the current price
-
-                $old_price = $product->market_price; // Get the current price of the product
-
-                // Add to items array
-                $items[] = [
-                    'product' => $product->title,  // Save the title of the product
-                    'old_price' => $old_price,
-                    'new_price' => $new_price,
-                    'description' => isset($request->description[$key]) ? $request->description[$key] : '',
-                ];
-
-                // Update product price if the new price is different from the old one
-                if ($new_price != $old_price) {
-                    $product->market_price = $new_price;  // Set new price
-                    $product->save();  // Save the changes
-                }
-            }
-
-            // Save PriceRequest after processing items
-            PriceRequest::create([
-                'user_id' => auth()->id(),
-                'max_send_time' => 1,  // Default max send time, adjust as needed
-                'status' => 'sent',
-                'items' => json_encode($items),
-            ]);
-
-            alert()->success('درخواست قیمت با موفقیت ثبت شد و قیمت‌ها به روز شدند', 'ثبت درخواست قیمت');
-            return redirect()->route('price-requests.index');
-        } else {
-            // Handle case where products or prices are not provided
-            alert()->error('هیچ کالایی برای ثبت درخواست قیمت انتخاب نشده است.', 'خطا');
-            return back();
+        foreach ($request->products as $key => $product){
+            $items[] = [
+                'product' => $product,
+                'count' => $request->counts[$key],
+                'description' => $request->description[$key],
+            ];
         }
+        PriceRequest::create([
+            'user_id' => auth()->id(),
+            'max_send_time' => $request->max_send_time,
+            'items' => json_encode($items)
+        ]);
+
+        // notification sent to ceo
+        $notifiables = User::where('id','!=',auth()->id())->whereHas('role' , function ($role) {
+            $role->whereHas('permissions', function ($q) {
+                $q->whereIn('name', ['ceo','sales-manager']);
+            });
+        })->get();
+        $notif_title = 'درخواست قیمت';
+        $notif_message = 'یک درخواست قیمت توسط همکار فروش ثبت گردید';
+        $url = route('price-requests.index');
+        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+        // end notification sent to ceo
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ثبت درخواست قیمت',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') یک درخواست قیمت برای کالاها ثبت کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
+        alert()->success('درخواست قیمت با موفقیت ثبت شد','ثبت درخواست قیمت');
+        return redirect()->route('price-requests.index');
     }
-
-
     public function show(PriceRequest $priceRequest)
     {
         $this->authorize('price-requests-list');
@@ -139,10 +125,11 @@ class PriceRequestController extends Controller
             });
         })->get();
 
+        $notif_title = 'درخواست قیمت';
         $notif_message = 'قیمت کالاهای درخواستی توسط مدیر ثبت گردید';
         $url = route('price-requests.index');
-        Notification::send($notifiables, new SendMessage($notif_message, $url));
-        Notification::send($priceRequest->user, new SendMessage($notif_message, $url));
+        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+        Notification::send($priceRequest->user, new SendMessage($notif_title,$notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
