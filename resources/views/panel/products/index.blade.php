@@ -52,7 +52,7 @@
                     <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="2">
                         <option value="all">برند (همه)</option>
-                        @foreach(\App\Models\ProductModel::all(['id','name']) as $model)
+                        @foreach(\App\Models\ProductModel::all(['id','slug']) as $model)
                             <option value="{{ $model->id }}" {{ request()->model ==  $model->id ? 'selected' : '' }}>
                                 {{ $model->slug }}
                             </option>
