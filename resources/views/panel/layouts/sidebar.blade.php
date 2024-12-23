@@ -7,13 +7,12 @@
                     <i class="icon ti-dashboard"></i>
                 </a>
             </li>
-            @canany(['categories-list','products-list','printers-list','prices-list','foreign-customers-list','customers-list'])
+            @canany(['categories-list','products-list','printers-list','prices-list','foreign-customers-list','customers-list','debtors-list'])
                 <li class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}/edit','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search', 'artin-products', 'other-prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="هاب لیست">
                     <a href="#navigationProducts" title="هاب لیست">
                         <i class="icon ti-view-list"></i>
                     </a>
                 </li>
-
             @endcanany
             @canany(['invoices-list','sale-reports-list','price-requests','buy-orders','delivery-day'])
             <li class="{{ active_sidebar(['orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','order-action/{order}','setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}','costs/{cost}/accounting','costs','costs/create','costs/{cost}/edit','invoices','invoices/create','invoices/{invoice}/edit','search/invoices','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days']) ? 'active' : '' }}" data-toggle="tooltip" title="سفارشات">
