@@ -114,9 +114,15 @@
                             @endcan
                             @can('debtor-edit')
                                     <td>
+                                        @if($debtor->status == 'paid')
                                         <a class="btn btn-primary btn-floating" href="{{ route('debtors.edit', $debtor->id) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
+                                        @else
+                                            <a class="btn btn-primary btn-floating disabled" disabled href="#">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        @endif
                                     </td>
                             @endcan
                             @can('debtor-delete')
