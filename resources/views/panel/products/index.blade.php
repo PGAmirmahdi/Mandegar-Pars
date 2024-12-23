@@ -132,7 +132,9 @@
                                     @endif
                                 </td>
                             @endcan
-                            <td>{{ $product->latestInventory() }}</td>
+                            @canany(['admin','accountant'])
+                                <td>{{ $product->latestInventory() }}</td>
+                            @endcanany
                             @can('admin')
                                 <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
                             @endcan
