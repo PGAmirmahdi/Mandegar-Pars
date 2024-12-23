@@ -71,12 +71,12 @@ class LeaveController extends Controller
             $q->where('name','ceo');
         })->pluck('id');
         $ceo_users = User::whereIn('role_id', $roles_id)->get();
-
+        $title='درخواست مرخصی';
         $fullName = auth()->user()->fullName();
         $message = "یک درخواست مرخصی توسط $fullName ثبت شد";
         $url = route('leaves.index');
 
-        Notification::send($ceo_users, new SendMessage($message, $url));
+        Notification::send($ceo_users, new SendMessage($title,$message, $url));
         // end send notification to ceo`s
 
         alert()->success('درخواست مرخصی شما با موفقیت ثبت شد','درخواست مرخصی');
@@ -101,6 +101,7 @@ class LeaveController extends Controller
 
         if ($request->status != 'pending' && $leave->status != $request->status){
             $status = Leave::STATUS[$request->status];
+            $title='درخواست مرخصی';
             $message = "وضعیت درخواست مرخصی شما به $status تغییر یافت";
             $url = route('leaves.index');
 
@@ -126,7 +127,7 @@ class LeaveController extends Controller
                 }
             }
 
-            $leave->user->notify(new SendMessage($message, $url));
+            $leave->user->notify(new SendMessage($title,$message, $url));
         }
 
         $leave->update([

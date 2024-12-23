@@ -135,13 +135,13 @@
   ),
   'mews/captcha' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Mews\\Captcha\\CaptchaServiceProvider',
-    ),
     'aliases' => 
     array (
       'Captcha' => 'Mews\\Captcha\\Facades\\Captcha',
+    ),
+    'providers' => 
+    array (
+      0 => 'Mews\\Captcha\\CaptchaServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
