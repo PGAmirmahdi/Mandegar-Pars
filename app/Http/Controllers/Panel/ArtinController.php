@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PDO;
 
 class ArtinController extends Controller
@@ -68,45 +69,42 @@ class ArtinController extends Controller
         try {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sql = "UPDATE mand_wc_product_meta_lookup SET min_price = :price, max_price = :price WHERE product_id = :product_id";
+            // به‌روزرسانی قیمت‌ها
+            $queries = [
+                "UPDATE mand_wc_product_meta_lookup SET min_price = :price, max_price = :price WHERE product_id = :product_id",
+                "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id AND meta_key = '_regular_price'",
+                "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id AND meta_key = '_price'"
+            ];
 
+            foreach ($queries as $sql) {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':price', $price);
+                $stmt->bindParam(':product_id', $product_id);
+                $stmt->execute();
+            }
+
+            // گرفتن نام محصول
+            $sql = "SELECT post_title FROM mand_posts WHERE ID = :product_id";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':price', $price);
             $stmt->bindParam(':product_id', $product_id);
             $stmt->execute();
+            $product_name = $stmt->fetchColumn();
 
-            $sql2 = "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id and meta_key = '_regular_price'";
-            $sql3 = "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id and meta_key = '_price'";
-
-            $stmt2 = $this->conn->prepare($sql2);
-            $stmt2->bindParam(':price', $price);
-            $stmt2->bindParam(':product_id', $product_id);
-            $stmt2->execute();
-
-            $stmt3 = $this->conn->prepare($sql3);
-            $stmt3->bindParam(':price', $price);
-            $stmt3->bindParam(':product_id', $product_id);
-            $stmt3->execute();
-
-            // گرفتن نام محصول از دیتابیس
-            $sql4 = "SELECT post_title FROM mand_posts WHERE ID = :product_id";
-            $stmt4 = $this->conn->prepare($sql4);
-            $stmt4->bindParam(':product_id', $product_id);
-            $stmt4->execute();
-            $product_name = $stmt4->fetchColumn(); // نام محصول
-
-            $this->conn = null;
             // ثبت فعالیت کاربر همراه با نام محصول
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ویرایش قیمت محصول سایت',
                 'description' => 'کاربر ' . auth()->user()->family . ' قیمت محصول "' . $product_name . '" را ویرایش کرد.',
             ]);
-            return back();
-        } catch(\PDOException $e) {
-            return "Connection failed: " . $e->getMessage();
+
+            return back()->with('success', 'قیمت محصول با موفقیت به‌روزرسانی شد.');
+
+        } catch (\PDOException $e) {
+            Log::error('خطای به‌روزرسانی قیمت محصول: ' . $e->getMessage());
+            return back()->with('error', 'خطایی در به‌روزرسانی قیمت رخ داد.');
         }
     }
+
     public function store(Request $request)
     {
         $this->authorize('artin-products-create');
