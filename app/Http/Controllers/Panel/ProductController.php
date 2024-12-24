@@ -39,7 +39,7 @@ class ProductController extends Controller
         // product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
-//        $status = auth()->user()->role === 'admin' ? $request->status : 'pending';
+        $status = auth()->user()->role === 'admin' ? $request->status : 'pending';
         // create product
         Product::create([
             'title' => $request->title,
@@ -55,7 +55,7 @@ class ProductController extends Controller
             'single_price' => $request->single_price,
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
-//            'status' => $status,
+            'status' => $status,
         ]);
 
 

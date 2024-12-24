@@ -100,6 +100,8 @@
                                     <span class="badge badge-success">پرداخت شده</span>
                                 @elseif($debtor->status == 'partial')
                                     <span class="badge badge-warning">پرداخت ناقص</span>
+                                @elseif($debtor->status == 'followed')
+                                    <span class="badge badge-primary">پیگیری شود</span>
                                 @else
                                     <span class="badge badge-info">نامشخص</span>
                                 @endif
