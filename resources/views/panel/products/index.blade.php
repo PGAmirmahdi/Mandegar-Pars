@@ -121,18 +121,18 @@
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
                             @can('admin')
                                 <td>
-                                    @if($products->status == 'accepted')
-                                        <span class="badge badge-success">{{$products->status}}</span>
-                                    @elseif($products->status == 'waiting')
-                                        <span class="badge badge-warning">{{$products->status}}</span>
-                                    @elseif($products->status == 'danied')
-                                        <span class="badge badge-danger">{{$products->status}}</span>
+                                    @if($product->status == 'accepted')
+                                        <span class="badge badge-success">{{$product->status}}</span>
+                                    @elseif($product->status == 'waiting')
+                                        <span class="badge badge-warning">{{$product->status}}</span>
+                                    @elseif($product->status == 'denied')
+                                        <span class="badge badge-danger">{{$product->status}}</span>
                                     @else
-                                        <span class="badge badge-info">{{$products->status}}</span>
+                                        <span class="badge badge-info">{{$product->status}}</span>
                                     @endif
                                 </td>
                             @endcan
-                            @canany(['admin','accountant'])
+                        @canany(['admin','accountant'])
                                 <td>{{ $product->latestInventory() }}</td>
                             @endcanany
                             @can('admin')
