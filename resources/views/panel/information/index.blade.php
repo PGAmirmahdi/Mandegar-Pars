@@ -26,7 +26,7 @@
                         </a>
                     @endcan
                 </div>
-                @foreach(['base' => 'اطلاعات پایه', 'bank' => 'اطلاعات حساب بانکی', 'manager' => 'اطلاعات مدیر عامل', 'call' => 'اطلاعات تماس'] as $type => $header2)
+                @foreach(['base' => 'اطلاعات پایه', 'bank' => 'اطلاعات حساب بانکی', 'manager' => 'اطلاعات مدیر عامل', 'call' => 'اطلاعات تماس','Irancell-bussiness' => 'شماره تلفن سازمانی'] as $type => $header2)
                     <div class="card-header bg-primary text-white text-center">
                         {{ $header2 }}
                     </div>
