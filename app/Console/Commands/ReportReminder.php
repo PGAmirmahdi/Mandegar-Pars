@@ -3,7 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Jobs\ReportReminderJob;
+use App\Models\User;
+use App\Notifications\SendMessage;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class ReportReminder extends Command
 {
@@ -31,16 +34,18 @@ class ReportReminder extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
+
     public function handle()
     {
-        dispatch(new ReportReminderJob());
-        $this->info('Done!');
+        $roles_id = \App\Models\Role::whereHas('permissions', function ($q){
+            $q->where('name','reports-create');
+        })->pluck('id');
 
-        return 1;
+        $users = User::whereIn('role_id',$roles_id)->get();
+        $title='ثبت گزارش روزانه';
+        $message = 'لطفا گزارش امروز خود را ثبت کنید';
+        $url = route('reports.index');
+
+        Notification::send($users, new SendMessage($title,$message, $url));
     }
 }
