@@ -154,7 +154,7 @@
             <li class="navigation-divider">عملیات</li>
             @can('products-list')
                 <li>
-                    <a class="{{ active_sidebar(['products','products/create','products/{product}/edit','search/products']) ? 'active' : '' }}" href="{{ route('products.index') }}">لیست تمامی کالاها</a>
+                    <a class="{{ active_sidebar(['products','products/create','products/{product}/edit','search/products']) ? 'active' : '' }}" href="{{ route('products.index') }}">بارگذاری تمامی کالاها</a>
                 </li>
             @endcan
             @can('artin-products-list')
@@ -174,12 +174,12 @@
             @endcan
             @can('customers-list')
                 <li>
-                    <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}" href="{{ route('customers.index') }}">لیست تمامی مشتریان داخلی</a>
+                    <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}" href="{{ route('customers.index') }}">بارگذاری تمامی مشتریان داخلی</a>
                 </li>
             @endcan
             @can('foreign-customers-list')
                 <li>
-                    <a class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers']) ? 'active' : '' }}" href="{{ route('foreign-customers.index') }}">لیست تمامی مشتریان خارجی</a>
+                    <a class="{{ active_sidebar(['foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers']) ? 'active' : '' }}" href="{{ route('foreign-customers.index') }}">بارگذاری تمامی مشتریان خارجی</a>
                 </li>
             @endcan
             @can('debtors-list')
@@ -193,7 +193,7 @@
                 </li>
             @endcan
             <li>
-                <a class="{{ active_sidebar(['analyse','analyse/create','analyse/*','analyse/{analyse}/edit','search/analyse']) ? 'active' : '' }}" href="{{ route('analyse.index') }}">آنالیز کالا</a>
+                <a class="{{ active_sidebar(['analyse','analyse/create','analyse/*','analyse/{analyse}/edit','search/analyse']) ? 'active' : '' }}" href="{{ route('analyse.index') }}">مدیریت آنالیز کالا</a>
             </li>
             @can('prices-list')
 {{--                <li>--}}
@@ -205,7 +205,7 @@
             @endcan
             @can('price-history')
                 <li>
-                    <a class="{{ active_sidebar(['price-history','price-history-search']) ? 'active' : '' }}" href="{{ route('price-history') }}">آرشیو قیمت ها</a>
+                    <a class="{{ active_sidebar(['price-history','price-history-search']) ? 'active' : '' }}" href="{{ route('price-history') }}">عملیات آرشیو قیمت ها</a>
                 </li>
             @endcan
             @can('coupons-list')

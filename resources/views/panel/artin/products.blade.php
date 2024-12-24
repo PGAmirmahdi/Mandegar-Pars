@@ -167,16 +167,9 @@
             });
 
             $(document).on('click', '#btn_update', function () {
-                $(this).attr('disabled', 'disabled').text('در حال بروزرسانی...');
+                $(this).attr('disabled', 'disabled').text('درحال بروزرسانی...');
 
                 let price = $('#price').val();
-
-                // اطمینان از پر بودن فیلد قیمت
-                if (!price) {
-                    Swal.fire('خطا', 'لطفاً قیمت را وارد کنید', 'error');
-                    $(this).removeAttr('disabled').text('اعمال');
-                    return;
-                }
 
                 $.ajax({
                     url: '/panel/artin-products-update-price',
@@ -186,21 +179,13 @@
                         price
                     },
                     success: function (res) {
-                        // مخفی کردن مودال و پاک کردن خلفی
-                        $('#editPriceModal').modal('hide');
+                        $('#editPriceModal').hide();
                         $('.modal-backdrop').remove();
                         $('body').removeClass('modal-open');
+                        $('#products_table tbody').html($(res).find('#products_table tbody').html());
 
-                        // به‌روزرسانی قیمت در ردیف مربوط به محصول
-                        let row = $('#products_table tbody tr').filter(function () {
-                            return $(this).find('td').eq(0).text() == product_id; // فرض بر این است که ID در اولین سلول است
-                        });
-                        row.find('td').eq(4).text(number_format(price) + ' تومان'); // به‌روزرسانی قیمت در جدول
-
-                        // بازگردانی دکمه
                         $('#btn_update').removeAttr('disabled').text('اعمال');
 
-                        // نمایش پیام موفقیت
                         Swal.fire({
                             title: 'قیمت با موفقیت ویرایش شد',
                             icon: 'success',
@@ -216,20 +201,9 @@
                                 content: 'left-gap',
                             }
                         });
-                    },
-                    error: function (xhr) {
-                        // بازگردانی دکمه در صورت خطا
-                        $('#btn_update').removeAttr('disabled').text('اعمال');
-                        Swal.fire({
-                            title: 'خطا در ویرایش قیمت',
-                            text: xhr.responseJSON.error,
-                            icon: 'error',
-                            showConfirmButton: true,
-                        });
                     }
                 });
             });
-
 
             // Create product functionality
             $(document).on('click', '#btn_create', function () {

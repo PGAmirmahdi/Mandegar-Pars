@@ -16,6 +16,7 @@ class Baseinfo extends Model
         'bank' => 'اطلاعات حساب بانکی',
         'call' => 'اطلاعات تماس',
         'file' => 'اطلاعات فایل',
+        'Irancell-bussiness' => 'شماره تلفن سازمانی'
     ];
     const ACCESS = [
         'public' => 'عمومی',
