@@ -113,7 +113,7 @@
                     </thead>
                     <tbody>
                     @foreach($products as $key => $product)
-                        <tr @if($product->latestInventory() < 10 ) class="table-warning" @endif>
+                        <tr @if($product->latestInventory() < 10 ) @can('admin') class="table-warning" @endcan @endif>
                             <td>{{ ++$key }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->code }}</td>
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
@@ -121,17 +121,18 @@
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
                             @can('admin')
                                 <td>
-                                    @if($product->status == 'accepted')
-                                        <span class="badge badge-success">{{$product->status}}</span>
-                                    @elseif($product->status == 'waiting')
-                                        <span class="badge badge-warning">{{$product->status}}</span>
-                                    @elseif($product->status == 'denied')
-                                        <span class="badge badge-danger">{{$product->status}}</span>
+                                    @if($product->status == 'approved')
+                                        <span class="badge badge-success">تایید شده</span>
+                                    @elseif($product->status == 'pending')
+                                        <span class="badge badge-warning">منتظر تایید</span>
+                                    @elseif($product->status == 'rejected')
+                                        <span class="badge badge-danger">رد شده</span>
                                     @else
-                                        <span class="badge badge-info">{{$product->status}}</span>
+                                        <span class="badge badge-info">نامشخص</span>
                                     @endif
                                 </td>
                             @endcan
+
                         @canany(['admin','accountant'])
                                 <td>{{ $product->latestInventory() }}</td>
                             @endcanany
