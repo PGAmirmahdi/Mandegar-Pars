@@ -42,7 +42,7 @@ class AnalyseController extends Controller
     {
         // دریافت آنالیز و محصولات مرتبط
         $analyse = Analyse::with(['products' => function ($query) use ($request) {
-            $query->select('products.id', 'products.title', 'analyse_products.quantity');
+            $query->select('products.id', 'products.title', 'analyse_products.quantity')->orderBy('analyse_products.quantity', 'desc');
 
             // اگر محصول خاصی انتخاب شده باشد
             if ($request->has('product') && $request->product != 'all') {
@@ -110,7 +110,7 @@ class AnalyseController extends Controller
         // اضافه کردن مقدار quantity برای هر محصول
         $productsWithQuantity = $products->map(function ($product) {
             // پیدا کردن quantity مربوط به هر محصول
-            $quantity = AnalyseProducts::where('product_id', $product->id)->select('quantity')->orderByDesc('quantity');
+            $quantity = AnalyseProducts::where('product_id', $product->id)->select('quantity')->first();
             // افزودن quantity به هر محصول
             $product->quantity = $quantity ? $quantity->quantity : 0; // اگر quantity یافت نشد، 0 را تنظیم می‌کنیم
             return $product;
