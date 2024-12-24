@@ -113,7 +113,7 @@
                     </thead>
                     <tbody>
                     @foreach($products as $key => $product)
-                        <tr @if($product->latestInventory() < 10 ) @can('admin') class="table-warning" @endcan @endif>
+                        <tr @if($product->latestInventory() < 10 ) @canany(['admin','accountant']) class="table-warning" @endcanany @endif>
                             <td>{{ ++$key }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->code }}</td>
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
