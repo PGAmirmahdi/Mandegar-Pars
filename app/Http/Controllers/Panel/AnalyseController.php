@@ -110,7 +110,7 @@ class AnalyseController extends Controller
         // اضافه کردن مقدار quantity برای هر محصول
         $productsWithQuantity = $products->map(function ($product) {
             // پیدا کردن quantity مربوط به هر محصول
-            $quantity = AnalyseProducts::where('product_id', $product->id)->select('quantity')->first();
+            $quantity = AnalyseProducts::where('product_id', $product->id)->select('quantity')->orderByDesc('quantity');
             // افزودن quantity به هر محصول
             $product->quantity = $quantity ? $quantity->quantity : 0; // اگر quantity یافت نشد، 0 را تنظیم می‌کنیم
             return $product;
