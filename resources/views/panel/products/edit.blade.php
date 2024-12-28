@@ -61,7 +61,7 @@
                     @if(auth()->user()->isAdmin())
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                             <label for="status">وضعیت<span class="text-danger">*</span></label>
-                            <select class="form-control" name="type" id="type">
+                            <select class="form-control" name="status" id="status">
                                 @foreach(\App\Models\Product::STATUS as $key => $value)
                                     <option value="{{ $key }}" {{ old('type') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                 @endforeach
