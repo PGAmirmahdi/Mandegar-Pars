@@ -359,6 +359,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Activity
     Route::get('activity', [ActivityController::class, 'index'])->name('activity');
+    // routes/web.php
+    Route::delete('/activity/{id}', [ActivityController::class, 'destroy'])->name('activity.destroy');
+
 
     // Delivery Days
     Route::get('delivery-days', [DeliveryDayController::class, 'index'])->name('delivery-days.index');

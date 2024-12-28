@@ -22,4 +22,18 @@ class ActivityController extends Controller
         $activities = $query->latest()->paginate(10);
         return view('panel.activity.index',compact('activities'));
     }
+    public function destroy($id)
+    {
+        // بررسی مجوز حذف فعالیت
+        $this->authorize('activity-delete');
+
+        // پیدا کردن فعالیت بر اساس ID
+        $activity = Activity::findOrFail($id);
+
+        // حذف فعالیت
+        $activity->delete();
+
+        return route('activity');
+    }
+
 }

@@ -77,7 +77,7 @@
                     @if(auth()->user()->isAdmin())
                         <div class="col-12 mb-3">
                             <label for="reject_message">دلیل رد شدن</label>
-                            <textarea name="reject_message">{{ old('reject_message', $product->reject_message) }}</textarea>
+                            <textarea name="reject_message" class="form-control">{{ old('reject_message', $product->reject_message) }}</textarea>
                             @error('reject_message')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
