@@ -287,6 +287,7 @@ class ProductController extends Controller
             'creator_id' => auth()->id(),
             'total_count' => $total_count,
             'status' => $status,
+            'reject_message' => $request->reject_message
         ]);
 
         // Log activity

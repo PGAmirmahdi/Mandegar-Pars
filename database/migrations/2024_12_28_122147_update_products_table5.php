@@ -14,7 +14,7 @@ class UpdateProductsTable5 extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->unsignedBigInteger('reject_message')->nullable()->after('description')->comment('پیغام رد شدن');
+            $table->string('reject_message')->nullable()->after('description')->comment('پیغام رد شدن');
         });
     }
 
