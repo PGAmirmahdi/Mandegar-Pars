@@ -24,7 +24,7 @@
                     @can('products-create')
                         <a href="{{ route('products.request') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            @if(auth()->user()->role() === 'admin')
+                            @if(auth()->user()->isAdmin())
                             لیست درخواست ثبت کالا
                             @else
                             لیست درخواست ثبت کالاهای من

@@ -104,6 +104,7 @@
                     <tr>
                         <th>ردیف</th>
                         <th>کد کالا</th>
+                        <th>ثبت کننده</th>
                         <th>شرح کالا</th>
                         <th>برند</th>
                         <th>مدل</th>
@@ -127,6 +128,7 @@
                         <tr @if($product->latestInventory() < 10 ) @canany(['admin','accountant']) class="table-warning" @endcanany @endif>
                             <td>{{ ++$key }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->code }}</td>
+                            <td>{{ $product->creator }}</td>
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
                             <td>{{ $product->productModels->slug ?? 'برند نامشخص' }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
