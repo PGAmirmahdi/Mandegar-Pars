@@ -29,9 +29,9 @@ class PriceController extends Controller
     {
         $this->authorize('prices-list');
 
-        if (auth()->user()->isCEO() || auth()->user()->isAdmin() || auth()->user()->isOrgan()) {
-            // فیلتر دسته‌بندی روی فروشنده‌ها
-            $sellers = DB::table('price_list_sellers')
+        // توابع کمکی برای دریافت اطلاعات
+        $getSellers = function () use ($request) {
+            return DB::table('price_list_sellers')
                 ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                     $query->where('category_id', $request->category);
                 })
@@ -39,27 +39,31 @@ class PriceController extends Controller
                     $query->where('name', $request->seller);
                 })
                 ->get();
-            $products = Product::query()
+        };
+
+        $getProducts = function () use ($request) {
+            return Product::query()
                 ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                     $query->where('category_id', $request->category);
                 })
                 ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
-                    // فیلتر بر اساس مدل
                     $query->where('brand_id', $request->model);
                 })
                 ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
                     $query->where('id', $request->product_id);
                 })
                 ->orderByDesc('brand_id')->get();
+        };
+
+        // بررسی نوع کاربر
+        if (auth()->user()->isCEO() || auth()->user()->isAdmin() || auth()->user()->isOrgan()) {
+            $sellers = $getSellers();
+            $products = $getProducts();
             $models = ProductModel::all();
-            return view('panel.prices.other-list', compact('sellers', 'products','models'));
+
+            return view('panel.prices.other-list', compact('sellers', 'products', 'models'));
         } else {
-            // فیلتر دسته‌بندی روی فروشنده‌ها
-            $sellers = DB::table('price_list_sellers')
-                ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
-                    $query->where('category_id', $request->category);
-                })
-                ->get();
+            $sellers = $getSellers();
             $products = Product::query()
                 ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                     $query->where('category_id', $request->category);
@@ -68,6 +72,7 @@ class PriceController extends Controller
                     $query->where('id', $request->product_id);
                 })
                 ->orderByDesc('brand_id')->get();
+
             return view('panel.prices.other-list-printable', compact('sellers', 'products'));
         }
     }
