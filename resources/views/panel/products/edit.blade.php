@@ -59,14 +59,11 @@
                         @enderror
                     </div>
                     @if(auth()->user()->isAdmin())
-                        @php
-                        $status = 'pending';
-                        @endphp
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                             <label for="status">وضعیت<span class="text-danger">*</span></label>
-                            <select type="text" name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
+                            <select class="form-control" name="type" id="type">
                                 @foreach(\App\Models\Product::STATUS as $key => $value)
-                                    <option value="{{ $key }}" {{ $status == old('status') ? 'selected' : '' }}>{{ $status }}</option>
+                                    <option value="{{ $key }}" {{ old('type') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                 @endforeach
                             </select>
                             @error('status')
