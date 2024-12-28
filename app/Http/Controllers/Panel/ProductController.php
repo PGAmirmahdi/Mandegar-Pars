@@ -97,9 +97,13 @@ class ProductController extends Controller
             $url = route('products.index');
 
             // Find all admin users
-            $admins = User::where('role', 'admin')->get();
+            $admins = User::whereHas('role', function ($query) {
+                $query->where('name', 'admin');
+            })->get();
+
             Notification::send($admins, new SendMessage($title, $message, $url));
         }
+
 
         // ثبت فعالیت
         $activityData = [
