@@ -26,6 +26,34 @@ class ProductController extends Controller
         return view('panel.products.index', compact('products'));
     }
 
+    public function request(Request $request)
+    {
+        $this->authorize('products-list');
+
+        $query = Product::query()
+            ->when($request->product && $request->product !== 'all', function ($query) use ($request) {
+                $query->where('id', $request->product);
+            })
+            ->when($request->code, function ($query) use ($request) {
+                return $query->where('code', $request->code);
+            })
+            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                $query->where('category_id', $request->category);
+            })
+            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+                $query->where('brand_id', $request->model);
+            });
+
+        if (auth()->user()->role() === 'admin') {
+            $products = $query->where('status', 'pending')->latest()->paginate(30);
+        } else {
+            $products = $query->whereIn('status', ['pending', 'rejected']) // اضافه کردن وضعیت rejected
+            ->where('creator_id', auth()->user()->id) // فیلتر بر اساس ID کاربر
+            ->latest()->paginate(30);
+        }
+        return view('panel.products.index', compact('products'));
+    }
+
     public function store(StoreProductRequest $request)
     {
         $this->authorize('products-create');
@@ -148,6 +176,7 @@ class ProductController extends Controller
 
         return view('panel.products.index', compact('products'));
     }
+
     public function search2(Request $request)
     {
         $this->authorize('products-list');

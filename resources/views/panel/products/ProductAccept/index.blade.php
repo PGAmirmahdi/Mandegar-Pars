@@ -1,5 +1,9 @@
 @extends('panel.layouts.master')
-@section('title', auth()->user()->role === 'admin' ? 'لیست درخواست ثبت کالا' : 'لیست درخواست ثبت کالای من')
+@if(auth()->user()->role() === 'admin')
+    @section('title', 'لیست درخواست ها')
+@else
+    @section('title', 'لیست درخواست های من')
+@endif
 @section('content')
     <style>
         .table-warning {
@@ -10,17 +14,36 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>{{auth()->user()->role === 'admin' ? 'لیست درخواست ثبت کالا' : 'لیست درخواست ثبت کالای من'}}</h6>
+                <h6>
+                    @if(auth()->user()->role() === 'admin')
+                        لیست درخواست ها
+                    @else
+                        لیست درخواست های من
+                    @endif
+                </h6>
                 <div>
-                    @can('products-user-create')
+                    <form action="{{ route('products.excel') }}" method="post" id="excel_form">
+                        @csrf
+                    </form>
+
+                    <button class="btn btn-success" form="excel_form">
+                        <i class="fa fa-file-excel mr-2"></i>
+                        دریافت اکسل
+                    </button>
+                    @can('products-create')
                         <a href="{{ route('products.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            ایجاد درخواست ثبت
+                            @if(auth()->user()->role() === 'admin')
+                                ثبت کالا
+                            @else
+                                درخواست ثبت کالا
+                            @endif
                         </a>
                     @endcan
                 </div>
+
             </div>
-            <form action="{{ route('products.search2') }}" method="get" id="search_form"></form>
+            <form action="{{ route('products.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
                     <input type="text" name="code" class="form-control" placeholder="کد کالا"
@@ -42,7 +65,7 @@
                     <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="2">
                         <option value="all">برند (همه)</option>
-                        @foreach(\App\Models\ProductModel::all(['id','name']) as $model)
+                        @foreach(\App\Models\ProductModel::all(['id','slug']) as $model)
                             <option value="{{ $model->id }}" {{ request()->model ==  $model->id ? 'selected' : '' }}>
                                 {{ $model->slug }}
                             </option>
@@ -103,7 +126,7 @@
                     </thead>
                     <tbody>
                     @foreach($products as $key => $product)
-                        <tr @if($product->latestInventory() < 10 ) class="table-warning" @endif>
+                        <tr @if($product->latestInventory() < 10 ) @canany(['admin','accountant']) class="table-warning" @endcanany @endif>
                             <td>{{ ++$key }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->code }}</td>
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
@@ -111,18 +134,21 @@
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
                             @can('admin')
                                 <td>
-                                    @if($products->status == 'accepted')
-                                        <span class="badge badge-success">{{$products->status}}</span>
-                                    @elseif($products->status == 'waiting')
-                                        <span class="badge badge-warning">{{$products->status}}</span>
-                                    @elseif($products->status == 'danied')
-                                        <span class="badge badge-danger">{{$products->status}}</span>
+                                    @if($product->status == 'approved')
+                                        <span class="badge badge-success">تایید شده</span>
+                                    @elseif($product->status == 'pending')
+                                        <span class="badge badge-warning">منتظر تایید</span>
+                                    @elseif($product->status == 'rejected')
+                                        <span class="badge badge-danger">رد شده</span>
                                     @else
-                                        <span class="badge badge-info">{{$products->status}}</span>
+                                        <span class="badge badge-info">نامشخص</span>
                                     @endif
                                 </td>
                             @endcan
-                            <td>{{ $product->latestInventory() }}</td>
+
+                            @canany(['admin','accountant'])
+                                <td>{{ $product->latestInventory() }}</td>
+                            @endcanany
                             @can('admin')
                                 <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
                             @endcan
@@ -145,7 +171,6 @@
                             @endcan
                         </tr>
                     @endforeach
-
                     </tbody>
                     <tfoot>
                     <tr>

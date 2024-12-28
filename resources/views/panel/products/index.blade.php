@@ -22,9 +22,13 @@
                     </button>
 
                     @can('products-create')
-                        <a href="{{ route('products.create') }}" class="btn btn-primary">
+                        <a href="{{ route('products.request') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            ایجاد کالا
+                            @if(auth()->user()->role() === 'admin')
+                            لیست درخواست ثبت کالا
+                            @else
+                            لیست درخواست ثبت کالاهای من
+                            @endif
                         </a>
                     @endcan
                 </div>
