@@ -7,8 +7,8 @@
 @section('content')
     <style>
         .table-warning {
-            background-color: #fff3cd; /* رنگ پس‌زمینه زرد */
-            color: #856404; /* رنگ متن برای بهتر دیده شدن */
+            background-color: #fff3cd;
+            color: #856404;
         }
     </style>
     <div class="card">

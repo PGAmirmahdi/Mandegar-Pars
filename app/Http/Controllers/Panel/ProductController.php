@@ -51,7 +51,7 @@ class ProductController extends Controller
             ->where('creator_id', auth()->user()->id) // فیلتر بر اساس ID کاربر
             ->latest()->paginate(30);
         }
-        return view('panel.products.index', compact('products'));
+        return view('panel.products.request', compact('products'));
     }
 
     public function store(StoreProductRequest $request)
