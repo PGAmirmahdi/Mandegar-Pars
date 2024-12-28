@@ -50,7 +50,7 @@ class ProductController extends Controller
             });
 
         if (auth()->user()->isAdmin()) {
-            $products = $query->where('status', ['pending','rejected'])->latest()->paginate(30);
+            $products = $query->whereIn('status', ['pending', 'rejected'])->latest()->paginate(30);
         } else {
             $products = $query->whereIn('status', ['pending', 'rejected']) // اضافه کردن وضعیت rejected
             ->where('creator_id', auth()->user()->id) // فیلتر بر اساس ID کاربر
