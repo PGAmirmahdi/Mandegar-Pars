@@ -56,7 +56,7 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    @if(auth()->user()->role() === 'admin')
+                    @if(auth()->user()->isAdmin())
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="status">وضعیت<span class="text-danger">*</span></label>
                         <select type="text" name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
