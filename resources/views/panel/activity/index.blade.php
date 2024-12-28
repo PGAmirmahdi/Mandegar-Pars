@@ -5,8 +5,8 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>فعالیت‌های کاربران</h6>
-                <form method="GET" action="{{ route('activity') }}" class="d-flex"></form>
-                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <form method="GET" action="{{ route('activity') }}" class="d-flex">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                                 data-select2-id="1">
                             <option value="all">نام کاربر(همه)</option>
@@ -22,6 +22,7 @@
                         <i class="fa fa-search mx-2"></i>
                         جستجو
                     </button>
+                </form>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
