@@ -107,9 +107,7 @@
                         <th>شرح کالا</th>
                         <th>برند</th>
                         <th>مدل</th>
-                        @can('admin')
-                            <th>وضعیت</th>
-                        @endcan
+                        <th>وضعیت</th>
                         @canany(['admin','accountant'])
                             <th>موجودی</th>
                         @endcanany
@@ -132,7 +130,6 @@
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
                             <td>{{ $product->productModels->slug ?? 'برند نامشخص' }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
-                            @can('admin')
                                 <td>
                                     @if($product->status == 'approved')
                                         <span class="badge badge-success">تایید شده</span>
@@ -144,8 +141,6 @@
                                         <span class="badge badge-info">نامشخص</span>
                                     @endif
                                 </td>
-                            @endcan
-
                             @canany(['admin','accountant'])
                                 <td>{{ $product->latestInventory() }}</td>
                             @endcanany
