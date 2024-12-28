@@ -304,7 +304,7 @@ class ProductController extends Controller
             ? "درخواست ثبت کالای شما به عنوان {$request->title} تایید شد."
             : "درخواست ثبت کالا به نام {$request->title} رد شد.";
         $url = route('products.index');
-        Notification::send($product->creator_id, new SendMessage($title, $message, $url));
+        Notification::send($product->creator, new SendMessage($title, $message, $url));
         // Log activity
         Activity::create([
             'user_id' => auth()->id(),

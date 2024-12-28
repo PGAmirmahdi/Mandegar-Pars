@@ -102,4 +102,9 @@ class Product extends Model
             ->withPivot('quantity') // دسترسی به ستون quantity از جدول میانی
             ->withTimestamps();
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
 }
