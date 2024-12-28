@@ -57,17 +57,19 @@
                         @enderror
                     </div>
                     @if(auth()->user()->isAdmin())
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="status">وضعیت<span class="text-danger">*</span></label>
-                        <select type="text" name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
-                            @foreach(\App\Models\Product::STATUS as $status)
-                                <option value="{{ $status }}" {{ $status == old('status') ? 'selected' : '' }}>{{ $status }}</option>
-                            @endforeach
-                        </select>
-                        @error('status')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                            <label for="status">وضعیت<span class="text-danger">*</span></label>
+                            <select name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
+                                @foreach(\App\Models\Product::STATUS as $key => $value)
+                                    <option value="{{ $value }}" {{ old('status', $status) == $value ? 'selected' : '' }}>
+                                        {{ $key }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('status')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
                     @endif
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
 {{--                        <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>--}}
