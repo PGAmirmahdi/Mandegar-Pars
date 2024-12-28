@@ -44,7 +44,7 @@ class ProductController extends Controller
                 $query->where('brand_id', $request->model);
             });
 
-        if (auth()->user()->role() === 'admin') {
+        if (auth()->user()->isAdmin()) {
             $products = $query->where('status', 'pending')->latest()->paginate(30);
         } else {
             $products = $query->whereIn('status', ['pending', 'rejected']) // اضافه کردن وضعیت rejected

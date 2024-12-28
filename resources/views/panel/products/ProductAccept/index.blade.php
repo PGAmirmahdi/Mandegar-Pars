@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@if(auth()->user()->role() === 'admin')
+@if(auth()->user()->isAdmin())
     @section('title', 'لیست درخواست ها')
 @else
     @section('title', 'لیست درخواست های من')
@@ -15,7 +15,7 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>
-                    @if(auth()->user()->role() === 'admin')
+                    @if(auth()->user()->isAdmin())
                         لیست درخواست ها
                     @else
                         لیست درخواست های من
@@ -33,7 +33,7 @@
                     @can('products-create')
                         <a href="{{ route('products.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            @if(auth()->user()->role() === 'admin')
+                            @if(auth()->user()->isAdmin())
                                 ثبت کالا
                             @else
                                 درخواست ثبت کالا
