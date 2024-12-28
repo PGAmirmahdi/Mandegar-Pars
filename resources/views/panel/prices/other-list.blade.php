@@ -189,8 +189,9 @@
                     <thead>
                     <tr>
                         <th class="bg-primary"></th>
-                        <th colspan="{{ $sellers->count() }}">
-                            <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addSellerModal" id="btn_seller"></i>
+                        <th colspan="{{$sellers->count()}}">
+                            <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addSellerModal"
+                               id="btn_seller"></i>
                             فروشنده
                         </th>
                     </tr>
@@ -215,6 +216,7 @@
                     </thead>
                     <tbody>
                     @foreach($products as $key => $product)
+                        {{-- استفاده از جدول محصولات --}}
                         <tr>
                             <th>
                                 <strong class="bolder" style="font-family:sans-serif !important">{{ ++$key }}</strong>
@@ -223,21 +225,24 @@
                                 <strong class="bolder" style="font-family:sans-serif !important">{{ $product->title }}</strong>
                                 <strong class="bolder" style="font-family:sans-serif !important">({{ $product->productModels->slug }})</strong>
                             </th>
-                            @foreach($sellers as $seller)
+                            @for($i = 0; $i < $sellers->count(); $i++)
                                 @php
-                                    $price = $prices[$product->id]->firstWhere('seller_id', $seller->id) ?? null;
+                                    $item = \Illuminate\Support\Facades\DB::table('price_list')
+                                        ->where(['product_id' => $product->id, 'seller_id' => $sellers[$i]->id])
+                                        ->first();
                                 @endphp
                                 <td>
                                     <input type="text" class="item" data-product_id="{{ $product->id }}"
-                                           data-seller_id="{{ $seller->id }}"
-                                           value="{{ $price ? number_format($price->price) : '-' }}">
+                                           data-seller_id="{{ $sellers[$i]->id }}"
+                                           value="{{ $item ? number_format($item->price) : '-' }}">
                                 </td>
-                            @endforeach
+                            @endfor
                         </tr>
                     @endforeach
                     </tbody>
                     <tfoot>
-                    <tr></tr>
+                    <tr>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
