@@ -6,7 +6,7 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>فعالیت‌های کاربران</h6>
                 <form method="GET" action="{{ route('activity') }}" class="d-flex">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
                         <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                                 data-select2-id="1">
                             <option value="all">نام کاربر(همه)</option>
