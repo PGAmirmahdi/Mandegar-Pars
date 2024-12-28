@@ -67,7 +67,7 @@ class ProductController extends Controller
         // product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
-        $status = auth()->user()->role === 'admin' ? $request->status : 'pending';
+        $status = auth()->user()->isAdmin() ? $request->status : 'pending';
         // create product
         Product::create([
             'title' => $request->title,
@@ -271,7 +271,7 @@ class ProductController extends Controller
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
 
-        $status = auth()->user()->role === 'admin' ? $request->status : 'pending';
+        $status = auth()->user()->isAdmin() ? $request->status : 'pending';
         // Update product details
         $product->update([
             'title' => $request->title,
