@@ -6,8 +6,18 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>فعالیت‌های کاربران</h6>
                 <form method="GET" action="{{ route('activity') }}" class="d-flex">
-                    <input type="text" name="search" class="form-control" placeholder="نام کاربر را وارد کنید..."
-                           value="{{ request('search') }}">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                data-select2-id="3">
+                            <option value="all">نام کاربر(همه)</option>
+                            @foreach(\App\Models\User::all(['id','name','family']) as $user)
+                                <option
+                                    value="{{ $user->id }}" {{ request()->user == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name . ' ' . $user->family }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-primary ml-2">
                         <i class="fa fa-search mx-2"></i>
                         جستجو

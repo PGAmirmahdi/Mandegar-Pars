@@ -11,16 +11,16 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $query = Activity::query()->with('user'); // اضافه کردن رابطه کاربران
-        // اگر جستجو انجام شده باشد
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%');
-            });
+
+        // اعمال فیلتر بر اساس user_id اگر کاربر مشخص شده باشد
+        if ($request->user && $request->user !== 'all') {
+            $query->where('user_id', $request->user);
         }
 
+        // دریافت فعالیت‌ها با مرتب‌سازی بر اساس جدیدترین فعالیت‌ها
         $activities = $query->latest()->paginate(10);
-        return view('panel.activity.index',compact('activities'));
+
+        return view('panel.activity.index', compact('activities'));
     }
     public function destroy($id)
     {
