@@ -36,46 +36,40 @@ class PriceController extends Controller
             return Category::all(['id', 'name']);
         });
 
-        // توابع کمکی برای دریافت اطلاعات
-        $getSellers = function () use ($request) {
-            return DB::table('price_list_sellers')
-                ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
-                    $query->where('category_id', $request->category);
-                })
-                ->when($request->seller && $request->seller !== 'all', function ($query) use ($request) {
-                    $query->where('name', $request->seller);
-                })
-                ->get();
-        };
+        // دریافت فروشندگان
+        $sellers = DB::table('price_list_sellers')
+            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                $query->where('category_id', $request->category);
+            })
+            ->when($request->seller && $request->seller !== 'all', function ($query) use ($request) {
+                $query->where('name', $request->seller);
+            })
+            ->get();
 
-        $getProducts = function () use ($request) {
-            return Product::query()
-                ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
-                    $query->where('category_id', $request->category);
-                })
-                ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
-                    $query->where('brand_id', $request->model);
-                })
-                ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
-                    $query->where('id', $request->product_id);
-                })
-                ->orderByDesc('brand_id')->get();
-        };
+        // دریافت محصولات
+        $products = Product::query()
+            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                $query->where('category_id', $request->category);
+            })
+            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+                $query->where('brand_id', $request->model);
+            })
+            ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
+                $query->where('id', $request->product_id);
+            })
+            ->orderByDesc('brand_id')
+            ->get();
 
-        // بررسی نوع کاربر
-        $sellers = $getSellers();
-        $products = $getProducts();
-
-        // بازیابی قیمت‌ها برای همه محصولات و فروشندگان
+        // بازیابی قیمت‌ها برای محصولات و فروشندگان
         $prices = DB::table('price_list')
             ->whereIn('product_id', $products->pluck('id'))
             ->whereIn('seller_id', $sellers->pluck('id'))
             ->get()
             ->groupBy('product_id');
 
+        // ارسال داده‌ها به ویو
         if (auth()->user()->isCEO() || auth()->user()->isAdmin() || auth()->user()->isOrgan()) {
             $models = ProductModel::all();
-
             return view('panel.prices.other-list', compact('sellers', 'products', 'models', 'categories', 'prices'));
         } else {
             return view('panel.prices.other-list-printable', compact('sellers', 'products', 'categories', 'prices'));

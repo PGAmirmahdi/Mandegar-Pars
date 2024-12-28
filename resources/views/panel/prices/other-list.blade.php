@@ -189,9 +189,8 @@
                     <thead>
                     <tr>
                         <th class="bg-primary"></th>
-                        <th colspan="{{$sellers->count()}}">
-                            <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addSellerModal"
-                               id="btn_seller"></i>
+                        <th colspan="{{ $sellers->count() }}">
+                            <i class="fa fa-plus text-success mr-2" data-toggle="modal" data-target="#addSellerModal" id="btn_seller"></i>
                             فروشنده
                         </th>
                     </tr>
@@ -216,7 +215,6 @@
                     </thead>
                     <tbody>
                     @foreach($products as $key => $product)
-                        {{-- استفاده از جدول محصولات --}}
                         <tr>
                             <th>
                                 <strong class="bolder" style="font-family:sans-serif !important">{{ ++$key }}</strong>
@@ -231,17 +229,15 @@
                                 @endphp
                                 <td>
                                     <input type="text" class="item" data-product_id="{{ $product->id }}"
-                                           data-seller_id="{{ $seller[$i]->id }}"
+                                           data-seller_id="{{ $seller->id }}"
                                            value="{{ $price ? number_format($price->price) : '-' }}">
                                 </td>
                             @endforeach
                         </tr>
                     @endforeach
-
                     </tbody>
                     <tfoot>
-                    <tr>
-                    </tr>
+                    <tr></tr>
                     </tfoot>
                 </table>
             </div>
