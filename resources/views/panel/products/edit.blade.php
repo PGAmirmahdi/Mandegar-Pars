@@ -71,6 +71,9 @@
                             @enderror
                         </div>
                     @endif
+                    @if($product->status == 'rejected')
+                        <div class="invalid-feedback d-block alert alert-danger"> درخواست شما به دلیل {{ $product->reject_message }} رد شده است. </div>
+                    @endif
                     @if(auth()->user()->isAdmin())
                         <div class="col-12 mb-3">
                             <label for="reject_message">دلیل رد شدن</label>
@@ -88,9 +91,6 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    @if($product->status == 'rejected')
-                        <div class="invalid-feedback d-block"> درخواست شما به دلیل {{ $product->reject_message }} رد شده است. </div>
-                    @endif
                     <div class="col-xl-6 col-lg-8 col-md-6 col-sm-12 mb-3" id="printer_properties">
                         <div class="d-flex justify-content-between mb-3">
                             <label>ویژگی های کالا </label>
