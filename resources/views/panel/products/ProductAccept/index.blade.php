@@ -84,16 +84,20 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="payment_type" form="search_form"
-                            class="js-example-basic-single select2-hidden-accessible" data-select2-id="6">
-                        <option value="all">وضعیت (همه)</option>
-                        @foreach(App\Models\Product::STATUS as $key => $value)
-                            <option
-                                value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>
+                <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                    <label for="status">وضعیت<span class="text-danger">*</span></label>
+                    <select name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
+                        @foreach(\App\Models\Product::STATUS as $key => $value)
+                            <option value="{{ $key }}" {{ old('status', $status) == $key ? 'selected' : '' }}>
+                                {{ $value }}
+                            </option>
                         @endforeach
                     </select>
+                    @error('status')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
