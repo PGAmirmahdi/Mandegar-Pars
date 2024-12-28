@@ -50,7 +50,7 @@ class PriceController extends Controller
                 ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
                     $query->where('id', $request->product_id);
                 })
-                ->orderByDesc('brand_id')->get();
+                ->orderByDesc('brand_id')->paginate(30);
             $models = ProductModel::all();
             return view('panel.prices.other-list', compact('sellers', 'products','models'));
         } else {
@@ -67,7 +67,7 @@ class PriceController extends Controller
                 ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
                     $query->where('id', $request->product_id);
                 })
-                ->orderByDesc('brand_id')->get();
+                ->orderByDesc('brand_id')->paginate(30);
             return view('panel.prices.other-list-printable', compact('sellers', 'products'));
         }
     }
