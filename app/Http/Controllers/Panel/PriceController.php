@@ -39,7 +39,7 @@ class PriceController extends Controller
                     $query->where('name', $request->seller);
                 })
                 ->get();
-            $products = Product::query()
+            $products = Product::query()->where('status','=','approved')
                 ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                     $query->where('category_id', $request->category);
                 })
