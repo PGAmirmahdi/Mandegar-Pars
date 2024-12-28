@@ -88,7 +88,6 @@
                     $status = 'pending';
                 @endphp
                 <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                    <label for="status">وضعیت<span class="text-danger">*</span></label>
                     <select name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
                         @foreach(\App\Models\Product::STATUS as $key => $value)
                             <option value="{{ $key }}" {{ old('status', $status) == $key ? 'selected' : '' }}>
