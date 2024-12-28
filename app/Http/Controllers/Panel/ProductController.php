@@ -314,7 +314,7 @@ class ProductController extends Controller
         ]);
 
         alert()->success('کالا با موفقیت ویرایش شد', 'ویرایش کالا');
-        return redirect()->route('products.ProductAccept.index');
+        return redirect()->route('products.request');
     }
 
     private function priceHistory($product, $request)
