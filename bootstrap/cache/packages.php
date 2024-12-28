@@ -1,24 +1,24 @@
 <?php return array (
   'anhskohbo/no-captcha' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Anhskohbo\\NoCaptcha\\NoCaptchaServiceProvider',
-    ),
     'aliases' => 
     array (
       'NoCaptcha' => 'Anhskohbo\\NoCaptcha\\Facades\\NoCaptcha',
     ),
+    'providers' => 
+    array (
+      0 => 'Anhskohbo\\NoCaptcha\\NoCaptchaServiceProvider',
+    ),
   ),
   'barryvdh/laravel-debugbar' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
+    ),
+    'providers' => 
+    array (
+      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
     ),
   ),
   'beyondcode/laravel-websockets' => 
@@ -34,13 +34,13 @@
   ),
   'carlos-meneses/laravel-mpdf' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider',
-    ),
     'aliases' => 
     array (
       'PDF' => 'Mccarlosen\\LaravelMpdf\\Facades\\LaravelMpdf',
+    ),
+    'providers' => 
+    array (
+      0 => 'Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider',
     ),
   ),
   'facade/ignition' => 
@@ -63,13 +63,13 @@
   ),
   'hekmatinasser/verta' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Hekmatinasser\\Verta\\Laravel\\VertaServiceProvider',
-    ),
     'aliases' => 
     array (
       'Verta' => 'Hekmatinasser\\Verta\\Verta',
+    ),
+    'providers' => 
+    array (
+      0 => 'Hekmatinasser\\Verta\\Laravel\\VertaServiceProvider',
     ),
   ),
   'jenssegers/agent' => 
@@ -124,13 +124,13 @@
   ),
   'melipayamak/laravel' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Melipayamak\\Laravel\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'Melipayamak' => 'Melipayamak\\Laravel\\Facade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Melipayamak\\Laravel\\ServiceProvider',
     ),
   ),
   'mews/captcha' => 
@@ -160,13 +160,13 @@
   ),
   'uxweb/sweet-alert' => 
   array (
-    'providers' => 
-    array (
-      0 => 'UxWeb\\SweetAlert\\SweetAlertServiceProvider',
-    ),
     'aliases' => 
     array (
       'Alert' => 'UxWeb\\SweetAlert\\SweetAlert',
+    ),
+    'providers' => 
+    array (
+      0 => 'UxWeb\\SweetAlert\\SweetAlertServiceProvider',
     ),
   ),
 );

@@ -257,23 +257,6 @@ class ProductController extends Controller
         return response()->json($models);
     }
 
-    public function approve(Product $product)
-    {
-        $this->authorize('products-approve'); // تنظیم مجوز
-        $product->update(['status' => 'approved']);
-
-        // ثبت فعالیت
-        Activity::create([
-            'user_id' => auth()->id(),
-            'action' => 'تأیید کالا',
-            'description' => 'کالا ' . $product->title . ' توسط مدیر تأیید شد.',
-            'created_at' => now(),
-        ]);
-
-        alert()->success('محصول تأیید شد', 'تأیید محصول');
-        return redirect()->route('products.index');
-    }
-
     public function update(UpdateProductRequest $request, Product $product)
     {
         $this->authorize('products-edit');

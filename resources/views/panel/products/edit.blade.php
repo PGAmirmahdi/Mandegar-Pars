@@ -51,7 +51,6 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <input type="hidden" name="system_price" class="form-control" id="system_price"
                                value="{{ old('system_price', $product->system_price) }}">
@@ -59,7 +58,28 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
+                    @if(auth()->user()->role() === 'admin')
+                        <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                            <label for="status">وضعیت<span class="text-danger">*</span></label>
+                            <select type="text" name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
+                                @foreach(\App\Models\Product::STATUS as $status)
+                                    <option value="{{ $status }}" {{ $status == old('status') ? 'selected' : '' }}>{{ $status }}</option>
+                                @endforeach
+                            </select>
+                            @error('status')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
+                    @if(auth()->user()->role() === 'admin')
+                        <div class="col-12 mb-3">
+                            <label for="reject_message">دلیل رد شدن</label>
+                            <textarea name="reject_message">{{ old('reject_message', $product->reject_message) }}</textarea>
+                            @error('reject_message')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
                     <div class="col-12 mb-3">
                         <label for="editor-demo2">توضیحات </label>
                         <textarea id="editor-demo2"
@@ -68,7 +88,9 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
+                    @if($product->status == 'rejected')
+                        <div class="invalid-feedback d-block"> درخواست شما به دلیل {{ $product->reject_message }} رد شده است. </div>
+                    @endif
                     <div class="col-xl-6 col-lg-8 col-md-6 col-sm-12 mb-3" id="printer_properties">
                         <div class="d-flex justify-content-between mb-3">
                             <label>ویژگی های کالا </label>
