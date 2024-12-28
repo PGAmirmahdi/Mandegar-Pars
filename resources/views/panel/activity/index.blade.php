@@ -7,7 +7,7 @@
                 <h6>فعالیت‌های کاربران</h6>
                 <form method="GET" action="{{ route('activity') }}" class="d-flex">
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                        <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                        <select name="user" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                                 data-select2-id="1">
                             <option value="all">نام کاربر(همه)</option>
                             @foreach(\App\Models\User::all(['id','name','family']) as $user)
