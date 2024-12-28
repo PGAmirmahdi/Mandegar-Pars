@@ -45,6 +45,8 @@ class ProductController extends Controller
             })
             ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
                 $query->where('brand_id', $request->model);
+            })->when($request->status && $request->status !== 'all', function ($query) use ($request) {
+                $query->where('status', $request->status);
             });
 
         if (auth()->user()->isAdmin()) {
