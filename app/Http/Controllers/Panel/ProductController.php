@@ -11,8 +11,11 @@ use App\Models\PriceHistory;
 use App\Models\PriceListSeller;
 use App\Models\Product;
 use App\Models\ProductModel;
+use App\Models\User;
+use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
@@ -69,7 +72,7 @@ class ProductController extends Controller
         $total_count = array_sum($request->counts);
         $status = auth()->user()->isAdmin() ? $request->status : 'pending';
         // create product
-        Product::create([
+        $product = Product::create([
             'title' => $request->title,
             'code' => 'MP' . random_int(10000, 99999),
             'image' => $image,
@@ -86,6 +89,15 @@ class ProductController extends Controller
             'status' => $status,
         ]);
 
+        if (auth()->user()->isAdmin()) {
+            $title = 'ثبت کالا';
+            $message = "یک درخواست ثبت کالا توسط " . auth()->user()->family . " ایجاد شد.";
+            $url = route('products.index');
+
+            // Find all admin users
+            $admins = User::where('role', 'admin')->get();
+            Notification::send($admins, new SendMessage($title, $message, $url));
+        }
 
         // ثبت فعالیت
         $activityData = [
@@ -97,7 +109,7 @@ class ProductController extends Controller
         Activity::create($activityData); // ذخیره فعالیت
 
         alert()->success('کالا مورد نظر با موفقیت ایجاد شد', 'ایجاد کالا');
-        return redirect()->route('products.index');
+        return redirect()->route('products.ProductAccept.index');
     }
 
     private function json_properties($request)
@@ -270,7 +282,6 @@ class ProductController extends Controller
         // Update product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
-
         $status = auth()->user()->isAdmin() ? $request->status : 'pending';
         // Update product details
         $product->update([
@@ -284,12 +295,16 @@ class ProductController extends Controller
             'partner_price_tehran' => $request->partner_price_tehran,
             'partner_price_other' => $request->partner_price_other,
             'single_price' => $request->single_price,
-            'creator_id' => auth()->id(),
             'total_count' => $total_count,
             'status' => $status,
             'reject_message' => $request->reject_message
         ]);
-
+        $title = $status === 'approved' ? 'تایید درخواست ثبت کالا' : 'رد درخواست ثبت کالا';
+        $message = $status === 'approved'
+            ? "درخواست ثبت کالای شما به عنوان {$request->title} تایید شد."
+            : "درخواست ثبت کالا به نام {$request->title} رد شد.";
+        $url = route('products.index');
+        Notification::send($product->creator_id, new SendMessage($title, $message, $url));
         // Log activity
         Activity::create([
             'user_id' => auth()->id(),
@@ -299,24 +314,7 @@ class ProductController extends Controller
         ]);
 
         alert()->success('کالا با موفقیت ویرایش شد', 'ویرایش کالا');
-        return redirect()->route('products.index');
-    }
-
-    public function reject(Product $product)
-    {
-        $this->authorize('products-reject'); // تنظیم مجوز
-        $product->update(['status' => 'rejected']);
-
-        // ثبت فعالیت
-        Activity::create([
-            'user_id' => auth()->id(),
-            'action' => 'رد کالا',
-            'description' => 'کالا ' . $product->title . ' توسط مدیر رد شد.',
-            'created_at' => now(),
-        ]);
-
-        alert()->error('محصول رد شد', 'رد محصول');
-        return redirect()->route('products.index');
+        return redirect()->route('products.ProductAccept.index');
     }
 
     private function priceHistory($product, $request)
