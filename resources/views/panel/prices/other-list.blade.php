@@ -225,18 +225,16 @@
                                 <strong class="bolder" style="font-family:sans-serif !important">{{ $product->title }}</strong>
                                 <strong class="bolder" style="font-family:sans-serif !important">({{ $product->productModels->slug }})</strong>
                             </th>
-                            @for($i = 0; $i < $sellers->count(); $i++)
+                            @foreach($sellers as $seller)
                                 @php
-                                    $item = \Illuminate\Support\Facades\DB::table('price_list')
-                                        ->where(['product_id' => $product->id, 'seller_id' => $sellers[$i]->id])
-                                        ->first();
+                                    $price = $prices[$product->id]->firstWhere('seller_id', $seller->id) ?? null;
                                 @endphp
                                 <td>
                                     <input type="text" class="item" data-product_id="{{ $product->id }}"
-                                           data-seller_id="{{ $sellers[$i]->id }}"
-                                           value="{{ $item ? number_format($item->price) : '-' }}">
+                                           data-seller_id="{{ $seller->id }}"
+                                           value="{{ $price ? number_format($price->price) : '-' }}">
                                 </td>
-                            @endfor
+                            @endforeach
                         </tr>
                     @endforeach
                     </tbody>
