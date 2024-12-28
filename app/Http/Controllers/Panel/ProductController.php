@@ -108,13 +108,13 @@ class ProductController extends Controller
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'ایجاد کالا',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') کالای جدیدی به نام ' . $request->title . ' ایجاد کرد.',
+            'action' => 'ایجاد درخواست کالا',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') درخواست ثبت کالای جدیدی به نام ' . $request->title . ' ایجاد کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData); // ذخیره فعالیت
 
-        alert()->success('کالا مورد نظر با موفقیت ایجاد شد', 'ایجاد کالا');
+        alert()->success('درخواست ثبت کالا مورد نظر با موفقیت ایجاد شد', 'ایجاد  درخواست ثبت کالا');
         return redirect()->route('products.ProductAccept.index');
     }
 

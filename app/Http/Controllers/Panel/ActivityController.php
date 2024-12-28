@@ -32,7 +32,7 @@ class ActivityController extends Controller
 
         // حذف فعالیت
         $activity->delete();
-
+        alert()->success('فعالیت مورد نظر باموفقیت حذف شد','حذف فعالیت');
         return route('activity');
     }
 
