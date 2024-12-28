@@ -231,12 +231,13 @@
                                 @endphp
                                 <td>
                                     <input type="text" class="item" data-product_id="{{ $product->id }}"
-                                           data-seller_id="{{ $seller->id }}"
+                                           data-seller_id="{{ $seller[$i]->id }}"
                                            value="{{ $price ? number_format($price->price) : '-' }}">
                                 </td>
                             @endforeach
                         </tr>
                     @endforeach
+
                     </tbody>
                     <tfoot>
                     <tr>
