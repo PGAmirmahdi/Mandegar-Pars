@@ -22,7 +22,7 @@ class ProductController extends Controller
     {
         $this->authorize('products-list');
 
-        $products = Product::latest()->paginate(30);
+        $products = Product::latest()->where('status','approved')->paginate(30);
         return view('panel.products.index', compact('products'));
     }
 
