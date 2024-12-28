@@ -358,7 +358,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('buy-order/{buy_order}/change-status', [BuyOrderController::class, 'changeStatus'])->name('buy-orders.changeStatus');
 
     // Activity
-    Route::get('activity', [ActivityController::class, 'index'])->name('activity');
+    Route::match(['get','post'],'activity', [ActivityController::class, 'index'])->name('activity');
     // routes/web.php
     Route::delete('/activity/{id}', [ActivityController::class, 'destroy'])->name('activity.destroy');
 
