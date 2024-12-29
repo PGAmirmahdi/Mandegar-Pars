@@ -1,3 +1,4 @@
+@php use Carbon\Carbon; @endphp
 @extends('panel.layouts.master')
 
 @section('title', 'لیست بدهکاران')
@@ -6,7 +7,8 @@
     <div class="card">
         <div class="card-body">
             <div class="alert alert-info"><i class="fa fa-info-circle"></i> برخی از بدهکاران به صورت خودکار توسط سیستم
-                پس از ایجاد سفارش فروش ایجاد میشوند
+                پس از ایجاد سفارش فروش ایجاد میشوند و مقادیر(تاریخ موعد پرداخت،تاریخ خرید،شماره فاکتورآن باید به صورت
+                دستی به روز شود)
             </div>
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>لیست بدهکاران</h6>
@@ -98,11 +100,15 @@
                     </thead>
                     <tbody>
                     @foreach($debtors as $key => $debtor)
-                        <tr class=" @if(verta($debtor->payment_due)->diffDays(verta(), false) < 0)
-            bg-danger text-white
-        @elseif(verta($debtor->payment_due)->diffDays(verta(), false) <= 2)
-            bg-warning
-        @endif">
+                        @php
+                            $paymentDue = verta($debtor->payment_due); // تاریخ هجری شمسی
+                            $paymentDueGregorian = $paymentDue->toCarbon()->format('Y-m-d'); // تبدیل به میلادی با استفاده از Carbon
+                            $today = verta(now())->format('Y-m-d');
+                            // محاسبه تفاوت تاریخ‌ها به روز
+                            $daysLeft = \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false);
+                        @endphp
+
+                        <tr class="@if($daysLeft <= 0) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2) table-warning @elseif($daysLeft > 2)  @endif">
                             <td>{{ ++$key }}</td>
                             <td>{{$debtor->buy_date}}</td>
                             <td>{{ $debtor->customer->code }}</td>
