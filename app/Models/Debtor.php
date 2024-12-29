@@ -27,7 +27,7 @@ class Debtor extends Model
         'unpaid' => 'پرداخت نشده',
         'paid' => 'پرداخت شده',
         'partial' => 'پرداخت ناقص',
-        'folowed' => 'پیگیری شود'
+        'followed' => 'پیگیری شود'
     ];
     /**
      * فرمت قیمت برای نمایش
