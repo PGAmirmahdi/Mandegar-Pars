@@ -71,6 +71,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
+                        <td>ایجاد  کننده</td>
                         <th>کد مشتری</th>
                         <th>نام سازمان/فروشگاه</th>
                         <th>نوع</th>
@@ -91,6 +92,7 @@
                     @foreach($customers as $key => $customer)
                         <tr>
                             <td>{{ ++$key }}</td>
+                            <td>{{ $customer->user->name . ' '  . $customer->user->family}}</td>
                             <td>{{ $customer->code ?? '---' }}</td>
                             <td>{{ $customer->name }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
