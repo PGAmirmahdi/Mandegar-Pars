@@ -42,7 +42,29 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="factor_number">شماره فاکتور</label>
+                        <input type="text" name="factor_number" class="form-control" id="factor_number" value="{{$debtor->factor_number}}">
+                        @error('factor_number')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="buy_date">تاریخ خرید</label>
+                        <input type="text" id="buy_date" name="buy_date" class="form-control date-picker-shamsi-list"
+                               autocomplete="off" value="{{$debtor->buy_date}}">
+                        @error('buy_date')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="payment_due">تاریخ موعد پرداخت</label>
+                        <input type="text" id="payment_due" name="payment_due" class="form-control date-picker-shamsi-list"
+                               autocomplete="off" value="{{$debtor->payment_due}}">
+                        @error('payment_due')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <!-- فیلد توضیحات -->
                     <div class="col-12 mb-3">
                         <label for="description">توضیحات </label>

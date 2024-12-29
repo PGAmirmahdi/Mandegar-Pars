@@ -21,6 +21,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
+                        <th>ایجاد کننده</th>
                         <th>نام سازمان/فروشگاه</th>
                         <th>شماره اقتصادی</th>
                         <th>شماره ثبت/ملی</th>
@@ -35,6 +36,7 @@
                     @foreach($customers as $key => $customer)
                         <tr>
                             <td>{{ ++$key }}</td>
+                            <td>{{ $customer->user->name . ' '  . $customer->user->family}}</td>
                             <td>{{ $customer->name }}</td>
                             <td>{{ $customer->economical_number == 0 || $customer->economical_number == null ? '---' : $customer->economical_number }}</td>
                             <td>{{ $customer->national_number == 0 || $customer->national_number == null ? '---' : $customer->national_number }}</td>

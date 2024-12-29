@@ -104,21 +104,13 @@
             bg-warning
         @endif">
                             <td>{{ ++$key }}</td>
-                            <td>{{verta($debtor->buy_date)->format('H:i - Y/m/d')}}</td>
+                            <td>{{$debtor->buy_date}}</td>
                             <td>{{ $debtor->customer->code }}</td>
                             <td>{{ $debtor->customer->name }}</td>
                             <td>{{ $debtor->factor_number }}</td>
                             <td>{{$debtor->customer->phone1}}</td>
                             <td>{{ number_format($debtor->price) . ' ریال ' }}</td>
-                            <td>{{ verta($debtor->payment_due)->format('H:i - Y/m/d') }}</td>
-                            @can('debtor-show')
-                                <td>
-                                    <a class="btn btn-primary btn-floating"
-                                       href="{{ route('debtors.show', $debtor->id) }}">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                </td>
-                            @endcan
+                            <td>{{ $debtor->payment_due}}</td>
                             <td>
                                 @if($debtor->status == 'unpaid')
                                     <span class="badge badge-warning">پرداخت نشده</span>
@@ -132,6 +124,14 @@
                                     <span class="badge badge-info">نامشخص</span>
                                 @endif
                             </td>
+                            @can('debtor-show')
+                                <td>
+                                    <a class="btn btn-primary btn-floating"
+                                       href="{{ route('debtors.show', $debtor->id) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            @endcan
                             @can('debtor-edit')
                                 <td>
                                     @if($debtor->status == 'paid')

@@ -53,9 +53,10 @@ class DebtorController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'price' => 'required|numeric|min:0',
             'status' => 'required|in:unpaid,paid,partial,followed',
-            'description' => 'nullable|string|max:255',
+            'description' => 'nullable',
             'factor_number' => 'nullable' ,
-            'buy_date' => 'nullable'
+            'buy_date' => 'nullable' ,
+            'payment_due' => 'nullable' ,
         ]);
 
         // ذخیره‌سازی بدهکار
