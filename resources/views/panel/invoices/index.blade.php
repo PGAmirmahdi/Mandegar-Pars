@@ -134,12 +134,12 @@
                         <th>همکار</th>
                         {{--                        @endcanany--}}
                         <th>تاریخ ایجاد</th>
-                        <th>ملبغ کل</th>
+                        <th>مبلغ کل</th>
                         {{--                        @canany(['accountant','admin','ceo'])--}}
                         <th>مشاهده سفارش</th>
                         {{--                        @endcanany--}}
                         <th>وضعیت سفارش</th>
-                        @canany('warehouse-keeper','partner-tehran')
+                        @canany(['warehouse-keeper','partner-tehran','admin'])
                             <th>فاکتور</th>
                         @else
                             @canany(['sales-manager','accountant','Organ','partner-city'])
@@ -147,12 +147,12 @@
                             @endcanany
                         @endcanany
                         @cannot('accountant')
-                            @can('invoices-edit')
+                            @canany(['invoices-edit','admin'])
                                 <th>ویرایش</th>
-                            @endcan
-                            @can('invoices-delete')
+                            @endcanany
+                            @canany('invoices-delete')
                                 <th>حذف</th>
-                            @endcan
+                            @endcanany
                         @endcannot
                     </tr>
                     </thead>

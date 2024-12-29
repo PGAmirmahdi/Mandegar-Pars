@@ -17,6 +17,11 @@
                     </div>
 
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="customer_id">شماره تلفن مشتری</label>
+                        <input type="text" class="form-control" value="{{ $debtor->customer->phone1 }}" readonly>
+                    </div>
+
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="price">مبلغ بدهکاری</label>
                         <input type="text" name="price" class="form-control" id="price" value="{{ number_format($debtor->price) }}" readonly>
                         <div id="formatted-price" class="mt-2 text-muted"></div> <!-- نمایش قیمت فرمت شده -->

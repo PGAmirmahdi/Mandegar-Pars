@@ -115,7 +115,7 @@ class ProductController extends Controller
         Activity::create($activityData); // ذخیره فعالیت
 
         alert()->success('درخواست ثبت کالا مورد نظر با موفقیت ایجاد شد', 'ایجاد  درخواست ثبت کالا');
-        return redirect()->route('products.ProductAccept.index');
+        return redirect()->route('products.index');
     }
 
     private function json_properties($request)
