@@ -52,7 +52,7 @@ class DebtorController extends Controller
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'price' => 'required|numeric|min:0',
-            'status' => 'required|in:unpaid,paid,partial',
+            'status' => 'required|in:unpaid,paid,partial,followed',
             'description' => 'nullable|string|max:255',
         ]);
 
