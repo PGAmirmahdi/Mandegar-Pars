@@ -176,7 +176,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(BuyOrder::class);
     }
-
+    public function customer()
+    {
+        return $this->hasMany(Customer::class);
+    }
     private function leavesUpdate()
     {
         $leave_info = DB::table('leave_info')->where('user_id', $this->id)->first();
