@@ -54,6 +54,8 @@ class DebtorController extends Controller
             'price' => 'required|numeric|min:0',
             'status' => 'required|in:unpaid,paid,partial,followed',
             'description' => 'nullable|string|max:255',
+            'factor_number' => 'nullable' ,
+            'buy_date' => 'nullable'
         ]);
 
         // ذخیره‌سازی بدهکار
@@ -62,6 +64,9 @@ class DebtorController extends Controller
             'price' => $request->price,
             'status' => $request->status,
             'description' => $request->description,
+            'factor_number' => $request->factor_number,
+            'buy_date' => $request->buy_date,
+            'payment_due' => $request->payment_due,
         ]);
 
         // پیدا کردن مشتری و ثبت فعالیت
@@ -105,7 +110,10 @@ class DebtorController extends Controller
             'price' => 'required|numeric|min:0',
             'status' => 'required|in:unpaid,paid,partial,followed',
             'description' => 'nullable|string|max:255',
-            'recipe' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:8192', // اعتبارسنجی برای فیلد فایل
+            'recipe' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:8192',
+            'factor_number' => 'nullable',
+            'buy_date' => 'nullable' ,
+            'payment_due' => 'nullable',
         ]);
 
         // اگر فایل جدید ارسال شده باشد، آن را ذخیره می‌کنیم
@@ -119,10 +127,13 @@ class DebtorController extends Controller
         // به‌روزرسانی بدهکار
         $debtor->update([
             'customer_id' => $request->customer_id,
+            'factor_number' => $request->factor_number,
+            'buy_date' => $request->buy_date,
+            'payment_due' => $request->payment_due,
             'price' => $request->price,
             'status' => $request->status,
             'description' => $request->description,
-            'recipe' => $path, // ذخیره مسیر فایل در فیلد recipe
+            'recipe' => $path,
         ]);
 
         // ثبت فعالیت

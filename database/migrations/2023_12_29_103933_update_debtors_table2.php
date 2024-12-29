@@ -15,8 +15,8 @@ class UpdateDebtorsTable2 extends Migration
     {
         Schema::table('debtors', function (Blueprint $table) {
             $table->string('buy_date')->nullable()->comment('زمان خرید');
-            $table->string('factor_number')->comment('شماره فاکتور');
-            $table->string('payment_due')->comment('تاریخ موعد پرداخت');
+            $table->string('factor_number')->nullable()->comment('شماره فاکتور');
+            $table->string('payment_due')->nullable()->comment('تاریخ موعد پرداخت');
         });
     }
 

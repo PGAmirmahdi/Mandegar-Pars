@@ -38,7 +38,7 @@ class PriceController extends Controller
                 ->when($request->seller && $request->seller !== 'all', function ($query) use ($request) {
                     $query->where('name', $request->seller);
                 })
-                ->get();
+                ->paginate(20);
             $products = Product::query()->where('status','=','approved')
                 ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                     $query->where('category_id', $request->category);
@@ -50,7 +50,7 @@ class PriceController extends Controller
                 ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
                     $query->where('id', $request->product_id);
                 })
-                ->orderByDesc('brand_id')->get();
+                ->orderByDesc('brand_id')->paginate(20);
             $models = ProductModel::all();
             return view('panel.prices.other-list', compact('sellers', 'products','models'));
         } else {

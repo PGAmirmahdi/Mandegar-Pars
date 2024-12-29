@@ -150,7 +150,7 @@
                     <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="2">
                         <option value="all">برند (همه)</option>
-                        @foreach($models as $model)
+                        @foreach(\App\Models\ProductModel::all(['id','name']) as $model)
                             <option value="{{ $model->id }}" {{ request()->model == $model->id ? 'selected' : '' }}>
                                 {{ $model->name }}
                             </option>
@@ -161,7 +161,7 @@
                     <select name="seller" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="4">
                         <option value="all">فروشنده (همه)</option>
-                        @foreach($sellers as $seller)
+                        @foreach(\App\Models\Seller::all(['id','name']) as $seller)
                             <option
                                 value="{{ $seller->name }}" {{ request()->seller == $seller->name ? 'selected' : '' }}>
                                 {{ $seller->name }}
@@ -173,7 +173,7 @@
                     <select name="product_id" form="search_form"
                             class="js-example-basic-single select2-hidden-accessible" data-select2-id="7">
                         <option value="all">نام کالا</option>
-                        @foreach($products as $product)
+                        @foreach(\App\Models\Product::all(['id','title']) as $product)
                             <option value="{{ $product->id }}" {{ request()->product_id == $product->id ? 'selected' : '' }}>
                                 {{ $product->title }}
                             </option>
