@@ -44,17 +44,17 @@ class PaymentDue extends Command
         $title = 'موعد پرداخت مشتری';
         $url = route('debtors.index');
         $debtors = Debtor::all();
+        $admins = User::whereHas('role', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
         foreach ($debtors as $debtor) {
-
             $paymentDue = verta($debtor->payment_due); // تاریخ هجری شمسی
             $paymentDueGregorian = $paymentDue->toCarbon()->format('Y-m-d'); // تبدیل به میلادی با استفاده از Carbon
             $today = verta(now())->format('Y-m-d');
             // محاسبه تفاوت تاریخ‌ها به روز
             $daysLeft = \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false);
             // پیدا کردن کاربران با نقش ادمین
-            $admins = User::whereHas('role', function ($query) {
-                $query->where('name', 'admin');
-            })->get();
+
             if ($daysLeft <= 0) {
                 $message = "موعد پرداخت مشتری '{$debtor->customer->name}' امروز است.";
                 Notification::send($admins, new SendMessage($title, $message, $url));
