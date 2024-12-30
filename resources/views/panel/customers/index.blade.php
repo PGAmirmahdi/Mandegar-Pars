@@ -38,7 +38,8 @@
                             data-select2-id="1">
                         <option value="all">استان (همه)</option>
                         @foreach(\App\Models\Province::all() as $province)
-                            <option value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
+                            <option
+                                value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -48,7 +49,8 @@
                                 class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
                             <option value="all">مشتری (همه)</option>
                             @foreach(\App\Models\Customer::CUSTOMER_TYPE as $key => $value)
-                                <option value="{{ $key }}" {{ request()->customer_type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                <option
+                                    value="{{ $key }}" {{ request()->customer_type == $key ? 'selected' : '' }}>{{ $value }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -58,7 +60,8 @@
                             data-select2-id="3">
                         <option value="all">نوع (همه)</option>
                         @foreach(\App\Models\Customer::TYPE as $key => $value)
-                            <option value="{{ $key }}" {{ request()->type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            <option
+                                value="{{ $key }}" {{ request()->type == $key ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -74,6 +77,7 @@
                         <td>ایجاد کننده</td>
                         <th>کد مشتری</th>
                         <th>نام سازمان/فروشگاه</th>
+                        <th>کارپرداز</th>
                         <th>نوع</th>
                         <th>استان</th>
                         <th>شماره تماس 1</th>
@@ -93,6 +97,7 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $customer->user->name . ' '  . $customer->user->family}}</td>
+                            <td>{{$customer->employer}}</td>
                             <td>{{ $customer->code ?? '---' }}</td>
                             <td>{{ $customer->name }}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
