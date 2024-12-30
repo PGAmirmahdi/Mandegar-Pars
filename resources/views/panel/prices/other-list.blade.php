@@ -161,9 +161,8 @@
                     <select name="seller" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="4">
                         <option value="all">فروشنده (همه)</option>
-                        @foreach(\App\Models\Seller::all(['id','name']) as $seller)
-                            <option
-                                value="{{ $seller->name }}" {{ request()->seller == $seller->name ? 'selected' : '' }}>
+                        @foreach(DB::table('price_list_sellers')->get(['id', 'name']) as $seller)
+                            <option value="{{ $seller->name }}" {{ request()->seller == $seller->name ? 'selected' : '' }}>
                                 {{ $seller->name }}
                             </option>
                         @endforeach
@@ -246,6 +245,7 @@
                     </tfoot>
                 </table>
             </div>
+            <div class="d-flex justify-content-center">{{ $products->appends(request()->all())->links() }}</div>
             {{--            <div class="d-flex justify-content-center">--}}
             {{--                {{ $products->links() }}--}}
             {{--            </div>--}}

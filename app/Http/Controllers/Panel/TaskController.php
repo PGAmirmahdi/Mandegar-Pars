@@ -169,8 +169,9 @@ class TaskController extends Controller
     {
         $task->users()->sync($request->users);
         $users = User::whereIn('id', $request->users)->get();
+        $title = 'وظیفه' ;
         $message = 'وظیفه جدیدی به شما تخصیص داده شد';
         $url = route('tasks.index');
-        Notification::send($users, new SendMessage($message, $url));
+        Notification::send($users, new SendMessage($title,$message, $url));
     }
 }
