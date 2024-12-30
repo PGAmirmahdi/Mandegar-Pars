@@ -151,7 +151,7 @@
                     @foreach($pricesHistory as $key => $item)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $item->product->title }}</td>
+                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $item->product->title }}</td>
                             <td>{{ $item->product->category->slug }}</td>
                             <td>{{ $item->product->productModels->slug }}</td>
                             <td>{{$item->price_field }}</td>
