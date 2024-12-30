@@ -338,7 +338,7 @@
                                     <td colspan="6" id="seller_sign_sec">
                                         {{--                                            @if($invoice->status == "invoiced")--}}
                                         <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign" alt="sign"
-                                             style="width: 275px; height: 200px;transform:translate(-20px,-80px);">
+                                             style="width: 175px; height: 100px;transform:translate(-20px,-80px);">
                                         {{--                                            @if($invoice->type == 'official')--}}
                                         <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp"
                                              alt="stamp" style="transform: rotate(-15deg) translateY(30px);">
