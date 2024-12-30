@@ -87,15 +87,16 @@ Route::get('/', function () {
     return view('auth.login');
 });
 Route::get('notif', function () {
-    $url = 'https://google.com';
-    $title = 'test';
-    $message = "salam";
+    $title = 'ثبت کالا';
+    $message = "یک درخواست ثبت کالا توسط " . 'مجید' . " ایجاد شد.";
+    $url = route('products.index');
 
-    // پیدا کردن کاربر با ID مشخص
-    $user = User::find(173);
+    // Find all admin users
+    $admins = User::whereHas('role', function ($query) {
+        $query->where('name', 'admin');
+    })->get();
 
-    // ارسال نوتیفیکیشن به کاربر
-    return Notification::send($user, new SendMessage($title, $message, $url));
+    Notification::send($admins, new SendMessage($title, $message, $url));
 });
 
 //Route::get('test/{id?}', function ($id = null) {
