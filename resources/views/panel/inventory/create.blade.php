@@ -15,7 +15,7 @@
                         <select class="js-example-basic-single select2-hidden-accessible" name="product_id" id="product_id"  data-select2-id="1">
                             @foreach(\App\Models\Product::all() as $product)
                                 <option
-                                    value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>{{$product->title }}</option>
+                                    value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>{{$product->title . ' ' . $product->productModels->name }}</option>
                             @endforeach
                         </select>
                         @error('product_id')
