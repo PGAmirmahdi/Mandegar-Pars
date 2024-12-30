@@ -101,15 +101,11 @@
                     <tbody>
                     @foreach($debtors as $key => $debtor)
                         @php
-                            $paymentDue = $debtor->payment_due && $debtor->payment_due !== '-'
-         ? verta($debtor->payment_due)
-         : null;
-                            $paymentDueGregorian = $paymentDue ? $paymentDue->toCarbon()->format('Y-m-d') : null;
-                             $today = verta(now())->format('Y-m-d');
-                             // محاسبه تفاوت تاریخ‌ها به روز
-                             $daysLeft = $paymentDueGregorian
-        ? \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false)
-        : null;
+                            $paymentDue = verta($debtor->payment_due); // تاریخ هجری شمسی
+                            $paymentDueGregorian = $paymentDue->toCarbon()->format('Y-m-d'); // تبدیل به میلادی با استفاده از Carbon
+                            $today = verta(now())->format('Y-m-d');
+                            // محاسبه تفاوت تاریخ‌ها به روز
+                            $daysLeft = \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false);
                         @endphp
 
                         <tr class="@if($daysLeft <= 0 && !in_array($debtor->status, ['paid', 'partial'])) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2 && !in_array($debtor->status, ['paid', 'partial'])) table-warning @elseif($daysLeft > 2) @elseif($debtor->status == 'paid') table-success @endif">

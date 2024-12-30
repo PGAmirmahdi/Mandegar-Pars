@@ -105,8 +105,8 @@ class InvoiceController extends Controller
                     'price' => $totalOrderCost, // ثبت مبلغ کل محاسبه‌شده
                     'status' => 'unpaid',
                     'factor_number' => '0',
-                    'payment_due' => '-',
-                    'buy_date' => '-',
+                    'payment_due' => null,
+                    'buy_date' => null,
                     'description' => 'بدهکاری مربوط به فاکتور شماره ' . $invoice->id,
                 ]);
             }
