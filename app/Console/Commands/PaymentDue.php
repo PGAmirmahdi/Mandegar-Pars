@@ -45,7 +45,7 @@ class PaymentDue extends Command
         $url = route('debtors.index');
         $debtors = Debtor::all();
         $admins = User::whereHas('role', function ($query) {
-            $query->where('name', 'admin');
+            $query->where('name', 'accountant');
         })->get();
         foreach ($debtors as $debtor) {
             $paymentDue = verta($debtor->payment_due); // تاریخ هجری شمسی
