@@ -152,8 +152,8 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $item->product->title }}</td>
-                            <td>{{ $item->product->category->name }}</td>
-                            <td>{{ $item->product->productModels->name }}</td>
+                            <td>{{ $item->product->category->slug }}</td>
+                            <td>{{ $item->product->productModels->slug }}</td>
                             <td>{{$item->price_field }}</td>
                             <td>{{ number_format($item->price_amount_from) . ' ريال ' }}</td>
                             <td>{{ number_format($item->price_amount_to) . ' ريال '  }}</td>
