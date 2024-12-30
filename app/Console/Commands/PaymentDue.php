@@ -56,7 +56,7 @@ class PaymentDue extends Command
             // پیدا کردن کاربران با نقش ادمین
 
             if ($daysLeft <= 0) {
-                $message = "موعد پرداخت مشتری '{$debtor->customer->name}' امروز است.";
+                $message = "موعد پرداخت مشتری '{$debtor->customer->name}'پیگیری شود.";
                 Notification::send($admins, new SendMessage($title, $message, $url));
             }
         }

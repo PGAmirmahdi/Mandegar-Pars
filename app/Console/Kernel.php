@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\PaymentDue;
 use App\Console\Commands\ReportReminder;
 use App\Console\Commands\SendWeeklyPriceList;
 use App\Jobs\InvoiceDeadlineJob;
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new SendWeeklyPriceList)->dailyAt('13:00');
         $schedule->job(new ReportReminder)->dailyAt('16:00');
+        $schedule->job(new PaymentDue)->dailyAt('10:00');
     }
 
     /**
