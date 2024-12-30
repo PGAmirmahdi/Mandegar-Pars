@@ -55,7 +55,7 @@ class PaymentDue extends Command
             $daysLeft = \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false);
             // پیدا کردن کاربران با نقش ادمین
 
-            if ($daysLeft <= 0) {
+            if ($daysLeft <= 0 || !in_array($debtor->status, ['paid', 'partial'])) {
                 $message = "موعد پرداخت مشتری '{$debtor->customer->name}'پیگیری شود.";
                 Notification::send($admins, new SendMessage($title, $message, $url));
             }

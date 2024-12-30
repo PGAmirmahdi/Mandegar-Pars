@@ -108,7 +108,7 @@
                             $daysLeft = \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false);
                         @endphp
 
-                        <tr class="@if($daysLeft <= 0) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2) table-warning @elseif($daysLeft > 2)  @endif">
+                        <tr class="@if($daysLeft <= 0 && !in_array($debtor->status, ['paid', 'partial'])) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2 && !in_array($debtor->status, ['paid', 'partial'])) table-warning @elseif($daysLeft > 2) @elseif($debtor->status == 'paid') table-success @endif">
                             <td>{{ ++$key }}</td>
                             <td>{{$debtor->buy_date}}</td>
                             <td>{{ $debtor->customer->code }}</td>
