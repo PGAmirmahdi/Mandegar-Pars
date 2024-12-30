@@ -30,8 +30,24 @@
                            value="{{ request()->code ?? null }}">
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری"
-                           value="{{ request()->name ?? null }}">
+                    <select name="employer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="4">
+                        <option value="all" selected>نام کارپرداز(همه)</option>
+                        @foreach(\App\Models\Customer::all() as $employer)
+                            <option
+                                value="{{ $employer->employer }}" {{ request()->employer == $employer->employer ? 'selected' : '' }}>{{ $employer->employer }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="customer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="0">
+                        <option value="all">نام سازمان/فروشگاه(همه)</option>
+                        @foreach(\App\Models\Customer::all() as $customer)
+                            <option
+                                value="{{ $customer->name }}" {{ request()->customer == $customer->name ? 'selected' : '' }}>{{ $customer->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible"
