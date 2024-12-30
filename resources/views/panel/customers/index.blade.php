@@ -97,9 +97,9 @@
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>{{ $customer->user->name . ' '  . $customer->user->family}}</td>
-                            <td>{{$customer->employer}}</td>
                             <td>{{ $customer->code ?? '---' }}</td>
                             <td>{{ $customer->name }}</td>
+                            <td>{{$customer->employer}}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
                             <td>{{ $customer->province }}</td>
                             <td>{{ $customer->phone1 }}</td>

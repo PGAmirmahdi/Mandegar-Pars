@@ -39,7 +39,7 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $customer->user->name . ' '  . $customer->user->family}}</td>
                             <td>{{ $customer->name }}</td>
-                            <td>{{ $customer->employer}}</td>
+                            <td>{{ $customer->employer ?? 'نامشخص' }}</td>
                             <td>{{ $customer->economical_number == 0 || $customer->economical_number == null ? '---' : $customer->economical_number }}</td>
                             <td>{{ $customer->national_number == 0 || $customer->national_number == null ? '---' : $customer->national_number }}</td>
                             <td>{{ $customer->postal_code == 0 || $customer->postal_code == null ? '---' : $customer->postal_code }}</td>
