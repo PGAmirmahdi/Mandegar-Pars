@@ -91,9 +91,9 @@ class ProductController extends Controller
             'status' => $status,
         ]);
 
-        if (auth()->user()->isAdmin()) {
+        if (!auth()->user()->isAdmin()) {
             $title = 'ثبت کالا';
-            $message = "یک درخواست ثبت کالا توسط " . $product->creator->family . " ایجاد شد.";
+            $message = "یک درخواست ثبت کالا توسط " . auth()->user()->family . " ایجاد شد.";
             $url = route('products.index');
 
             // Find all admin users
