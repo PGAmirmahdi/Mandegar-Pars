@@ -265,16 +265,36 @@
                 })
             }
 
-            function digikalaChart() {
+            ffunction digikalaChart() {
                 $.ajax({
                     url: `/panel/off-site-product-history/${website}/${id}`,
                     type: 'get',
                     success: function (res) {
-                        $('#priceHistoryModal .modal-body').html(`<canvas id="line_chart" style="width: auto"></canvas>`)
-                        data1 = res.data.data.price_chart[0].history.map(d => d['selling_price']);
-                        labels = res.data.data.price_chart[0].history.map(d => d['day']);
+                        $('#priceHistoryModal .modal-body').html(`<canvas id="line_chart" style="width: auto"></canvas>`);
 
-                        // price history chart
+                        // دسترسی به داده‌های قیمت
+                        const priceHistory = res.data.data.price_chart[0].history;
+                        const data1 = priceHistory.map(d => d['selling_price']);
+                        const labels = priceHistory.map(d => d['day']);
+
+                        // اطلاعات محصول
+                        const product = res.data.product;
+                        const productTitle = product.title_fa;
+                        const productImage = product.images.main.url[0];
+                        const sellingPrice = product.default_variant.price.selling_price; // قیمت فروش
+                        const rrpPrice = product.default_variant.price.rrp_price; // قیمت پیشنهادی
+                        const discountPercent = product.default_variant.price.discount_percent; // درصد تخفیف
+
+                        // قیمت‌ها را به HTML اضافه کنید
+                        $('#priceHistoryModal .modal-body').prepend(`
+                <h2>${productTitle}</h2>
+                <img src="${productImage}" alt="${productTitle}" style="max-width: 100%; height: auto;">
+                <p>قیمت فروش: ${sellingPrice.toLocaleString()} تومان</p>
+                <p>قیمت پیشنهادی: ${rrpPrice.toLocaleString()} تومان</p>
+                <p>درصد تخفیف: ${discountPercent}%</p>
+            `);
+
+                        // قیمت تاریخچه نمودار
                         var element1 = document.getElementById("line_chart");
                         element1.height = 146;
                         new Chart(element1, {
@@ -282,17 +302,15 @@
                             data: {
                                 labels: labels,
                                 datasets: [{
-                                        label: "کمترین قیمت",
-                                        backgroundColor: '#0091ea',
-                                        data: data1,
-                                        borderColor: '#0091ea',
-                                        fill: false,
-                                        cubicInterpolationMode: 'monotone',
-                                        tension: 0.4
-                                    }
-                                ]
+                                    label: "کمترین قیمت",
+                                    backgroundColor: '#0091ea',
+                                    data: data1,
+                                    borderColor: '#0091ea',
+                                    fill: false,
+                                    cubicInterpolationMode: 'monotone',
+                                    tension: 0.4
+                                }]
                             },
-
                             options: {
                                 responsive: true,
                                 legend: {
@@ -312,7 +330,7 @@
                                             min: 0,
                                             fontSize: 15,
                                             fontColor: '#999',
-                                            callback: function(value, index, values) {
+                                            callback: function(value) {
                                                 const options = { style: 'decimal', useGrouping: true };
                                                 const formattedNumber = (value * 0.1).toLocaleString('en-US', options);
                                                 return formattedNumber;
@@ -341,10 +359,10 @@
                                     }
                                 }
                             },
-                        })
-                        // end price history chart
+                        });
+                        // پایان نمودار تاریخچه قیمت
                     }
-                })
+                });
             }
 
             function emallsChart() {
