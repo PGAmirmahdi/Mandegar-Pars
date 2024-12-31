@@ -7,11 +7,9 @@ use App\Models\Activity;
 use App\Models\OffSiteProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Mpdf\Tag\P;
 
-class
-OffSiteProductController extends Controller
+class OffSiteProductController extends Controller
 {
     public function index($website)
     {
@@ -238,23 +236,8 @@ OffSiteProductController extends Controller
 
         $response = curl_exec($ch);
         curl_close($ch);
-        // لاگ کردن پاسخ
-//        Log::info('Digikala API Response: ', ['response' => $response]);
-
-        if (!$response) {
-            return redirect()->back()->with('error', 'خطا در برقراری ارتباط با API دیجی‌کالا');
-        }
-
         $res = json_decode($response);
-        Log::info('Digikala API Response: ', ['res' => $res]);
-        if (!$res || !isset($res->data)) {
-            return redirect()->back()->with('error', 'ساختار داده‌های دریافتی معتبر نیست');
-        }
-
-        $data = $res->data->product ?? null;
-        if (!$data) {
-            return redirect()->back()->with('error', 'محصول مورد نظر یافت نشد');
-        }
+        $data = $res->data->product;
 
         return view('panel.off-site-products.digikala', compact('data'));
     }
