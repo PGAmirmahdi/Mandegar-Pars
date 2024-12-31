@@ -8,8 +8,8 @@
                 </a>
             </li>
             @canany(['categories-list','products-list','printers-list','prices-list','foreign-customers-list','customers-list','debtors-list'])
-                <li class="{{ active_sidebar(['request/products','debtors','debtors/create','debtors/{debtor}/edit','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search', 'artin-products', 'other-prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="عملیات">
-                    <a href="#navigationProducts" title="عملیات">
+                <li class="{{ active_sidebar(['request/products','debtors','debtors/create','debtors/{debtor}/edit','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search', 'artin-products', 'other-prices-list']) ? 'active' : '' }}" data-toggle="tooltip" title="عملیات پایه">
+                    <a href="#navigationProducts" title="عملیات پایه">
                         <i class="icon ti-view-list"></i>
                     </a>
                 </li>
@@ -151,7 +151,7 @@
                 </li>
         </ul>
         <ul id="navigationProducts" class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}/edit','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
-            <li class="navigation-divider">عملیات</li>
+            <li class="navigation-divider">عملیات پایه</li>
             @can('products-list')
                 <li>
                     <a class="{{ active_sidebar(['products','products/create','products/{product}/edit','search/products','request/products']) ? 'active' : '' }}" href="{{ route('products.index') }}">بارگذاری تمامی کالاها</a>
