@@ -233,24 +233,10 @@ class OffSiteProductController extends Controller
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-            // دیگر هدرها در صورت نیاز
-        ]);
+
         $response = curl_exec($ch);
-        $res = json_decode($response);
-        if ($response === false) {
-            echo 'Curl error: ' . curl_error($ch);
-        } else {
-            $res = json_decode($response);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                echo 'JSON decode error: ' . json_last_error_msg();
-            }
-        }
-
         curl_close($ch);
-
+        $res = json_decode($response);
         $data = $res->data->product;
 
         return view('panel.off-site-products.digikala', compact('data'));
