@@ -1,8 +1,8 @@
 @extends('panel.layouts.master')
-@section('title', 'چاپ سفارش')
+@section('title', 'چاپ پیش فاکتور')
 @php
-    $sidebar = false;
-    $header = false;
+    $left_sidebar = false;
+    $topbar = false;
 
     $sum_total_price = 0;
     $sum_discount_amount = 0;
@@ -16,33 +16,33 @@
 @section('styles')
     <style>
         #products_table input, #products_table select {
-            width: auto;
+            width: auto !important;
         }
 
         .title-sec {
-            background: #ececec;
+            background: #ececec !important;
         }
 
         .main-content {
             margin: 0 !important;
         }
 
-        .mr-100 {
+        .me-100 {
             margin-right: 100px !important;
         }
 
         @page {
-            size: A4 landscape;
+            size: A4 landscape !important;
         }
 
         @media print {
             body {
-                transform: scale(0.9);
+                transform: scale(0.9) !important;
             }
         }
 
         body {
-            padding: 0;
+            padding: 0 !important;
         }
 
         main {
@@ -65,37 +65,37 @@
         }
 
         #printable_sec {
-            padding: 0;
+            padding: 0 !important;
         }
 
         .card {
-            margin: 0;
+            margin: 0 !important;
         }
 
         .guide_box {
-            text-align: center;
+            text-align: center !important;
         }
 
         #seller_sign_sec {
-            position: relative;
+            position: relative !important;
         }
 
         #seller_sign_sec small {
-            position: absolute;
+            position: absolute !important;
         }
 
         #seller_sign_sec .sign {
-            position: absolute;
-            top: -60px;
-            left: 34%;
-            width: 10rem;
+            position: absolute !important;
+            top: -60px !important;
+            left: 34% !important;
+            width: 10rem !important;
         }
 
         #seller_sign_sec .stamp {
-            position: absolute;
-            top: -41px;
-            left: 31%;
-            width: 13rem;
+            position: absolute !important;
+            top: -18px !important;
+            left: 35% !important;
+            width: 12rem !important;
         }
 
         html, body, main {
@@ -107,6 +107,28 @@
             max-height: 130% !important;
         }
 
+        .content-page {
+            margin-right: 0 !important;
+            overflow: unset !important;
+            padding: 0 !important;
+            min-height: 0 !important;
+        }
+
+        *{
+            color: #000 !important;
+        }
+
+        .btn, .fa {
+            color: #fff !important
+        }
+
+        .table:not(.table-bordered) td {
+            line-height: 1;
+        }
+
+        .content-page {
+            height: 100% !important
+        }
     </style>
 
 @endsection
@@ -116,16 +138,14 @@
             <div class="card-title">
                 <div class="row">
                     <div class="col-4">
-                        @if($invoice->type == 'official')
-                            <img src="/assets/media/image/header-logo.png" style="width: 15rem;">
-                        @endif
+                        <img src="/assets/images/header-logo.png" style="width: 15rem;">
                     </div>
-                    <div class="col-3 text-right">
-                        <h3>سفارش مشتری</h3>
+                    <div class="col-3 text-end">
+                        <h3>پیش فاکتور فروش کالا و خدمات</h3>
                     </div>
                     <div class="col-2"></div>
                     <div class="col-2 text-center">
-                        <p class="m-0"> شماره سریال: {{ $invoice->id }}</p>
+                        <p class="m-0"> شماره سریال: {{ $invoice->order->code??$invoice->id }}</p>
                         <hr class="mt-0">
                         <p class="m-0">تاریخ: {{ verta($invoice->created_at)->format('Y/m/d') }}</p>
                         <hr class="mt-0">
@@ -137,78 +157,58 @@
                     <table class="table table-bordered mb-0">
                         <thead>
                         <tr>
-                            <th class="text-center p-0 title-sec">مشخصات فروشنده</th>
+                            <th class="text-center py-1 title-sec">مشخصات فروشنده</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @if($invoice->type == 'official')
                             <tr>
                                 <td class="text-center">
                                     <div class="mb-3">
-                                        <span class="mr-100">نام شخص حقیقی/حقوقی: شرکت صنایع ماشین های اداری ماندگار پارس</span>
-                                        <span class="mr-100">شماره اقتصادی: 14011383061</span>
-                                        <span class="mr-100">شماره ثبت/شماره ملی: 9931</span>
-                                        <span class="mr-100">شناسه ملی: 14011383061</span>
+                                        <span class="me-100">نام شخص حقیقی/حقوقی: بازرگانی پرسو تجارت ایرانیان</span>
+                                        <span class="me-100">شماره اقتصادی: 10103472930</span>
+                                        <span class="me-100">شماره ثبت/شماره ملی: 309754</span>
+                                        <span class="me-100">شناسه ملی: 10103472930</span>
                                     </div>
                                     <div>
-                                        <span class="mr-100">نشانی: تهران، شهرستان ملارد، شهرک صنعتی صفادشت، بلوار خرداد، بین خیابان پنجم و ششم غربی، پلاک 228</span>
-                                        <span class="mr-100">کد پستی: 3164114855</span>
-                                        <span class="mr-100">شماره تلفن: 02165425053</span>
+                                        <span class="me-100">نشانی: خیابان کریمخان، خیابان ایرانشهر، پلاک 242، طبقه پنجم</span>
+                                        <span class="me-100">کد پستی: 1584745337</span>
+                                        <span class="me-100">شماره تلفن: 02188867100</span>
                                     </div>
                                 </td>
                             </tr>
-                        @else
-                            <tr>
-                                <td class="text-center">
-                                    <div class="mb-3">
-                                        <span class="mr-100">نام شخص حقیقی/حقوقی: {{ $invoice->seller->name }}</span>
-                                        <span class="mr-100">استان: {{ $invoice->seller->province }}</span>
-                                        <span class="mr-100">شهر: {{ $invoice->seller->city }}</span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <span class="mr-100">نشانی: {{ $invoice->seller->address }}</span>
-                                        <span class="mr-100">شماره تماس: {{ $invoice->seller->phone }}</span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <span class="mr-100">شماره کارت: {{ $invoice->seller->card_number }}</span>
-                                        <span class="mr-100">شماره شبا: {{ $invoice->seller->sheba_number }}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endif
                         </tbody>
                     </table>
-                    <table class="table table-bordered mb-5">
+                    <table class="table table-bordered mb-4">
                         <thead>
                         <tr>
-                            <th class="text-center p-0 title-sec">مشخصات خریدار</th>
+                            <th class="text-center py-1 title-sec">مشخصات خریدار</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td class="text-center">
                                 <div class="mb-3">
-                                    <span class="mr-100">نام شخص حقیقی/حقوقی: {{ $invoice->customer->name }}</span>
-                                    <span class="mr-100">شماره اقتصادی: {{ $invoice->economical_number }}</span>
-                                    <span class="mr-100">شماره ثبت/شماره ملی: {{ $invoice->national_number }}</span>
-                                    <span class="mr-100">استان: {{ $invoice->province }}</span>
+                                    <span class="me-100">نام شخص حقیقی/حقوقی: {{ $invoice->customer->name }}</span>
+                                    <span class="me-100">شماره اقتصادی: {{ $invoice->economical_number }}</span>
+                                    <span class="me-100">شماره ثبت/شماره ملی: {{ $invoice->national_number }}</span>
+                                    <span class="me-100">استان: {{ $invoice->province }}</span>
                                 </div>
                                 <div>
-                                    <span class="mr-100">شهر: {{ $invoice->city }}</span>
-                                    <span class="mr-100">کد پستی: {{ $invoice->postal_code }}</span>
-                                    <span class="mr-100">نشانی: {{ $invoice->address }}</span>
-                                    <span class="mr-100">شماره تلفن: {{ $invoice->phone }}</span>
+                                    <span class="me-100">شهر: {{ $invoice->city }}</span>
+                                    <span class="me-100">کد پستی: {{ $invoice->postal_code }}</span>
+                                    <span class="me-100">نشانی: {{ $invoice->address }}</span>
+                                    <span class="me-100">شماره تلفن: {{ $invoice->phone }}</span>
                                 </div>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                     <div class="col-12 mb-3">
-                        <div class="overflow-x-auto">
+                        <div>
                             <table class="table text-center" border="2">
                                 <thead>
                                 <tr>
-                                    <th class="p-0 title-sec" colspan="12">مشخصات کالا یا خدمات مورد معامله</th>
+                                    <th class="py-1 title-sec" colspan="12">مشخصات کالا یا خدمات مورد معامله</th>
                                 </tr>
                                 <tr>
                                     <th>ردیف</th>
@@ -302,8 +302,8 @@
                                     <td>{{ number_format($sum_invoice_net) }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="p-0 title-sec" colspan="6">تخفیف نهایی</th>
-                                    <th class="p-0 title-sec" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
+                                    <th class="py-1 title-sec" colspan="6">تخفیف نهایی</th>
+                                    <th class="py-1 title-sec" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
                                 </tr>
                                 <tr>
                                     <td colspan="6">{{ number_format($invoice->discount) }}</td>
@@ -312,38 +312,36 @@
                                 <tr>
                                     <td colspan="4">
                                         <div class="d-flex">
-                                            <span class="mr-4">شرایط و نحوه فروش:</span>
+                                            <span class="me-4">شرایط و نحوه فروش</span>
                                             <div class="d-flex">
-                                                @foreach(\App\Models\Invoice::Payment_Type as $key => $label)
-                                                    @if($invoice->payment_type === $key)
-                                                        <span>{{$label}}</span>
-                                                        @endif
-                                                @endforeach
+                                                نقدی<input type="checkbox">
+                                            </div>
+                                            <div class="d-flex ml-5">
+                                                غیر نقدی<input type="checkbox">
                                             </div>
                                         </div>
+                                    </td>
+                                    <td colspan="8" class="text-start">
+                                         {{change_number_to_words($sum_invoice_net - $invoice->discount)}} ریال
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2"><small>توضیحات</small></td>
-                                    <td colspan="10">{{ $invoice->description }}</td>
-                                    {{--                                        <td colspan="10">لطفا مبلغ فاکتور را به شماره شبا IR55 0110 0000 0010 3967 1380 01 نزد بانک صنعت و معدن شعبه مرکزی واریز فرمایید.</td>--}}
+                                    <td colspan="10">{!! nl2br(e($invoice->description )) !!}</td>
                                 </tr>
-                                @if($invoice->type == 'official')
-                                    <tr>
-                                        <td colspan="12"><strong>تمام اجناس ارائه شده دارای 18 ماه گارانتی از سوی شرکت
-                                                صنایع ماشین های اداری ماندگار پارس می باشد</strong></td>
-                                    </tr>
-                                @endif
+                                <tr>
+                                    <td colspan="12">
+                                        خواهشمند است مبلغ فاكتور را به شماره شبا IR19-0150-0001-8878-2299-0698-11 نزد بانك سپه شعبه ميدان منيريه واريز نماييد. با تشكر
+                                        <br>
+                                        <br>
+                                        آدرس سایت  https://parsotejarat.com
+                                    </td>
+                                </tr>
+
                                 <tr>
                                     <td colspan="6" id="seller_sign_sec">
-                                        {{--                                            @if($invoice->status == "invoiced")--}}
-                                        <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign" alt="sign"
-                                             style="width: 225px; height: 125px;transform:translate(-20px,-50px);">
-                                        {{--                                            @if($invoice->type == 'official')--}}
-                                        <img src="{{ asset('/assets/media/image/stamp.png') }}" class="stamp"
-                                             alt="stamp" style="transform: rotate(-15deg) translateY(30px);">
-                                        {{--                                            @endif--}}
-                                        {{--                                            @endif--}}
+                                        <img src="{{ $invoice->user->sign_image ?? '' }}" class="sign">
+                                        <img src="{{ asset('/assets/images/stamp.png') }}" class="stamp">
                                         <small>مهر و امضای فروشنده</small>
                                     </td>
                                     <td colspan="6"><small>مهر و امضای خریدار</small></td>
@@ -356,19 +354,16 @@
             </form>
         </div>
         <div class="pb-2 d-flex justify-content-between px-3" id="print_sec">
-            <a href="{{ url()->previous() }}" class="btn btn-primary"><i class="fa fa-chevron-right mr-2"></i>برگشت</a>
-            <button class="btn btn-info" id="btn_print"><i class="fa fa-print mr-2"></i>چاپ</button>
+            <a href="{{ url()->previous() }}" class="btn btn-primary"><i class="fa fa-chevron-right me-2"></i>برگشت</a>
+{{--            <button class="btn btn-info" id="btn_print"><i class="fa fa-print me-2"></i>چاپ</button>--}}
             <form action="{{ route('invoices.download') }}" method="post">
                 @csrf
                 <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
-                <button class="btn btn-danger"><i class="fa fa-file-pdf mr-2"></i>دانلود</button>
+                <button class="btn btn-danger"><i class="fa fa-file-pdf me-2"></i>دانلود</button>
             </form>
         </div>
     </div>
-    {{--    <div class="alert alert-info">--}}
-    {{--        <i class="fa fa-info-circle font-size-20"></i>--}}
-    {{--        برای اشتراک گذاری پیش فاکتور/فاکتور ابتدا با استفاده از دکمه <a href="javascript:void(0)">چاپ</a> آن را چاپ کرده یا از <a href="#screenshotModal" data-toggle="modal">اسکرین شات مرورگر</a> استفاده کنید--}}
-    {{--    </div>--}}
+
 @endsection
 @section('scripts')
     <script>

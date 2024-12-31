@@ -128,6 +128,7 @@ class CustomerController extends Controller
 
     public function search(Request $request)
     {
+        $this->authorize('customers_list');
         // بررسی استان
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
 

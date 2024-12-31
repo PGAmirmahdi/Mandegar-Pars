@@ -87,6 +87,7 @@ class OrderController extends Controller
         $order->description = $request->description;
         $order->type = $customer->customer_type;
         $order->req_for = $request->req_for;
+        $order->payment_type = $request->payment->type;
         $order->code = $this->generateCode();
         $order->user_id = auth()->id();
         $order->customer_id = $request->buyer_name;
@@ -139,6 +140,7 @@ class OrderController extends Controller
         $order->description = $request->description;
         $order->req_for = $request->req_for;
         $order->user_id = auth()->id();
+        $order->payment_type = $request->payment_type;
         $order->customer_id = $request->buyer_name;
         $order->products = json_encode($invoiceData);
         $order->save();
