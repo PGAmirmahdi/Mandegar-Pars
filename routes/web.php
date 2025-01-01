@@ -91,8 +91,8 @@ Route::get('notif', function () {
     $message = "یک درخواست ثبت کالا توسط " . 'مجید' . " ایجاد شد.";
     $url = route('products.index');
 
-
-    Notification::send(173, new SendMessage($title, $message, $url));
+        $user = User::whereId(173)->first();
+    Notification::send($user, new SendMessage($title, $message, $url));
 });
 
 //Route::get('test/{id?}', function ($id = null) {
