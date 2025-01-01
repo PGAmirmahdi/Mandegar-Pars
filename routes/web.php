@@ -91,12 +91,8 @@ Route::get('notif', function () {
     $message = "یک درخواست ثبت کالا توسط " . 'مجید' . " ایجاد شد.";
     $url = route('products.index');
 
-    // Find all admin users
-    $admins = User::whereHas('role', function ($query) {
-        $query->where('name', 'admin');
-    })->get();
 
-    Notification::send($admins, new SendMessage($title, $message, $url));
+    Notification::send(173, new SendMessage($title, $message, $url));
 });
 
 //Route::get('test/{id?}', function ($id = null) {
