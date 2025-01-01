@@ -69,6 +69,10 @@ class User extends Authenticatable
     {
         return $this->role->name == 'Organ';
     }
+    public function isPartnerCity()
+    {
+        return $this->role->name == 'PartnerCity';
+    }
     public function isWareHouseKeeper()
     {
         return $this->role->permissions->pluck('name')->contains('warehouse-keeper');

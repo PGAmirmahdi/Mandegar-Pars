@@ -20,7 +20,10 @@ class Customer extends Model
         'system' => 'سامانه',
         'tehran' => 'تهران',
         'city' => 'شهرستان',
-        'single-sale' => 'تک فروشی',
+    'single-sale' => 'تک فروشی',
+        'setad' => 'سامانه ستاد',
+        'online-sale' => 'فروش اینترنتی',
+        'free-sale' => 'آزاد (بازار)',
     ];
     public function debtor()
     {

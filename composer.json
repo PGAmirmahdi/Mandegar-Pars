@@ -29,6 +29,7 @@
         "melipayamak/laravel": "1.0.0",
         "melipayamak/php": "1.0.0",
         "mews/captcha": "^3.3",
+        "mojtabaahn/php-persian-number-to-words": "^1.2",
         "morilog/jalali": "^3.4",
         "pusher/pusher-php-server": "4.*",
         "uxweb/sweet-alert": "^2.0"

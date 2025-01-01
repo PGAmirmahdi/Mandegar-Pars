@@ -46,6 +46,42 @@ if (!function_exists('upload_file')) {
         }
     }
 }
+if (!function_exists('calculateTotal')){
+    function calculateTotal($order)
+    {
+        $products = json_decode($order->products);
+        $sum_total_price = 0;
+        if (!empty($products->products)) {
+
+            foreach ($products->products as $product) {
+                $sum_total_price += $product->total_prices;
+            }
+        }
+
+        if (!empty($products->other_products)) {
+            foreach ($products->other_products as $product) {
+                $sum_total_price += $product->other_total_prices;
+            }
+        }
+        return $sum_total_price;
+    }
+}
+if (!function_exists('calculateTotalInvoice')){
+    function calculateTotalInvoice($products)
+    {
+//        dd($products);
+        $sum_total = 0;
+
+
+
+        foreach ($products as $product) {
+
+            $sum_total += $product->invoice_net;
+        }
+
+        return $sum_total;
+    }
+}
 if (!function_exists('upload_file_factor')) {
     function upload_file_factor($file, $folder)
     {
@@ -57,7 +93,10 @@ if (!function_exists('upload_file_factor')) {
 
                 $outputPdfTempPath = storage_path('app/public/temp-processed-pdf.pdf');
 
+
+
                 $imagePath = public_path('assets/media/image/stamp.png');
+
 
                 $mpdf = new \Mpdf\Mpdf([
                     'tempDir' => storage_path('app/mpdf-temp'),
@@ -67,7 +106,6 @@ if (!function_exists('upload_file_factor')) {
                 $pageCount = $mpdf->SetSourceFile($inputPdfPath);
 
                 list($imgWidth, $imgHeight) = getimagesize($imagePath);
-
                 $imgWidthMm = $imgWidth * 0.264583;
                 $imgHeightMm = $imgHeight * 0.264583;
 
@@ -91,10 +129,11 @@ if (!function_exists('upload_file_factor')) {
                 }
 
                 $mpdf->Output($outputPdfTempPath, 'F');
-
                 $year = Carbon::now()->year;
                 $month = Carbon::now()->month;
                 $uploadPath = public_path("/uploads/{$folder}/{$year}/{$month}/");
+
+
 
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0777, true);
@@ -104,8 +143,8 @@ if (!function_exists('upload_file_factor')) {
                 $finalPath = $uploadPath . $filename;
                 rename($outputPdfTempPath, $finalPath);
 
-                $img = "/uploads/{$folder}/{$year}/{$month}/" . $filename;
 
+                $img = "/uploads/{$folder}/{$year}/{$month}/" . $filename;
                 return $img;
             } catch (Exception $e) {
                 alert()->warning('خطا در آپلود فایل', 'خطا');

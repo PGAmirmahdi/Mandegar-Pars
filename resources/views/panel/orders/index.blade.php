@@ -350,7 +350,7 @@
                                         <th>شهر</th>
                                         <th>شماره تماس</th>
                                         <th>وضعیت</th>
-                                        @canany(['accountant', 'sales-manager'])
+                                        @canany(['accountant', 'sales-manager','PartnerCity'])
                                             <th>همکار</th>
                                         @endcanany
                                         <th>تاریخ ایجاد</th>
@@ -360,7 +360,7 @@
                                         {{--                        @endcanany--}}
                                         {{--                                        <th>وضعیت سفارش</th>--}}
 
-                                        @canany(['sales-manager','accountant'])
+                                        @canany(['sales-manager','accountant','PartnerCity'])
                                             <th>اقدام</th>
                                         @endcanany
 
@@ -398,7 +398,7 @@
                                                 <span
                                                     class="badge bg-primary d-block">{{ \App\Models\Invoice::STATUS[$order->status] }}</span>
                                             </td>
-                                            @canany(['accountant', 'sales-manager'])
+                                            @canany(['accountant', 'sales-manager','PartnerCity'])
                                                 <td>{{ $order->user->fullName() }}</td>
                                             @endcanany
                                             <td>{{ verta($order->created_at)->format('H:i - Y/m/d') }}</td>
@@ -428,7 +428,7 @@
                                                     </a>
                                                 </td>
                                             @else
-                                                @canany(['sales-manager','accountant'])
+                                                @canany(['sales-manager','accountant','PartnerCity'])
                                                     <td>
                                                         <a class="btn btn-primary btn-floating @cannot('accountant') {{ $order->action ? '' : 'disabled' }} @endcannot"
                                                            href="{{ route('order.action', $order->id) }}">

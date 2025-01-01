@@ -34,7 +34,5 @@ composer.lock
 mail/
 etc/
 /vendor.zip
-vendor.zip
-vendor.zip
-vendor.zip
-vendor.zip
+/app/Providers/AppServiceProvider.php
+/public/firebase-private-key.json

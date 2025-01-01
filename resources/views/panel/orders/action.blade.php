@@ -143,20 +143,20 @@
                                 @csrf
                                 <div class="form-row mb-4">
                                     <div class="col-12">
-                                        <div class="btn-group w-100" role="group">
-                                            <input type="radio" id="status1" name="status" class="btn-check"
-                                                   value="invoice"
-                                                   form="invoice_form" {{ old('status') == 'invoice' || old('status') == null || $isInvoice ? 'checked' : '' }} {{ $order->action ? 'disabled' : '' }}>
+                                        <div class="btn-group btn-group-toggle w-100"  data-toggle="buttons">
+
                                             <label
                                                 class="btn {{ $order->action ? 'disabled' : '' }} {{ $isInvoice ? 'btn-primary' : 'btn-outline-primary' }} justify-content-center"
-                                                for="status1">پیش فاکتور</label>
+                                                for="status1">پیش فاکتور<input type="radio" id="status1" name="status" class="btn-check"
+                                                                               value="invoice"
+                                                                               form="invoice_form" {{ old('status') == 'invoice' || old('status') == null || $isInvoice ? 'checked' : '' }} {{ $order->action ? 'disabled' : '' }}></label>
 
-                                            <input type="radio" id="status2" name="status" class="btn-check"
-                                                   value="factor"
-                                                   form="invoice_form" {{ old('status') == 'factor' || $isFactor ? 'checked' : '' }} {{ $order->action ? 'disabled' : '' }}>
+
                                             <label
                                                 class="btn {{ $order->action ? 'disabled' : '' }} {{ $isFactor ? 'btn-primary' : 'btn-outline-primary' }} justify-content-center"
-                                                for="status2">فاکتور</label>
+                                                for="status2">  <input type="radio" id="status2" name="status" class="btn-check"
+                                                                       value="factor"
+                                                                       form="invoice_form" {{ old('status') == 'factor' || $isFactor ? 'checked' : '' }} {{ $order->action ? 'disabled' : '' }}>فاکتور</label>
                                         </div>
                                     </div>
                                     <div

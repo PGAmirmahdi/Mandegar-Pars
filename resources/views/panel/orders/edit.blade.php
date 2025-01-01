@@ -35,18 +35,19 @@
                                         <div class="col-12 mb-4 text-center mt-5">
                                             <h4>درخواست برای</h4>
                                         </div>
-                                        <div class="btn-group w-100" role="group">
-                                            <input type="radio" id="req_for1" name="req_for" class="btn-check"
-                                                   value="pre-invoice"
-                                                   form="invoice_form" {{ $order->req_for == 'pre-invoice' && old('req_for') == null || old('req_for') == 'pre-invoice' ? 'checked' : '' }}>
-                                            <label class="btn btn-outline-primary justify-content-center"
-                                                   for="req_for1">پیش فاکتور</label>
+                                        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
 
-                                            <input type="radio" id="req_for2" name="req_for" class="btn-check"
-                                                   value="invoice"
-                                                   form="invoice_form" {{ $order->req_for == 'invoice' || old('req_for') == 'invoice' ? 'checked' : '' }}>
                                             <label class="btn btn-outline-primary justify-content-center"
-                                                   for="req_for2">فاکتور</label>
+                                                   for="req_for1"> <input type="radio" id="req_for1" name="req_for"
+                                                                          class="btn-check"
+                                                                          value="pre-invoice"
+                                                                          form="invoice_form" {{ $order->req_for == 'pre-invoice' && old('req_for') == null || old('req_for') == 'pre-invoice' ? 'checked' : '' }}>پیش
+                                                فاکتور</label>
+                                            <label class="btn btn-outline-primary justify-content-center"
+                                                   for="req_for2"><input type="radio" id="req_for2" name="req_for"
+                                                                         class="btn-check"
+                                                                         value="invoice"
+                                                                         form="invoice_form" {{ $order->req_for == 'invoice' || old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور</label>
 
                                         </div>
                                     @else
@@ -65,21 +66,21 @@
                                     </div>
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label class="form-label" for="buyer_name">نام شخص حقیقی/حقوقی <span
-                                                    class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         <select name="buyer_name" id="buyer_name" class="form-control"
                                                 data-toggle="select2">
                                             <option value="" disabled selected>انتخاب کنید...</option>
                                             @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
                                                 <option
-                                                        value="{{ $customer->id }}" {{ $order->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
+                                                    value="{{ $customer->id }}" {{ $order->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
                                             @endforeach
                                         </select>
                                         @error('buyer_name')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="row mb-4">
-                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
+                                    <div class="row w-100 mb-4">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 mb-3">
                                             <label class="form-label" for="description">توضیحات بیشتر</label>
                                             <textarea name="description" id="description"
                                                       class="description form-control"
@@ -98,11 +99,11 @@
                                             <select name="status" id="status" class="form-control"
                                                     data-toggle="select2">
                                                 <option
-                                                        value="order" {{ $order->status == 'orders' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['orders'] }}</option>
+                                                    value="order" {{ $order->status == 'orders' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['orders'] }}</option>
                                                 <option
-                                                        value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['pending'] }}</option>
+                                                    value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['pending'] }}</option>
                                                 <option
-                                                        value="invoiced" {{ $order->status == 'invoiced' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['invoiced'] }}</option>
+                                                    value="invoiced" {{ $order->status == 'invoiced' ? 'selected' : '' }}>{{ \App\Models\Invoice::STATUS['invoiced'] }}</option>
                                             </select>
                                             @error('status')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -128,7 +129,7 @@
                                     <div class="col-12 mb-3">
                                         <div class="d-flex justify-content-between mb-3">
                                             <button class="btn btn-outline-success" type="button" id="btn_add"><i
-                                                        class="fa fa-plus mr-2"></i> افزودن کالا
+                                                    class="fa fa-plus mr-2"></i> افزودن کالا
                                             </button>
                                         </div>
                                         <div class="overflow-auto">
@@ -160,7 +161,7 @@
                                                                     </option>
                                                                     @foreach(\App\Models\Product::all(['id','title','code']) as $item)
                                                                         <option
-                                                                                value="{{ $item->id }}" {{ $item->id == $product->products ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
+                                                                            value="{{ $item->id }}" {{ $item->id == $product->products ? 'selected' : '' }}>{{ $item->code.' - '.$item->title }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </td>
@@ -168,7 +169,7 @@
                                                                 <select class="form-control" name="colors[]" required>
                                                                     @foreach(\App\Models\Product::COLORS as $key => $value)
                                                                         <option
-                                                                                value="{{ $key }}" {{ $key == $product->colors ? 'selected' : '' }}>{{ $value }}</option>
+                                                                            value="{{ $key }}" {{ $key == $product->colors ? 'selected' : '' }}>{{ $value }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </td>
@@ -199,7 +200,7 @@
                                                             <td>
                                                                 <button class="btn btn-danger btn-floating btn_remove"
                                                                         type="button"><i
-                                                                            class="fa fa-trash"></i></button>
+                                                                        class="fa fa-trash"></i></button>
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -214,7 +215,7 @@
                                     <div class="col-12 mb-3">
                                         <div class="d-flex justify-content-between mb-3">
                                             <button class="btn btn-outline-success" type="button" id="btn_other_add"><i
-                                                        class="fa fa-plus mr-2"></i> افزودن کالا
+                                                    class="fa fa-plus mr-2"></i> افزودن کالا
                                             </button>
                                         </div>
                                         <div class="overflow-auto">
@@ -266,7 +267,8 @@
                                                                 <input type="number" name="other_prices[]"
                                                                        class="form-control" min="0"
                                                                        value="{{ $product->other_prices }}" required>
-                                                                <span class="price_with_grouping text-primary">{{ number_format($product->other_prices) }}</span>
+                                                                <span
+                                                                    class="price_with_grouping text-primary">{{ number_format($product->other_prices) }}</span>
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="other_total_prices[]"
@@ -274,13 +276,14 @@
                                                                        min="0"
                                                                        value="{{ $product->other_total_prices }}"
                                                                        readonly>
-                                                                <span class="price_with_grouping text-primary">{{ number_format($product->other_total_prices) }}</span>
+                                                                <span
+                                                                    class="price_with_grouping text-primary">{{ number_format($product->other_total_prices) }}</span>
                                                             </td>
 
                                                             <td>
                                                                 <button class="btn btn-danger btn-floating btn_remove"
                                                                         type="button"><i
-                                                                            class="fa fa-trash"></i></button>
+                                                                        class="fa fa-trash"></i></button>
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -470,8 +473,8 @@
             // })
             $(document).on('input', '#other_products_table input[name="other_counts[]"], #other_products_table input[name="other_prices[]"]', function () {
                 // بررسی تغییر مقدار
-                    $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
-                    CalcOtherProductInvoice(this);
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+                CalcOtherProductInvoice(this);
             });
 
             // end calc the product invoice
@@ -530,7 +533,7 @@
             $($('#other_products_table input[name="other_prices[]"]')[index]).siblings()[0].innerText = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             // $($('#other_products_table input[name="other_discount_amounts[]"]')[index]).siblings()[0].innerText = discount_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-            total = price *count;
+            total = price * count;
             $('#other_products_table input[name="other_prices[]"]')[index].value = price;
             $('#other_products_table input[name="other_total_prices[]"]')[index].value = total;
             $($('#other_products_table input[name="other_total_prices[]"]')[index]).siblings()[0].innerText = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -538,7 +541,8 @@
             $('#btn_form').removeAttr('disabled').text('ثبت فرم');
 
         }
-        $('.description').keydown(function(e) {
+
+        $('.description').keydown(function (e) {
             if (e.key === 'Enter' && e.shiftKey) {
                 e.preventDefault();
                 const cursorPos = this.selectionStart;

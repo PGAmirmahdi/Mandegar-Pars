@@ -18,8 +18,13 @@ class Product extends Model
         'rejected' => 'رد شده',
     ];
     const UNITS = [
-        'number' => 'عدد'
+        'number' => 'عدد',
+        'pack' => 'بسته',
+        'box' => 'جعبه',
+        'kg' => 'کیلوگرم',
+        'ton ' => 'تن',
     ];
+
     const PRICE_TYPE = [
         'system_price' => 'قیمت سامانه',
         'partner_price_tehran' => 'قیمت همکار - تهران',

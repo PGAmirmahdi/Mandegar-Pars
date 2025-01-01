@@ -159,16 +159,22 @@ class PermissionSeeder extends Seeder
 //            'buy-orders-edit' => 'ویرایش سفارش خرید',
 //            'buy-orders-delete' => 'حذف سفارش خرید',
 
-            'customer-order-list' => 'لیست سفارشات مشتری',
-            'customer-order-create' => 'ثبت سفارشات مشتری',
-            'customer-order-edit' => 'ویرایش سفارشات مشتری',
-            'customer-order-delete' => 'حذف سفارشات مشتری',
-
-            'setad-fee-list' => 'لیست کارمزد ستاد',
-            'setad-fee-create' => 'ثبت کارمزد ستاد',
-            'setad-fee-edit' => 'ویرایش کارمزد ستاد',
-            'setad-fee-delete' => 'حذف کارمزد ستاد',
+//            'customer-order-list' => 'لیست سفارشات مشتری',
+//            'customer-order-create' => 'ثبت سفارشات مشتری',
+//            'customer-order-edit' => 'ویرایش سفارشات مشتری',
+//            'customer-order-delete' => 'حذف سفارشات مشتری',
+//
+//            'setad-fee-list' => 'لیست کارمزد ستاد',
+//            'setad-fee-create' => 'ثبت کارمزد ستاد',
+//            'setad-fee-edit' => 'ویرایش کارمزد ستاد',
+//            'setad-fee-delete' => 'حذف کارمزد ستاد',
 //            'delivery-day' => 'انتخاب روزهای تحویل سفارش',
+
+//            'customer-order-list' => 'لیست سفارشات مشتری',
+//            'customer-order-create' => 'ثبت سفارشات مشتری',
+//            'customer-order-edit' => 'ویرایش سفارشات مشتری',
+//            'customer-order-delete' => 'حذف سفارشات مشتری',
+            'PartnerCity'=>'همکار شهرستان'
         ];
 
         foreach ($items as $key => $item)

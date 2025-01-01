@@ -13,7 +13,7 @@
 </head>
 <body>
 
-{{--@dd($order)--}}
+{{--@dd(json_decode($order->products))--}}
 <!-- Invoice 1 start -->
 <div class="invoice-1 invoice-content" style="font-family: primary-font">
     <div class="container">
@@ -75,7 +75,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {{--                                                                @dd(array_merge(json_decode($order->products)->products, json_decode($order->products)->other_products))--}}
+{{--                                                                                                    @dd(array_merge(json_decode($order->products)->products, json_decode($order->products)->other_products))--}}
 
                                     @php
                                         // Decode JSON data from the order
@@ -121,14 +121,14 @@
                                             </td>
 
                                             <td class="text-center">
-                                                {{ number_format($product->prices ?? $product->other_prices) ?? 0 }}
+                                                {{ number_format($product->market_price ?? $product->other_prices) ?? 0 }}
                                             </td>
 
                                             <td class="text-start">
                                                 {{
                                                     number_format(
                                                         ($product->counts ?? $product->other_counts ?? 0) *
-                                                        ($product->prices ?? $product->other_prices ?? 0)
+                                                        ($product->market_price ?? $product->other_prices ?? 0)
                                                     )
                                                 }}
                                             </td>
@@ -136,7 +136,7 @@
 
                                         @php
                                             $total += (($product->counts ?? $product->other_counts ?? 0) *
-                                                       ($product->prices ?? $product->other_prices ?? 0));
+                                                       ($product->market_price ?? $product->other_prices ?? 0));
                                         @endphp
                                     @endforeach
 
@@ -170,7 +170,7 @@
                     </div>
                     <div class="invoice-btn-section clearfix d-print-none">
                         <a href="{{route('orders.index')}} " class="btn btn-lg btn-print">
-                            <i class="fa fa-print"></i>بازگشت
+                            بازگشت
                         </a>
                         <a href="javascript:window.print()" class="btn btn-lg btn-download btn-theme">
                             <i class="fa fa-print"></i>چاپ
