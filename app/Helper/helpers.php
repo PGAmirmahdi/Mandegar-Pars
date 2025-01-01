@@ -91,7 +91,7 @@ if (!function_exists('upload_file_factor')) {
                 $paperFormat = getPaperSizeFromPdf($file);
                 $inputPdfPath = $pdfFile->getPathName();
 
-                $outputPdfTempPath = storage_path('app/public/temp-processed-pdf.pdf');
+                $outputPdfTempPath = storage_path('app/public_html/temp-processed-pdf.pdf');
 
 
 
