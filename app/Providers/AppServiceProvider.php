@@ -13,11 +13,11 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
 //    public function register()
-//    {
-//        $this->app->bind('path.public', function(){
-//            return '/home/admin/public_html';
-//        });
-//    }
+////    {
+////        $this->app->bind('path.public', function(){
+////            return '/home/admin/public_html';
+////        });
+////    }
 
     /**
      * Bootstrap any application services.

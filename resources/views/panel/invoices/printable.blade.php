@@ -1,9 +1,9 @@
 @php use Illuminate\Support\Facades\DB; @endphp
-{{--@extends('panel.layouts.master')--}}
+@extends('panel.layouts.master')
 @section('title', 'چاپ پیش فاکتور')
 @php
-    $left_sidebar = false;
-    $topbar = false;
+    $sidebar = false;
+    $header  = false;
 
     $sum_total_price = 0;
     $sum_discount_amount = 0;
@@ -139,7 +139,7 @@
             <div class="card-title">
                 <div class="row">
                     <div class="col-4">
-                        <img src="/assets/images/header-logo.png" style="width: 15rem;">
+                        <img src="/assets/media/image/logo-lg.png" style="width: 15rem;">
                     </div>
                     <div class="col-3 text-end">
                         <h3>پیش فاکتور فروش کالا و خدمات</h3>
@@ -162,21 +162,21 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-center">
-                                    <div class="mb-3">
-                                        <span class="me-100">نام شخص حقیقی/حقوقی: صنایع ماشین های اداری ماندگار پارس</span>
-                                        <span class="me-100">شماره اقتصادی: 14011383061</span>
-                                        <span class="me-100">شماره ثبت/شماره ملی: 9931</span>
-                                        <span class="me-100">شناسه ملی: 14011383061</span>
-                                    </div>
-                                    <div>
-                                        <span class="me-100">نشانی: صفادشت،شهرک صنعتی صفادشت، بلوار خرداد، بین خیابان پنجم و ششم غربی، پلاک 228</span>
-                                        <span class="me-100">کد پستی: 3164114855</span>
-                                        <span class="me-100">شماره تلفن: 02165425052</span>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td class="text-center">
+                                <div class="mb-3">
+                                    <span class="me-100">نام شخص حقیقی/حقوقی: صنایع ماشین های اداری ماندگار پارس</span>
+                                    <span class="me-100">شماره اقتصادی: 14011383061</span>
+                                    <span class="me-100">شماره ثبت/شماره ملی: 9931</span>
+                                    <span class="me-100">شناسه ملی: 14011383061</span>
+                                </div>
+                                <div>
+                                    <span class="me-100">نشانی: صفادشت،شهرک صنعتی صفادشت، بلوار خرداد، بین خیابان پنجم و ششم غربی، پلاک 228</span>
+                                    <span class="me-100">کد پستی: 3164114855</span>
+                                    <span class="me-100">شماره تلفن: 02165425052</span>
+                                </div>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                     <table class="table table-bordered mb-4">
@@ -324,7 +324,7 @@
                                         </div>
                                     </td>
                                     <td colspan="8" class="text-start">
-                                         {{change_number_to_words($sum_invoice_net - $invoice->discount)}} ریال
+                                        {{change_number_to_words($sum_invoice_net - $invoice->discount)}} ریال
                                     </td>
                                 </tr>
                                 <tr>
@@ -357,7 +357,7 @@
         </div>
         <div class="pb-2 d-flex justify-content-between px-3" id="print_sec">
             <a href="{{ url()->previous() }}" class="btn btn-primary"><i class="fa fa-chevron-right me-2"></i>برگشت</a>
-{{--            <button class="btn btn-info" id="btn_print"><i class="fa fa-print me-2"></i>چاپ</button>--}}
+            {{--            <button class="btn btn-info" id="btn_print"><i class="fa fa-print me-2"></i>چاپ</button>--}}
             <form action="{{ route('invoices.download') }}" method="post">
                 @csrf
                 <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">

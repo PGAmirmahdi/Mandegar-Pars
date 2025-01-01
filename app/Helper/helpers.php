@@ -106,8 +106,8 @@ if (!function_exists('upload_file_factor')) {
                 $pageCount = $mpdf->SetSourceFile($inputPdfPath);
 
                 list($imgWidth, $imgHeight) = getimagesize($imagePath);
-                $imgWidthMm = $imgWidth * 0.264583;
-                $imgHeightMm = $imgHeight * 0.264583;
+                $imgWidthMm = $imgWidth * 0.164583;
+                $imgHeightMm = $imgHeight * 0.164583;
 
                 if ($paperFormat == 'A4'){
                     $x = 280 - $imgWidthMm;
