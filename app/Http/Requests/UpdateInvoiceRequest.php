@@ -23,15 +23,9 @@ class UpdateInvoiceRequest extends FormRequest
      */
     public function rules()
     {
-        if ($this->request->get('type') == 'unofficial'){
             return [
-                'seller_name' => 'required',
-                'seller_phone' => 'required',
-                'seller_province' => 'required',
-                'seller_city' => 'required',
-                'seller_address' => 'required',
-                'payment_type'=>'required',
-                'buyer_name' => 'required',
+                'buyer_id' => 'required',
+                'code' => 'required|exists:orders,code',
                 'economical_number' => (auth()->user()->isSystemUser() ? 'required|numeric' : 'nullable|numeric'),
                 'national_number' => 'required|numeric',
                 'need_no' => 'nullable|numeric',
@@ -40,20 +34,8 @@ class UpdateInvoiceRequest extends FormRequest
                 'province' => 'required',
                 'city' => 'required',
                 'address' => 'required',
+                'payment_doc' => 'nullable|mimes:jpg,jpeg,png,pdf|max:5000',
+
             ];
-        }else{
-            return [
-                'buyer_name' => 'required',
-                'economical_number' => (auth()->user()->isSystemUser() ? 'required|numeric' : 'nullable|numeric'),
-                'national_number' => 'required|numeric',
-                'need_no' => 'nullable|numeric',
-                'postal_code' => 'required|numeric',
-                'phone' => 'required',
-                'province' => 'required',
-                'city' => 'required',
-                'address' => 'required',
-                'payment_type'=>'required'
-            ];
-        }
     }
 }

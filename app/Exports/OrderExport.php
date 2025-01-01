@@ -41,6 +41,7 @@ class OrderExport implements FromCollection, WithMapping, WithHeadings, WithStyl
             $order->customer->city,
             Order::STATUS[$order->status],
             number_format($order->getNetAmount()),
+            $order->payment_type,
         ];
     }
 
@@ -74,6 +75,7 @@ class OrderExport implements FromCollection, WithMapping, WithHeadings, WithStyl
             'G' => 'شهر',
             'H' => 'وضعیت',
             'I' => 'مبلغ خالص فاکتور',
+            'J' => 'نوع پرداختی'
         ];
     }
 
