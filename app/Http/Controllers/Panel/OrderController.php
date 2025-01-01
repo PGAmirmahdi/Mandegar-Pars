@@ -17,13 +17,12 @@ use App\Models\Product;
 use App\Models\Province;
 use App\Models\Role;
 use App\Models\User;
-use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
-
+use App\Notifications\SendMessage;
+use Illuminate\Support\Facades\Notification;
 class OrderController extends Controller
 {
 
@@ -254,7 +253,7 @@ class OrderController extends Controller
             $url = route('order.action', $invoice->id);
             $notif_message = "پیش فاکتور سفارش {$invoice->customer->name} مورد تایید قرار گرفت";
             $accountants = User::whereIn('role_id', $roles_id)->get();
-//            Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
+//          Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
 
             $invoice->order_status()->updateOrCreate(
                 ['status' => 'awaiting_confirm_by_sales_manager'],
@@ -293,7 +292,7 @@ class OrderController extends Controller
             $url = route('invoices.index');
             $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
             $accountants = User::whereIn('role_id', $roles_id)->get();
-//            Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
+//          Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
             //end send notif to warehouse-keeper and sales-manager
         } else {
 
@@ -324,8 +323,8 @@ class OrderController extends Controller
                 $title_message='دریافت پیش فاکتور';
                 $url = route('order.action', $invoice->id);
                 $notif_message = "پیش فاکتور {$invoice->customer->name} دریافت شد";
-//                Notification::send($invoice->user, new SendMessage($title_message,$notif_message, $url));
-//                Notification::send($sales_manager, new SendMessage($title_message,$notif_message, $url));
+//              Notification::send($invoice->user, new SendMessage($title_message,$notif_message, $url));
+//              Notification::send($sales_manager, new SendMessage($title_message,$notif_message, $url));
                 //end send notif
             } else {
                 $request->validate(['factor_file' => 'required|mimes:pdf|max:5000']);
@@ -355,7 +354,7 @@ class OrderController extends Controller
                 $url = route('invoices.index');
                 $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
                 $accountants = User::whereIn('role_id', $roles_id)->get();
-//                Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
+//              Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
                 //end send notif to warehouse-keeper and sales-manager
             }
 
@@ -431,7 +430,7 @@ class OrderController extends Controller
         $url = route('invoices.edit', $order->id);
         $message = "سفارش '{$order->customer->name}' ثبت شد";
 
-//        Notification::send($accountants, new SendMessage($title,$message, $url));
+        Notification::send($accountants, new SendMessage($title,$message, $url));
     }
 
     private function send_notif_to_sales_manager(Order $order)
@@ -444,7 +443,7 @@ class OrderController extends Controller
         $url = route('invoices.edit', $order->id);
         $message = "سفارش '{$order->customer->name}' ثبت شد";
 
-//        Notification::send($managers, new SendMessage($title,$message, $url));
+        Notification::send($managers, new SendMessage($title,$message, $url));
     }
 
 
