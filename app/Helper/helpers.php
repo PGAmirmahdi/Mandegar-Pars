@@ -46,23 +46,29 @@ if (!function_exists('upload_file')) {
         }
     }
 }
-if (!function_exists('calculateTotal')){
+if (!function_exists('calculateTotal')) {
     function calculateTotal($order)
     {
-        $products = json_decode($order->products);
-        $sum_total_price = 0;
-        if (!empty($products->products)) {
+        $products = null;
 
+        if (!empty($order->products)) {
+            $products = json_decode($order->products);
+        }
+
+        $sum_total_price = 0;
+
+        if (!empty($products) && !empty($products->products)) {
             foreach ($products->products as $product) {
                 $sum_total_price += $product->total_prices;
             }
         }
 
-        if (!empty($products->other_products)) {
+        if (!empty($products) && !empty($products->other_products)) {
             foreach ($products->other_products as $product) {
                 $sum_total_price += $product->other_total_prices;
             }
         }
+
         return $sum_total_price;
     }
 }
