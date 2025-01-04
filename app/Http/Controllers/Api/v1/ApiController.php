@@ -8,7 +8,6 @@ use App\Models\BotUser;
 use App\Models\Factor;
 use App\Models\Inventory;
 use App\Models\Invoice;
-use App\Models\Order;
 use App\Models\Printer;
 use App\Models\Product;
 use App\Models\User;
@@ -64,14 +63,14 @@ class ApiController extends Controller
 
             if ($data['created_in'] == 'website') {
                 $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
-                $notif_title = 'سفارش از سایت';
+                $notif_title= 'سفارش از سایت';
             } else {
                 $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
-                $notif_title = 'سفارش از اپلیکیشن';
+                $notif_title= 'سفارش از اپلیکیشن';
             }
 
             $url = route('invoices.index');
-            Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+            Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 
             $customer = \App\Models\Customer::updateOrCreate(
                 ['phone1' => $data['phone']],
@@ -90,10 +89,18 @@ class ApiController extends Controller
                     'code' => 'CU-' . random_int(1000000, 9999999),
                 ]
             );
-            // مرتب‌سازی و تبدیل داده‌ها
-            $invoiceData = $this->sortData($request);
-
-            // ایجاد سفارش جدید
+            // ایجاد سفارش و ذخیره محصولات به صورت JSON
+            $products = [];
+            foreach ($request->items as $item) {
+                $product = Product::where('code', $item['acc_code'])->first();
+                $products[] = [
+                    'product_code' => $item['acc_code'],
+                    'quantity' => $item['quantity'],
+                    'total' => $item['total'],
+                    'price' => $item['total'] / $item['quantity'], // قیمت واحد
+                    'color' => 'black', // رنگ پیش‌فرض
+                ];
+            }
             $order = \App\Models\Order::create([
                 'description' => 'خرید از سایت',
                 'type' => 'private',
@@ -102,109 +109,66 @@ class ApiController extends Controller
                 'code' => $this->generateCode(),
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,
-                'products' => json_encode($invoiceData),
+                'products' => json_encode($products), // ذخیره محصولات به صورت JSON
             ]);
+            $invoice = \App\Models\Invoice::create([
+                'user_id' => $single_price_user->id,
+                'customer_id' => $customer->id,
+                'order_id' => $order->id,
+                'economical_number' => 0,
+                'payment_type' => $data['payment_type'],
+                'province' => $customer->province,
+                'city' => $customer->city,
+                'national_number' => $customer->national_number,
+                'address' => $customer->address1,
+                'postal_code' => $customer->postal_code,
+                'phone' => $customer->phone1,
+                'status' => 'order',
+                'created_in' => $data['created_in'],
+                'discount' => 0,
+            ]);
+            $data3 = [
+                'user_id' => 173,
+                'action' => 'ایجاد سفارش فروش',
+                'description' => 'کاربر اسدی بیگزاد محله(ادمین) ' . 'برای مشتری به نام ' . $customer->name  . "یک سفارش فروش به شماره " . $invoice->id . ' ایجاد کرد',
+            ];
 
-            // ذخیره محصولات به صورت جداگانه در رابطه
+            Log::info('Activity Data:', $data3);
+
+            Activity::create($data3);
+            $tax = 0.1;
             foreach ($request->items as $item) {
                 $product = Product::where('code', $item['acc_code'])->first();
 
-                if ($product) {
-                    $price = ($item['total'] / $item['quantity']) * 10; // تبدیل قیمت واحد به ریال
-                    $total = $item['total'] * 10; // تبدیل قیمت کل به ریال
+                $price = ($item['total'] / $item['quantity']) * 10; // تبدیل قیمت واحد به ریال
+                $total = $item['total'] * 10; // تبدیل قیمت کل به ریال
 
-                    $order->products()->attach($product->id, [
-                        'color' => $item['color'] ?? 'black',
-                        'count' => $item['quantity'],
-                        'price' => $price,
-                        'total_price' => $total,
-                        'discount_amount' => 0,
-                        'extra_amount' => $request->shipping_cost * 10 ?? 0, // هزینه ارسال
-                        'tax' => $total * $request->tax ?? 0,
-                        'invoice_net' => (int)$total + ($total * $request->tax ?? 0) + ($request->shipping_cost * 10 ?? 0),
-                    ]);
-                }
-                $invoice = \App\Models\Invoice::create([
-                    'user_id' => $single_price_user->id,
-                    'customer_id' => $customer->id,
-                    'order_id' => $order->id,
-                    'economical_number' => 0,
-                    'payment_type' => $data['payment_type'],
-                    'province' => $customer->province,
-                    'city' => $customer->city,
-                    'national_number' => $customer->national_number,
-                    'address' => $customer->address1,
-                    'postal_code' => $customer->postal_code,
-                    'phone' => $customer->phone1,
-                    'status' => 'order',
-                    'created_in' => $data['created_in'],
-                    'discount' => 0,
+                $invoice->products()->attach($product->id, [
+                    'color' => 'black',
+                    'count' => $item['quantity'],
+                    'price' => $price,
+                    'total_price' => $total,
+                    'discount_amount' => 0,
+                    'extra_amount' => $shipping_cost * 10, // هزینه ارسال
+                    'tax' => $total * $tax,
+                    'invoice_net' => (int)$total + ($total * $tax) + ($shipping_cost * 10), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
                 ]);
-                $data3 = [
-                    'user_id' => 173,
-                    'action' => 'ایجاد سفارش فروش',
-                    'description' => 'کاربر اسدی بیگزاد محله(ادمین) ' . 'برای مشتری به نام ' . $customer->name . "یک سفارش فروش به شماره " . $invoice->id . ' ایجاد کرد',
-                ];
-
-                Log::info('Activity Data:', $data3);
-
-                Activity::create($data3);
-                $tax = 0.1;
-
-                foreach ($request->items as $item2) {
-                    $product = Product::where('code', $item2['acc_code'])->first();
-
-                    $price = ($item2['total'] / $item2['quantity']) * 10; // تبدیل قیمت واحد به ریال
-                    $total = $item2['total'] * 10; // تبدیل قیمت کل به ریال
-
-                    $invoice->products()->attach($product->id, [
-                        'color' => 'black',
-                        'count' => $item2['quantity'],
-                        'price' => $price,
-                        'total_price' => $total,
-                        'discount_amount' => 0,
-                        'extra_amount' => $shipping_cost * 10, // هزینه ارسال
-                        'tax' => $total * $tax,
-                        'invoice_net' => (int)$total + ($total * $tax) + ($shipping_cost * 10), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
-                    ]);
-
-                    $invoice->factor()->updateOrCreate(['status' => 'paid']);
-                }
-                Log::info('Order processed successfully', ['data' => $data]);
-                return response()->json([
-                    'success' => true,
-                    'message' => 'سفارش با موفقیت از طریق سایت در اتوماسیون ایجاد شد',
-                    'data' => $data
-                ], 200);
+                $invoice->factor()->updateOrCreate(['status' => 'paid']);
             }
-        }catch
-            (\Exception $e) {
-                // ثبت خطا در لاگ
-                Log::error('Error processing order data: ' . $e->getMessage(), [
-                    'exception' => $e,
-                ]);
-                // اگر بخواهید می‌توانید یک پاسخ خطا به کاربر بازگردانید
-                return response()->json(['error' => 'Unable to process order.'], 500);
-            }
-    }
-    private function sortData($request)
-    {
-        $products = [];
-        if (isset($request->items) && is_array($request->items)) {
-            foreach ($request->items as $item) {
-                $products[] = [
-                    'product_code' => $item['acc_code'],
-                    'color' => $item['color'] ?? 'black',
-                    'quantity' => $item['quantity'],
-                    'unit_price' => ($item['total'] / $item['quantity']) * 10, // تبدیل به ریال
-                    'total_price' => $item['total'] * 10, // تبدیل به ریال
-                ];
-            }
+            Log::info('Order processed successfully', ['data' => $data]);
+            return response()->json([
+                'success' => true,
+                'message' => 'سفارش با موفقیت از طریق سایت در اتوماسیون ایجاد شد',
+                'data' => $data
+            ], 200);
+        } catch (\Exception $e) {
+            // ثبت خطا در لاگ
+            Log::error('Error processing order data: ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+            // اگر بخواهید می‌توانید یک پاسخ خطا به کاربر بازگردانید
+            return response()->json(['error' => 'Unable to process order.'], 500);
         }
-
-        return [
-            'products' => $products,
-        ];
     }
 
     public function getInvoiceProducts(Request $request)
@@ -263,15 +227,5 @@ class ApiController extends Controller
                 'username' => $request->username,
             ]);
         }
-    }
-    public function generateCode()
-    {
-        $code = '666' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
-
-        while (Order::where('code', $code)->lockForUpdate()->exists()) {
-            $code = '666' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
-        }
-
-        return $code;
     }
 }
