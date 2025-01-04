@@ -93,7 +93,6 @@ class ApiController extends Controller
             // ایجاد سفارش و ذخیره محصولات به صورت JSON
             $products = [];
             foreach ($request->items as $item) {
-                $total2 = $item['total'] * 10; // تبدیل قیمت کل به ریال
                 $product = Product::where('code', $item['acc_code'])->first();
                 $products[] = [
                     'products' => $product->title,
@@ -102,7 +101,6 @@ class ApiController extends Controller
                     'total_prices' => $item['total'],
                     'prices' => $item['total'] / $item['quantity'] * 10, // قیمت واحد
                     'colors' => 'black', // رنگ پیش‌فرض
-                    'invoice_net' => (int)$total2 + ($total2 * $tax) + ($shipping_cost * 10)
                 ];
             }
             $order = \App\Models\Order::create([
