@@ -27,7 +27,7 @@
                                     <div class="invoice-logo">
                                         <!-- logo started -->
                                         <div class="logo">
-                                            <img src="{{asset('/assets/media/image/logo.png')}}"
+                                            <img src="/assets/media/image/header-logo.png" style="width: 15rem;"
                                                  alt="logo">
                                         </div>
                                         <!-- logo ended -->
