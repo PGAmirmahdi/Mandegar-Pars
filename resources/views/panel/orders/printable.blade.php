@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+@php use Illuminate\Support\Facades\Log; @endphp
+    <!DOCTYPE html>
 <html lang="zxx" dir="rtl">
 <head>
     <title>چاپ سفارش مشتری</title>
@@ -49,7 +50,8 @@
                                     <div class="invoice-number mb-30">
                                         <h4 class="inv-title-1 mb-3">مشخصات مشتری</h4>
                                         <h2 class="name mb-10">نام شخص حقیقی/حقوقی : {{$order->customer->name}}</h2>
-                                        <h3 class="name mb-10">نوع فروش : {{\App\Models\Customer::CUSTOMER_TYPE[$order->customer->customer_type]}}</h3>
+                                        <h3 class="name mb-10">نوع فروش
+                                            : {{\App\Models\Customer::CUSTOMER_TYPE[$order->customer->customer_type]}}</h3>
                                         <p class="invo-addr-1">
                                             شماره ثبت/ملی : {{$order->customer->national_number}} <br/>
                                             کد پستی : {{$order->customer->postal_code}} <br/>
@@ -75,15 +77,18 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-{{--                                                                                                    @dd(array_merge(json_decode($order->products)->products, json_decode($order->products)->other_products))--}}
+                                    {{--                                                                                                    @dd(array_merge(json_decode($order->products)->products, json_decode($order->products)->other_products))--}}
 
                                     @php
                                         // Decode JSON data from the order
                                         $productsData = json_decode($order->products);
-
-                                        // Extract products and other products
-                                        $products = $productsData->products ?? [];
-                                        $otherProducts = $productsData->other_products ?? [];
+if (json_last_error() !== JSON_ERROR_NONE) {
+    Log::error("JSON decode error: " . json_last_error_msg());
+    return;
+}
+                                         // Extract products and other products
+$products = isset($productsData->products) ? $productsData->products : [];
+$otherProducts = isset($productsData->other_products) ? $productsData->other_products : [];
 
                                         // Merge products and other products, ensuring they are arrays
                                         $mergedProducts = array_merge(
@@ -121,14 +126,14 @@
                                             </td>
 
                                             <td class="text-center">
-                                                {{ number_format($product->market_price ?? $product->other_prices) ?? 0 }}
+                                                {{ number_format($product->prices ?? $product->other_prices) ?? 0 }}
                                             </td>
 
                                             <td class="text-start">
                                                 {{
                                                     number_format(
                                                         ($product->counts ?? $product->other_counts ?? 0) *
-                                                        ($product->market_price ?? $product->other_prices ?? 0)
+                                                        ($product->prices ?? $product->other_prices ?? 0)
                                                     )
                                                 }}
                                             </td>
@@ -136,7 +141,7 @@
 
                                         @php
                                             $total += (($product->counts ?? $product->other_counts ?? 0) *
-                                                       ($product->market_price ?? $product->other_prices ?? 0));
+                                                       ($product->prices ?? $product->other_prices ?? 0));
                                         @endphp
                                     @endforeach
 
