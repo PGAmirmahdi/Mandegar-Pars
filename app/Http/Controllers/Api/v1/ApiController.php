@@ -110,6 +110,7 @@ class ApiController extends Controller
                 'code' => $this->generateCode(),
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,
+                'created_in' => $data['created_in'] ,
                 'products' => json_encode($products), // ذخیره محصولات به صورت JSON
             ]);
             $invoice = \App\Models\Invoice::create([
