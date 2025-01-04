@@ -92,7 +92,10 @@ class User extends Authenticatable
     {
         return $this->role->permissions->pluck('name')->contains('sales-manager') ;
     }
-
+    public function isSalesEngineering()
+    {
+        return $this->role->permissions->pluck('name')->contains('sales-engineering') ;
+    }
 
     public function isExitDoor()
     {

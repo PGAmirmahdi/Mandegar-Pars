@@ -123,7 +123,7 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper() || auth()->user()->isExitDoor()||auth()->user()->isAccountant()) {
+        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper() || auth()->user()->isExitDoor()|| auth()->user()->isAccountant() || auth()->user()->isSalesEngineering()) {
             $factor = \request()->type == 'factor' ? $invoice->factor : null;
 
             return view('panel.invoices.printable', compact('invoice', 'factor'));
