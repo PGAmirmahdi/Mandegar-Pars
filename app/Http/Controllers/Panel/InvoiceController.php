@@ -38,7 +38,7 @@ class InvoiceController extends Controller
         $this->authorize('invoices-list');
 
 //        if (auth()->user()->isAdmin() || auth()->user()->isWareHouseKeeper() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isSalesManager() || auth()->user()->name === 'اشکان'){
-            $invoices = Invoice::latest()->paginate(30);
+        $invoices = Invoice::latest()->paginate(30);
 //        }else{
 //            $invoices = Invoice::where('user_id', auth()->id())->latest()->paginate(30);
 //        }
@@ -59,72 +59,71 @@ class InvoiceController extends Controller
         return view('panel.invoices.create');
     }
 
-        public function store(StoreInvoiceRequest $request)
-        {
-            $this->authorize('invoices-create');
+    public function store(StoreInvoiceRequest $request)
+    {
+        $this->authorize('invoices-create');
 
 //            dd($request->all());
 
-            $req_for = $request->req_for;
-            $order = Order::where('code', $request->code)->first();
-            $invoice = Invoice::create([
-                'user_id' => auth()->id(),
-                'order_id' => $order->id,
-                'customer_id' => $request->buyer_id,
-                'economical_number' => $request->economical_number,
-                'national_number' => $request->national_number,
-                'need_no' => $request->need_no,
-                'postal_code' => $request->postal_code,
-                'phone' => $request->phone,
-                'province' => $request->province,
-                'city' => $request->city,
-                'address' => $request->address,
-                'created_in' => 'automation',
-                'req_for' => $req_for,
-    //            'status' => $request->status,
-                'discount' => $request->final_discount,
-                'description' => $request->description,
-                'payment_type' => $request->payment_type
-            ]);
-            $customer = $invoice->customer; // or get customer based on your structure
-            $data = [
-                'user_id' => auth()->id(),
-                'action' => 'ایجاد سفارش فروش',
-                'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' ایجاد کرد',
-            ];
-            // ذخیره محصولات فاکتور و دریافت مبلغ کل
-            $totalOrderCost = $this->storeInvoiceProducts($invoice, $request);
+        $req_for = $request->req_for;
+        $order = Order::where('code', $request->code)->first();
+        $invoice = Invoice::create([
+            'user_id' => auth()->id(),
+            'order_id' => $order->id,
+            'customer_id' => $request->buyer_id,
+            'economical_number' => $request->economical_number,
+            'national_number' => $request->national_number,
+            'need_no' => $request->need_no,
+            'postal_code' => $request->postal_code,
+            'phone' => $request->phone,
+            'province' => $request->province,
+            'city' => $request->city,
+            'address' => $request->address,
+            'created_in' => 'automation',
+            'req_for' => $req_for,
+            //            'status' => $request->status,
+            'discount' => $request->final_discount,
+            'description' => $request->description,
+            'payment_type' => $request->payment_type
+        ]);
+        $customer = $invoice->customer; // or get customer based on your structure
+        $data = [
+            'user_id' => auth()->id(),
+            'action' => 'ایجاد سفارش فروش',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . auth()->user()->role->label . ') سفارش فروش برای مشتری ' . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' ایجاد کرد',
+        ];
+        // ذخیره محصولات فاکتور و دریافت مبلغ کل
+        $totalOrderCost = $this->storeInvoiceProducts($invoice, $request);
 
-            // افزودن مشتری به عنوان بدهکار با مقدار کل
-            if ($invoice->customer_id) {
-                Debtor::create([
-                    'customer_id' => $invoice->customer_id,
-                    'price' => $totalOrderCost, // ثبت مبلغ کل محاسبه‌شده
-                    'status' => 'unpaid',
-                    'factor_number' => '0',
-                    'payment_due' => null,
-                    'buy_date' => null,
-                    'description' => 'بدهکاری مربوط به فاکتور شماره ' . $invoice->id,
-                ]);
-            }
-            Activity::create($data);
+        // افزودن مشتری به عنوان بدهکار با مقدار کل
+        if ($invoice->customer_id) {
+            Debtor::create([
+                'customer_id' => $invoice->customer_id,
+                'price' => $totalOrderCost, // ثبت مبلغ کل محاسبه‌شده
+                'status' => 'unpaid',
+                'factor_number' => '0',
+                'payment_due' => null,
+                'buy_date' => null,
+                'description' => 'بدهکاری مربوط به فاکتور شماره ' . $invoice->id,
+            ]);
+        }
+        Activity::create($data);
 //            $this->send_notif_to_accountants($invoice);
 //            $this->send_notif_to_sales_manager($invoice);
 
-            // create products for invoice
-            $this->storeInvoiceProducts($invoice, $request);
+        // create products for invoice
+        $this->storeInvoiceProducts($invoice, $request);
 
-            // create order status
-            $invoice->order_status()->create(['order' => 1, 'status' => 'register']);
+        // create order status
+        $invoice->order_status()->create(['order' => 1, 'status' => 'register']);
 
-            alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش');
-            return redirect()->route('invoices.edit', $invoice->id);
-        }
+        alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش');
+        return redirect()->route('invoices.edit', $invoice->id);
+    }
 
     public function show(Invoice $invoice)
     {
-        // edit own invoice OR is admin
-        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper() || auth()->user()->isExitDoor()||auth()->user()->isPartnerCity()) {
+        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper() || auth()->user()->isExitDoor()||auth()->user()->isAccountant()) {
             $factor = \request()->type == 'factor' ? $invoice->factor : null;
 
             return view('panel.invoices.printable', compact('invoice', 'factor'));

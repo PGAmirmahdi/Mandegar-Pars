@@ -91,6 +91,17 @@
                                         @enderror
                                     </div>
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                        <label for="payment_type"><span class="text-danger">*</span></label>
+                                        <select class="form-control" name="payment_type" id="payment_type">
+                                            @foreach(\App\Models\Order::Payment_Type as $key => $value)
+                                                <option value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('payment_type')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label class="form-label" for="economical_number">شماره اقتصادی
                                             @can('system-user')
                                                 <span class="text-danger">*</span>
@@ -596,12 +607,13 @@
                     $('#address').val(response.data.customer.address1)
                     $('#province').val(response.data.customer.province).trigger('change');
                     $('#city').val(response.data.customer.city)
+                    $('#payment_type').val(response.data.payment_type).trigger('change')
                     $('.sum_total_price').text(formatNumber(response.data.total_price)).val(response.data.total_price)
                     $('#other_products_table tbody').empty();
                     add_products(response.data.order);
                     processDesc.html("<span class='text-success'>تایید ✓</span>");
                 } else {
-                    $('#buyer_name, #economical_number, #national_number, #postal_code, #phone, #address, #province, #city').val('');
+                    $('#buyer_name, #economical_number, #national_number, #postal_code, #phone, #address, #province, #city, #payment_type').val('');
                     $('.sum_total_price').text('0').val('0');
                     $('.total_invoice').text('0').val('0');
                     $('#other_products_table tbody').empty();

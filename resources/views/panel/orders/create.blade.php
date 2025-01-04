@@ -88,6 +88,17 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                        <label for="payment_type"><span class="text-danger">*</span></label>
+                                        <select class="form-control" name="payment_type" id="payment_type">
+                                            @foreach(\App\Models\Order::Payment_Type as $key => $value)
+                                                <option value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('payment_type')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                     <div class="col-12 row mb-4">
                                         <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
                                             <label class="form-label" for="description">توضیحات بیشتر</label>

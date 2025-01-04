@@ -79,6 +79,22 @@
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                        <label for="payment_type">
+                                            <span class="text-danger">*</span> نوع پرداخت
+                                        </label>
+                                        <select class="form-control" name="payment_type" id="payment_type">
+                                            @foreach(\App\Models\Order::Payment_Type as $key => $value)
+                                                <option value="{{ $key }}"
+                                                    {{ (old('payment_type') ?? $order->payment_type) == $key ? 'selected' : '' }}>
+                                                    {{ $value }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('payment_type')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                     <div class="row w-100 mb-4">
                                         <div class="col-xl-12 col-lg-12 col-md-12 mb-3">
                                             <label class="form-label" for="description">توضیحات بیشتر</label>
