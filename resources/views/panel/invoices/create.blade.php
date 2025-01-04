@@ -607,7 +607,7 @@
                     $('#address').val(response.data.customer.address1)
                     $('#province').val(response.data.customer.province).trigger('change');
                     $('#city').val(response.data.customer.city)
-                    $('#payment_type').val(response.data.order.payment_type).trigger('change')
+                    $('#payment_type').val(response.data.payment_type).trigger('change')
                     $('.sum_total_price').text(formatNumber(response.data.total_price)).val(response.data.total_price)
                     $('#other_products_table tbody').empty();
                     add_products(response.data.order);
