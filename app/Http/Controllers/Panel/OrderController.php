@@ -98,7 +98,6 @@ class OrderController extends Controller
         $order->code = $this->generateCode();
         $order->user_id = auth()->id();
         $order->customer_id = $request->buyer_name;
-        $order->payment_type = $request->payment_type;
         $order->created_in = 'automation';
         $order->products = json_encode($invoiceData);
         $order->save();

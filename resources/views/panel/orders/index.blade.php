@@ -397,7 +397,7 @@
                                             <td>{{ $order->customer->province }}</td>
                                             <td>{{ $order->customer->city }}</td>
                                             <td>{{ $order->customer->phone1 }}</td>
-                                            <td>{{$order->created_in_text ?? 'نامشخص'}}</td>
+                                            <td>{{ \App\Models\Order::CREATED_IN[$order->created_in] ?? 'تعیین نشده'}}</td>
                                             <td>
                                                 <span
                                                     class="badge bg-primary d-block">{{ \App\Models\Invoice::STATUS[$order->status] }}</span>
