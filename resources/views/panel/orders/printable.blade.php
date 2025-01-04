@@ -86,8 +86,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     Log::error("JSON decode error: " . json_last_error_msg());
     return;
 }
-                                         // Extract products and other products
-$products = isset($productsData->products) ? $productsData->products : [];
+    $products = is_array($productsData) ? $productsData : [];
 $otherProducts = isset($productsData->other_products) ? $productsData->other_products : [];
 
                                         // Merge products and other products, ensuring they are arrays
@@ -99,7 +98,7 @@ $otherProducts = isset($productsData->other_products) ? $productsData->other_pro
                                         $total = 0;
                                     @endphp
 
-                                    @foreach($mergedProducts as $product)
+                                    @foreach($products as $product)
                                         <tr class="tr">
                                             <td>
                                                 <div class="item-desc-1 text-end">
