@@ -95,7 +95,7 @@ class ApiController extends Controller
             foreach ($request->items as $item) {
                 $product = Product::where('code', $item['acc_code'])->first();
                 $products[] = [
-                    'products' => $product->title,
+                    'products' => $product->id,
                     'counts' => $item['quantity'],
                     'units' => 'number',
                     'total_prices' => $item['total'],
