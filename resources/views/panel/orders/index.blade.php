@@ -390,7 +390,7 @@
                                             @endphp
                                             <td>{!! $highlightedNumber !!}</td>
                                             <td>{{ \App\Models\Customer::CUSTOMER_TYPE[$order->customer->customer_type] }}</td>
-                                            <th>{{ $order->payment_type ?? 'تعیین نشده' }}</th>
+                                            <td>{{ $order->payment_type_text }}</td>
                                             <td>{{ $order->customer->name }}</td>
                                             <td>{{ \App\Models\Invoice::REQ_FOR[$order->req_for] }}</td>
                                             <td>{{ $order->customer->province }}</td>

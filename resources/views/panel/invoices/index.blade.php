@@ -148,7 +148,7 @@
                                             <td>{{ ++$key }}</td>
                                             <td><a href="/panel/orders?code={{$invoice->order->code??'-'}}">{{ $invoice->order->code??'-' }}</a></td>
                                             <td>{{ $invoice->customer->name}}</td>
-                                            <td>{{ $invoice->payment_type ?? 'تعیین نشده'  }}</td>
+                                            <td>{{ \App\Models\Order::Payment_Type[$invoice->payment_type] ?? 'تعیین نشده'}}</td>
                                             <td>{{ \App\Models\Invoice::REQ_FOR[$invoice->req_for] }}</td>
                                             <td>{{ $invoice->province }}</td>
                                             <td>{{ $invoice->city }}</td>

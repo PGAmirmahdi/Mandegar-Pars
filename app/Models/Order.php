@@ -32,7 +32,10 @@ class Order extends Model
         'invoice' => 'فاکتور',
         'amani-invoice' => 'فاکتور امانی',
     ];
-
+    public function getPaymentTypeTextAttribute()
+    {
+        return self::Payment_Type[$this->payment_type] ?? 'تعیین نشده';
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
