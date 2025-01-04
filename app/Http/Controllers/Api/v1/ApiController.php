@@ -92,16 +92,18 @@ class ApiController extends Controller
             );
             // ایجاد سفارش و ذخیره محصولات به صورت JSON
             $products = [];
-            foreach ($request->items as $item) {
-                $product = Product::where('code', $item['acc_code'])->first();
-                $products[] = [
-                    'products' => $product->id,
-                    'counts' => $item['quantity'],
-                    'units' => 'number',
-                    'total_prices' => $item['total'],
-                    'prices' => $item['total'] / $item['quantity'] * 10, // قیمت واحد
-                    'colors' => 'black', // رنگ پیش‌فرض
-                ];
+            foreach ($request->items as $item2) {
+                $products = array_map(function ($item2) {
+                    $product = Product::where('code', $item2['acc_code'])->first();
+                    return [
+                        'products' => (string)$product->id, // تغییر به id
+                        'colors' => 'black',
+                        'counts' => (string)$item2['quantity'], // تبدیل به رشته
+                        'units' => 'number',
+                        'prices' => (string)($item2['total'] / $item2['quantity']), // قیمت واحد
+                        'total_prices' => (string)$item2['total'], // قیمت کل
+                    ];
+                }, $data['items']);
             }
             $order = \App\Models\Order::create([
                 'description' => 'خرید از سایت',
