@@ -98,7 +98,7 @@ $otherProducts = isset($productsData->other_products) ? $productsData->other_pro
                                         $total = 0;
                                     @endphp
 
-                                    @foreach($products as $product)
+                                    @foreach($mergedProducts as $product)
                                         <tr class="tr">
                                             <td>
                                                 <div class="item-desc-1 text-end">
