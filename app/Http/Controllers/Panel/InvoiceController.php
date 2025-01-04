@@ -68,7 +68,7 @@ class InvoiceController extends Controller
         $req_for = $request->req_for;
         $order = Order::where('code', $request->code)->first();
         $invoice = Invoice::create([
-            'user_id' => $request->user_id,
+            'user_id' => $order->user_id,
             'order_id' => $order->id,
             'customer_id' => $request->buyer_id,
             'economical_number' => $request->economical_number,

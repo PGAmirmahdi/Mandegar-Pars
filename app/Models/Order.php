@@ -87,6 +87,11 @@ class Order extends Model
     {
         return $this->hasMany(Invoice::class, 'order_id');
     }
-
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_product')
+            ->withPivot(['count', 'price', 'total_price', 'color', 'discount_amount', 'extra_amount', 'tax', 'invoice_net'])
+            ->withTimestamps();
+    }
 
 }
