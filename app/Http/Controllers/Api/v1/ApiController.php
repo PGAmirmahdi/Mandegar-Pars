@@ -8,6 +8,7 @@ use App\Models\BotUser;
 use App\Models\Factor;
 use App\Models\Inventory;
 use App\Models\Invoice;
+use App\Models\Order;
 use App\Models\Printer;
 use App\Models\Product;
 use App\Models\User;
@@ -227,5 +228,15 @@ class ApiController extends Controller
                 'username' => $request->username,
             ]);
         }
+    }
+    public function generateCode()
+    {
+        $code = '666' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
+
+        while (Order::where('code', $code)->lockForUpdate()->exists()) {
+            $code = '666' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
+        }
+
+        return $code;
     }
 }
