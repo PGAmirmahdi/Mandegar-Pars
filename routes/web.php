@@ -94,6 +94,9 @@ Route::get('notif', function () {
         $user = User::whereId(173)->first();
     Notification::send($user, new SendMessage($title, $message, $url));
 });
+Route::get("is_sale_manager",function (){
+   return \auth()->user()->isSalesManager();
+});
 
 //Route::get('test/{id?}', function ($id = null) {
 
