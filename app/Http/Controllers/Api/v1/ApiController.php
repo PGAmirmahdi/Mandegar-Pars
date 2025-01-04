@@ -61,7 +61,7 @@ class ApiController extends Controller
                     $q->whereIn('name', ['single-price-user', 'sales-manager']);
                 });
             })->get();
-
+            $tax = 0.1;
             if ($data['created_in'] == 'website') {
                 $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
                 $notif_title= 'سفارش از سایت';
@@ -93,13 +93,16 @@ class ApiController extends Controller
             // ایجاد سفارش و ذخیره محصولات به صورت JSON
             $products = [];
             foreach ($request->items as $item) {
+                $total2 = $item['total'] * 10; // تبدیل قیمت کل به ریال
                 $product = Product::where('code', $item['acc_code'])->first();
                 $products[] = [
-                    'product_code' => $item['acc_code'],
-                    'quantity' => $item['quantity'],
-                    'total' => $item['total'],
-                    'price' => $item['total'] / $item['quantity'], // قیمت واحد
-                    'color' => 'black', // رنگ پیش‌فرض
+                    'products' => $product->title,
+                    'counts' => $item['quantity'],
+                    'units' => 'number',
+                    'total_prices' => $item['total'],
+                    'prices' => $item['total'] / $item['quantity'] * 10, // قیمت واحد
+                    'colors' => 'black', // رنگ پیش‌فرض
+                    'invoice_net' => (int)$total2 + ($total2 * $tax) + ($shipping_cost * 10)
                 ];
             }
             $order = \App\Models\Order::create([
@@ -138,7 +141,6 @@ class ApiController extends Controller
             Log::info('Activity Data:', $data3);
 
             Activity::create($data3);
-            $tax = 0.1;
             foreach ($request->items as $item) {
                 $product = Product::where('code', $item['acc_code'])->first();
 
