@@ -114,6 +114,10 @@ class ApiController extends Controller
                 'created_in' => $data['created_in'] ,
                 'products' => json_encode($products), // ذخیره محصولات به صورت JSON
             ]);
+            $order->order_status()->updateOrCreate(
+                ['status' => 'register'],
+                ['orders' => 1, 'status' => 'register']
+            );
             $invoice = \App\Models\Invoice::create([
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,
