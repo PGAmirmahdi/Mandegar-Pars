@@ -350,6 +350,7 @@
                                         <th>استان</th>
                                         <th>شهر</th>
                                         <th>شماره تماس</th>
+                                        <th>ثبت شده</th>
                                         <th>وضعیت</th>
                                         @canany(['accountant', 'sales-manager','PartnerCity'])
                                             <th>همکار</th>
@@ -396,6 +397,7 @@
                                             <td>{{ $order->customer->province }}</td>
                                             <td>{{ $order->customer->city }}</td>
                                             <td>{{ $order->customer->phone1 }}</td>
+                                            <td>{{$order->created_in_text ?? 'نامشخص'}}</td>
                                             <td>
                                                 <span
                                                     class="badge bg-primary d-block">{{ \App\Models\Invoice::STATUS[$order->status] }}</span>

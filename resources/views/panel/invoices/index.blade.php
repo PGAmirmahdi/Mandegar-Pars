@@ -78,17 +78,37 @@
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                                     <select name="status" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                                             data-select2-id="2">
-                                        <option value="all">نوع (همه)</option>
+                                        <option value="all">وضعیت (همه)</option>
                                         @foreach(\App\Models\Invoice::STATUS as $key => $value)
                                             <option
                                                 value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <select name="payment_type" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                            data-select2-id="4">
+                                        <option value="all">نوع پرداختی (همه)</option>
+                                        @foreach(\App\Models\Order::Payment_Type as $key => $value)
+                                            <option
+                                                value="{{ $key }}" {{ request()->payment_type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <select name="created_in" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                            data-select2-id="5">
+                                        <option value="all">ثبت شده در(همه)</option>
+                                        @foreach(\App\Models\Order::CREATED_IN as $key => $value)
+                                            <option
+                                                value="{{ $key }}" {{ request()->created_in == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 @can('accountant')
                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                        <select name="user" form="search_form" class="form-control"
-                                                data-toggle="select2">
+                                        <select name="user" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                                data-select2-id="3">
                                             <option value="all">همکار (همه)</option>
                                             @foreach(\App\Models\User::whereIn('role_id', $roles_id)->get() as $user)
                                                 <option
@@ -118,6 +138,7 @@
                                         <th>استان</th>
                                         <th>شهر</th>
                                         <th>شماره تماس</th>
+                                        <th>ثبت در</th>
                                         <th>وضعیت</th>
                                         @canany(['accountant', 'sales-manager'])
                                             <th>همکار</th>
@@ -155,6 +176,7 @@
                                             <td>{{ $invoice->province }}</td>
                                             <td>{{ $invoice->city }}</td>
                                             <td>{{ $invoice->phone }}</td>
+                                            <td>{{ \App\Models\Order::CREATED_IN[$invoice->created_in] ?? 'تعیین نشده'}}</td>
                                             <td>
                                                 <span
                                                     class="badge bg-primary d-block">{{ \App\Models\Invoice::STATUS[$invoice->status] }}</span>

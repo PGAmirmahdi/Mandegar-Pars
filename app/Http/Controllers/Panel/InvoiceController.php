@@ -68,7 +68,7 @@ class InvoiceController extends Controller
         $req_for = $request->req_for;
         $order = Order::where('code', $request->code)->first();
         $invoice = Invoice::create([
-            'user_id' => auth()->id(),
+            'user_id' => $request->user_id,
             'order_id' => $order->id,
             'customer_id' => $request->buyer_id,
             'economical_number' => $request->economical_number,
@@ -347,8 +347,14 @@ class InvoiceController extends Controller
             ->when($request->status && $request->status !== 'all', function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
+            ->when($request->type && $request->type !== 'all', function ($query) use ($request) {
+                $query->where('type', $request->type);
+            })
             ->when($request->payment_type && $request->payment_type !== 'all', function ($query) use ($request) {
                 $query->where('payment_type', $request->payment_type);
+            })
+            ->when($request->created_in && $request->created_in !== 'all', function ($query) use ($request) {
+                $query->where('created_in', $request->created_in);
             })
             ->when($request->need_no, function ($query) use ($request) {
                 $query->where('need_no', $request->need_no);

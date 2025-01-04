@@ -47,6 +47,13 @@ class OrderController extends Controller
             $customers_id = $customer == 'all' ? $customers : [$customer];
             $orders->whereIn('customer_id', $customers_id);
         }
+        $orders->when(request()->query('payment_type') && request()->query('payment_type') !== 'all', function ($query) {
+            $query->where('payment_type', request()->query('payment_type'));
+        });
+
+        $orders->when(request()->query('created_in') && request()->query('created_in') !== 'all', function ($query) {
+            $query->where('created_in', request()->query('created_in'));
+        });
 
         if (auth()->user()->isAdmin() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isPartnerCity()) {
             $orders = $orders->latest()->paginate(30);
@@ -57,6 +64,7 @@ class OrderController extends Controller
                 $query->where('type', $userType)
                     ->orWhere('user_id', auth()->id());
             })->latest()->paginate(30);
+
         }
 
         $customers = Customer::all(['id', 'name']);
@@ -91,6 +99,7 @@ class OrderController extends Controller
         $order->user_id = auth()->id();
         $order->customer_id = $request->buyer_name;
         $order->payment_type = $request->payment_type;
+        $order->created_in = 'automation';
         $order->products = json_encode($invoiceData);
         $order->save();
 
@@ -551,6 +560,7 @@ class OrderController extends Controller
             $data = [
                 'customer' => $order->customer,
                 'payment_type'=> $order->payment_type,
+                'created_in'=> $order->created_in,
                 'order' => $mergedProducts,
                 'total_price' => $total_price,
             ];
