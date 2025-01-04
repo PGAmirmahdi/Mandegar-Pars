@@ -212,7 +212,7 @@ class OrderController extends Controller
             return back();
         }
 
-        if (!Gate::any(['sales-manager', 'accountant','PartnerCity'])) {
+        if (!Gate::any(['sales-manager', 'accountant','PartnerCity','Organ'])) {
             return back();
         }
 
