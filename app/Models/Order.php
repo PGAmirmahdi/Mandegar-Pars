@@ -27,6 +27,12 @@ class Order extends Model
         '45D'=>'45 روزه',
         '15D'=>'15 روزه'
     ];
+    const CREATED_IN = [
+    'website' => 'وبسایت',
+    'automation' => 'اتوماسیون',
+    'app' => 'اپلیکیشن',
+];
+
     const REQ_FOR = [
         'pre-invoice' => 'پیش فاکتور',
         'invoice' => 'فاکتور',

@@ -19,12 +19,6 @@ class Invoice extends Model
 //        'return' => 'عودت داده شده',
     ];
 
-    const CREATED_IN = [
-        'website' => 'وبسایت',
-        'automation' => 'اتوماسیون',
-        'app' => 'اپلیکیشن',
-    ];
-
     const REQ_FOR = [
         'pre-invoice' => 'پیش فاکتور',
         'invoice' => 'فاکتور',

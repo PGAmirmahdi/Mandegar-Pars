@@ -89,9 +89,25 @@ class ApiController extends Controller
                     'code' => 'CU-' . random_int(1000000, 9999999),
                 ]
             );
+//            $order = \App\Models\Order::create([
+//                'user_id' => $single_price_user->id,
+//                'customer_id' => $customer->id,
+//                'economical_number' => 0,
+//                'payment_type' => $data['payment_type'],
+//                'province' => $customer->province,
+//                'city' => $customer->city,
+//                'national_number' => $customer->national_number,
+//                'address' => $customer->address1,
+//                'postal_code' => $customer->postal_code,
+//                'phone' => $customer->phone1,
+//                'status' => 'order',
+//                'created_in' => $data['created_in'],
+//                'discount' => 0,
+//            ]);
             $invoice = \App\Models\Invoice::create([
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,
+//                'order_id' => $order->id,
                 'economical_number' => 0,
                 'payment_type' => $data['payment_type'],
                 'province' => $customer->province,

@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 
-class SetadFeeController extends Controller
+class  SetadFeeController extends Controller
 {
 
     public function index()
