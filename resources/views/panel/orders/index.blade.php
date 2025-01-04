@@ -430,7 +430,7 @@
                                                     </a>
                                                 </td>
                                             @else
-                                                @canany(['sales-manager','accountant','PartnerCity'])
+                                                @canany(['sales-manager','accountant','PartnerCity','Organ'])
                                                     <td>
                                                         <a class="btn btn-primary btn-floating @cannot('accountant') {{ $order->action ? '' : 'disabled' }} @endcannot"
                                                            href="{{ route('order.action', $order->id) }}">
