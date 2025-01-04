@@ -56,27 +56,29 @@
                             <form action="{{ route('invoices.search') }}" method="get" id="search_form"></form>
                             <div class="row mb-3 mt-5">
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="customer_id" form="search_form" class="form-control" data-toggle="select2">
-                                        <option value="all">خریدار (همه)</option>
-                                        @foreach($customers as $customer)
+                                    <select name="customer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                            data-select2-id="0">
+                                        <option value="all">نام مشتری(همه)</option>
+                                        @foreach(\App\Models\Customer::all() as $customer)
                                             <option
-                                                value="{{ $customer->id }}" {{ request()->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                                                value="{{ $customer->name }}" {{ request()->customer == $customer->name ? 'selected' : '' }}>{{ $customer->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="province" form="search_form" class="form-control"
-                                            data-toggle="select2">
+                                    <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                            data-select2-id="1">
                                         <option value="all">استان (همه)</option>
-                                        @foreach(\App\Models\Province::all('name') as $province)
+                                        @foreach(\App\Models\Province::all() as $province)
                                             <option
                                                 value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="status" form="search_form" class="form-control" data-toggle="select2">
-                                        <option value="all">وضعیت (همه)</option>
+                                    <select name="status" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                            data-select2-id="2">
+                                        <option value="all">نوع (همه)</option>
                                         @foreach(\App\Models\Invoice::STATUS as $key => $value)
                                             <option
                                                 value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>
