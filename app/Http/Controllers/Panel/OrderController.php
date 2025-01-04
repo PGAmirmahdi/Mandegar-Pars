@@ -550,6 +550,7 @@ class OrderController extends Controller
 
             $data = [
                 'customer' => $order->customer,
+                'payment_type'=> $order->payment_type,
                 'order' => $mergedProducts,
                 'total_price' => $total_price,
             ];
