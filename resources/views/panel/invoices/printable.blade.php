@@ -139,7 +139,7 @@
             <div class="card-title">
                 <div class="row">
                     <div class="col-4">
-                        <img src="/assets/media/image/logo-lg.png" style="width: 15rem;">
+                        <img src="/assets/media/image/header-logo.png" style="width: 15rem;">
                     </div>
                     <div class="col-3 text-end">
                         <h3>پیش فاکتور فروش کالا و خدمات</h3>
