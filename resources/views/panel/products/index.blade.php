@@ -25,9 +25,9 @@
                         <a href="{{ route('products.request') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
                             @if(auth()->user()->isAdmin()|| auth()->user()->isOfficeManager())
-                            لیست درخواست ثبت کالا
+                                لیست درخواست ثبت کالا
                             @else
-                            لیست درخواست ثبت کالاهای من
+                                لیست درخواست ثبت کالاهای من
                             @endif
                         </a>
                     @endcan
@@ -75,16 +75,16 @@
                         @endforeach
                     </select>
                 </div>
-{{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
-{{--                    <select name="payment_type" form="search_form"--}}
-{{--                            class="js-example-basic-single select2-hidden-accessible" data-select2-id="6">--}}
-{{--                        <option value="all">وضعیت (همه)</option>--}}
-{{--                        @foreach(App\Models\Product::STATUS as $key => $value)--}}
-{{--                            <option--}}
-{{--                                value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
+                {{--                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">--}}
+                {{--                    <select name="payment_type" form="search_form"--}}
+                {{--                            class="js-example-basic-single select2-hidden-accessible" data-select2-id="6">--}}
+                {{--                        <option value="all">وضعیت (همه)</option>--}}
+                {{--                        @foreach(App\Models\Product::STATUS as $key => $value)--}}
+                {{--                            <option--}}
+                {{--                                value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>--}}
+                {{--                        @endforeach--}}
+                {{--                    </select>--}}
+                {{--                </div>--}}
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
@@ -123,7 +123,7 @@
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
                             <td>{{ $product->productModels->slug ?? 'برند نامشخص' }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
-                            @can('admin')
+                            @canany(['admin','OfficeManager'])
                                 <td>
                                     @if($product->status == 'approved')
                                         <span class="badge badge-success">تایید شده</span>
@@ -135,9 +135,9 @@
                                         <span class="badge badge-info">نامشخص</span>
                                     @endif
                                 </td>
-                            @endcan
+                            @endcanany
 
-                        @canany(['admin','accountant'])
+                            @canany(['admin','accountant','OfficeManager'])
                                 <td>{{ $product->latestInventory() }}</td>
                             @endcanany
                             @can('admin')
