@@ -71,7 +71,7 @@ class User extends Authenticatable
     }
     public function isOfficeManager()
     {
-        return $this->role->name == 'OfficeManager';
+        return $this->role->name == 'office-manager';
     }
     public function isPartnerCity()
     {
