@@ -67,7 +67,7 @@
                     <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="3">
                         <option value="all">مدل کالا (همه)</option>
-                        @foreach(\App\Models\Product::all(['id','title']) as $product)
+                        @foreach(\App\Models\Product::all(['id','title','status'])->where('status','=' , 'approved') as $product)
                             <option
                                 value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>
                                 {{ $product->title }}
