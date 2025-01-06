@@ -75,6 +75,13 @@
                 transform: scale(1, 1);
             }
         }
+        .table-responsive {
+            overflow-x: auto; /* اسکرول افقی فعال شود */
+            -webkit-overflow-scrolling: touch !important; /* تجربه روان‌تر در موبایل */
+        }
+        .table {
+            min-width: 100%; /* اطمینان از عدم کاهش عرض جدول */
+        }
     </style>
 
     @yield('styles')

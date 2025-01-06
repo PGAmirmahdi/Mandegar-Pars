@@ -6,13 +6,6 @@
             background-color: #fff3cd; /* رنگ پس‌زمینه زرد */
             color: #856404; /* رنگ متن برای بهتر دیده شدن */
         }
-        .table-responsive {
-            overflow-x: auto; /* اسکرول افقی فعال شود */
-            -webkit-overflow-scrolling: touch !important; /* تجربه روان‌تر در موبایل */
-        }
-        .table {
-            min-width: 100%; /* اطمینان از عدم کاهش عرض جدول */
-        }
     </style>
     <div class="card">
         <div class="card-body">
