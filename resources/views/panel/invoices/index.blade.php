@@ -1,6 +1,15 @@
 @extends('panel.layouts.master')
 @section('title', 'پیش فاکتور ها')
 @section('content')
+    <style>
+        .table-responsive {
+            overflow-x: auto; /* اسکرول افقی فعال شود */
+            -webkit-overflow-scrolling: touch !important; /* تجربه روان‌تر در موبایل */
+        }
+        .table {
+            min-width: 100%; /* اطمینان از عدم کاهش عرض جدول */
+        }
+    </style>
     <div class="content">
         <div class="container-fluid">
             <!-- start page title -->
