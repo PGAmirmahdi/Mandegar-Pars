@@ -72,7 +72,7 @@ class ProductController extends Controller
         // product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
-        $status = auth()->user()->isAdmin() ? $request->status : 'pending';
+        $status = auth()->user()->isAdmin() || auth()->user()->isOfficeManager() ? $request->status : 'pending';
         // create product
         $product = Product::create([
             'title' => $request->title,
@@ -91,7 +91,7 @@ class ProductController extends Controller
             'status' => $status,
         ]);
 
-        if (!auth()->user()->isAdmin() || auth()->user()->isOfficeManager()) {
+        if (!auth()->user()->isAdmin()) {
             $title = 'ثبت کالا';
             $message = "یک درخواست ثبت کالا توسط " . auth()->user()->family . " ایجاد شد.";
             $url = route('products.index');
@@ -288,7 +288,7 @@ class ProductController extends Controller
         // Update product properties
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
-        $status = auth()->user()->isAdmin() ? $request->status : 'pending';
+        $status = auth()->user()->isAdmin() || auth()->user()->isOfficeManager()? $request->status : 'pending';
         // Update product details
         $product->update([
             'title' => $request->title,

@@ -56,7 +56,7 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    @if(auth()->user()->isAdmin() || auth()->user()->isOfficeManager())
+                    @canany(['admin','OfficeManager'])
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                             <label for="status">وضعیت<span class="text-danger">*</span></label>
                             <select name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
@@ -70,7 +70,7 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
-                    @endif
+                    @endcanany
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
 {{--                        <label for="system_price">قیمت سامانه (ریال)<span class="text-danger">*</span></label>--}}
                         <input type="hidden" name="system_price" class="form-control" id="system_price"
