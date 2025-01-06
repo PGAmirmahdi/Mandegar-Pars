@@ -58,7 +58,7 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    @if(auth()->user()->isAdmin())
+                    @if(auth()->user()->isAdmin() || auth()->user()->isOfficeManager())
                         <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                             <label for="status">وضعیت<span class="text-danger">*</span></label>
                             <select class="form-control" name="status" id="status">
@@ -74,7 +74,7 @@
                     @if($product->status == 'rejected')
                         <div class="invalid-feedback d-block alert alert-danger"> درخواست شما به دلیل {{ $product->reject_message }} رد شده است. </div>
                     @endif
-                    @if(auth()->user()->isAdmin())
+                    @if(auth()->user()->isAdmin() || auth()->user()->isOfficeManager())
                         <div class="col-12 mb-3">
                             <label for="reject_message">دلیل رد شدن</label>
                             <textarea name="reject_message" class="form-control">{{ old('reject_message', $product->reject_message) }}</textarea>

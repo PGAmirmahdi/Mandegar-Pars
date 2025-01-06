@@ -71,7 +71,7 @@ class User extends Authenticatable
     }
     public function isOfficeManager()
     {
-        return $this->role->permissions->pluck('name')->contains('OfficeManager');
+        return $this->role->name->pluck('name')->contains('OfficeManager');
     }
     public function isPartnerCity()
     {

@@ -24,7 +24,7 @@
                     @can('products-create')
                         <a href="{{ route('products.request') }}" class="btn btn-primary">
                             <i class="fa fa-plus mr-2"></i>
-                            @if(auth()->user()->isAdmin())
+                            @if(auth()->user()->isAdmin()|| auth()->user()->isOfficeManager())
                             لیست درخواست ثبت کالا
                             @else
                             لیست درخواست ثبت کالاهای من

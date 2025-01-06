@@ -201,7 +201,6 @@ class ProductController extends Controller
 
         $products = Product::query()
             ->when(!auth()->user()->isAdmin(), function ($query) {
-                // اگر کاربر ادمین نباشد، فقط محصولات خودش را ببیند
                 $query->where('creator_id', auth()->id());
             })
             ->when($request->product && $request->product !== 'all', function ($query) use ($request) {

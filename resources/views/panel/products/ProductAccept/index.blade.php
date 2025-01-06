@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@if(auth()->user()->isAdmin())
+@if(auth()->user()->isAdmin()|| auth()->user()->isOfficeManager())
     @section('title', 'لیست درخواست ها')
 @else
     @section('title', 'لیست درخواست های من')
@@ -15,7 +15,7 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>
-                    @if(auth()->user()->isAdmin())
+                    @if(auth()->user()->isAdmin()|| auth()->user()->isOfficeManager())
                         لیست درخواست ها
                     @else
                         لیست درخواست های من
@@ -137,17 +137,17 @@
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
                             <td>{{ $product->productModels->slug ?? 'برند نامشخص' }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
-                                <td>
-                                    @if($product->status == 'approved')
-                                        <span class="badge badge-success">تایید شده</span>
-                                    @elseif($product->status == 'pending')
-                                        <span class="badge badge-warning">منتظر تایید</span>
-                                    @elseif($product->status == 'rejected')
-                                        <span class="badge badge-danger">رد شده</span>
-                                    @else
-                                        <span class="badge badge-info">نامشخص</span>
-                                    @endif
-                                </td>
+                            <td>
+                                @if($product->status == 'approved')
+                                    <span class="badge badge-success">تایید شده</span>
+                                @elseif($product->status == 'pending')
+                                    <span class="badge badge-warning">منتظر تایید</span>
+                                @elseif($product->status == 'rejected')
+                                    <span class="badge badge-danger">رد شده</span>
+                                @else
+                                    <span class="badge badge-info">نامشخص</span>
+                                @endif
+                            </td>
                             @canany(['admin','accountant'])
                                 <td>{{ $product->latestInventory() }}</td>
                             @endcanany
