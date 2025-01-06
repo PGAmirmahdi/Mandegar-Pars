@@ -61,7 +61,7 @@ class ApiController extends Controller
                     $q->whereIn('name', ['single-price-user', 'sales-manager']);
                 });
             })->get();
-
+            $tax = 0.1;
             if ($data['created_in'] == 'website') {
                 $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
                 $notif_title= 'سفارش از سایت';
@@ -92,15 +92,18 @@ class ApiController extends Controller
             );
             // ایجاد سفارش و ذخیره محصولات به صورت JSON
             $products = [];
-            foreach ($request->items as $item) {
-                $product = Product::where('code', $item['acc_code'])->first();
-                $products[] = [
-                    'product_code' => $item['acc_code'],
-                    'quantity' => $item['quantity'],
-                    'total' => $item['total'],
-                    'price' => $item['total'] / $item['quantity'], // قیمت واحد
-                    'color' => 'black', // رنگ پیش‌فرض
-                ];
+            foreach ($request->items as $item2) {
+                $products = array_map(function ($item2) {
+                    $product = Product::where('code', $item2['acc_code'])->first();
+                    return [
+                        'products' => (string)$product->id, // تغییر به id
+                        'colors' => 'black',
+                        'counts' => (string)$item2['quantity'], // تبدیل به رشته
+                        'units' => 'number',
+                        'prices' => (string)($item2['total'] / $item2['quantity']), // قیمت واحد
+                        'total_prices' => (string)$item2['total'], // قیمت کل
+                    ];
+                }, $data['items']);
             }
             $order = \App\Models\Order::create([
                 'description' => 'خرید از سایت',
@@ -113,6 +116,10 @@ class ApiController extends Controller
                 'created_in' => $data['created_in'] ,
                 'products' => json_encode($products), // ذخیره محصولات به صورت JSON
             ]);
+            $order->order_status()->updateOrCreate(
+                ['status' => 'register'],
+                ['orders' => 1, 'status' => 'register']
+            );
             $invoice = \App\Models\Invoice::create([
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,
@@ -138,7 +145,6 @@ class ApiController extends Controller
             Log::info('Activity Data:', $data3);
 
             Activity::create($data3);
-            $tax = 0.1;
             foreach ($request->items as $item) {
                 $product = Product::where('code', $item['acc_code'])->first();
 
