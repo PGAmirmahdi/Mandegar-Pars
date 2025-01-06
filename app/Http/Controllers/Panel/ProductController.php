@@ -49,7 +49,7 @@ class ProductController extends Controller
                 $query->where('status', $request->status);
             });
 
-        if (auth()->user()->isAdmin()) {
+        if (auth()->user()->isAdmin() || auth()->user()->isOfficeManager()) {
             $products = $query->whereIn('status', ['pending', 'rejected'])->latest()->paginate(30);
         } else {
             $products = $query->whereIn('status', ['pending', 'rejected']) // اضافه کردن وضعیت rejected
@@ -91,7 +91,7 @@ class ProductController extends Controller
             'status' => $status,
         ]);
 
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isAdmin() || auth()->user()->isOfficeManager()) {
             $title = 'ثبت کالا';
             $message = "یک درخواست ثبت کالا توسط " . auth()->user()->family . " ایجاد شد.";
             $url = route('products.index');
