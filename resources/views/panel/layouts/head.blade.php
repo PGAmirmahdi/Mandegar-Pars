@@ -59,7 +59,13 @@
         .dataTable th{
             cursor: pointer !important;
         }
-
+        .table-responsive {
+            overflow-x: auto; /* اسکرول افقی فعال شود */
+            -webkit-overflow-scrolling: touch !important; /* تجربه روان‌تر در موبایل */
+        }
+        .table {
+            min-width: 100%; /* اطمینان از عدم کاهش عرض جدول */
+        }
         .zoom-in-out {
             animation: zoom-in-zoom-out 1s ease infinite;
         }
@@ -74,13 +80,6 @@
             100% {
                 transform: scale(1, 1);
             }
-        }
-        .table-responsive {
-            overflow-x: auto; /* اسکرول افقی فعال شود */
-            -webkit-overflow-scrolling: touch !important; /* تجربه روان‌تر در موبایل */
-        }
-        .table {
-            min-width: 100%; /* اطمینان از عدم کاهش عرض جدول */
         }
     </style>
 
