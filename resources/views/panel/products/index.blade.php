@@ -98,10 +98,10 @@
                         <th>شرح کالا</th>
                         <th>برند</th>
                         <th>مدل</th>
-                        @can('admin')
+                        @canany(['admin','OfficeManager'])
                             <th>وضعیت</th>
-                        @endcan
-                        @canany(['admin','accountant'])
+                        @endcanany
+                        @canany(['admin','accountant','OfficeManager'])
                             <th>موجودی</th>
                         @endcanany
                         @can('admin')
