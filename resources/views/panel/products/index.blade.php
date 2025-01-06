@@ -6,6 +6,13 @@
             background-color: #fff3cd; /* رنگ پس‌زمینه زرد */
             color: #856404; /* رنگ متن برای بهتر دیده شدن */
         }
+        .table-responsive {
+            overflow-x: auto; /* اسکرول افقی فعال شود */
+            -webkit-overflow-scrolling: touch !important; /* تجربه روان‌تر در موبایل */
+        }
+        .table {
+            min-width: 100%; /* اطمینان از عدم کاهش عرض جدول */
+        }
     </style>
     <div class="card">
         <div class="card-body">
@@ -117,7 +124,7 @@
                     </thead>
                     <tbody>
                     @foreach($products as $key => $product)
-                        <tr @if($product->latestInventory() < 10 ) @canany(['admin','accountant']) class="table-warning" @endcanany @endif>
+                        <tr @if($product->latestInventory() < 10 ) @canany(['admin','accountant','OfficeManager']) class="table-warning" @endcanany @endif>
                             <td>{{ ++$key }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->code }}</td>
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
