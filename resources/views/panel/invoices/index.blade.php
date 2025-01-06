@@ -134,7 +134,7 @@
                                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                                 </div>
                             </div>
-                            <div class="table-responsive">
+                            <div class="table-responsive col-12 overflow-auto">
                                 <table class="table table-striped table-bordered dataTable dtr-inline text-center"
                                        style="width: 100%">
                                     <thead>
