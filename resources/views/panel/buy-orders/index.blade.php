@@ -24,14 +24,12 @@
                         <th>زمان ثبت</th>
                         <th>مشاهده</th>
                         <th>چت درباره سفارش</th>
-                        @cannot('ceo')
                             @can('buy-orders-edit')
                                 <th>ویرایش</th>
                             @endcan
                             @can('buy-orders-delete')
                                 <th>حذف</th>
                             @endcan
-                        @endcannot
                     </tr>
                     </thead>
                     <tbody>
