@@ -83,19 +83,20 @@ class PriceRequestController extends Controller
     {
         $this->authorize('price-requests-list');
 
-        // برای هر محصول، اطلاعات شامل قیمت قبلی و قیمت جدید را به دست می‌آوریم
+        // برای هر محصول، اطلاعات شامل قیمت جدید را به دست می‌آوریم
         $items = json_decode($priceRequest->items, true);
 
         foreach ($items as $key => $item) {
-            $product = Product::find($item['product']); // اطلاعات محصول
+            $product = Product::find($item['product_id']); // اطلاعات محصول
             if ($product) {
-                // اگر قیمت جدید درخواستی وجود نداشته باشد، از قیمت قبلی استفاده می‌شود
-                $items[$key]['market_price'] = isset($item['new_price']) ? $item['new_price'] : $product->price;
+                // فقط قیمت جدید را به دست می‌آوریم و از قیمت قبلی صرف نظر می‌کنیم
+                $items[$key]['market_price'] = $item['new_price'] ?? null; // اگر new_price وجود نداشت، مقدار null
             }
         }
 
         return view('panel.price-requests.show', compact('priceRequest', 'items'));
     }
+
 
     public function edit(PriceRequest $priceRequest)
     {
