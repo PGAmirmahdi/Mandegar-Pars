@@ -2,7 +2,7 @@
 @section('title', 'ثبت قیمت')
 @section('styles')
     <style>
-        table tbody tr td input {
+        table tbody tr td input{
             text-align: center;
             width: fit-content !important;
         }
@@ -31,16 +31,13 @@
                             <tbody>
                             @foreach(json_decode($priceRequest->items) as $index => $item)
                                 <tr>
-                                    <td>{{ $item->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}</td>
+                                    <td>{{ $item->product }}</td>
                                     <td>{{ $item->count }}</td>
                                     <td class="d-flex justify-content-center">
-                                        <input type="text" class="form-control" name="prices[{{ $index }}]"
-                                               value="{{ isset($item->price) ? number_format($item->price) : 0 }}"
-                                               required>
+                                        <input type="text" class="form-control" name="prices[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->price) : 0 }}" required>
                                     </td>
                                     <td>
-                                        <input type="checkbox"
-                                               name="vat_included[{{ $index }}]" {{ isset($item->vat_included) && $item->vat_included ? 'checked' : '' }}>
+                                        <input type="checkbox" name="vat_included[{{ $index }}]" {{ isset($item->vat_included) && $item->vat_included ? 'checked' : '' }}>
                                     </td>
                                 </tr>
                             @endforeach
@@ -59,7 +56,7 @@
 @section('scripts')
     <script>
         // item changed
-        $(document).on('keyup', 'input[name="prices[]"]', function () {
+        $(document).on('keyup','input[name="prices[]"]', function () {
             $(this).val(addCommas($(this).val()))
         })
 
@@ -90,7 +87,7 @@
             }
 
             seperatedNumber = funcReverseString(tmpSeperatedNumber);
-            if (seperatedNumber[0] === ",") seperatedNumber = seperatedNumber.replace(",", "");
+            if(seperatedNumber[0] === ",") seperatedNumber = seperatedNumber.replace("," , "");
             return seperatedNumber;
         }
     </script>
