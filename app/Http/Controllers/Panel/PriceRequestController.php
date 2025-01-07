@@ -115,13 +115,14 @@ class PriceRequestController extends Controller
                 $items[] = [
                     'product_id' => $product->id,
                     'product_name' => $product->title,
-                    'product_model' => $product->productModels->slug,
-                    'category_name' => $product->category->name,
-                    'count' => $item['count'],
-                    'description' => $item['description'],
-                    'price' => str_replace(',', '', $request->prices[$key]),
-                    'vat_included' => isset($request->vat_included[$key]) ? true : false,
+                    'product_model' => $product->productModels->slug ?? 'نامشخص',
+                    'category_name' => $product->category->name ?? 'نامشخص',
+                    'count' => $item['count'] ?? 0,
+                    'description' => $item['description'] ?? '',
+                    'price' => str_replace(',', '', $request->prices[$key] ?? 0),
+                    'vat_included' => isset($request->vat_included[$key]),
                 ];
+
             }
         }
 
