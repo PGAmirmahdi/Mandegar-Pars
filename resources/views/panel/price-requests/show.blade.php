@@ -24,6 +24,7 @@
                             <th>مدل</th> <!-- اضافه کردن ستون مدل -->
                             <th>دسته‌بندی</th> <!-- اضافه کردن ستون دسته‌بندی -->
                             <th>قیمت (تومان)</th>
+                            <th>شامل ارزش افزوده</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -33,6 +34,10 @@
                                 <td>{{ $item['product_model'] }}</td> <!-- مدل کالا -->
                                 <td>{{ $item['category_name'] }}</td> <!-- دسته‌بندی کالا -->
                                 <td>{{ isset($item['price']) ? number_format($item['price']) . " ریال " : '---' }}</td> <!-- قیمت کالا -->
+                                <td>
+                                    <!-- نمایش تیک شامل ارزش افزوده -->
+                                    <input type="checkbox" disabled {{ isset($item['vat_included']) && $item['vat_included'] ? 'checked' : '' }}>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
