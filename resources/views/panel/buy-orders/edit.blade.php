@@ -2,7 +2,7 @@
 @section('title', 'ویرایش سفارش خرید')
 @section('styles')
     <style>
-        table tbody tr td input{
+        table tbody tr td input {
             text-align: center;
         }
     </style>
@@ -17,22 +17,6 @@
                 @csrf
                 @method('put')
                 <div class="form-row">
-                    <div class="col-12 mb-3">
-                        <div class="form-group">
-                            <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                                <label for="customer_id">مشتری <span class="text-danger">*</span></label>
-                                <select name="customer_id" id="customer_id" class="js-example-basic-single select2-hidden-accessible">
-                                    <option value="" selected>انتخاب کنید...</option>
-                                    @foreach(\App\Models\Customer::all(['id','name', 'code']) as $customer)
-                                        <option value="{{ $customer->id }}" {{ $customer->id == $buyOrder->customer_id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('customer_id')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-12 mb-3">
                         <div class="d-flex justify-content-end">
                             <button type="button" class="btn btn-success mb-3" id="btn_add">
@@ -55,16 +39,42 @@
                             @if($buyOrder->items)
                                 @foreach(json_decode($buyOrder->items) as $item)
                                     <tr>
-                                        <td><input type="text" class="form-control" name="products[]" value="{{ $item->product }}" required></td>
-                                        <td><input type="number" class="form-control" name="counts[]" min="1" value="{{ $item->count }}" required></td>
-                                        <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
+                                        <td>
+                                            <select class="js-example-basic-single" name="products[]" required>
+                                                <option value="" disabled>انتخاب کنید</option>
+                                                @foreach($products as $product)
+                                                    <option value="{{ $product->id }}" {{ $product->id == $item->product ? 'selected' : '' }}>
+                                                        {{ $product->category->name . ' - ' . $product->title . ' - ' . $product->productModels->slug }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" name="counts[]" min="1" value="{{ $item->count }}" required>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td><input type="text" class="form-control" name="products[]" placeholder="HP 05A" required></td>
-                                    <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-                                    <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
+                                    <td>
+                                        <select class="js-example-basic-single" name="products[]" required>
+                                            <option value="" disabled selected>انتخاب کنید</option>
+                                            @foreach($products as $product)
+                                                <option value="{{ $product->id }}">
+                                                    {{ $product->category->name . ' - ' . $product->title . ' - ' . $product->productModels->slug }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control" name="counts[]" min="1" value="1" required>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button>
+                                    </td>
                                 </tr>
                             @endif
                             </tbody>
@@ -90,18 +100,30 @@
             $(document).on('click', '#btn_add', function () {
                 $('table tbody').append(`
                     <tr>
-                        <td><input type="text" class="form-control" name="products[]" required></td>
-                        <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-                        <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
-                    </tr>
-                `)
-            })
+                        <td>
+                            <select class="js-example-basic-single" name="products[]" required>
+                                <option value="" disabled selected>انتخاب کنید</option>
+                                @foreach($products as $product)
+                <option value="{{ $product->id }}">
+                                        {{ $product->category->name . ' - ' . $product->title . ' - ' . $product->productModels->slug }}
+                </option>
+@endforeach
+                </select>
+            </td>
+            <td>
+                <input type="number" class="form-control" name="counts[]" min="1" value="1" required>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button>
+            </td>
+        </tr>
+`);
+            });
 
             // remove item
             $(document).on('click', '.btn_remove', function () {
-                $(this).parent().parent().remove()
-            })
-        })
+                $(this).parent().parent().remove();
+            });
+        });
     </script>
 @endsection
-

@@ -47,10 +47,10 @@ class BuyOrderController extends Controller
             ];
         }
         // دریافت نام مشتری
-        $customerName = Customer::find($request->customer_id)->name;
+//        $customerName = Customer::find($request->customer_id)->name;
         BuyOrder::create([
             'user_id' => auth()->id(),
-            'customer_id' => $request->customer_id,
+//            'customer_id' => $request->customer_id,
             'description' => $request->description,
             'items' => json_encode($items),
         ]);
@@ -58,7 +58,7 @@ class BuyOrderController extends Controller
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'اضافه کردن سفارش خرید',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید برای مشتری ' . $customerName . ' اضافه کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید '  . 'اضافه کرد.',
         ]);
         alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش خرید');
         return redirect()->route('buy-orders.index');
@@ -100,17 +100,17 @@ class BuyOrderController extends Controller
         }
 
         $buyOrder->update([
-            'customer_id' => $request->customer_id,
+//            'customer_id' => $request->customer_id,
             'description' => $request->description,
             'items' => json_encode($items),
         ]);
         // دریافت نام مشتری
-        $customerName = Customer::find($request->customer_id)->name;
+//        $customerName = Customer::find($request->customer_id)->name;
 // ثبت فعالیت کاربر
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'ویرایش سفارش خرید',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید برای مشتری ' . $customerName . ' را ویرایش کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید' .  ' را ویرایش کرد.',
         ]);
         alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش خرید');
         return redirect()->route('buy-orders.index');
