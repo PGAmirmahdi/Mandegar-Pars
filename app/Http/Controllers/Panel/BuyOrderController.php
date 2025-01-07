@@ -103,17 +103,34 @@ class BuyOrderController extends Controller
         return view('panel.buy-orders.show', compact('buyOrder', 'items'));
     }
 
-    public function edit(BuyOrder $buyOrder)
+    public function edit($id)
     {
         $this->authorize('buy-orders-edit');
+        $products=Product::all();
+        // پیدا کردن سفارش خرید بر اساس ID
+        $buyOrder = BuyOrder::findOrFail($id);
+
+        // مجوز ویرایش سفارش خرید
         $this->authorize('edit-buy-order', $buyOrder);
 
-        if ( $buyOrder->status == 'bought'){
-            return back();
+        // بررسی وضعیت سفارش
+        if ($buyOrder->status == 'bought') {
+            return alert()->warning('این سفارش قابل ویرایش نیست.', 'غیر مجاز'); // پیام خطا برای کاربر
         }
 
-        return view('panel.buy-orders.edit', compact('buyOrder'));
+        // Decode items and fetch related product information
+        $items = collect(json_decode($buyOrder->items))->map(function ($item) {
+            $product = Product::find($item->product); // اطلاعات محصول را دریافت کنید
+            return [
+                'count' => $item->count,
+                'product' => $product, // آبجکت محصول
+            ];
+        });
+
+        // ارسال داده‌ها به ویو
+        return view('panel.buy-orders.edit', compact('buyOrder', 'items','products'));
     }
+
 
     public function update(StoreBuyOrderRequest $request, BuyOrder $buyOrder)
     {
@@ -153,13 +170,13 @@ class BuyOrderController extends Controller
         $this->authorize('buy-orders-delete');
 
         // گرفتن نام مشتری
-        $customerName = $buyOrder->customer->name;
+//        $customerName = $buyOrder->customer->name;
 
         // ثبت فعالیت
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'حذف سفارش خرید',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید برای مشتری ' . $customerName . ' را حذف کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید ' . ' را حذف کرد.',
         ]);
 
         if ($buyOrder->status == 'bought') {
