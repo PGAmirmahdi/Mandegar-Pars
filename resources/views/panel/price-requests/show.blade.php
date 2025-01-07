@@ -6,6 +6,47 @@
             text-align: center;
             width: fit-content !important;
         }
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-checkbox input[type="checkbox"] {
+            display: none;
+        }
+        .custom-checkbox label {
+            position: relative;
+            cursor: pointer;
+            padding-left: 25px;
+            user-select: none;
+        }
+        .custom-checkbox label:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007bff;
+            border-radius: 3px;
+            background-color: #fff;
+        }
+        .custom-checkbox input[type="checkbox"]:checked + label:before {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .custom-checkbox input[type="checkbox"]:checked + label:after {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 10%;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
     </style>
 @endsection
 @section('content')
@@ -34,9 +75,9 @@
                                 <td>{{ $item['product_model'] }}</td> <!-- مدل کالا -->
                                 <td>{{ $item['category_name'] }}</td> <!-- دسته‌بندی کالا -->
                                 <td>{{ isset($item['price']) ? number_format($item['price']) . " ریال " : '---' }}</td> <!-- قیمت کالا -->
-                                <td>
-                                    <!-- نمایش تیک شامل ارزش افزوده -->
-                                    <input type="checkbox" disabled {{ isset($item['vat_included']) && $item['vat_included'] ? 'checked' : '' }}>
+                                <td class="custom-checkbox">
+                                    <input type="checkbox" disabled {{ isset($item['vat_included']) && $item['vat_included'] ? 'checked' : '' }} id="vat-{{ $index }}">
+                                    <label for="vat-{{ $index }}"></label>
                                 </td>
                             </tr>
                         @endforeach
