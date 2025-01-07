@@ -23,6 +23,8 @@
                             <thead class="bg-primary">
                             <tr>
                                 <th>عنوان کالا</th>
+                                <th>مدل</th>
+                                <th>دسته‌بندی</th>
                                 <th>تعداد</th>
                                 <th>قیمت (تومان)</th>
                                 <th>شامل ارزش افزوده</th>
@@ -31,7 +33,9 @@
                             <tbody>
                             @foreach(json_decode($priceRequest->items) as $index => $item)
                                 <tr>
-                                    <td>{{ $item->product }}</td>
+                                    <td>{{ $item->product_name }}</td>
+                                    <td>{{ $item->product_model }}</td>
+                                    <td>{{ $item->category_name }}</td>
                                     <td>{{ $item->count }}</td>
                                     <td class="d-flex justify-content-center">
                                         <input type="text" class="form-control" name="prices[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->price) : 0 }}" required>

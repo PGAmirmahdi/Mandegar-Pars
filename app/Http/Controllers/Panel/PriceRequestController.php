@@ -38,12 +38,18 @@ class PriceRequestController extends Controller
 
         $items = [];
 
-        foreach ($request->products as $key => $product){
-            $items[] = [
-                'product' => $product,
-                'count' => $request->counts[$key],
-                'description' => $request->description[$key],
-            ];
+        foreach ($request->products as $key => $productId) {
+            $product = Product::with('category', 'productModels')->find($productId);
+            if ($product) {
+                $items[] = [
+                    'product_id' => $product->id,
+                    'product_name' => $product->title,
+                    'product_model' => $product->productModels->slug,
+                    'category_name' => $product->category->name,
+                    'count' => $request->counts[$key],
+                    'description' => $request->description[$key],
+                ];
+            }
         }
         PriceRequest::create([
             'user_id' => auth()->id(),
@@ -104,13 +110,19 @@ class PriceRequestController extends Controller
 
         $items = [];
         foreach (json_decode($priceRequest->items, true) as $key => $item) {
-            $items[] = [
-                'product' => $item['product'],
-                'count' => $item['count'],
-                'description' => $item['description'],
-                'price' => str_replace(',', '', $request->prices[$key]),
-                'vat_included' => isset($request->vat_included[$key]) ? true : false,
-            ];
+            $product = Product::with('category', 'productModels')->find($item['product']);
+            if ($product) {
+                $items[] = [
+                    'product_id' => $product->id,
+                    'product_name' => $product->title,
+                    'product_model' => $product->productModels->slug,
+                    'category_name' => $product->category->name,
+                    'count' => $item['count'],
+                    'description' => $item['description'],
+                    'price' => str_replace(',', '', $request->prices[$key]),
+                    'vat_included' => isset($request->vat_included[$key]) ? true : false,
+                ];
+            }
         }
 
         $priceRequest->update([
