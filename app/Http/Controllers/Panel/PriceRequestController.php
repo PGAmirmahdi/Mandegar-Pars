@@ -110,7 +110,7 @@ class PriceRequestController extends Controller
 
         $items = [];
         foreach (json_decode($priceRequest->items, true) as $key => $item) {
-            $product = Product::with('category', 'productModels')->find($item['product']);
+            $product = Product::with('category', 'productModels')->find($item['product_id']);
             if ($product) {
                 $items[] = [
                     'product_id' => $product->id,
