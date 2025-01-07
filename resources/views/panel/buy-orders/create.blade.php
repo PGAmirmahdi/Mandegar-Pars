@@ -24,15 +24,15 @@
                             </button>
                         </div>
                         @error('products')
-                            <h6 class="text-danger text-center d-block">{{ $message }}</h6>
+                        <h6 class="text-danger text-center d-block">{{ $message }}</h6>
                         @enderror
                         <table class="table table-striped table-bordered text-center">
                             <thead class="bg-primary">
-                                <tr>
-                                    <th>عنوان کالا</th>
-                                    <th>تعداد</th>
-                                    <th>حذف</th>
-                                </tr>
+                            <tr>
+                                <th>عنوان کالا</th>
+                                <th>تعداد</th>
+                                <th>حذف</th>
+                            </tr>
                             </thead>
                             <tbody>
                             @if(old('products'))
@@ -42,9 +42,7 @@
                                             <select class="js-example-basic-single" name="products[]" required>
                                                 <option value="" disabled selected>انتخاب کنید</option>
                                                 @foreach($products as $item)
-                                                    <option
-                                                        value="{{ $item->id }}"
-                                                        {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
+                                                    <option value="{{ $item->id }}" {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
                                                         {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                                                     </option>
                                                 @endforeach
@@ -56,14 +54,23 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td><input type="text" class="form-control" name="products[]" placeholder="HP 05A" required></td>
+                                    <td>
+                                        <select class="js-example-basic-single" name="products[]" required>
+                                            <option value="" disabled selected>انتخاب کنید</option>
+                                            @foreach($products as $item)
+                                                <option value="{{ $item->id }}">
+                                                    {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
                                     <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
                                     <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
                                 </tr>
                             @endif
                             </tbody>
                             <tfoot>
-                                <tr></tr>
+                            <tr></tr>
                             </tfoot>
                         </table>
                     </div>
@@ -77,36 +84,37 @@
         </div>
     </div>
 @endsection
+
 @section('scripts')
     <script>
+        var products = @json($products); // انتقال محصولات به متغیر جاوا اسکریپت
+
         $(document).ready(function () {
             // add item
             $(document).on('click', '#btn_add', function () {
+                var options = '';
+                products.forEach(function(item) {
+                    options += `<option value="${item.id}">${item.category.name} - ${item.title} - ${item.productModels.slug}</option>`;
+                });
+
                 $('table tbody').append(`
                     <tr>
-                       <td>
-                                    <select class="js-example-basic-single" name="products[]" required>
-                                        <option value="" disabled selected>انتخاب کنید</option>
-                                        @foreach($products as $item)
-                <option
-                    value="{{ $item->id }}"
-                                                {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
-                                                {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
-                </option>
-@endforeach
-                </select>
-            </td>
-    <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-    <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
-</tr>
-`)
-            })
+                        <td>
+                            <select class="js-example-basic-single" name="products[]" required>
+                                <option value="" disabled selected>انتخاب کنید</option>
+                                ${options}
+                            </select>
+                        </td>
+                        <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
+                        <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
+                    </tr>
+                `);
+            });
 
             // remove item
             $(document).on('click', '.btn_remove', function () {
-                $(this).parent().parent().remove()
-            })
-        })
+                $(this).parent().parent().remove();
+            });
+        });
     </script>
 @endsection
-
