@@ -2,7 +2,7 @@
 @section('title', 'ثبت قیمت')
 @section('styles')
     <style>
-        table tbody tr td input{
+        table tbody tr td input {
             text-align: center;
             width: fit-content !important;
         }
@@ -45,8 +45,8 @@
                                                required>
                                         <span class="price-display text-muted mt-1"
                                               style="font-size: 0.9em;">
-        {{ isset($item->price) ? number_format($item->price) : '0' }}
-    </span>
+                                            {{ isset($item->price) ? number_format($item->price) : '0' }}
+                                        </span>
                                     </td>
                                     <td>
                                         <input type="checkbox" name="vat_included[{{ $index }}]" {{ isset($item->vat_included) && $item->vat_included ? 'checked' : '' }}>
@@ -67,40 +67,25 @@
 @endsection
 @section('scripts')
     <script>
-        // item changed
-        $(document).on('keyup','input[name="prices[]"]', function () {
-            $(this).val(addCommas($(this).val()))
-        })
+        // نمایش عدد فرمت‌شده زیر هر فیلد
+        $(document).on('keyup', 'input.price-input', function () {
+            const inputValue = $(this).val().replace(/,/g, ''); // حذف کاماها
+            const formattedValue = addCommas(inputValue); // فرمت سه‌رقم، سه‌رقم
+            $(this).val(formattedValue); // به‌روزرسانی مقدار فیلد
+            $(this).next('.price-display').text(formattedValue); // نمایش مقدار فرمت‌شده
+        });
 
-        function funcReverseString(str) {
-            return str.split('').reverse().join('');
-        }
-
-        // for thousands grouping
+        // تابع افزودن کاما
         function addCommas(nStr) {
-            // event handlers
-            let thisElementValue = nStr
-            thisElementValue = thisElementValue.replace(/,/g, "");
-
-            let seperatedNumber = thisElementValue.toString();
-            seperatedNumber = funcReverseString(seperatedNumber);
-            seperatedNumber = seperatedNumber.split("");
-
-            let tmpSeperatedNumber = "";
-
-            j = 0;
-            for (let i = 0; i < seperatedNumber.length; i++) {
-                tmpSeperatedNumber += seperatedNumber[i];
-                j++;
-                if (j == 3) {
-                    tmpSeperatedNumber += ",";
-                    j = 0;
-                }
+            nStr += '';
+            const x = nStr.split('.');
+            let x1 = x[0];
+            const x2 = x.length > 1 ? '.' + x[1] : '';
+            const rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
             }
-
-            seperatedNumber = funcReverseString(tmpSeperatedNumber);
-            if(seperatedNumber[0] === ",") seperatedNumber = seperatedNumber.replace("," , "");
-            return seperatedNumber;
+            return x1 + x2;
         }
     </script>
 @endsection
