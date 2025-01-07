@@ -8,9 +8,12 @@ use App\Models\Activity;
 use App\Models\BuyOrder;
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\User;
+use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 
 class BuyOrderController extends Controller
 {
@@ -34,7 +37,7 @@ class BuyOrderController extends Controller
         return view('panel.buy-orders.create',compact('products'));
     }
 
-    public function store(StoreBuyOrderRequest $request)
+    public function store(Request $request)
     {
         $this->authorize('buy-orders-create');
 
@@ -63,15 +66,41 @@ class BuyOrderController extends Controller
             'action' => 'اضافه کردن سفارش خرید',
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید '  . 'اضافه کرد.',
         ]);
+        $admins = User::whereHas('role', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
+
+        $accountants = User::whereHas('role', function ($query) {
+            $query->where('name', 'accountant');
+        })->get();
+
+        $users = $admins->merge($accountants);
+
+        $title = 'ایجاد سفارش خرید';
+        $url = route('invoices.index');
+        $message = 'یک سفارش خرید توسط ' . auth()->user()->family . ' ایجاد شد';
+
+        Notification::send($users, new SendMessage($title, $message, $url));
+
+
         alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش خرید');
         return redirect()->route('buy-orders.index');
     }
 
-    public function show(BuyOrder $buyOrder)
+    public function show($id)
     {
-        $this->authorize('buy-orders-list');
+        $buyOrder = BuyOrder::findOrFail($id);
 
-        return view('panel.buy-orders.show', compact('buyOrder'));
+        // Decode items and fetch related product information
+        $items = collect(json_decode($buyOrder->items))->map(function ($item) {
+            $product = Product::find($item->product); // اطلاعات محصول را دریافت کنید
+            return [
+                'count' => $item->count,
+                'product' => $product, // آبجکت محصول
+            ];
+        });
+
+        return view('panel.buy-orders.show', compact('buyOrder', 'items'));
     }
 
     public function edit(BuyOrder $buyOrder)

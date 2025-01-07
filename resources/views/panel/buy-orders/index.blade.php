@@ -17,9 +17,6 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>مشتری</th>
-                        <th>استان</th>
-                        <th>شهر</th>
                         <th>وضعیت</th>
                         @canany(['admin','ceo','sales-manager'])
                             <th>همکار</th>
@@ -41,9 +38,6 @@
                     @foreach($orders as $key => $order)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $order->customer->name }}</td>
-                            <td>{{ $order->customer->province }}</td>
-                            <td>{{ $order->customer->city }}</td>
                             <td>
                                 @can('ceo')
                                     @if($order->status == 'bought')
