@@ -108,7 +108,7 @@ class BuyOrderController extends Controller
         $this->authorize('buy-orders-edit');
         $this->authorize('edit-buy-order', $buyOrder);
 
-        if (Gate::allows('ceo') || $buyOrder->status == 'bought'){
+        if ( $buyOrder->status == 'bought'){
             return back();
         }
 
@@ -162,11 +162,10 @@ class BuyOrderController extends Controller
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید برای مشتری ' . $customerName . ' را حذف کرد.',
         ]);
 
-        if (Gate::allows('ceo') || $buyOrder->status == 'bought') {
+        if ($buyOrder->status == 'bought') {
             return back();
         }
 
-        // حذف سفارش خرید
         $buyOrder->delete();
 
         return back();

@@ -78,8 +78,6 @@
                                     <i class="fa fa-comments"></i>
                                 </a>
                             </td>
-
-                            @cannot('ceo')
                                 @can('buy-orders-edit')
                                     <td>
                                         <a class="btn btn-warning btn-floating {{ $order->status == 'bought' ? 'disabled' : '' }}"
@@ -97,7 +95,6 @@
                                         </button>
                                     </td>
                                 @endcan
-                            @endcannot
                         </tr>
                     @endforeach
                     </tbody>
