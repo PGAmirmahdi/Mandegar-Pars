@@ -37,8 +37,16 @@
                                     <td>{{ $item->product_model }}</td>
                                     <td>{{ $item->category_name }}</td>
                                     <td>{{ $item->count }}</td>
-                                    <td class="d-flex justify-content-center">
-                                        <input type="text" class="form-control" name="prices[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->price) : 0 }}" required>
+                                    <td class="d-flex flex-column align-items-center">
+                                        <input type="text"
+                                               class="form-control price-input"
+                                               name="prices[{{ $index }}]"
+                                               value="{{ isset($item->price) ? number_format($item->price) : 0 }}"
+                                               required>
+                                        <span class="price-display text-muted mt-1"
+                                              style="font-size: 0.9em;">
+        {{ isset($item->price) ? number_format($item->price) : '0' }}
+    </span>
                                     </td>
                                     <td>
                                         <input type="checkbox" name="vat_included[{{ $index }}]" {{ isset($item->vat_included) && $item->vat_included ? 'checked' : '' }}>
@@ -59,6 +67,24 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).on('keyup', 'input.price-input', function () {
+            const inputValue = $(this).val().replace(/,/g, ''); // حذف کاماها
+            const formattedValue = addCommas(inputValue); // فرمت سه‌رقم، سه‌رقم
+            $(this).next('.price-display').text(formattedValue); // نمایش مقدار فرمت‌شده
+        });
+
+        // تابع افزودن کاما
+        function addCommas(nStr) {
+            nStr += '';
+            const x = nStr.split('.');
+            let x1 = x[0];
+            const x2 = x.length > 1 ? '.' + x[1] : '';
+            const rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+        }
         // item changed
         $(document).on('keyup','input[name="prices[]"]', function () {
             $(this).val(addCommas($(this).val()))
