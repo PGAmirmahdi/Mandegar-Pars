@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBuyOrderRequest;
 use App\Models\Activity;
 use App\Models\BuyOrder;
 use App\Models\Customer;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -28,7 +29,9 @@ class BuyOrderController extends Controller
 
     public function create()
     {
-        return view('panel.buy-orders.create');
+        $products = Product::all();
+
+        return view('panel.buy-orders.create',compact('products'));
     }
 
     public function store(StoreBuyOrderRequest $request)

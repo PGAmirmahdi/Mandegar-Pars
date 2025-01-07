@@ -87,7 +87,7 @@
 
 @section('scripts')
     <script>
-        var products = @json($products); // انتقال محصولات به متغیر جاوا اسکریپت
+        var products = @json($products);
 
         $(document).ready(function () {
             // add item
