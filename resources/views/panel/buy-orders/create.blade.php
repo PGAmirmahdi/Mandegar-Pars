@@ -41,7 +41,7 @@
                                         <td>
                                             <select class="js-example-basic-single" name="products[]" required>
                                                 <option value="" disabled selected>انتخاب کنید</option>
-                                                @foreach($products as $item)
+                                                @foreach(\App\Models\Product::all() as $item)
                                                     <option value="{{ $item->id }}" {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
                                                         {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                                                     </option>
@@ -57,7 +57,7 @@
                                     <td>
                                         <select class="js-example-basic-single" name="products[]" required>
                                             <option value="" disabled selected>انتخاب کنید</option>
-                                            @foreach($products as $item)
+                                            @foreach(\App\Models\Product::all() as $item)
                                                 <option value="{{ $item->id }}">
                                                     {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                                                 </option>
