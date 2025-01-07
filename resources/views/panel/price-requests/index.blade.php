@@ -46,6 +46,7 @@
                                         class="badge badge-warning">{{ \App\Models\PriceRequest::STATUS['pending'] }}</span>
                                 @endif
                             </td>
+                            <td>{{ verta($price_request->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('ceo')
                                 <td>
                                     <a class="btn btn-primary btn-floating" href="{{ route('price-requests.edit', $price_request->id) }}">
