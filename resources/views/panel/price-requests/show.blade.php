@@ -32,7 +32,7 @@
                                 <td>{{ $item['product_name'] }}</td> <!-- نام کالا -->
                                 <td>{{ $item['product_model'] }}</td> <!-- مدل کالا -->
                                 <td>{{ $item['category_name'] }}</td> <!-- دسته‌بندی کالا -->
-                                <td>{{ isset($item['market_price']) ? number_format($item['market_price']) . " ریال " : '---' }}</td> <!-- قیمت کالا -->
+                                <td>{{ isset($item['price']) ? number_format($item['price']) . " ریال " : '---' }}</td> <!-- قیمت کالا -->
                             </tr>
                         @endforeach
                         </tbody>
