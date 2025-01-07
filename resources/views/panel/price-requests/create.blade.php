@@ -42,7 +42,7 @@
                                             <option
                                                 value="{{ $item->id }}"
                                                 {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
-                                                {{ $item->title }}
+                                                {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                                             </option>
                                         @endforeach
                                     </select>

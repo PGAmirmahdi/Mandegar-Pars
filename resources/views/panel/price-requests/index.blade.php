@@ -21,7 +21,11 @@
                         <th>حداکثر زمان ثبت قیمت</th>
                         <th>وضعیت</th>
                         <th>زمان ثبت</th>
-                        <th>مشاهده قیمت</th>
+                        @can('ceo')
+                            <th>ثبت قیمت</th>
+                        @else
+                            <th>مشاهده قیمت</th>
+                        @endcan
                         @can('price-requests-delete')
                             <th>حذف</th>
                         @endcan
@@ -42,13 +46,19 @@
                                         class="badge badge-warning">{{ \App\Models\PriceRequest::STATUS['pending'] }}</span>
                                 @endif
                             </td>
-                            <td>{{ verta($price_request->created_at)->format('H:i - Y/m/d') }}</td>
+                            @can('ceo')
                                 <td>
-                                    <a class="btn btn-info btn-floating"
-                                       href="{{ route('price-requests.show', $price_request->id) }}">
+                                    <a class="btn btn-primary btn-floating" href="{{ route('price-requests.edit', $price_request->id) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            @else
+                                <td>
+                                    <a class="btn btn-info btn-floating" href="{{ route('price-requests.show', $price_request->id) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 </td>
+                            @endcan
                             @can('price-requests-delete')
                                 <td>
                                     <button class="btn btn-danger btn-floating trashRow"
