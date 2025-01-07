@@ -83,31 +83,30 @@
         $(document).ready(function () {
             // add item
             $(document).on('click', '#btn_add', function () {
+                let options = '';
+                @foreach($products as $item)
+                    options += `<option value="{{ $item->id }}">{{ $item->category->name }} - {{ $item->title }} - {{ $item->productModels->slug }}</option>`;
+                @endforeach
+
                 $('table tbody').append(`
-                    <tr>
-                       <td>
-                                            <select class="js-example-basic-single" name="products[]" required>
-                                                <option value="" disabled selected>انتخاب کنید</option>
-                                                @foreach($products as $item)
-                <option
-                    value="{{ $item->id }}"
-                                                        {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
-                                                        {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
-                </option>
-@endforeach
-                </select>
-            </td>
-<td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-<td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
-</tr>
-`)
-            })
+                <tr>
+                    <td>
+                        <select class="js-example-basic-single" name="products[]" required>
+                            <option value="" disabled selected>انتخاب کنید</option>
+                            ${options}
+                        </select>
+                    </td>
+                    <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
+                    <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
+                </tr>
+            `);
+            });
 
             // remove item
             $(document).on('click', '.btn_remove', function () {
-                $(this).parent().parent().remove()
-            })
-        })
+                $(this).closest('tr').remove();
+            });
+        });
     </script>
 @endsection
 
