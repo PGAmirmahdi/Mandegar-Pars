@@ -125,14 +125,14 @@ $otherProducts = isset($productsData->other_products) ? $productsData->other_pro
                                             </td>
 
                                             <td class="text-center">
-                                                {{ number_format(isset($product->prices) * 110/100 ?? $product->other_prices) ?? 0 }}
+                                                {{ number_format($product->prices ?? $product->other_prices) ?? 0 }}
                                             </td>
 
                                             <td class="text-start">
                                                 {{
                                                     number_format(
                                                         ($product->counts ?? $product->other_counts ?? 0) *
-                                                        (isset($product->price) * 110/100 ?? $product->other_prices ?? 0)
+                                                        ($product->price ?? $product->other_prices ?? 0)
                                                     )
                                                 }}
                                             </td>
@@ -140,7 +140,7 @@ $otherProducts = isset($productsData->other_products) ? $productsData->other_pro
 
                                         @php
                                             $total += (($product->counts ?? $product->other_counts ?? 0) *
-                                                       (isset($product->prices) * 110/100 ?? $product->other_prices ?? 0));
+                                                       ($product->prices ?? $product->other_prices ?? 0));
                                         @endphp
                                     @endforeach
 
