@@ -130,7 +130,7 @@
                                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                                 </div>
                             </div>
-                                <table class="table  table-striped table-bordered dataTable dtr-inline text-center">
+                                <table class="table  table-striped table-bordered dataTable dtr-inline text-center table-responsive">
                                     <thead>
                                     <tr>
                                         <th>#</th>
