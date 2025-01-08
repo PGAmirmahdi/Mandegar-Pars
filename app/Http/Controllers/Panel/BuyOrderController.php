@@ -21,9 +21,9 @@ class BuyOrderController extends Controller
     {
         $this->authorize('buy-orders-list');
 
-        if (Gate::any(['admin','ceo','sales-manager'])){
+        if (Gate::any(['admin', 'ceo', 'sales-manager'])) {
             $orders = BuyOrder::latest()->paginate(30);
-        }else{
+        } else {
             $orders = BuyOrder::where('user_id', auth()->id())->latest()->paginate(30);
         }
 
@@ -34,7 +34,7 @@ class BuyOrderController extends Controller
     {
         $products = Product::all();
 
-        return view('panel.buy-orders.create',compact('products'));
+        return view('panel.buy-orders.create', compact('products'));
     }
 
     public function store(Request $request)
@@ -45,8 +45,7 @@ class BuyOrderController extends Controller
 
         $products = $request->products;
         $counts = $request->counts;
-        foreach ($products as $key => $product)
-        {
+        foreach ($products as $key => $product) {
             $items[] = [
                 'product' => $product,
                 'count' => $counts[$key],
@@ -64,7 +63,7 @@ class BuyOrderController extends Controller
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'اضافه کردن سفارش خرید',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید '  . 'اضافه کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید ' . 'اضافه کرد.',
         ]);
         $admins = User::whereHas('role', function ($query) {
             $query->where('name', 'admin');
@@ -83,7 +82,7 @@ class BuyOrderController extends Controller
         Notification::send($users, new SendMessage($title, $message, $url));
 
 
-        alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش خرید');
+        alert()->success('سفارش مورد نظر با موفقیت ثبت شد', 'ثبت سفارش خرید');
         return redirect()->route('buy-orders.index');
     }
 
@@ -106,7 +105,7 @@ class BuyOrderController extends Controller
     public function edit($id)
     {
         $this->authorize('buy-orders-edit');
-        $products=Product::all();
+        $products = Product::all();
         // پیدا کردن سفارش خرید بر اساس ID
         $buyOrder = BuyOrder::findOrFail($id);
 
@@ -128,7 +127,7 @@ class BuyOrderController extends Controller
         });
 
         // ارسال داده‌ها به ویو
-        return view('panel.buy-orders.edit', compact('buyOrder', 'items','products'));
+        return view('panel.buy-orders.edit', compact('buyOrder', 'items', 'products'));
     }
 
 
@@ -140,8 +139,7 @@ class BuyOrderController extends Controller
 
         $products = $request->products;
         $counts = $request->counts;
-        foreach ($products as $key => $product)
-        {
+        foreach ($products as $key => $product) {
             $items[] = [
                 'product' => $product,
                 'count' => $counts[$key],
@@ -159,9 +157,9 @@ class BuyOrderController extends Controller
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'ویرایش سفارش خرید',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید' .  ' را ویرایش کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش خرید' . ' را ویرایش کرد.',
         ]);
-        alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش خرید');
+        alert()->success('سفارش مورد نظر با موفقیت ویرایش شد', 'ویرایش سفارش خرید');
         return redirect()->route('buy-orders.index');
     }
 
@@ -190,13 +188,26 @@ class BuyOrderController extends Controller
 
     public function changeStatus(BuyOrder $buyOrder)
     {
-        if (!Gate::allows('ceo')){
+        if (!Gate::allows('ceo')) {
             return back();
         }
+        $admins = User::whereHas('role', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
 
-        if ($buyOrder->status == 'bought'){
+        $accountants = User::whereHas('role', function ($query) {
+            $query->where('name', 'accountant');
+        })->get();
+
+        $users = $admins->merge($accountants);
+        $title = 'سفارش خرید';
+        $url = route('invoices.index');
+        $message = 'یک سفارش خرید توسط ' . auth()->user()->family . ' انجام شد';
+
+        Notification::send($users, new SendMessage($title, $message, $url));
+        if ($buyOrder->status == 'bought') {
             $buyOrder->update(['status' => 'order']);
-        }else{
+        } else {
             $buyOrder->update(['status' => 'bought']);
         }
         // گرفتن نام مشتری
@@ -208,7 +219,7 @@ class BuyOrderController extends Controller
             'action' => 'ویرایش وضعیت سفارش خرید',
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') وضعیت سفارش خرید ' . 'را تغییر داد.',
         ]);
-        alert()->success('وضعیت سفارش با موفقیت تغییر کرد','تغییر وضعیت سفارش');
+        alert()->success('وضعیت سفارش با موفقیت تغییر کرد', 'تغییر وضعیت سفارش');
         return back();
     }
 }
