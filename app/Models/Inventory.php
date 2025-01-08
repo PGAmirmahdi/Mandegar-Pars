@@ -32,7 +32,11 @@ class Inventory extends Model
     {
         return $this->hasMany(InOut::class);
     }
-
+    // تعریف ارتباط با جدول products
+    public function product()
+    {
+        return $this->belongsTo(Product::class,'product_id');
+    }
     public function getInputCount()
     {
         $inventory_report_id = InventoryReport::where('type','input')->pluck('id');

@@ -38,6 +38,13 @@
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="employer">نام کارپرداز <span class="text-danger">*</span></label>
+                        <input type="text" name="employer" class="form-control" id="employer" value="{{ $customer->employer }}">
+                        @error('employer')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="type">نوع <span class="text-danger">*</span></label>
                         <select class="form-control" name="type" id="type">
                             @foreach(\App\Models\Customer::TYPE as $key => $value)

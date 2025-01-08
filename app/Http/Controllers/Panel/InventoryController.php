@@ -27,7 +27,6 @@ class InventoryController extends Controller
     public function create()
     {
         $this->authorize('inventory-create');
-
         $warehouse_id = \request()->warehouse_id;
         return view('panel.inventory.create', compact('warehouse_id'));
     }
@@ -36,21 +35,23 @@ class InventoryController extends Controller
     {
         $this->authorize('inventory-create');
 
-        $code = $request->code;
+        $product_id = $request->product_id;
         $warehouse_id = $request->warehouse_id;
 
-        if (Inventory::where(['warehouse_id' => $warehouse_id, 'code' => $code])->exists()){
-            return back()->withErrors(['code' => 'این کد در انبار موجود است'])->withInput();
+        // بررسی اینکه آیا این محصول قبلاً در این انبار ثبت شده است یا خیر
+        if (Inventory::where(['warehouse_id' => $warehouse_id, 'product_id' => $product_id])->exists()) {
+            return back()->withErrors(['product_id' => 'این محصول قبلاً در این انبار ثبت شده است'])->withInput();
         }
 
-        $inventory=Inventory::create([
+        // اگر محصول قبلاً ثبت نشده باشد، کالا را ایجاد می‌کنیم
+        $inventory = Inventory::create([
             'warehouse_id' => $warehouse_id,
-            'title' => $request->title,
-            'code' => $request->code,
-            'type' => $request->type,
+            'product_id' => $product_id,
             'current_count' => $request->count,
             'initial_count' => $request->count,
         ]);
+
+        // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ایجاد کالا',
@@ -58,9 +59,14 @@ class InventoryController extends Controller
             'created_at' => now(),
         ];
         Activity::create($activityData);
-        alert()->success('کالا مورد نظر با موفقیت ایجاد شد','ایجاد کالا');
+
+        // نمایش پیام موفقیت
+        alert()->success('کالا مورد نظر با موفقیت ایجاد شد', 'ایجاد کالا');
+
+        // بازگشت به صفحه فهرست انبار
         return redirect()->route('inventory.index', ['warehouse_id' => $warehouse_id]);
     }
+
 
     public function show(Inventory $inventory)
     {
@@ -77,24 +83,17 @@ class InventoryController extends Controller
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
         $this->authorize('inventory-edit');
-
-        $code = $request->code;
-        $warehouse_id = $inventory->warehouse_id;
-
-        if ($exist = Inventory::where(['warehouse_id' => $warehouse_id, 'code' => $code])->first()){
-            if ($exist->id != $inventory->id){
-                return back()->withErrors(['code' => 'این کد در انبار موجود است'])->withInput();
-            }
+        $product_id = $request->product_id;
+        $warehouse_id = $request->warehouse_id;
+        // بررسی اینکه آیا این محصول قبلاً در این انبار ثبت شده است یا خیر
+        if (Inventory::where(['warehouse_id' => $warehouse_id, 'product_id' => $product_id])->exists()) {
+            return back()->withErrors(['product_id' => 'این محصول قبلاً در این انبار ثبت شده است'])->withInput();
         }
 
         $inventory->update([
-            'warehouse_id' => $warehouse_id,
-            'title' => $request->title,
-            'code' => $request->code,
-            'type' => $request->type,
+            'current_count' => $request->count,
             'initial_count' => $request->count,
 //            'current_count' => ($inventory->current_count - $inventory->initial_count) + $request->count,
-            'current_count' => $request->count,
         ]);
         $activityData = [
             'user_id' => auth()->id(),
@@ -119,20 +118,43 @@ class InventoryController extends Controller
     {
         $this->authorize('inventory-list');
 
+        // فیلتر نوع (type)
         $type = $request->type == 'all' ? array_keys(Inventory::TYPE) : [$request->type];
 
+        // فیلتر id انبار
         $warehouse_id = $request->warehouse_id;
 
+        // شروع ساخت کوئری برای Inventory
         $data = Inventory::where('warehouse_id', $warehouse_id)
-            ->whereIn('type', $type)
-            ->when($request->code, function ($q) use($request){
-                $q->where('code', $request->code);
+            // فیلتر برای محصول
+            ->when($request->product && $request->product !== 'all', function ($query) use ($request) {
+                return $query->where('product_id', $request->product); // توجه کنید که اینجا 'product_id' به عنوان کلید خارجی استفاده می‌شود
             })
-            ->where('title', 'like',"%$request->title%")
-            ->latest()->paginate(30);
+            // فیلتر برای کد
+            ->when($request->code, function ($query) use ($request) {
+                return $query->where('code', 'LIKE', '%' . $request->code . '%');
+            })
+            // فیلتر برای دسته بندی
+            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
+                return $query->whereHas('product.category', function ($query) use ($request) {
+                    $query->where('id', $request->category);
+                });
+            })
+            // فیلتر برای مدل (brand)
+            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+                return $query->whereHas('product.productModels', function ($query) use ($request) {
+                    $query->where('id', $request->model);
+                });
+            })
+            ->latest()
+            // صفحه بندی با 30 مورد در هر صفحه
+            ->paginate(30);
 
+        // بازگشت به ویو با ارسال داده‌ها
         return view('panel.inventory.index', compact('data', 'warehouse_id'));
     }
+
+
 
     public function excel()
     {

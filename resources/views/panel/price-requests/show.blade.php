@@ -13,7 +13,7 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
                 <h6>مشاهده قیمت</h6>
-                <h4>تاریخ بارگذاری: {{ verta($priceRequest->created_at)->format('H:i - Y/m/d')}}</h4> <!-- اصلاح شده -->
+                <h4>تاریخ بارگذاری: {{ verta($priceRequest->created_at)->format('H:i - Y/m/d') }}</h4>
             </div>
             <div class="form-row">
                 <div class="col-12 mb-3">
@@ -21,14 +21,23 @@
                         <thead class="bg-primary">
                         <tr>
                             <th>عنوان کالا</th>
+                            <th>مدل</th> <!-- اضافه کردن ستون مدل -->
+                            <th>دسته‌بندی</th> <!-- اضافه کردن ستون دسته‌بندی -->
                             <th>قیمت (تومان)</th>
+                            <th>شامل ارزش افزوده</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($items as $index => $item)
                             <tr>
-                                <td>{{ $item['product'] }}</td>
-                                <td>{{ isset($item['new_price']) ? number_format($item['new_price']) . " ريال " : '---' }}</td>
+                                <td>{{ $item['product_name'] }}</td> <!-- نام کالا -->
+                                <td>{{ $item['product_model'] }}</td> <!-- مدل کالا -->
+                                <td>{{ $item['category_name'] }}</td> <!-- دسته‌بندی کالا -->
+                                <td>{{ isset($item['price']) ? number_format($item['price']) . " ریال " : '---' }}</td> <!-- قیمت کالا -->
+                                <td>
+                                    <!-- نمایش تیک شامل ارزش افزوده -->
+                                    <input type="checkbox" disabled {{ isset($item['vat_included']) && $item['vat_included'] ? 'checked' : '' }}>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

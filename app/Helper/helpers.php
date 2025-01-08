@@ -46,7 +46,115 @@ if (!function_exists('upload_file')) {
         }
     }
 }
+if (!function_exists('calculateTotal')) {
+    function calculateTotal($order)
+    {
+        $products = null;
 
+        if (!empty($order->products)) {
+            $products = json_decode($order->products);
+        }
+
+        $sum_total_price = 0;
+
+        if (!empty($products) && !empty($products->products)) {
+            foreach ($products->products as $product) {
+                $sum_total_price += $product->total_prices;
+            }
+        }
+
+        if (!empty($products) && !empty($products->other_products)) {
+            foreach ($products->other_products as $product) {
+                $sum_total_price += $product->other_total_prices;
+            }
+        }
+
+        return $sum_total_price;
+    }
+}
+if (!function_exists('calculateTotalInvoice')){
+    function calculateTotalInvoice($products)
+    {
+//        dd($products);
+        $sum_total = 0;
+
+
+
+        foreach ($products as $product) {
+
+            $sum_total += $product->invoice_net;
+        }
+
+        return $sum_total;
+    }
+}
+if (!function_exists('upload_file_factor')) {
+    function upload_file_factor($file, $folder)
+    {
+        if ($file) {
+
+            $pdfFile = $file;
+            $paperFormat = getPaperSizeFromPdf($file);
+            $inputPdfPath = $pdfFile->getPathName();
+
+            $outputPdfTempPath = storage_path('app/public/temp-processed-pdf.pdf');
+
+            $imagePath = public_path('assets/media/image/stamp.png');
+
+
+            $mpdf = new \Mpdf\Mpdf([
+                'tempDir' => storage_path('app/mpdf-temp'),
+                'format' => $paperFormat,
+            ]);
+
+            $pageCount = $mpdf->SetSourceFile($inputPdfPath);
+
+            list($imgWidth, $imgHeight) = getimagesize($imagePath);
+            $imgWidthMm = $imgWidth * 0.084583;
+            $imgHeightMm = $imgHeight * 0.084583;
+
+            if ($paperFormat == 'A4'){
+                $x = 280 - $imgWidthMm;
+                $y = 180 - $imgHeightMm;
+            }else{
+                $x = 350 - $imgWidthMm;
+                $y = 220 - $imgHeightMm;
+            }
+
+
+            for ($i = 1; $i <= $pageCount; $i++) {
+                $templateId = $mpdf->ImportPage($i);
+                $mpdf->AddPage('L');
+                $mpdf->UseTemplate($templateId);
+
+                if ($i == $pageCount) {
+                    $mpdf->Image($imagePath, $x, $y, $imgWidthMm, $imgHeightMm);
+                }
+            }
+
+            $mpdf->Output($outputPdfTempPath, 'F');
+            $year = Carbon::now()->year;
+            $month = Carbon::now()->month;
+            $uploadPath = public_path("/uploads/{$folder}/{$year}/{$month}/");
+
+
+
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $filename = time() . '-processed.pdf';
+            $finalPath = $uploadPath . $filename;
+            rename($outputPdfTempPath, $finalPath);
+
+            $img = "/uploads/{$folder}/{$year}/{$month}/" . $filename;
+            return $img;
+
+
+
+        }
+    }
+}
 if (!function_exists('formatBytes')) {
     function formatBytes($size, $precision = 2)
     {
@@ -68,7 +176,7 @@ if (!function_exists('sendSMS')) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 
         // Next line makes the request absolute insecure
-         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER,
@@ -112,3 +220,49 @@ if (!function_exists('sendSMS')) {
 // --------------------------------------------------- //
     }
 }
+function getPaperSizeFromPdf($pdfFile)
+{
+    $inputPdfPath = $pdfFile->getPathName();
+
+    $mpdf = new \Mpdf\Mpdf([
+        'tempDir' => storage_path('app/mpdf-temp'),
+    ]);
+
+    $pageCount = $mpdf->SetSourceFile($inputPdfPath);
+
+    $page = $mpdf->ImportPage(1);
+
+    $pageSize = $mpdf->getTemplateSize($page);
+
+
+    $width = round($pageSize['width']);
+    $height = round($pageSize['height']);
+
+    $A3Width = 420;
+    $A3Height = 297;
+    $A4Width =  297;
+    $A4Height = 210;
+
+    if ($width >= $A3Width || $height >= $A3Height) {
+        return 'A3';
+    } else {
+        return 'A4';
+    }
+}
+
+
+
+
+if (!function_exists('change_number_to_words')) {
+    function change_number_to_words($number)
+    {
+        $dictionary = new MojtabaaHN\PersianNumberToWords\Dictionary();
+        $converter = new MojtabaaHN\PersianNumberToWords\PersianNumberToWords($dictionary);
+        return $converter->convert($number);
+
+    }
+}
+
+
+
+

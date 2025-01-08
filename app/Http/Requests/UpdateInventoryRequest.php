@@ -24,9 +24,6 @@ class UpdateInventoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'code' => 'required|numeric',
-            'type' => 'required',
             'count' => 'required',
         ];
     }

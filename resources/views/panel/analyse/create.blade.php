@@ -65,10 +65,11 @@
                             console.log(data); // برای دیباگ
                             $('#products-table-body').empty(); // پاک کردن جدول محصولات
                             $.each(data.products, function (index, product) {
+                                // اضافه کردن ردیف محصول به جدول همراه با فیلد تعداد
                                 $('#products-table-body').append(
                                     '<tr>' +
                                     '<td>' + product.title + '</td>' +
-                                    '<td><input type="number" name="products[' + product.id + ']" min="0" class="form-control"></td>' +
+                                    '<td><input type="number" name="products[' + product.id + ']" min="0" class="form-control" value="' + (product.quantity || 0) + '"></td>' + // مقدار quantity از داده‌ها
                                     '</tr>'
                                 );
                             });

@@ -39,7 +39,7 @@
                                         <i class="fa fa-users"></i>
                                     </div>
                                 </div>
-                                <span class="font-size-13">کاربران</span>
+                                <span class="font-size-13">همکاران</span>
                                 <h2 class="mb-0 ml-auto font-weight-bold text-success primary-font line-height-30">{{ \App\Models\User::count() }}</h2>
                             </div>
                         </div>
@@ -299,7 +299,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار بازدید کاربران از MPSystem</h6>
+                            <h6 class="card-title m-b-20">آمار بازدید همکاران از MPSystem</h6>
                             <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits) }}</h6>
                         </div>
                         <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
@@ -409,7 +409,7 @@
                 <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
                     <div class="card-body">
                         <div class="card-title d-flex justify-content-between align-items-center">
-                            <h6>آمار پیامک‌های کاربران</h6>
+                            <h6>آمار پیامک‌های همکاران</h6>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered dataTable dtr-inline text-center">
@@ -460,7 +460,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار کلیک کاربران بر روی لینک ارسالی</h6>
+                            <h6 class="card-title m-b-20">آمار کلیک همکاران بر روی لینک ارسالی</h6>
                             <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalRows) }}</h6>
                         </div>
                         <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
@@ -510,7 +510,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">آمار قیمت و تعداد فاکتور کاربران</h6>
+                        <h6 class="card-title m-b-20">آمار قیمت و تعداد فاکتور همکاران</h6>
                     </div>
                     <canvas id="invoiceChart"></canvas>
                 </div>
@@ -520,7 +520,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-title d-flex justify-content-between align-items-center">
-                        <h6>لیست بازدید کاربران</h6>
+                        <h6>لیست بازدید همکاران</h6>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered dataTable dtr-inline text-center">

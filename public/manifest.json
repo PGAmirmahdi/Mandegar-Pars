@@ -1,0 +1,22 @@
+{
+    "name": "ماندگار  پارس",
+    "short_name": "Mpsystem",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#5d4a9c",
+    "theme_color": "#5d4a9c",
+    "orientation": "portrait-primary",
+    "description": "اپلیکیشن ماندگار پارس",
+    "icons": [
+        {
+            "src": "/assets/media/image/logo-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/media/image/logo-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -138,7 +138,9 @@
                                 <tr>
                                     <th>ردیف</th>
                                     <th>کد کالا</th>
-                                    <th>عنوان کالا</th>
+                                    <th>برند کالا</th>
+                                    <th>دسته بندی کالا</th>
+                                    <th>مدل کالا</th>
                                     <th>مقدار اصلی</th>
                                     <th>واحد اصلی</th>
                                 </tr>
@@ -147,8 +149,10 @@
                                     @foreach($inventoryReport->in_outs as $key => $item)
                                         <tr>
                                             <td>{{ ++$key }}</td>
-                                            <td>{{ $item->inventory->code }}</td>
-                                            <td>{{ $item->inventory->title }}</td>
+                                            <td>{{ $item->inventory->product->code }}</td>
+                                            <td>{{ $item->inventory->product->productModels->name }}</td>
+                                            <td>{{ $item->inventory->product->category->name }}</td>
+                                            <td>{{ $item->inventory->product->title }}</td>
                                             <td>{{ $item->count }}</td>
                                             <td>عدد</td>
                                         </tr>

@@ -7,6 +7,8 @@ use App\Models\Activity;
 use App\Models\PriceHistory;
 use App\Models\PriceListSeller;
 use App\Models\Product;
+use App\Models\ProductModel;
+use App\Models\Seller;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,17 +35,23 @@ class PriceController extends Controller
                 ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                     $query->where('category_id', $request->category);
                 })
-                ->get();
-            $products = Product::query()
+                ->when($request->seller && $request->seller !== 'all', function ($query) use ($request) {
+                    $query->where('name', $request->seller);
+                })->get();
+            $products = Product::query()->where('status','=','approved')
                 ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                     $query->where('category_id', $request->category);
+                })
+                ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+                    // فیلتر بر اساس مدل
+                    $query->where('brand_id', $request->model);
                 })
                 ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
                     $query->where('id', $request->product_id);
                 })
-                ->orderByDesc('brand_id')->get();
-
-            return view('panel.prices.other-list', compact('sellers', 'products'));
+                ->orderByDesc('brand_id')->paginate(20);
+            $models = ProductModel::all();
+            return view('panel.prices.other-list', compact('sellers', 'products','models'));
         } else {
             // فیلتر دسته‌بندی روی فروشنده‌ها
             $sellers = DB::table('price_list_sellers')
@@ -114,7 +122,7 @@ class PriceController extends Controller
 
 
                     // به‌روزرسانی فیلد market_price در جدول محصولات
-                    Product::where('id', $item['product_id'])->update(['market_price' => $price]);
+                    Product::where('id', $item['product_id'])->update(['market_price' => $price , 'single_price' => $price]);
                 } else {
                     // حذف رکورد اگر قیمت null است
                     DB::table('price_list')->where([

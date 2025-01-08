@@ -40,16 +40,21 @@ class InventoryReportController extends Controller
         $type = \request()->type;
         $warehouse_id = request()->warehouse_id;
 
-        if ($type == 'input'){
+        // بازیابی موجودی‌ها (inventory)
+        $inventories = \App\Models\Inventory::where('warehouse_id', $warehouse_id)
+            ->with('product') // اگر رابطه‌ای با مدل دیگری دارید
+            ->get();
+
+        // بررسی نوع گزارش و ارسال به View
+        if ($type == 'input') {
             $this->authorize('input-reports-create');
-
-            return view('panel.inputs.create', compact('type', 'warehouse_id'));
-        }else{
+            return view('panel.inputs.create', compact('type', 'warehouse_id', 'inventories'));
+        } else {
             $this->authorize('output-reports-create');
-
-            return view('panel.outputs.create', compact('type','warehouse_id'));
+            return view('panel.outputs.create', compact('type', 'warehouse_id', 'inventories'));
         }
     }
+
 
     public function store(Request $request)
     {
@@ -107,9 +112,10 @@ class InventoryReportController extends Controller
                     $q->where('name', 'exit-door');
                 });
             })->get();
+            $title='خروج انبار';
             $notif_message = 'یک خروج انبار توسط انباردار ثبت شد';
             $url = route('exit-door.index');
-            Notification::send($notifiables, new SendMessage($notif_message, $url));
+            Notification::send($notifiables, new SendMessage($title,$notif_message, $url));
             // end send notification
         }
 

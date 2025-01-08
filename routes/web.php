@@ -11,7 +11,6 @@ use App\Http\Controllers\Panel\BaseinfoController;
 use App\Http\Controllers\Panel\BotController;
 use App\Http\Controllers\Panel\BuyOrderCommentController;
 use App\Http\Controllers\Panel\BuyOrderController;
-use App\Http\Controllers\Panel\CategoryAnalyseController;
 use App\Http\Controllers\Panel\CategoryController;
 use App\Http\Controllers\Panel\ChatController;
 use App\Http\Controllers\Panel\ChatsGPTController;
@@ -19,6 +18,7 @@ use App\Http\Controllers\Panel\ChequeController;
 use App\Http\Controllers\Panel\CostController;
 use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
+use App\Http\Controllers\Panel\DebtorController;
 use App\Http\Controllers\Panel\DeliveryDayController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
@@ -44,6 +44,7 @@ use App\Http\Controllers\Panel\ReportController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
+use App\Http\Controllers\Panel\SetadFeeController;
 use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\SMSController;
 use App\Http\Controllers\Panel\SmsHistoryController;
@@ -86,11 +87,15 @@ Route::get('/', function () {
     return view('auth.login');
 });
 Route::get('notif', function () {
-    $url = 'https://google.com';
-    $message = "salam";
-    $user = User::find(173);
-//    dd($user);
-   return Notification::send($user, new SendMessage($message, $url));
+    $title = 'ثبت کالا';
+    $message = "یک درخواست ثبت کالا توسط " . 'مجید' . " ایجاد شد.";
+    $url = route('products.index');
+
+        $user = User::whereId(173)->first();
+    Notification::send($user, new SendMessage($title, $message, $url));
+});
+Route::get("is_sale_manager",function (){
+   return \auth()->user()->isSalesManager();
 });
 
 //Route::get('test/{id?}', function ($id = null) {
@@ -153,13 +158,40 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Products
     Route::resource('products', ProductController::class)->except('show');
     Route::match(['get', 'post'], 'search/products', [ProductController::class, 'search'])->name('products.search');
+    Route::match(['get', 'post'], 'search2/products', [ProductController::class, 'search2'])->name('products.search2');
+    Route::match(['get','post'],'request/products', [ProductController::class, 'request'])->name('products.request');
     Route::post('excel/products', [ProductController::class, 'excel'])->name('products.excel');
     Route::post('/get-models-by-category', [ProductController::class, 'getModelsByCategory'])->name('get.models.by.category');
 
+    // Customer Order
+    Route::resource('/orders', OrderController::class);
+    Route::get('get-customer-order-status/{id}', [OrderController::class, 'getCustomerOrderStatus'])->name('order.get.customer.order.status');
+    Route::get('get-customer-order/{code}', [OrderController::class, 'getCustomerOrder'])->name('order.get.customer.order');
+    Route::get('order-action/{order}', [OrderController::class, 'orderAction'])->name('order.action');
+    Route::post('order-action/{invoice}', [OrderController::class, 'actionStore'])->name('order.action.store');
+    Route::put('order-invoice-file/{order_action}/delete', [OrderController::class, 'deleteInvoiceFile'])->name('order.invoice.action.delete');
+    Route::put('order-factor-file/{order_action}/delete', [OrderController::class, 'deleteFactorFile'])->name('order.factor.action.delete');
+
+    // Orders
+    Route::resource('/orders', OrderController::class);
+    Route::get('order-action/{order}', [OrderController::class, 'orderAction'])->name('order.action');
+    Route::post('order-action/{invoice}', [OrderController::class, 'actionStore'])->name('order.action.store');
+    Route::put('order-invoice-file/{order_action}/delete', [OrderController::class, 'deleteInvoiceFile'])->name('order.invoice.action.delete');
+    Route::put('order-factor-file/{order_action}/delete', [OrderController::class, 'deleteFactorFile'])->name('order.factor.action.delete');
+//    Route::match(['get', 'post'], '/order/search/orders', [OrderController::class, 'search'])->name('orders.search');
+    Route::post('excel/orders', [OrderController::class, 'excel'])->name('orders.excel');
+
+    // Setad
+    Route::resource('setad-fee', SetadFeeController::class);
+    Route::get('search-setad-fee/{order}', [SetadFeeController::class, 'search']);
+    Route::get('setad-fee/{order}/action', [SetadFeeController::class, 'action'])->name('setad-fee.action');
+    Route::post('setad-fee/{order}/action/store', [SetadFeeController::class, 'actionStore'])->name('setad-fee.store.action');
+    Route::put('receipt-file/{id}/delete', [SetadFeeController::class, 'deleteReceiptFile'])->name('receipt.action.delete');
 
     // Printers
     Route::resource('printers', PrinterController::class)->except('show');
     Route::match(['get', 'post'], 'search/printers', [PrinterController::class, 'search'])->name('printers.search');
+
 
     // Invoices
     Route::resource('invoices', InvoiceController::class);
@@ -232,7 +264,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Price History
     Route::get('price-history', [ProductController::class, 'pricesHistory'])->name('price-history');
-    Route::post('price-history', [ProductController::class, 'pricesHistorySearch'])->name('price-history');
+    Route::post('price-history-search', [ProductController::class, 'pricesHistory'])->name('price-history-search');
 
     // Login Account
     Route::match(['get', 'post'], 'ud54g78d2fs77gh6s$4sd15p5d', [PanelController::class, 'login'])->name('login-account');
@@ -326,7 +358,11 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('buy-order/{buy_order}/change-status', [BuyOrderController::class, 'changeStatus'])->name('buy-orders.changeStatus');
 
     // Activity
-    Route::get('activity', [ActivityController::class, 'index'])->name('activity');
+    Route::match(['get','post'],'activity', [ActivityController::class, 'index'])->name('activity');
+
+    // routes/web.php
+    Route::delete('/activity/{id}', [ActivityController::class, 'destroy'])->name('activity.destroy');
+
 
     // Delivery Days
     Route::get('delivery-days', [DeliveryDayController::class, 'index'])->name('delivery-days.index');
@@ -338,8 +374,12 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     });
 
     // analyse
-    Route::resource('analyse', AnalyseController::class)->except(['edit', 'update', 'show']);
+    Route::resource('analyse', AnalyseController::class)->except(['edit', 'update']);
+    Route::get('analyse/show/{date}', [AnalyseController::class, 'show'])->name('analyse.show');
     Route::get('/get-products', [AnalyseController::class, 'getProducts'])->name('get.products');
+
+    // Debtors
+    Route::resource('debtors', DebtorController::class);
 
     // Cost
     Route::resource('costs', CostController::class);

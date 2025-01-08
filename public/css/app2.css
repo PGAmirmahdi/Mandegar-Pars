@@ -1,0 +1,216 @@
+@font-face {
+    font-family: "koodak";
+    src: url("../assets/fonts/KoodakBold.eot") format("eot"), url("../assets/fonts/KoodakBold.ttf") format("truetype"), url("../assets/fonts/KoodakBold.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Delmonte";
+    src: url("../assets/fonts/Delmonte.otf") format("otf"), url("../assets/fonts/Delmonte.ttf") format("ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Chin";
+    src: url("../assets/fonts/Chin.ttf") format("ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "nazanin";
+    src: url("../assets/fonts/Nazanin.eot") format("eot"), url("../assets/fonts/Nazanin.ttf") format("truetype"), url("../assets/fonts/Nazanin.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "yekan";
+    src: url("../assets/fonts/Yekan.eot") format("eot"), url("../assets/fonts/Yekan.ttf") format("truetype"), url("../assets/fonts/Yekan.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Byekan";
+    src: url("../assets/fonts/BYekan+.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Estedad";
+    src: url("../assets/fonts/Estedad-Black.woff2") format("woff2"), url("../assets/fonts/Estedad-Black.ttf") format("truetype"), url("../assets/fonts/Estedad-Black.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "EstedadBold";
+    src: url("../assets/fonts/Estedad-Bold.woff2") format("woff2"), url("../assets/fonts/Estedad-Bold.ttf") format("truetype"), url("../assets/fonts/Estedad-Bold.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "yekan";
+    src: url("../assets/fonts/BYekan+.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ByekanBold";
+    src: url("../assets/fonts/BYekan+Bold.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style-type: none;
+    font-family: "Estedad";
+    overflow: hidden !important;
+}
+
+body {
+    overflow: hidden !important;
+    min-height: 100vh !important;
+    width: 100vw;
+    background-color: #000000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0px;
+    transition: 4s;
+}
+
+body.load {
+    overflow: hidden !important;
+    transition: 4s;
+    background-color: #6f42c1;
+    min-height: 100vh;
+}
+
+.back2 {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    transform: translateY(-17%);
+    transition: 3s;
+    background-color: #212121;
+}
+
+.back2.load {
+    transform: translateY(-120%);
+    transition: 1.5s;
+}
+
+#No3, #No2, #No1, .khat, .loader {
+    z-index: 9999;
+}
+
+.loade {
+    z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    background-color: rgba(98, 98, 98, 0.3137254902);
+    -webkit-backdrop-filter: blur(6.9px);
+    backdrop-filter: blur(6.9px);
+}
+
+.khat {
+    width: 250px;
+    height: 5px;
+    background-color: #fff;
+    transform: translateX(-200px);
+    opacity: 0;
+    transition: 0.7s;
+    visibility: visible;
+    margin: 10px;
+    margin-top: 5px;
+}
+
+.khat.load {
+    width: 200px;
+    transform: translateX(0px);
+    visibility: visible;
+    opacity: 1;
+    transition: 0.7s;
+    transition-delay: 0.2s;
+    height: 3px;
+}
+
+.loader {
+    width: 85px;
+    height: 50px;
+    --g1:conic-gradient(from 90deg at left 3px top 3px,#0000 90deg,#fff 0);
+    --g2:conic-gradient(from -90deg at bottom 3px right 3px,#0000 90deg,#fff 0);
+    background: var(--g1), var(--g1), var(--g1), var(--g2), var(--g2), var(--g2);
+    background-position: left, center, right;
+    background-repeat: no-repeat;
+    animation: l9 1s infinite;
+}
+
+@keyframes l9 {
+    0% {
+        background-size: 25px 50%, 25px 50%, 25px 50%;
+    }
+    25% {
+        background-size: 25px 100%, 25px 50%, 25px 50%;
+    }
+    50% {
+        background-size: 25px 50%, 25px 100%, 25px 50%;
+    }
+    75% {
+        background-size: 25px 50%, 25px 50%, 25px 100%;
+    }
+    100% {
+        background-size: 25px 50%, 25px 50%, 25px 50%;
+    }
+}
+#No1, #No2, #No3 {
+    color:#fff;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.5s;
+}
+
+#No1 {
+    font-size: 40px;
+}
+
+#No1, #No2 {
+    transform: translateX(200px);
+}
+
+#No3 {
+    transform: translateY(-100px);
+}
+
+#No1.load {
+    font-size: 36px !important;
+    transform: translateX(0px);
+    transition: 0.5s;
+    opacity: 1;
+    visibility: visible;
+}
+
+#No3.load {
+    transform: translateY(0px);
+    transition: 0.5s;
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 1s;
+}
+
+#No2.load {
+    transform: translateX(0px);
+    transition: 0.5s;
+    opacity: 1;
+    visibility: visible;
+    font-size: 12px;
+    transition-delay: 0.4s;
+}/*# sourceMappingURL=app.css.map */

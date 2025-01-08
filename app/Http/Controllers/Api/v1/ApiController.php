@@ -8,6 +8,7 @@ use App\Models\BotUser;
 use App\Models\Factor;
 use App\Models\Inventory;
 use App\Models\Invoice;
+use App\Models\Order;
 use App\Models\Printer;
 use App\Models\Product;
 use App\Models\User;
@@ -60,33 +61,69 @@ class ApiController extends Controller
                     $q->whereIn('name', ['single-price-user', 'sales-manager']);
                 });
             })->get();
-
+            $tax = 0.1;
             if ($data['created_in'] == 'website') {
                 $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
+                $notif_title= 'سفارش از سایت';
             } else {
                 $notif_message = 'یک سفارش از اپلیکیشن آرتین دریافت گردید';
+                $notif_title= 'سفارش از اپلیکیشن';
             }
 
             $url = route('invoices.index');
-//            Notification::send($notifiables, new SendMessage($notif_message, $url));
+            Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 
-            $customer = \App\Models\Customer::where('phone1', $data['phone'])->firstOrCreate([
-                'user_id' => $single_price_user->id,
-                'name' => $data['first_name'] . ' ' . $data['last_name'],
+            $customer = \App\Models\Customer::updateOrCreate(
+                ['phone1' => $data['phone']],
+                [
+                    'user_id' => $single_price_user->id,
+                    'name' => $data['first_name'] . ' ' . $data['last_name'],
+                    'type' => 'private',
+                    'economical_number' => 0,
+                    'province' => $data['province'],
+                    'city' => $data['city'],
+                    'national_number' => $data['national_number'],
+                    'address1' => $data['address_1'],
+                    'postal_code' => $data['postal_code'],
+                    'phone1' => $data['phone'],
+                    'customer_type' => 'single-sale',
+                    'code' => 'CU-' . random_int(1000000, 9999999),
+                ]
+            );
+            // ایجاد سفارش و ذخیره محصولات به صورت JSON
+            $products = [];
+            foreach ($request->items as $item2) {
+                $products = array_map(function ($item2) {
+                    $product = Product::where('code', $item2['acc_code'])->first();
+                    return [
+                        'products' => (string)$product->id, // تغییر به id
+                        'colors' => 'black',
+                        'counts' => (string)$item2['quantity'], // تبدیل به رشته
+                        'units' => 'number',
+                        'prices' => (string)($item2['total'] / $item2['quantity']), // قیمت واحد
+                        'total_prices' => (string)$item2['total'], // قیمت کل
+                    ];
+                }, $data['items']);
+            }
+            $order = \App\Models\Order::create([
+                'description' => 'خرید از سایت',
                 'type' => 'private',
-                'economical_number' => 0,
-                'province' => $data['province'],
-                'city' => $data['city'],
-                'national_number'=>$data['national_number'],
-                'address1' => $data['address_1'],
-                'postal_code' => $data['postal_code'],
-                'phone1' => $data['phone'],
-                'customer_type' => 'single-sale',
-                'code' => 'CU-' . random_int(1000000, 9999999),
+                'req_for' => 'invoice',
+                'payment_type' => 'cash',
+                'code' => $this->generateCode(),
+                'user_id' => $single_price_user->id,
+                'customer_id' => $customer->id,
+                'created_in' => $data['created_in'] ,
+                'products' => json_encode($products), // ذخیره محصولات به صورت JSON
             ]);
+            $order->order_status()->updateOrCreate(
+                ['status' => 'register'],
+                ['orders' => 1, 'status' => 'register']
+            );
             $invoice = \App\Models\Invoice::create([
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,
+                'order_id' => $order->id,
                 'economical_number' => 0,
                 'payment_type' => $data['payment_type'],
                 'province' => $customer->province,
@@ -108,8 +145,6 @@ class ApiController extends Controller
             Log::info('Activity Data:', $data3);
 
             Activity::create($data3);
-            $tax = 0.1;
-
             foreach ($request->items as $item) {
                 $product = Product::where('code', $item['acc_code'])->first();
 
@@ -126,7 +161,6 @@ class ApiController extends Controller
                     'tax' => $total * $tax,
                     'invoice_net' => (int)$total + ($total * $tax) + ($shipping_cost * 10), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
                 ]);
-
                 $invoice->factor()->updateOrCreate(['status' => 'paid']);
             }
             Log::info('Order processed successfully', ['data' => $data]);
@@ -144,7 +178,6 @@ class ApiController extends Controller
             return response()->json(['error' => 'Unable to process order.'], 500);
         }
     }
-
 
     public function getInvoiceProducts(Request $request)
     {
@@ -202,5 +235,15 @@ class ApiController extends Controller
                 'username' => $request->username,
             ]);
         }
+    }
+    public function generateCode()
+    {
+        $code = '666' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
+
+        while (Order::where('code', $code)->lockForUpdate()->exists()) {
+            $code = '666' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
+        }
+
+        return $code;
     }
 }

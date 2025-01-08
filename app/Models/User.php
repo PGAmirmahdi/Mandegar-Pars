@@ -69,6 +69,14 @@ class User extends Authenticatable
     {
         return $this->role->name == 'Organ';
     }
+    public function isOfficeManager()
+    {
+        return $this->role->permissions->pluck('name')->contains('OfficeManager');
+    }
+    public function isPartnerCity()
+    {
+        return $this->role->name == 'PartnerCity';
+    }
     public function isWareHouseKeeper()
     {
         return $this->role->permissions->pluck('name')->contains('warehouse-keeper');
@@ -86,9 +94,12 @@ class User extends Authenticatable
 
     public function isSalesManager()
     {
-        return $this->role->permissions->pluck('name')->contains('sales-manager') && $this->role->permissions->pluck('name')->contains('partner-city');
+        return $this->role->permissions->pluck('name')->contains('sales-manager') ;
     }
-
+    public function isSalesEngineering()
+    {
+        return $this->role->permissions->pluck('name')->contains('sales-engineering') ;
+    }
 
     public function isExitDoor()
     {
@@ -176,7 +187,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(BuyOrder::class);
     }
-
+    public function customer()
+    {
+        return $this->hasMany(Customer::class);
+    }
     private function leavesUpdate()
     {
         $leave_info = DB::table('leave_info')->where('user_id', $this->id)->first();

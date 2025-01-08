@@ -17,7 +17,7 @@
         href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
         type="text/css"
     />
-
+    <link rel="manifest" href="/manifest.json">
     <!-- Theme Color -->
     <meta name="theme-color" content="#5867dd">
 
@@ -59,7 +59,13 @@
         .dataTable th{
             cursor: pointer !important;
         }
-
+        .table-responsive {
+            overflow-x: auto; /* اسکرول افقی فعال شود */
+            -webkit-overflow-scrolling: touch !important; /* تجربه روان‌تر در موبایل */
+        }
+        .table {
+            min-width: 100%; /* اطمینان از عدم کاهش عرض جدول */
+        }
         .zoom-in-out {
             animation: zoom-in-zoom-out 1s ease infinite;
         }

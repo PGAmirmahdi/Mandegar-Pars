@@ -38,72 +38,65 @@ class PriceRequestController extends Controller
 
         $items = [];
 
-        // Check if products and new_prices are provided
-        if ($request->has('products') && $request->has('new_prices') && count($request->products) > 0) {
-            foreach ($request->products as $key => $productId) {
-                // Get product model by ID
-                $product = Product::find($productId);
-                if (!$product) {
-                    continue;  // Skip if the product doesn't exist
-                }
-
-                // Get new price or fallback to old price if new price is not provided
-                $new_price = isset($request->new_prices[$key]) && $request->new_prices[$key] != ''
-                    ? str_replace(',', '', $request->new_prices[$key])  // if new price is provided
-                    : $product->market_price;  // otherwise, use the current price
-
-                $old_price = $product->market_price; // Get the current price of the product
-
-                // Add to items array
+        foreach ($request->products as $key => $productId) {
+            $product = Product::with('category', 'productModels')->find($productId);
+            if ($product) {
                 $items[] = [
-                    'product' => $product->title,  // Save the title of the product
-                    'old_price' => $old_price,
-                    'new_price' => $new_price,
-                    'description' => isset($request->description[$key]) ? $request->description[$key] : '',
+                    'product_id' => $product->id,
+                    'product_name' => $product->title,
+                    'product_model' => $product->productModels->slug,
+                    'category_name' => $product->category->name,
+                    'count' => $request->counts[$key],
+                    'description' => $request->description[$key],
                 ];
-
-                // Update product price if the new price is different from the old one
-                if ($new_price != $old_price) {
-                    $product->market_price = $new_price;  // Set new price
-                    $product->save();  // Save the changes
-                }
             }
-
-            // Save PriceRequest after processing items
-            PriceRequest::create([
-                'user_id' => auth()->id(),
-                'max_send_time' => 1,  // Default max send time, adjust as needed
-                'status' => 'sent',
-                'items' => json_encode($items),
-            ]);
-
-            alert()->success('درخواست قیمت با موفقیت ثبت شد و قیمت‌ها به روز شدند', 'ثبت درخواست قیمت');
-            return redirect()->route('price-requests.index');
-        } else {
-            // Handle case where products or prices are not provided
-            alert()->error('هیچ کالایی برای ثبت درخواست قیمت انتخاب نشده است.', 'خطا');
-            return back();
         }
+        PriceRequest::create([
+            'user_id' => auth()->id(),
+            'max_send_time' => $request->max_send_time,
+            'items' => json_encode($items)
+        ]);
+
+        // notification sent to ceo
+        $notifiables = User::where('id','!=',auth()->id())->whereHas('role' , function ($role) {
+            $role->whereHas('permissions', function ($q) {
+                $q->whereIn('name', ['ceo','sales-manager']);
+            });
+        })->get();
+        $notif_title = 'درخواست قیمت';
+        $notif_message = 'یک درخواست قیمت توسط همکار فروش ثبت گردید';
+        $url = route('price-requests.index');
+        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+        // end notification sent to ceo
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'ثبت درخواست قیمت',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') یک درخواست قیمت برای کالاها ثبت کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
+        alert()->success('درخواست قیمت با موفقیت ثبت شد','ثبت درخواست قیمت');
+        return redirect()->route('price-requests.index');
     }
-
-
     public function show(PriceRequest $priceRequest)
     {
         $this->authorize('price-requests-list');
 
-        // برای هر محصول، اطلاعات شامل قیمت قبلی و قیمت جدید را به دست می‌آوریم
+        // برای هر محصول، اطلاعات شامل قیمت جدید را به دست می‌آوریم
         $items = json_decode($priceRequest->items, true);
 
         foreach ($items as $key => $item) {
-            $product = Product::find($item['product']); // اطلاعات محصول
+            $product = Product::find($item['product_id']); // اطلاعات محصول
             if ($product) {
-                // اگر قیمت جدید درخواستی وجود نداشته باشد، از قیمت قبلی استفاده می‌شود
-                $items[$key]['market_price'] = isset($item['new_price']) ? $item['new_price'] : $product->price;
+                // فقط قیمت جدید را به دست می‌آوریم و از قیمت قبلی صرف نظر می‌کنیم
+                $items[$key]['market_price'] = $item['new_price'] ?? null; // اگر new_price وجود نداشت، مقدار null
             }
         }
 
         return view('panel.price-requests.show', compact('priceRequest', 'items'));
     }
+
 
     public function edit(PriceRequest $priceRequest)
     {
@@ -118,13 +111,20 @@ class PriceRequestController extends Controller
 
         $items = [];
         foreach (json_decode($priceRequest->items, true) as $key => $item) {
-            $items[] = [
-                'product' => $item['product'],
-                'count' => $item['count'],
-                'description' => $item['description'],
-                'price' => str_replace(',', '', $request->prices[$key]),
-                'vat_included' => isset($request->vat_included[$key]) ? true : false,
-            ];
+            $product = Product::with('category', 'productModels')->find($item['product_id']);
+            if ($product) {
+                $items[] = [
+                    'product_id' => $product->id,
+                    'product_name' => $product->title,
+                    'product_model' => $product->productModels->slug ?? 'نامشخص',
+                    'category_name' => $product->category->name ?? 'نامشخص',
+                    'count' => $item['count'] ?? 0,
+                    'description' => $item['description'] ?? '',
+                    'price' => str_replace(',', '', $request->prices[$key] ?? 0),
+                    'vat_included' => isset($request->vat_included[$key]),
+                ];
+
+            }
         }
 
         $priceRequest->update([
@@ -139,10 +139,11 @@ class PriceRequestController extends Controller
             });
         })->get();
 
+        $notif_title = 'درخواست قیمت';
         $notif_message = 'قیمت کالاهای درخواستی توسط مدیر ثبت گردید';
         $url = route('price-requests.index');
-        Notification::send($notifiables, new SendMessage($notif_message, $url));
-        Notification::send($priceRequest->user, new SendMessage($notif_message, $url));
+        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+        Notification::send($priceRequest->user, new SendMessage($notif_title,$notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),

@@ -6,7 +6,18 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>فعالیت‌های کاربران</h6>
                 <form method="GET" action="{{ route('activity') }}" class="d-flex">
-                    <input type="text" name="search" class="form-control" placeholder="نام کاربر را وارد کنید..." value="{{ request('search') }}">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                        <select name="user" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                data-select2-id="1">
+                            <option value="all">نام کاربر(همه)</option>
+                            @foreach(\App\Models\User::all(['id','name','family']) as $user)
+                                <option
+                                    value="{{ $user->id }}" {{ request()->user == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name . ' ' . $user->family }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-primary ml-2">
                         <i class="fa fa-search mx-2"></i>
                         جستجو
@@ -22,6 +33,9 @@
                         <th>نوع فعالیت</th>
                         <th>توضیحات</th>
                         <th>تاریخ</th>
+                        @can('activity-delete')
+                            <th>حذف</th>
+                        @endcan
                     </tr>
                     </thead>
                     <tbody>
@@ -32,6 +46,15 @@
                             <td>{{ $activity->action }}</td>
                             <td>{{ $activity->description }}</td>
                             <td>{{ verta($activity->created_at)->format('H:i - Y/m/d') }}</td>
+                            @can('activity-delete')
+                                <td>
+                                    <button class="btn btn-danger btn-floating trashRow"
+                                            data-url="{{ route('activity.destroy',$activity->id) }}"
+                                            data-id="{{ $activity->id }}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            @endcan
                         </tr>
                     @empty
                         <tr>

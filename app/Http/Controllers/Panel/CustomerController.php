@@ -52,6 +52,7 @@ class CustomerController extends Controller
             'address1' => $request->address1,
             'address2' => $request->address2,
             'description' => $request->description,
+            'employer' => $request->employer,
         ]);
         Activity::create([
             'user_id' => auth()->id(),
@@ -101,6 +102,7 @@ class CustomerController extends Controller
             'address1' => $request->address1,
             'address2' => $request->address2,
             'description' => $request->description,
+            'employer' => $request->employer,
         ]);
         $url = $request->url;
 
@@ -126,17 +128,35 @@ class CustomerController extends Controller
 
     public function search(Request $request)
     {
+        $this->authorize('customers-list');
+        // بررسی استان
         $province = $request->province == 'all' ? Province::pluck('name') : [$request->province];
+
+        // بررسی نوع مشتری
         $type = $request->type == 'all' ? array_keys(Customer::TYPE) : [$request->type];
-        $customers = Customer::when($request->code, function ($q) use($request){
-                $q->where('code', $request->code);
-            })
-            ->when($request->name, function ($q) use($request){
-            $q->where('name','like', "%$request->name%");
+
+        $customerType = $request->customer_type == 'all' ? array_keys(Customer::CUSTOMER_TYPE) : [$request->customer_type];
+
+        // کوئری مشتری‌ها
+        $customers = Customer::when($request->code, function ($q) use ($request) {
+            $q->where('code', $request->code);
         })
+            ->when($request->name, function ($q) use ($request) {
+                $q->where('name', 'like', "%$request->name%");
+            })
+            ->when($request->employer && $request->employer != 'all', function ($q) use ($request) {
+                $q->where('employer', $request->employer);
+            })
+            ->when($request->customer && $request->customer != 'all', function ($q) use ($request) {
+                $q->where('name', $request->customer);
+            })
+            ->when($request->customer_type && $request->customer_type != 'all', function ($q) use ($customerType) {
+                $q->whereIn('customer_type', $customerType);
+            })
             ->whereIn('province', $province)
             ->whereIn('type', $type)
-            ->orderByRaw('-code DESC')->paginate(30);
+            ->orderByRaw('-code DESC')
+            ->paginate(30);
 
         return view('panel.customers.index', compact('customers'));
     }

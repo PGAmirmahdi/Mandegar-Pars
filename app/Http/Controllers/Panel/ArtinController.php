@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PDO;
 
 class ArtinController extends Controller
@@ -18,7 +19,7 @@ class ArtinController extends Controller
         $dbname = "h241538_artin";
 
         try {
-            $this->conn = new \PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+            $this->conn = new \PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(\PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
@@ -56,8 +57,6 @@ class ArtinController extends Controller
         }
     }
 
-
-
     public function updatePrice(Request $request)
     {
         $this->authorize('artin-products-edit');
@@ -66,47 +65,74 @@ class ArtinController extends Controller
         $price = $request->price;
 
         try {
+            // اطمینان از وجود اتصال به پایگاه داده
+            if (!$this->conn) {
+                throw new \Exception("Database connection is not initialized.");
+            }
+
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sql = "UPDATE mand_wc_product_meta_lookup SET min_price = :price, max_price = :price WHERE product_id = :product_id";
+            // متد کمکی برای اجرای کوئری
+            $this->executeQuery(
+                "UPDATE mand_wc_product_meta_lookup SET min_price = :price, max_price = :price WHERE product_id = :product_id",
+                ['price' => $price, 'product_id' => $product_id]
+            );
 
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':price', $price);
-            $stmt->bindParam(':product_id', $product_id);
-            $stmt->execute();
+            $this->executeQuery(
+                "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id AND meta_key = '_regular_price'",
+                ['price' => $price, 'product_id' => $product_id]
+            );
 
-            $sql2 = "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id and meta_key = '_regular_price'";
-            $sql3 = "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id and meta_key = '_price'";
+            $this->executeQuery(
+                "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id AND meta_key = '_price'",
+                ['price' => $price, 'product_id' => $product_id]
+            );
 
-            $stmt2 = $this->conn->prepare($sql2);
-            $stmt2->bindParam(':price', $price);
-            $stmt2->bindParam(':product_id', $product_id);
-            $stmt2->execute();
+            // گرفتن نام محصول از پایگاه داده
+            $product_name = $this->fetchSingleColumn(
+                "SELECT post_title FROM mand_posts WHERE ID = :product_id",
+                ['product_id' => $product_id]
+            );
 
-            $stmt3 = $this->conn->prepare($sql3);
-            $stmt3->bindParam(':price', $price);
-            $stmt3->bindParam(':product_id', $product_id);
-            $stmt3->execute();
-
-            // گرفتن نام محصول از دیتابیس
-            $sql4 = "SELECT post_title FROM mand_posts WHERE ID = :product_id";
-            $stmt4 = $this->conn->prepare($sql4);
-            $stmt4->bindParam(':product_id', $product_id);
-            $stmt4->execute();
-            $product_name = $stmt4->fetchColumn(); // نام محصول
-
-            $this->conn = null;
-            // ثبت فعالیت کاربر همراه با نام محصول
+            // ثبت فعالیت کاربر
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ویرایش قیمت محصول سایت',
                 'description' => 'کاربر ' . auth()->user()->family . ' قیمت محصول "' . $product_name . '" را ویرایش کرد.',
             ]);
-            return back();
-        } catch(\PDOException $e) {
-            return "Connection failed: " . $e->getMessage();
+
+            return back()->with('success', 'قیمت محصول با موفقیت به‌روزرسانی شد.');
+        } catch (\PDOException $e) {
+            // ثبت خطا در لاگ‌ها و نمایش پیام عمومی به کاربر
+            Log::error("Database error: " . $e->getMessage());
+            return back()->with('error', 'خطایی در به‌روزرسانی قیمت رخ داد.');
+        } catch (\Exception $e) {
+            Log::error("General error: " . $e->getMessage());
+            return back()->with('error', 'مشکلی رخ داد. لطفاً دوباره تلاش کنید.');
         }
     }
+
+// متد کمکی برای اجرای کوئری
+    private function executeQuery($query, $params)
+    {
+        $stmt = $this->conn->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        $stmt->execute();
+    }
+
+// متد کمکی برای گرفتن یک ستون
+    private function fetchSingleColumn($query, $params)
+    {
+        $stmt = $this->conn->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function store(Request $request)
     {
         $this->authorize('artin-products-create');

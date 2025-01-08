@@ -92,7 +92,7 @@
     var userId = {{ Auth::user()->id }}; // شناسه کاربر لاگین شده
 
     // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
+    Pusher.logToConsole = false;
 
     var pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
         cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
@@ -112,7 +112,6 @@
 
 </script>
 <script>
-    console.log('----------------------------------------------/dlsjfb;jdfjdsbf=-----------------[')
     {{-- ajax setup --}}
     $.ajaxSetup({
         headers: {
@@ -279,4 +278,11 @@
         };
         new Notification(noteTitle, noteOptions);
     });
+</script>
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/serviceworker.js')
+            .then(() => console.log('سرویس ورکر رجیستر شد'))
+            .catch(error => console.error('سرویس ورکر رجیستر نشد مشکل:', error));
+    }
 </script>

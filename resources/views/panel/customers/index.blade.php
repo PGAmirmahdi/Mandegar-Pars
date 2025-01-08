@@ -30,15 +30,32 @@
                            value="{{ request()->code ?? null }}">
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <input type="text" name="name" form="search_form" class="form-control" placeholder="نام مشتری"
-                           value="{{ request()->name ?? null }}">
+                    <select name="employer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="4">
+                        <option value="all" selected>نام کارپرداز(همه)</option>
+                        @foreach(\App\Models\Customer::all() as $employer)
+                            <option
+                                value="{{ $employer->employer }}" {{ request()->employer == $employer->employer ? 'selected' : '' }}>{{ $employer->employer }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="customer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                            data-select2-id="0">
+                        <option value="all">نام سازمان/فروشگاه(همه)</option>
+                        @foreach(\App\Models\Customer::all() as $customer)
+                            <option
+                                value="{{ $customer->name }}" {{ request()->customer == $customer->name ? 'selected' : '' }}>{{ $customer->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="1">
                         <option value="all">استان (همه)</option>
                         @foreach(\App\Models\Province::all() as $province)
-                            <option value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
+                            <option
+                                value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -48,7 +65,8 @@
                                 class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
                             <option value="all">مشتری (همه)</option>
                             @foreach(\App\Models\Customer::CUSTOMER_TYPE as $key => $value)
-                                <option value="{{ $key }}" {{ request()->customer_type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                <option
+                                    value="{{ $key }}" {{ request()->customer_type == $key ? 'selected' : '' }}>{{ $value }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -58,7 +76,8 @@
                             data-select2-id="3">
                         <option value="all">نوع (همه)</option>
                         @foreach(\App\Models\Customer::TYPE as $key => $value)
-                            <option value="{{ $key }}" {{ request()->type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            <option
+                                value="{{ $key }}" {{ request()->type == $key ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -71,8 +90,10 @@
                     <thead>
                     <tr>
                         <th>#</th>
+                        <td>ایجاد کننده</td>
                         <th>کد مشتری</th>
                         <th>نام سازمان/فروشگاه</th>
+                        <th>کارپرداز</th>
                         <th>نوع</th>
                         <th>استان</th>
                         <th>شماره تماس 1</th>
@@ -91,8 +112,10 @@
                     @foreach($customers as $key => $customer)
                         <tr>
                             <td>{{ ++$key }}</td>
+                            <td>{{ $customer->user->name . ' '  . $customer->user->family}}</td>
                             <td>{{ $customer->code ?? '---' }}</td>
                             <td>{{ $customer->name }}</td>
+                            <td>{{$customer->employer}}</td>
                             <td>{{ \App\Models\Customer::TYPE[$customer->type] }}</td>
                             <td>{{ $customer->province }}</td>
                             <td>{{ $customer->phone1 }}</td>
