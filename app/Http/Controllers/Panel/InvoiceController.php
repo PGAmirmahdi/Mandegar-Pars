@@ -203,7 +203,7 @@ class InvoiceController extends Controller
             $payment_doc = $invoice->payment_doc;
         }
         $invoice->update([
-            'customer_id' => $request->buyer_name,
+            'customer_id' => $request->buyer_id,
             'req_for' => $req_for,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
