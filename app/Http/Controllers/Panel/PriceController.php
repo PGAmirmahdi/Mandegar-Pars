@@ -66,7 +66,7 @@ class PriceController extends Controller
                 ->when($request->product_id && $request->product_id !== 'all', function ($query) use ($request) {
                     $query->where('id', $request->product_id);
                 })
-                ->orderByDesc('brand_id')->get();
+                ->orderByDesc('brand_id')->where('status','=','approved')->paginate(20);
             return view('panel.prices.other-list-printable', compact('sellers', 'products'));
         }
     }

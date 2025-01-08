@@ -28,7 +28,7 @@ class PriceRequestController extends Controller
     {
         $this->authorize('price-requests-create');
         // گرفتن همه محصولات از دیتابیس
-        $products = Product::all();
+        $products = Product::all()->where('status','=','approved');
         return view('panel.price-requests.create',compact('products'));
     }
 

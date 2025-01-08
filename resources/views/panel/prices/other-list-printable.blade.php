@@ -88,7 +88,7 @@
                     <select name="product_id" form="search_form"
                             class="js-example-basic-single select2-hidden-accessible" data-select2-id="7">
                         <option value="all">نام کالا</option>
-                        @foreach($products as $product)
+                        @foreach(\App\Models\Product::all()->where('status','=','approved') as $product)
                             <option value="{{ $product->id }}" {{ request()->product_id == $product->id ? 'selected' : '' }}>
                                 {{ $product->title }}
                             </option>
@@ -160,6 +160,7 @@
                     </tr>
                     </tfoot>
                 </table>
+                <div class="d-flex justify-content-center">{{ $products->appends(request()->all())->links() }}</div>
             </div>
         </div>
     </div>

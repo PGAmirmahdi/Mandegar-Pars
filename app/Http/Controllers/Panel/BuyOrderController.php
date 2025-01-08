@@ -32,7 +32,7 @@ class BuyOrderController extends Controller
 
     public function create()
     {
-        $products = Product::all();
+        $products = Product::all()->where('status','=','approved');
 
         return view('panel.buy-orders.create', compact('products'));
     }
@@ -105,7 +105,7 @@ class BuyOrderController extends Controller
     public function edit($id)
     {
         $this->authorize('buy-orders-edit');
-        $products = Product::all();
+        $products = Product::all()->where('status','=','approved');
         // پیدا کردن سفارش خرید بر اساس ID
         $buyOrder = BuyOrder::findOrFail($id);
 
