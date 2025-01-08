@@ -50,7 +50,7 @@ class ApiController extends Controller
             }
             $data = $request->all();
             // محاسبه هزینه ارسال
-            $shipping_cost = $request->input('shipping_cost', 0); // فرض بر اینکه هزینه ارسال در درخواست وجود دارد
+            $shipping_cost = $request->input('shipping_cost', 0);
             $role_id = \App\Models\Role::whereHas('permissions', function ($permission) {
                 $permission->where('name', 'single-price-user');
             })->pluck('id');
@@ -71,7 +71,7 @@ class ApiController extends Controller
             }
 
             $url = route('invoices.index');
-            Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+//            Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 
             $customer = \App\Models\Customer::updateOrCreate(
                 ['phone1' => $data['phone']],
@@ -100,8 +100,8 @@ class ApiController extends Controller
                         'colors' => 'black',
                         'counts' => (string)$item2['quantity'], // تبدیل به رشته
                         'units' => 'number',
-                        'prices' => (string)($item2['total'] / $item2['quantity']), // قیمت واحد
-                        'total_prices' => (string)$item2['total'], // قیمت کل
+                        'prices' => (string)($item2['total'] / $item2['quantity']) * 10 * 110/100, // قیمت واحد
+                        'total_prices' => (string)$item2['total'] * 10 * 110/100, // قیمت کل
                     ];
                 }, $data['items']);
             }
@@ -135,14 +135,13 @@ class ApiController extends Controller
                 'status' => 'order',
                 'created_in' => $data['created_in'],
                 'discount' => 0,
+                'shipping_cost' => $shipping_cost * 10,
             ]);
             $data3 = [
                 'user_id' => 173,
                 'action' => 'ایجاد سفارش فروش',
                 'description' => 'کاربر اسدی بیگزاد محله(ادمین) ' . 'برای مشتری به نام ' . $customer->name  . "یک سفارش فروش به شماره " . $invoice->id . ' ایجاد کرد',
             ];
-
-            Log::info('Activity Data:', $data3);
 
             Activity::create($data3);
             foreach ($request->items as $item) {
@@ -157,9 +156,8 @@ class ApiController extends Controller
                     'price' => $price,
                     'total_price' => $total,
                     'discount_amount' => 0,
-                    'extra_amount' => $shipping_cost * 10, // هزینه ارسال
                     'tax' => $total * $tax,
-                    'invoice_net' => (int)$total + ($total * $tax) + ($shipping_cost * 10), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
+                    'invoice_net' => (int)$total + ($total * $tax), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
                 ]);
                 $invoice->factor()->updateOrCreate(['status' => 'paid']);
             }

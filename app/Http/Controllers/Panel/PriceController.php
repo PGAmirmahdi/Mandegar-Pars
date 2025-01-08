@@ -190,7 +190,7 @@ class PriceController extends Controller
 
         ini_set('memory_limit', '64M');
         $backPath = public_path('/public_html/assets/media/image/prices/background.png');
-        $data = \App\Models\Product::all();
+        $data = \App\Models\Product::all()->where('status','=','approved');
 // ثبت فعالیت مربوط به دریافت لیست قیمت
         $activityData = [
             'user_id' => auth()->id(),

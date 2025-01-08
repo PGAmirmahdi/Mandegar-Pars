@@ -304,11 +304,15 @@
                                 </tr>
                                 <tr>
                                     <th class="py-1 title-sec" colspan="6">تخفیف نهایی</th>
-                                    <th class="py-1 title-sec" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
+                                    <th class="py-1 title-sec" colspan="6">هزینه حمل و نقل</th>
+                                    <th class="py-1 title-third" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
                                 </tr>
                                 <tr>
                                     <td colspan="6">{{ number_format($invoice->discount) }}</td>
-                                    <td colspan="6">{{ number_format($sum_invoice_net - $invoice->discount) }}</td>
+                                    @if($invoice->created_in == 'website')
+                                        <th>{{ number_format($invoice->shipping_cost) }}</th>
+                                    @endif
+                                    <td colspan="6">{{ number_format($sum_invoice_net - $invoice->discount + isset($invoice->shipping_cost)) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4">
