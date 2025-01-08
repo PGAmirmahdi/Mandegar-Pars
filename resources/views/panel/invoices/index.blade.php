@@ -35,7 +35,7 @@
                                 <div class="alert alert-info">
                                     <i class="fa fa-info-circle font-size-20 align-middle"></i>
                                     <strong>توجه!</strong>
-                                    قیمت کل موجود در جدول بدون ارزش افزوده و هزینه اضافی میباشد
+                                    قیمت کل موجود در جدول بدون هزینه اضافی میباشد
                                 </div>
                             <div class="card-title d-flex justify-content-end">
                                 <div>

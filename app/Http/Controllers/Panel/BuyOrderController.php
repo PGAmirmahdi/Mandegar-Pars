@@ -200,13 +200,13 @@ class BuyOrderController extends Controller
             $buyOrder->update(['status' => 'bought']);
         }
         // گرفتن نام مشتری
-        $customerName = $buyOrder->customer->name;
+//        $customerName = $buyOrder->customer->name;
 
         // ثبت فعالیت
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'ویرایش وضعیت سفارش خرید',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') وضعیت سفارش خرید برای مشتری ' . $customerName . 'را تغییر داد.',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') وضعیت سفارش خرید ' . 'را تغییر داد.',
         ]);
         alert()->success('وضعیت سفارش با موفقیت تغییر کرد','تغییر وضعیت سفارش');
         return back();
