@@ -19,7 +19,7 @@
             </div>
             <form action="{{ route('buy-orders.update', $buyOrder->id) }}" method="post">
                 @csrf
-                @method('PUT') <!-- استفاده از متد PUT برای ویرایش -->
+                @method('PUT')
                 <div class="form-row">
                     <div class="col-12 mb-3">
                         <table class="table table-striped table-bordered text-center">

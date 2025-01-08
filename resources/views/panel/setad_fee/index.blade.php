@@ -92,7 +92,6 @@
                                             <th>همکار</th>
                                         @endcanany
                                         <th>تاریخ ایجاد</th>
-
                                         @canany(['accountant','sales-manager'])
                                             <th>اقدام</th>
                                         @endcanany
