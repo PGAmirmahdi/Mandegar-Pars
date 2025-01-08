@@ -115,7 +115,7 @@
             min-height: 0 !important;
         }
 
-        *{
+        * {
             color: #000 !important;
         }
 
@@ -304,15 +304,19 @@
                                 </tr>
                                 <tr>
                                     <th class="py-1 title-sec" colspan="6">تخفیف نهایی</th>
-                                    <th class="py-1 title-sec" colspan="6">هزینه حمل و نقل</th>
-                                    <th class="py-1 title-third" colspan="6">مبلغ فاکتور پس از تخفیف نهایی</th>
+                                    @if($invoice->created_in == 'website')
+                                    <th class="py-1 title-sec" colspan="2">هزینه حمل و نقل</th>
+                                    @endif
+                                    <th class="py-1 title-sec" @if($invoice->created_in == 'website') colspan="4"
+                                        @else colspan="6" @endif>مبلغ فاکتور پس از تخفیف نهایی</th>
                                 </tr>
                                 <tr>
                                     <td colspan="6">{{ number_format($invoice->discount) }}</td>
                                     @if($invoice->created_in == 'website')
-                                        <th>{{ number_format($invoice->shipping_cost) }}</th>
+                                        <th colspan="2">{{ number_format($invoice->shipping_cost) }}</th>
                                     @endif
-                                    <td colspan="6">{{ number_format($sum_invoice_net - $invoice->discount + isset($invoice->shipping_cost)) }}</td>
+                                    <td @if($invoice->created_in == 'website') colspan="4"
+                                        @else colspan="6" @endif>{{ number_format($sum_invoice_net - $invoice->discount +($invoice->created_in == 'website' ? $invoice->shipping_cost : 0)) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4">
@@ -328,7 +332,7 @@
                                         </div>
                                     </td>
                                     <td colspan="8" class="text-start">
-                                        {{change_number_to_words($sum_invoice_net - $invoice->discount)}} ریال
+                                        {{change_number_to_words($sum_invoice_net - $invoice->discount +($invoice->created_in == 'website' ? $invoice->shipping_cost : 0))}} ریال
                                     </td>
                                 </tr>
                                 <tr>
@@ -337,10 +341,11 @@
                                 </tr>
                                 <tr>
                                     <td colspan="12">
-                                        خواهشمند است مبلغ فاكتور را به شماره شبا IR550110000000103967138001 نزد بانك صنعت و معدن شعبه مرکزی واريز نماييد. با تشكر
+                                        خواهشمند است مبلغ فاكتور را به شماره شبا IR550110000000103967138001 نزد بانك
+                                        صنعت و معدن شعبه مرکزی واريز نماييد. با تشكر
                                         <br>
                                         <br>
-                                        آدرس سایت  https://artintoner.com
+                                        آدرس سایت https://artintoner.com
                                     </td>
                                 </tr>
 
