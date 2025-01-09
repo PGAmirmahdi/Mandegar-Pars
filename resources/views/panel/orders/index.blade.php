@@ -336,7 +336,7 @@
                                 </div>
                             </div>
                                 <table
-                                    class="table table-responsive-stack table-striped table-bordered dataTable dtr-inline text-center overflow-auto"
+                                    class="table table-responsive table-striped table-bordered dataTable dtr-inline text-center overflow-auto"
                                     style="width: 100%">
                                     <thead>
                                     <tr>
