@@ -133,9 +133,9 @@ class ApiController extends Controller
                 'postal_code' => $customer->postal_code,
                 'phone' => $customer->phone1,
                 'status' => 'order',
-                'created_in' => $data['customer_note'],
+                'created_in' => $data['created_in'],
                 'discount' => 0,
-                'description' => $data['description'],
+                'description' => $data['customer_note'],
                 'shipping_cost' => $shipping_cost * 10,
             ]);
             $data3 = [
