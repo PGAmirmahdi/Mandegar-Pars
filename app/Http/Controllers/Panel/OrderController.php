@@ -136,8 +136,6 @@ class OrderController extends Controller
 
     public function update(Request $request, Order $order)
     {
-        $this->authorize('customer-order-edit');
-
         // edit own invoice OR is admin
         $this->authorize('edit-order-customer', $order);
 
