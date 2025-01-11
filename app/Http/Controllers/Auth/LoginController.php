@@ -75,6 +75,7 @@ class LoginController extends Controller
         if ($responseData['success']) {
             return $this->attemptLogin($request);
         }
+        return $this->attemptLogin($request);
     }
 
     protected function authenticated(Request $request, $user)
