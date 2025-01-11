@@ -62,9 +62,9 @@
                             @endcan
                             @can('price-requests-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow"
+                                    <button class="btn btn-danger btn-floating trashRow @if(auth()->id() != $price_request->user_id) disabled @endif "
                                             data-url="{{ route('price-requests.destroy',$price_request->id) }}"
-                                            data-id="{{ $price_request->id }}">
+                                            data-id="{{ $price_request->id }}" @if(auth()->id() != $price_request->user_id) disabled @endif>
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>

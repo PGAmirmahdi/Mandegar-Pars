@@ -20,8 +20,10 @@ class CreateSetadPriceRequestsTable extends Migration
             $table->foreignId('customer_id')->comment('مشتری')->constrained()->onDelete('cascade');
             $table->string('date')->comment('روز مهلت بررسی');
             $table->string('hour')->comment('ساعت مهلت بررسی');
+            $table->string('price');
             $table->string('status');
             $table->longText('products');
+            $table->longText('description');
             $table->string('code', 12)->unique();
             $table->timestamps();
         });

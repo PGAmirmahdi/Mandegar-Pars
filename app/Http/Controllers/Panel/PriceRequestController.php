@@ -160,8 +160,13 @@ class PriceRequestController extends Controller
     public function destroy(PriceRequest $priceRequest)
     {
         $this->authorize('price-requests-delete');
-
-        $priceRequest->delete();
-        return back();
+        if(auth()->id() == $priceRequest->user_id){
+            $priceRequest->delete();
+            return back();
+        }
+        else{
+            alert()->error('شما مجاز به پاک کردن این درخواست قیمت نیستید','غیر مجاز');
+            return back();
+        }
     }
 }

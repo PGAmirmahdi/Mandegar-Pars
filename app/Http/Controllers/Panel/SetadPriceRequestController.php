@@ -43,9 +43,8 @@ class SetadPriceRequestController extends Controller
                     'product_id' => $product->id,
                     'product_name' => $product->title,
                     'product_model' => $product->productModels->slug,
-                    'category_name' => $product->category->name,
+                    'category_name' => $product->category->slug,
                     'count' => $request->counts[$key],
-                    'description' => $request->description[$key],
                 ];
             }
         }
@@ -54,114 +53,109 @@ class SetadPriceRequestController extends Controller
             'customer_id' => $request->customer_id ,
             'date' => $request->date,
             'hour' => $request->hour,
+            'code' => 'STD-' . random_int(1000000, 9999999),
+            'payment_type' => $request->payment_type,
+            'status' => 'pending',
+            'description' => $request->description ,
             'products' => json_encode($items)
         ]);
 
-        // notification sent to ceo
         $notifiables = User::where('id','!=',auth()->id())->whereHas('role' , function ($role) {
             $role->whereHas('permissions', function ($q) {
                 $q->whereIn('name', ['ceo','sales-manager']);
             });
         })->get();
-        $notif_title = 'درخواست قیمت ستاد';
-        $notif_message = 'یک درخواست قیمت ستاد توسط همکار فروش سامانه ستاد ثبت گردید';
+        $notif_title = 'درخواست ستاد';
+        $notif_message = 'یک درخواست ستاد توسط همکار فروش سامانه ستاد ثبت گردید';
         $url = route('price-requests.index');
         Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
-        // end notification sent to ceo
-        // ثبت فعالیت
+
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'ثبت درخواست قیمت ستاد',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') یک درخواست قیمت ستاد برای کالاها ثبت کرد.',
+            'action' => 'ثبت درخواست ستاد',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') یک درخواست ستاد ثبت کرد.',
             'created_at' => now(),
         ];
-        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
-        alert()->success('درخواست قیمت با موفقیت ثبت شد','ثبت درخواست قیمت');
-        return redirect()->route('price-requests.index');
+        Activity::create($activityData);
+        alert()->success('درخواست ستاد با موفقیت ثبت شد','ثبت درخواست ستاد');
+        return redirect()->route('setad-price-requests.index');
     }
-    public function show(PriceRequest $priceRequest)
+    public function show(SetadPriceRequest $setadpriceRequest)
     {
-        $this->authorize('price-requests-list');
+        $this->authorize('setad-price-requests-list');
 
-        // برای هر محصول، اطلاعات شامل قیمت جدید را به دست می‌آوریم
-        $items = json_decode($priceRequest->items, true);
+        $items = json_decode($setadpriceRequest->items, true);
 
         foreach ($items as $key => $item) {
-            $product = Product::find($item['product_id']); // اطلاعات محصول
+            $product = Product::find($item['product_id']);
             if ($product) {
-                // فقط قیمت جدید را به دست می‌آوریم و از قیمت قبلی صرف نظر می‌کنیم
-                $items[$key]['market_price'] = $item['new_price'] ?? null; // اگر new_price وجود نداشت، مقدار null
+                $items[$key]['market_price'] = $item['new_price'] ?? null;
             }
         }
 
-        return view('panel.price-requests.show', compact('priceRequest', 'items'));
+        return view('panel.price-requests.show', compact('setadpriceRequest', 'items'));
     }
 
 
-    public function edit(PriceRequest $priceRequest)
+    public function edit(SetadPriceRequest $setadpriceRequest)
     {
         $this->authorize('ceo');
 
-        return view('panel.price-requests.edit', compact('priceRequest'));
+        return view('panel.setad-price-requests.edit', compact('setadpriceRequest'));
     }
 
-    public function update(Request $request, PriceRequest $priceRequest)
+    public function update(Request $request, SetadPriceRequest $setadpriceRequest)
     {
         $this->authorize('ceo');
 
         $items = [];
-        foreach (json_decode($priceRequest->items, true) as $key => $item) {
+        foreach (json_decode($setadpriceRequest->items, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
             if ($product) {
                 $items[] = [
-                    'product_id' => $product->id,
-                    'product_name' => $product->title,
-                    'product_model' => $product->productModels->slug ?? 'نامشخص',
-                    'category_name' => $product->category->name ?? 'نامشخص',
-                    'count' => $item['count'] ?? 0,
-                    'description' => $item['description'] ?? '',
                     'price' => str_replace(',', '', $request->prices[$key] ?? 0),
-                    'vat_included' => isset($request->vat_included[$key]),
                 ];
 
             }
         }
 
-        $priceRequest->update([
+        $setadpriceRequest->update([
+            'acceptor_id' => auth()->id(),
             'items' => json_encode($items),
-            'status' => 'sent',
+            'status' => 'accepted',
+            'description'=> $request->description,
         ]);
 
         // notification sent to ceo
         $notifiables = User::whereHas('role', function ($role) {
             $role->whereHas('permissions', function ($q) {
-                $q->where('name', 'sales-manager');
+                $q->where('name', 'ceo');
             });
         })->get();
 
-        $notif_title = 'درخواست قیمت';
-        $notif_message = 'قیمت کالاهای درخواستی توسط مدیر ثبت گردید';
-        $url = route('price-requests.index');
+        $notif_title = 'ثبت ستاد';
+        $notif_message = 'درخواست ستاد توسط مدیر ثبت گردید';
+        $url = route('setad-price-requests.index');
         Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
-        Notification::send($priceRequest->user, new SendMessage($notif_title,$notif_message, $url));
+        Notification::send($setadpriceRequest->user, new SendMessage($notif_title,$notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'به‌روزرسانی درخواست قیمت',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') قیمت‌های درخواستی را به‌روزرسانی کرد.',
+            'action' => 'تایید درخواست ستاد',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') درخواست ستاد را تایید کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData); // ثبت فعالیت در پایگاه داده
-        alert()->success('قیمت ها با موفقیت ثبت شدند', 'ثبت قیمت');
+        alert()->success('درخواست ستاد با موفقیت تایید شد', 'تایید درخواست ستاد');
         return redirect()->route('price-requests.index');
     }
 
 
-    public function destroy(PriceRequest $priceRequest)
+    public function destroy(SetadPriceRequest $setadpriceRequest)
     {
         $this->authorize('price-requests-delete');
 
-        $priceRequest->delete();
+        $setadpriceRequest->delete();
         return back();
     }
 }
