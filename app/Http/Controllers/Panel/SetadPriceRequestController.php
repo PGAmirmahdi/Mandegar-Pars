@@ -114,6 +114,7 @@ class SetadPriceRequestController extends Controller
             if ($product) {
                 $items[] = [
                     'price' => str_replace(',', '', $request->prices[$key] ?? 0),
+                    'system_price' => $request->system_price[$key],
                 ];
 
             }
@@ -153,7 +154,7 @@ class SetadPriceRequestController extends Controller
 
     public function destroy(SetadPriceRequest $setadpriceRequest)
     {
-        $this->authorize('price-requests-delete');
+        $this->authorize('setad-price-requests-delete');
 
         $setadpriceRequest->delete();
         return back();

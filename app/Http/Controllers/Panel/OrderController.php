@@ -128,7 +128,7 @@ class OrderController extends Controller
         $this->authorize('customer-order-edit');
 
         // edit own invoice OR is admin
-        $this->authorize('edit-order-customer', $order);
+        $this->authorize('customer-order-edit', $order);
         if (auth()->user()->isAccountant()) {
             return back();
         }

@@ -21,6 +21,7 @@ class CreateSetadPriceRequestsTable extends Migration
             $table->string('date')->comment('روز مهلت بررسی');
             $table->string('hour')->comment('ساعت مهلت بررسی');
             $table->string('price');
+            $table->string('system_price');
             $table->string('status');
             $table->longText('products');
             $table->longText('description');
