@@ -102,7 +102,7 @@ class CustomerController extends Controller
             'address1' => $request->address1,
             'address2' => $request->address2,
             'description' => $request->description,
-            'employer' => $request->employer,
+            'employer' => $request->employer ?? null,
         ]);
         $url = $request->url;
 
