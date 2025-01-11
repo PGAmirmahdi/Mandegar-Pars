@@ -29,6 +29,10 @@ class Customer extends Model
     {
         return $this->hasMany(Debtor::class);
     }
+    public function setadRequest()
+    {
+        return $this->hasMany(SetadPriceRequest::class);
+    }
     public function invoices()
     {
         return $this->hasMany(Invoice::class);

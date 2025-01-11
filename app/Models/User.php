@@ -48,6 +48,11 @@ class User extends Authenticatable
     {
 
     }
+
+    public function setadRequest()
+    {
+        return $this->hasMany(SetadPriceRequest::class);
+    }
     public function hasAnyRole(array $roles)
     {
         return in_array($this->role->name, $roles);

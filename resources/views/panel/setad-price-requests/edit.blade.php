@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'ثبت قیمت')
+@section('title', 'تایید درخواست ستاد')
 @section('styles')
     <style>
         table tbody tr td input {
@@ -12,51 +12,40 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
-                <h6>ثبت قیمت</h6>
+                <h6>تایید درخواست ستاد</h6>
             </div>
-            <form action="{{ route('price-requests.update', $priceRequest->id) }}" method="post">
+            <form action="{{ route('setad_price_requests.update', $setadpriceRequest->id) }}" method="post">
                 @csrf
                 @method('put')
                 <div class="form-row">
                     <div class="col-12 mb-3">
-                        <table class="table table-striped table-bordered text-center">
-                            <thead class="bg-primary">
+                        <table>
+                            <thead>
                             <tr>
                                 <th>عنوان کالا</th>
                                 <th>مدل</th>
                                 <th>دسته‌بندی</th>
                                 <th>تعداد</th>
+                                <th>قیمت پیشنهادی سیستم</th>
                                 <th>قیمت (تومان)</th>
-                                <th>شامل ارزش افزوده</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach(json_decode($priceRequest->items) as $index => $item)
+                            @foreach(json_decode($setadpriceRequest->products) as $index => $item)
                                 <tr>
                                     <td>{{ $item->product_name }}</td>
                                     <td>{{ $item->product_model }}</td>
                                     <td>{{ $item->category_name }}</td>
                                     <td>{{ $item->count }}</td>
-                                    <td class="d-flex flex-column align-items-center">
-                                        <input type="text"
-                                               class="form-control price-input"
-                                               name="prices[{{ $index }}]"
-                                               value="{{ isset($item->price) ? number_format($item->price) : 0 }}"
-                                               required>
-                                        <span class="price-display text-muted mt-1"
-                                              style="font-size: 0.9em;">
-                                            {{ isset($item->price) ? number_format($item->price) : '0' }}
-                                        </span>
+                                    <td>
+                                        <input type="text" name="prices[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->price) : 0 }}">
                                     </td>
                                     <td>
-                                        <input type="checkbox" name="vat_included[{{ $index }}]" {{ isset($item->vat_included) && $item->vat_included ? 'checked' : '' }}>
+                                        <span>{{ number_format($item->system_price ?? 0) }}</span>
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
-                            <tfoot>
-                            <tr></tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

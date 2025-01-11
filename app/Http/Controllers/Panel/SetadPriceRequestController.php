@@ -9,6 +9,8 @@ use App\Models\SetadPriceRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Notifications\SendMessage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
 class SetadPriceRequestController extends Controller
@@ -16,7 +18,6 @@ class SetadPriceRequestController extends Controller
     public function index()
     {
         $this->authorize('setad-price-requests-list');
-
         $setadprice_requests = SetadPriceRequest::latest()->paginate(30);
 
         return view('panel.setad-price-requests.index', compact('setadprice_requests'));
@@ -50,10 +51,10 @@ class SetadPriceRequestController extends Controller
         }
         SetadPriceRequest::create([
             'user_id' => auth()->id(),
-            'customer_id' => $request->customer_id ,
+            'customer_id' => $request->customer ,
             'date' => $request->date,
             'hour' => $request->hour,
-            'code' => 'STD-' . random_int(1000000, 9999999),
+            'code' => 'STD-' . random_int(1000000000, 9999999999),
             'payment_type' => $request->payment_type,
             'status' => 'pending',
             'description' => $request->description ,
@@ -68,7 +69,7 @@ class SetadPriceRequestController extends Controller
         $notif_title = 'درخواست ستاد';
         $notif_message = 'یک درخواست ستاد توسط همکار فروش سامانه ستاد ثبت گردید';
         $url = route('price-requests.index');
-        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+//        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 
         $activityData = [
             'user_id' => auth()->id(),
@@ -78,7 +79,7 @@ class SetadPriceRequestController extends Controller
         ];
         Activity::create($activityData);
         alert()->success('درخواست ستاد با موفقیت ثبت شد','ثبت درخواست ستاد');
-        return redirect()->route('setad-price-requests.index');
+        return redirect()->route('setad_price_requests.index');
     }
     public function show(SetadPriceRequest $setadpriceRequest)
     {
@@ -99,15 +100,32 @@ class SetadPriceRequestController extends Controller
 
     public function edit(SetadPriceRequest $setadpriceRequest)
     {
+        // بررسی مجوزهای کاربر
         $this->authorize('ceo');
+        $this->authorize('admin');
 
-        return view('panel.setad-price-requests.edit', compact('setadpriceRequest'));
+        // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
+        $items = collect(json_decode($setadpriceRequest->items))->map(function ($item) {
+            // بازیابی قیمت محصول برای فروشنده مشخص
+            $price = DB::table('price_list')
+                ->where('product_id', $item->product_id) // شناسه محصول
+                ->where('seller_id', 10) // آیدی فروشنده (مقدار پیش‌فرض یا داینامیک)
+                ->value('price');
+
+            $item->system_price = $price ?? 0; // مقدار پیش‌فرض 0 در صورت نبودن قیمت
+            return $item;
+        });
+
+        // ارسال داده به ویو
+        return view('panel.setad-price-requests.edit', [
+            'setadpriceRequest' => $setadpriceRequest->fill(['items' => $items]),
+        ]);
     }
 
     public function update(Request $request, SetadPriceRequest $setadpriceRequest)
     {
         $this->authorize('ceo');
-
+        $this->authorize('admin');
         $items = [];
         foreach (json_decode($setadpriceRequest->items, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
@@ -137,8 +155,8 @@ class SetadPriceRequestController extends Controller
         $notif_title = 'ثبت ستاد';
         $notif_message = 'درخواست ستاد توسط مدیر ثبت گردید';
         $url = route('setad-price-requests.index');
-        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
-        Notification::send($setadpriceRequest->user, new SendMessage($notif_title,$notif_message, $url));
+//        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+//        Notification::send($setadpriceRequest->user, new SendMessage($notif_title,$notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
@@ -148,7 +166,7 @@ class SetadPriceRequestController extends Controller
         ];
         Activity::create($activityData); // ثبت فعالیت در پایگاه داده
         alert()->success('درخواست ستاد با موفقیت تایید شد', 'تایید درخواست ستاد');
-        return redirect()->route('price-requests.index');
+        return redirect()->route('setad_price_requests.index');
     }
 
 

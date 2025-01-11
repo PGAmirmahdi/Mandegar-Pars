@@ -175,7 +175,11 @@ class PermissionSeeder extends Seeder
 //            'customer-order-edit' => 'ویرایش سفارشات مشتری',
 //            'customer-order-delete' => 'حذف سفارشات مشتری',
 //            'PartnerCity'=>'همکار شهرستان'
-            'sales-engineering' => 'مهندسی  خرید'
+//            'sales-engineering' => 'مهندسی  خرید'
+
+           'setad-price-requests-list' => 'لیست درخواست ستاد',
+           'setad-price-requests-create' => 'ثبت درخواست ستاد',
+            'setad-price-requests-delete' => 'حذف درخواست ستاد',
         ];
 
         foreach ($items as $key => $item)

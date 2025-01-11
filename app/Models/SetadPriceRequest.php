@@ -8,18 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 class SetadPriceRequest extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
+    const STATUS = [
+        'pending' => 'منتظر تایید',
+        'accepted' => 'تایید شد',
+        'rejected' => 'رد شد'
+    ];
 
     public function customer()
     {
-        $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
+
     public function user()
     {
-        $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
+
     public function acceptor()
     {
-        $this->belongsTo(Customer::class, 'acceptor_id');
+        return $this->belongsTo(User::class, 'acceptor_id');
     }
 }

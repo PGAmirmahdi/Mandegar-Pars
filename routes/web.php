@@ -45,6 +45,7 @@ use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
 use App\Http\Controllers\Panel\SetadFeeController;
+use App\Http\Controllers\Panel\SetadPriceRequestController;
 use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\SMSController;
 use App\Http\Controllers\Panel\SmsHistoryController;
@@ -345,6 +346,10 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Price Request
     Route::resource('price-requests', PriceRequestController::class);
+
+    // Setad Price Request
+    Route::resource('setad_price_requests', SetadPriceRequestController::class);
+    Route::put('panel/setad_price_requests/{setad_price_request}', [SetadPriceRequestController::class, 'update'])->name('setad-price-requests.update');
 
     // Cheque Request
     Route::resource('cheque', ChequeController::class);
