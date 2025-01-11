@@ -17,11 +17,11 @@ class Customer extends Model
     ];
 
     const CUSTOMER_TYPE = [
-        'system' => 'سامانه',
         'tehran' => 'تهران',
         'city' => 'شهرستان',
-    'single-sale' => 'تک فروشی',
+        'single-sale' => 'تک فروشی',
         'setad' => 'سامانه ستاد',
+        'system' => 'سامانه(ام پی سیستم)',
         'online-sale' => 'فروش اینترنتی',
         'free-sale' => 'آزاد (بازار)',
     ];
