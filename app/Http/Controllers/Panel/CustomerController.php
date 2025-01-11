@@ -90,7 +90,7 @@ class CustomerController extends Controller
         $customer->update([
             'name' => $request->name,
             'type' => $request->type,
-            'customer_type' => $request->customer_type,
+            'customer_type' => $request->customer_type ? trim($request->customer_type) : null,
             'economical_number' => $request->economical_number,
             'national_number' => $request->national_number,
             'postal_code' => $request->postal_code,
