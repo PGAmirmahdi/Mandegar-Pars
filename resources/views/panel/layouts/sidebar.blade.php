@@ -251,12 +251,12 @@
                     <a class="{{ active_sidebar(['sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports']) ? 'active' : '' }}" href="{{ route('sale-reports.index') }}">گزارشات فروش</a>
                 </li>
             @endcan
-            @can('price-requests-list')
+            @can('setad-price-requests-list')
                 <li>
                     <a class="{{ active_sidebar(['setad-price-requests','setad-price-requests/create','setad-price-requests/{setad-price-request}/edit','setad-price-requests/{setad-price-request}']) ? 'active' : '' }}" href="{{ route('setad_price_requests.index') }}">درخواست ستاد</a>
                 </li>
             @endcan
-            @can('setad-price-requests-list')
+            @can('price-requests-list')
                 <li>
                     <a class="{{ active_sidebar(['price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}']) ? 'active' : '' }}" href="{{ route('price-requests.index') }}">درخواست قیمت</a>
                 </li>
