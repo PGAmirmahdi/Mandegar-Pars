@@ -39,7 +39,7 @@
                     @endif
 
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mt-3">
-                        <div style="font-size: 16px;color: #482a50;" class="text-left mb-1">{{' یادداشت ' . $note->user->fullName()}}</div>
+                        <div style="font-size: 16px;color: #482a50;" class="text-left mb-1">{{' یادداشت ' . $note->user->fullName()}} - {{ verta($note->created_at)->format('H:i') }}</div>
                         <div class="paper">
                             <span class="btn-remove">&times;</span>
                             <div class="lines">
@@ -48,7 +48,6 @@
                                 <div class="loading d-none text-left">
                                     درحال ذخیره سازی ...
                                 </div>
-                                <div class="text-muted" style="font-size: 12px;margin-top: 80%;margin-right: 20%">{{ verta($note->created_at)->format('H:i - Y/m/d') }}</div>
                             </div>
                             <div class="holes hole-top"></div>
                             <div class="holes hole-middle"></div>
