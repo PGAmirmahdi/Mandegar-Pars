@@ -349,7 +349,6 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Setad Price Request
     Route::resource('setad_price_requests', SetadPriceRequestController::class);
-    Route::put('panel/setad_price_requests/{setad_price_request}', [SetadPriceRequestController::class, 'update'])->name('setad-price-requests.update');
 
     // Cheque Request
     Route::resource('cheque', ChequeController::class);

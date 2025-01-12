@@ -28,7 +28,7 @@ class ApiController extends Controller
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'phone' => 'required|string|digits_between:10,15',
-                'national_number' => 'required|string|size:10',
+                'national_number' => 'required|string',
                 'province' => 'required|string|max:255',
                 'city' => 'required|string|max:255',
                 'address_1' => 'required|string|max:500',
