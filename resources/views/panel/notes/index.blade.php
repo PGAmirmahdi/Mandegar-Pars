@@ -28,7 +28,9 @@
                                     درحال ذخیره سازی ...
                                 </div>
                             </div>
-                            <div class="holes hole-top"></div>
+                            <div class="holes hole-top">
+                                   {{' یادداشت ' . $note->user->fullName()}}
+                            </div>
                             <div class="holes hole-middle"></div>
                             <div class="holes hole-bottom">
                                 {{verta($note->created_at)->format('H:i - Y/m/d')}}
