@@ -45,10 +45,10 @@
                             <div class="lines">
                                 <input type="text" name="note-title" class="title @if($note->user->id != auth()->id()) disabled @endif" @if($note->user->id != auth()->id()) disabled @endif value="{{ $note->title }}" data-id="{{ $note->id }}" maxlength="30" placeholder="عنوان یادداشت">
                                 <textarea class="text @if($note->user->id != auth()->id()) disabled @endif" name="note-text" spellcheck="false" placeholder="متن یادداشت..." @if($note->user->id != auth()->id()) disabled @endif>{{ $note->text }}</textarea>
-                                <div class="loading d-none">
+                                <div class="loading d-none text-left">
                                     درحال ذخیره سازی ...
                                 </div>
-                                <div class="text-muted" style="font-size: 12px;margin-top: 80%;margin-right: 60%">{{ verta($note->created_at)->format('H:i - Y/m/d') }}</div>
+                                <div class="text-muted" style="font-size: 12px;margin-top: 80%;margin-right: 20%">{{ verta($note->created_at)->format('H:i - Y/m/d') }}</div>
                             </div>
                             <div class="holes hole-top"></div>
                             <div class="holes hole-middle"></div>
