@@ -200,7 +200,7 @@
 {{--                    <a class="{{ active_sidebar(['prices-list']) ? 'active' : '' }}" href="{{ route('prices-list') }}">لیست قیمت ماندگار پارس</a>--}}
 {{--                </li>--}}
                 <li>
-                    <a class="{{ active_sidebar(['other-prices-list']) ? 'active' : '' }}" href="{{ route('other-prices-list') }}">لیست قیمت ماندگار پارس</a>
+                    <a class="{{ active_sidebar(['other-prices-list']) ? 'active' : '' }}" href="{{ route('other-prices-list') }}">لیست قیمت کف بازار</a>
                 </li>
             @endcan
             @can('price-history')

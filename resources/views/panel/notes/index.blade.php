@@ -17,19 +17,38 @@
                 @endcan
             </div>
             <div class="row" id="list">
+                @php
+                    $currentDate = null; // برای نگهداری تاریخ فعلی
+                @endphp
                 @foreach($notes as $note)
+                    @php
+                        // تبدیل تاریخ یادداشت به تاریخ هجری شمسی
+                        $noteDate = verta($note->created_at)->format('Y/m/d - l');
+                    @endphp
+
+                    @if ($currentDate !== $noteDate)
+                        @if ($currentDate !== null)
+                            <div class="col-12 mt-3"><hr></div> <!-- خط جداساز بین تاریخ‌ها -->
+                        @endif
+                        <div class="col-12 text-center mb-3">
+                            <h5>{{ $noteDate === verta()->format('Y/m/d') ? 'امروز' : $noteDate }}</h5>
+                        </div>
+                        @php
+                            $currentDate = $noteDate; // به روز رسانی تاریخ فعلی
+                        @endphp
+                    @endif
 
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mt-3">
+                        <div style="font-size: 16px;color: #482a50;" class="text-left mb-1">{{' یادداشت ' . $note->user->fullName()}}</div>
                         <div class="paper">
                             <span class="btn-remove">&times;</span>
                             <div class="lines">
-                                <div style="font-size: 12px;color: #482a50;margin-right: 10%">{{' یادداشت ' . $note->user->fullName()}}</div>
                                 <input type="text" name="note-title" class="title @if($note->user->id != auth()->id()) disabled @endif" @if($note->user->id != auth()->id()) disabled @endif value="{{ $note->title }}" data-id="{{ $note->id }}" maxlength="30" placeholder="عنوان یادداشت">
                                 <textarea class="text @if($note->user->id != auth()->id()) disabled @endif" name="note-text" spellcheck="false" placeholder="متن یادداشت..." @if($note->user->id != auth()->id()) disabled @endif>{{ $note->text }}</textarea>
                                 <div class="loading d-none">
                                     درحال ذخیره سازی ...
                                 </div>
-                                <div style="font-size: 10px;color: gray">{{verta($note->created_at)->format('H:i - Y/m/d')}}</div>
+                                <div class="text-muted" style="font-size: 12px;margin-top: 80%;margin-right: 60%">{{ verta($note->created_at)->format('H:i - Y/m/d') }}</div>
                             </div>
                             <div class="holes hole-top"></div>
                             <div class="holes hole-middle"></div>
