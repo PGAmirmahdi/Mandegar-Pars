@@ -54,7 +54,7 @@ class SetadPriceRequestController extends Controller
             'customer_id' => $request->customer ,
             'date' => $request->date,
             'hour' => $request->hour,
-            'code' => 'STD-' . random_int(1000000000, 9999999999),
+            'code' => 'PM' . random_int(1000000, 9999999),
             'payment_type' => $request->payment_type,
             'status' => 'pending',
             'description' => $request->description ,

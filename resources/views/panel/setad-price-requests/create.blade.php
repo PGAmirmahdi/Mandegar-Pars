@@ -115,7 +115,6 @@
                             @error('description')
                             <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                             @enderror
-                            <span class="text-info fst-italic">خط بعد Shift + Enter</span>
                         </div>
                     </div>
                 </div>

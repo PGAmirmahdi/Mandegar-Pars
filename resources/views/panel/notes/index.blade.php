@@ -30,7 +30,9 @@
                             </div>
                             <div class="holes hole-top"></div>
                             <div class="holes hole-middle"></div>
-                            <div class="holes hole-bottom"></div>
+                            <div class="holes hole-bottom">
+                                {{verta($note->created_at)->format('H:i - Y/m/d')}}
+                            </div>
                         </div>
                     </div>
                 @endforeach
