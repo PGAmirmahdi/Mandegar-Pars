@@ -50,7 +50,8 @@
                                 <th>مدل</th>
                                 <th>دسته‌بندی</th>
                                 <th>تعداد</th>
-                                <th>قیمت پیشنهادی سیستم</th>
+{{--                                <th>قیمت پیشنهادی سیستم</th>--}}
+                                <th>قیمت کارشناس</th>
                                 <th>قیمت (تومان)</th>
                             </tr>
                             </thead>
@@ -70,11 +71,11 @@
                                         <input class="form-control readonly" type="text" name="count[{{ $index }}]" value="{{ $item->count }}" readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control readonly" type="text" name="system_price[{{ $index }}]" value="{{ isset($item->system_price) ? number_format($item->system_price) : "بدون قیمت" }}" readonly>
+                                        <input class="form-control readonly" type="text" name="price[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->system_price) : "بدون قیمت" }}" readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control price-input" type="text" name="prices[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->price) : 0 }}">
-                                        <span class="price-display">{{ isset($item->price) ? number_format($item->price) : '0' }} ریال </span>
+                                        <input class="form-control price-input" type="text" name="final_price[{{ $index }}]" value="{{ isset($item->final_price) ? number_format($item->final_price) : 0 }}">
+                                        <span class="price-display">{{ isset($item->final_price) ? number_format($item->final_price) : '0' }} ریال </span>
                                     </td>
                                 </tr>
                             @endforeach

@@ -42,7 +42,8 @@
                                 <label for="payment_type">نوع پرداختی</label>
                                 <select class="form-control" name="payment_type" id="payment_type">
                                     @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                        <option value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                        <option
+                                            value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
                                 @error('payment_type')
@@ -51,7 +52,8 @@
                             </div>
                             <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                 <label for="date">تاریخ موعد<span class="text-danger">*</span></label>
-                                <input type="text" name="date" autocomplete="off" class="form-control date-picker-shamsi-list" id="date" value="{{ old('date') }}">
+                                <input type="text" name="date" autocomplete="off"
+                                       class="form-control date-picker-shamsi-list" id="date" value="{{ old('date') }}">
                                 @error('date')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -64,9 +66,18 @@
                                     <i class="fa fa-clock-o"></i>
                                 </span>
                                     </div>
-                                    <input type="text" autocomplete="off" name="hour" class="form-control text-left" value="{{ old('hour') }}" dir="ltr" required>
+                                    <input type="text" autocomplete="off" name="hour" class="form-control text-left"
+                                           value="{{ old('hour') }}" dir="ltr" required>
                                 </div>
                                 @error('hour')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                <label for="need_no">شماره نیاز<span class="text-danger">*</span></label>
+                                <input type="text" name="need_no" autocomplete="off" class="form-control" id="need_no"
+                                       value="{{ old('need_no') }}">
+                                @error('need_no')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -94,10 +105,12 @@
                                         @endforeach
                                     </select>
                                 </td>
-                                <td><input type="number" class="form-control" name="counts[]" min="1" value="1"
+                                <td><input type="number" class="form-control" name="counts[]" min="1"
                                            required></td>
-                                <td><input type="text" class="form-control" name="price[]" min="1" value="0"
-                                           required></td>
+                                <td><input type="text" class="form-control price-input" name="price[]"
+                                           required>
+                                    <div class="formatted-price" style="margin-top: 5px; font-weight: bold;"></div>
+                                </td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-floating btn_remove"><i
                                             class="fa fa-trash"></i></button>
@@ -129,36 +142,36 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            // Format numbers to three-digit groups
-            function formatNumber(input) {
-                // Remove existing commas and format
-                let value = input.value.replace(/,/g, '');
+            // Format price input and display formatted price below
+            $(document).on('input', '.price-input', function () {
+                let value = $(this).val().replace(/,/g, ''); // Remove existing commas
                 if (!isNaN(value) && value.trim() !== '') {
-                    input.value = new Intl.NumberFormat('fa-IR').format(value);
+                    let formattedValue = new Intl.NumberFormat('fa-IR').format(value); // Format with three-digit separation
+                    $(this).next('.formatted-price').text(formattedValue); // Update the formatted price display
+                } else {
+                    $(this).next('.formatted-price').text(''); // Clear the display if input is invalid
                 }
-            }
-
-            // Attach event to price fields
-            $(document).on('input', 'input[name="price[]"]', function () {
-                formatNumber(this);
             });
 
             // Add new row
             $(document).on('click', '#btn_add', function () {
                 $('table tbody').append(`
-                    <tr>
-                        <td>
-                            <select class="js-example-basic-single" name="products[]" required>
-                                <option value="" disabled selected>انتخاب کنید</option>
-                                @foreach($products as $item)
+                <tr>
+                    <td>
+                        <select class="js-example-basic-single" name="products[]" required>
+                            <option value="" disabled selected>انتخاب کنید</option>
+                            @foreach($products as $item)
                 <option value="{{ $item->id }}">
-                                        {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
+                                    {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                 </option>
 @endforeach
                 </select>
             </td>
             <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-            <td><input type="text" class="form-control" name="price[]" value="0" required></td>
+            <td>
+                <input type="text" class="form-control price-input" name="price[]" value="0" required>
+                <div class="formatted-price" style="margin-top: 5px; font-weight: bold;"></div> <!-- نمایش قیمت فرمت‌شده -->
+            </td>
             <td>
                 <button type="button" class="btn btn-danger btn-floating btn_remove">
                     <i class="fa fa-trash"></i>
@@ -167,13 +180,13 @@
         </tr>
 `);
 
-                // Reinitialize select2
+                // Reinitialize select2 after adding new row
                 $('.js-example-basic-single').select2();
             });
 
             // Remove row
             $(document).on('click', '.btn_remove', function () {
-                $(this).closest('tr').remove();
+                $(this).parent().parent().remove();
             });
         });
     </script>

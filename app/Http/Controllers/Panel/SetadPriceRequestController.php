@@ -45,6 +45,7 @@ class SetadPriceRequestController extends Controller
                     'product_name' => $product->title,
                     'product_model' => $product->productModels->slug,
                     'category_name' => $product->category->slug,
+                    'price' => $request->price[$key],
                     'count' => $request->counts[$key],
                 ];
             }
@@ -139,8 +140,8 @@ class SetadPriceRequestController extends Controller
                     'product_model' => $product->productModels->slug,
                     'category_name' => $product->category->slug,
                     'count' => $request->counts,
-                    'price' => str_replace(',', '', $request->prices[$key] ?? 0),
-                    'system_price' => $request->system_price[$key],
+                    'price' => str_replace(',', '', $request->final_price[$key] ?? 0),
+                    'system_price' => $request->price[$key],
                 ];
 
             }
