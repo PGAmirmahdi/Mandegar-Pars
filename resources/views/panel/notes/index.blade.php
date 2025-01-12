@@ -23,8 +23,8 @@
                         <div class="paper">
                             <span class="btn-remove">&times;</span>
                             <div class="lines">
+                                <div style="font-size: 12px;color: #482a50;margin-right: 10%">{{' یادداشت ' . $note->user->fullName()}}</div>
                                 <input type="text" name="note-title" class="title @if($note->user->id != auth()->id()) disabled @endif" @if($note->user->id != auth()->id()) disabled @endif value="{{ $note->title }}" data-id="{{ $note->id }}" maxlength="30" placeholder="عنوان یادداشت">
-                                <div style="font-size: 12px;color: #322636">{{' یادداشت ' . $note->user->fullName()}}</div>
                                 <textarea class="text @if($note->user->id != auth()->id()) disabled @endif" name="note-text" spellcheck="false" placeholder="متن یادداشت..." @if($note->user->id != auth()->id()) disabled @endif>{{ $note->text }}</textarea>
                                 <div class="loading d-none">
                                     درحال ذخیره سازی ...

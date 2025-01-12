@@ -20,13 +20,7 @@ class BuyOrderController extends Controller
     public function index()
     {
         $this->authorize('buy-orders-list');
-
-        if (Gate::any(['admin', 'ceo', 'sales-manager'])) {
             $orders = BuyOrder::latest()->paginate(30);
-        } else {
-            $orders = BuyOrder::where('user_id', auth()->id())->latest()->paginate(30);
-        }
-
         return view('panel.buy-orders.index', compact('orders'));
     }
 
