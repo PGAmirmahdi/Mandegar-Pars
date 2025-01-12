@@ -18,23 +18,22 @@
             </div>
             <div class="row" id="list">
                 @foreach($notes as $note)
+
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mt-3">
                         <div class="paper">
                             <span class="btn-remove">&times;</span>
                             <div class="lines">
-                                <input type="text" name="note-title" class="title" value="{{ $note->title }}" data-id="{{ $note->id }}" maxlength="30" placeholder="عنوان یادداشت">
-                                <textarea class="text" name="note-text" spellcheck="false" placeholder="متن یادداشت...">{{ $note->text }}</textarea>
+                                <input type="text" name="note-title" class="title @if($note->user->id != auth()->id()) disabled @endif" @if($note->user->id != auth()->id()) disabled @endif value="{{ $note->title }}" data-id="{{ $note->id }}" maxlength="30" placeholder="عنوان یادداشت">
+                                <div style="font-size: 12px;color: #322636">{{' یادداشت ' . $note->user->fullName()}}</div>
+                                <textarea class="text @if($note->user->id != auth()->id()) disabled @endif" name="note-text" spellcheck="false" placeholder="متن یادداشت..." @if($note->user->id != auth()->id()) disabled @endif>{{ $note->text }}</textarea>
                                 <div class="loading d-none">
                                     درحال ذخیره سازی ...
                                 </div>
+                                <div style="font-size: 10px;color: gray">{{verta($note->created_at)->format('H:i - Y/m/d')}}</div>
                             </div>
-                            <div class="holes hole-top">
-                                   {{' یادداشت ' . $note->user->fullName()}}
-                            </div>
+                            <div class="holes hole-top"></div>
                             <div class="holes hole-middle"></div>
-                            <div class="holes hole-bottom">
-                                {{verta($note->created_at)->format('H:i - Y/m/d')}}
-                            </div>
+                            <div class="holes hole-bottom"></div>
                         </div>
                     </div>
                 @endforeach
