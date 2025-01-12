@@ -12,6 +12,9 @@ class Customer extends Model
     protected $guarded = [];
 
     const TYPE = [
+        'Industrial'=>'واحد های صنعتی',
+        'Organizations' => 'سازمانها',
+        'Global' => 'سراسری',
         'government' => 'سازمانی/دولتی/نیروهای مسلح',
         'private' => 'بازار/تهران/شهرستان',
     ];

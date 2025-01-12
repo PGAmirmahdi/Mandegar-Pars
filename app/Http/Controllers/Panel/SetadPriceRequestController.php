@@ -58,12 +58,13 @@ class SetadPriceRequestController extends Controller
             'payment_type' => $request->payment_type,
             'status' => 'pending',
             'description' => $request->description ,
+            'need_no' => $request->need_no,
             'products' => json_encode($items)
         ]);
 
         $notifiables = User::where('id','!=',auth()->id())->whereHas('role' , function ($role) {
             $role->whereHas('permissions', function ($q) {
-                $q->whereIn('name', ['ceo','sales-manager']);
+                $q->whereIn('name', ['ceo','sales-manager','admin']);
             });
         })->get();
         $notif_title = 'درخواست ستاد';
@@ -109,9 +110,9 @@ class SetadPriceRequestController extends Controller
             // بازیابی قیمت محصول برای فروشنده مشخص
             $price = DB::table('price_list')
                 ->where('product_id', $item->product_id) // شناسه محصول
-                ->where('seller_id', 10) // آیدی فروشنده (مقدار پیش‌فرض یا داینامیک)
+                ->where('seller_id', 4) // آیدی فروشنده (مقدار پیش‌فرض یا داینامیک)
                 ->value('price');
-
+            $item->price = $items['price'] ?? 0;
             $item->system_price = $price ?? 0; // مقدار پیش‌فرض 0 در صورت نبودن قیمت
             return $item;
         });
@@ -153,14 +154,14 @@ class SetadPriceRequestController extends Controller
         ]);
 
         // notification sent to ceo
-        $notifiables = User::whereHas('role', function ($role) {
+        $notifiables = User::where('id','!=',auth()->id())->whereHas('role' , function ($role) {
             $role->whereHas('permissions', function ($q) {
-                $q->where('name', 'ceo');
+                $q->whereIn('name', ['ceo','sales-manager','admin']);
             });
         })->get();
 
-        $notif_title = 'ثبت ستاد';
-        $notif_message = 'درخواست ستاد توسط مدیر ثبت گردید';
+        $notif_title = 'تایید درخواست ستاد';
+        $notif_message = 'تایید درخواست ستاد توسط مدیر انجام گردید';
         $url = route('setad_price_requests.index');
 //        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 //        Notification::send($setadpriceRequest->user, new SendMessage($notif_title,$notif_message, $url));
@@ -176,7 +177,33 @@ class SetadPriceRequestController extends Controller
         return redirect()->route('setad_price_requests.index');
     }
 
-
+    public function actionResult(Request $request, SetadPriceRequest $setad_price_request)
+    {
+        $this->authorize('Organ');
+        $setad_price_request->update([
+            'final_result'=>$request->final_result,
+            'status' => 'finished',
+            'final_description'=> $request->final_description,
+        ]);
+        // notification sent to ceo
+        $notifiables = User::where('id','!=',auth()->id())->whereHas('role' , function ($role) {
+            $role->whereHas('permissions', function ($q) {
+                $q->whereIn('name', ['ceo','sales-manager','admin']);
+            });
+        })->get();
+        $notif_title = 'ثبت نتیجه ستاد';
+        $notif_message = 'نتیجه درخواست ستاد توسط کارشناس فروش سامانه ستاد ثبت گردید';
+        $url = route('setad_price_requests.index');
+//        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+//        Notification::send($setadpriceRequest->user, new SendMessage($notif_title,$notif_message, $url));
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'نتیجه درخواست ستاد',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ')نتیجه درخواست ستاد را بارگذاری کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
+    }
     public function destroy(SetadPriceRequest $setad_price_request)
     {
         $this->authorize('setad-price-requests-delete');

@@ -361,7 +361,7 @@
                                         {{--                        @endcanany--}}
                                         {{--                                        <th>وضعیت سفارش</th>--}}
 
-                                        @canany(['sales-manager','accountant','PartnerCity','Organ','partner-tehran'])
+                                        @canany(['sales-manager','accountant','PartnerCity','Organ','partner-tehran','buying_engineering'])
                                             <th>اقدام</th>
                                         @endcanany
 

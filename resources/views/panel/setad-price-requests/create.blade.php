@@ -50,21 +50,21 @@
                                 @enderror
                             </div>
                             <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="date">تاریخ<span class="text-danger">*</span></label>
-                                <input type="text" name="date" class="form-control date-picker-shamsi-list" id="date" value="{{ old('date') }}">
+                                <label for="date">تاریخ موعد<span class="text-danger">*</span></label>
+                                <input type="text" name="date" autocomplete="off" class="form-control date-picker-shamsi-list" id="date" value="{{ old('date') }}">
                                 @error('date')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-xl-2 col-lg-2 col-md-3 mb-4 clock-sec">
-                                <label>ساعت<span class="text-danger">*</span></label>
+                                <label>ساعت موعد<span class="text-danger">*</span></label>
                                 <div class="input-group clockpicker-autoclose-demo">
                                     <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <i class="fa fa-clock-o"></i>
                                 </span>
                                     </div>
-                                    <input type="text" name="hour" class="form-control text-left" value="{{ old('hour') }}" dir="ltr" required>
+                                    <input type="text" autocomplete="off" name="hour" class="form-control text-left" value="{{ old('hour') }}" dir="ltr" required>
                                 </div>
                                 @error('hour')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -76,6 +76,7 @@
                             <tr>
                                 <th>عنوان کالا</th>
                                 <th>تعداد</th>
+                                <th>قیمت</th>
                                 <th>حذف</th>
                             </tr>
                             </thead>
@@ -94,6 +95,8 @@
                                     </select>
                                 </td>
                                 <td><input type="number" class="form-control" name="counts[]" min="1" value="1"
+                                           required></td>
+                                <td><input type="text" class="form-control" name="price[]" min="1" value="0"
                                            required></td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-floating btn_remove"><i
@@ -126,7 +129,21 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            // add item
+            // Format numbers to three-digit groups
+            function formatNumber(input) {
+                // Remove existing commas and format
+                let value = input.value.replace(/,/g, '');
+                if (!isNaN(value) && value.trim() !== '') {
+                    input.value = new Intl.NumberFormat('fa-IR').format(value);
+                }
+            }
+
+            // Attach event to price fields
+            $(document).on('input', 'input[name="price[]"]', function () {
+                formatNumber(this);
+            });
+
+            // Add new row
             $(document).on('click', '#btn_add', function () {
                 $('table tbody').append(`
                     <tr>
@@ -134,25 +151,29 @@
                             <select class="js-example-basic-single" name="products[]" required>
                                 <option value="" disabled selected>انتخاب کنید</option>
                                 @foreach($products as $item)
-                <option value="{{ $item->id }}"
-                                        {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
-                                         {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
+                <option value="{{ $item->id }}">
+                                        {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                 </option>
 @endforeach
                 </select>
             </td>
             <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-            <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
+            <td><input type="text" class="form-control" name="price[]" value="0" required></td>
+            <td>
+                <button type="button" class="btn btn-danger btn-floating btn_remove">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
         </tr>
 `);
 
-                // Reinitialize select2 after adding new row
+                // Reinitialize select2
                 $('.js-example-basic-single').select2();
             });
 
-            // remove item
+            // Remove row
             $(document).on('click', '.btn_remove', function () {
-                $(this).parent().parent().remove()
+                $(this).closest('tr').remove();
             });
         });
     </script>
