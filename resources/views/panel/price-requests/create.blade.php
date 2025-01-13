@@ -89,7 +89,7 @@
                                 @foreach($products as $item)
                 <option value="{{ $item->id }}"
                                         {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
-                                         {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
+                                         {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                 </option>
 @endforeach
                 </select>
@@ -100,7 +100,6 @@
         </tr>
 `);
 
-                // Reinitialize select2 after adding new row
                 $('.js-example-basic-single').select2();
             });
 
