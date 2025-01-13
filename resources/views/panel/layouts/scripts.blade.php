@@ -87,28 +87,26 @@
 
 @yield('scripts')
 <script>
-    // افزودن توکن CSRF به درخواست‌های Ajax
 
-    var userId = {{ Auth::user()->id }}; // شناسه کاربر لاگین شده
+    {{--var userId = {{ Auth::user()->id }}; --}}
 
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = false;
+    {{--Pusher.logToConsole = false;--}}
 
-    var pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
-        cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
-        encrypted: true,
-        authEndpoint: '/pusher/auth',
-        auth: {
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // ارسال توکن CSRF
-            }
-        }
-    });
+    {{--var pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {--}}
+    {{--    cluster: '{{ env("PUSHER_APP_CLUSTER") }}',--}}
+    {{--    encrypted: true,--}}
+    {{--    authEndpoint: '/pusher/auth',--}}
+    {{--    auth: {--}}
+    {{--        headers: {--}}
+    {{--            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // ارسال توکن CSRF--}}
+    {{--        }--}}
+    {{--    }--}}
+    {{--});--}}
 
-    var channel = pusher.subscribe('private-notification.' + userId);
-    channel.bind('App\\Events\\SendMessage', function(data) {
-        console.log('Notification received: ', data.message);
-    });
+    {{--var channel = pusher.subscribe('private-notification.' + userId);--}}
+    {{--channel.bind('App\\Events\\SendMessage', function(data) {--}}
+    {{--    console.log('Notification received: ', data.message);--}}
+    {{--});--}}
 
 </script>
 <script>
