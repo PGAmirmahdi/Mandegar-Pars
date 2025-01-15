@@ -73,7 +73,7 @@ class SetadPriceRequestController extends Controller
         $notif_title = 'درخواست ستاد';
         $notif_message = 'یک درخواست ستاد توسط همکار فروش سامانه ستاد ثبت گردید';
         $url = route('setad_price_requests.index');
-//        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 
         $activityData = [
             'user_id' => auth()->id(),
@@ -172,8 +172,8 @@ class SetadPriceRequestController extends Controller
         $notif_title = 'ویرایش درخواست ستاد';
         $notif_message = 'ویرایش درخواست ستاد توسط کارشناس فروش انجام گردید';
         $url = route('setad_price_requests.index');
-//        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
-//        Notification::send($setadpriceRequest->user, new SendMessage($notif_title,$notif_message, $url));
+        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+        Notification::send($setad_price_request->user->id, new SendMessage($notif_title,$notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
@@ -272,17 +272,17 @@ class SetadPriceRequestController extends Controller
 
         // اعتبارسنجی ورودی‌ها
         $request->validate([
-            'status' => 'required|string|in:approved,rejected',
-            'final_description' => 'nullable|string|max:500',
+            'row_id' => 'required|exists:setad_price_requests,id',
+            'result' => 'required|in:winner,lose',
+            'description' => 'nullable|string',
         ]);
 
         try {
             // به‌روزرسانی داده‌ها
-            $setad_price_request = SetadPriceRequest::find($request->row_id);
-
-            $setad_price_request->update([
+            $setadPriceRequest = SetadPriceRequest::findOrFail($request->row_id);
+            $setadPriceRequest->update([
                 'status' => $request->result,
-                'final_description' => $request->description,
+                'description' => $request->description,
             ]);
             // ارسال نوتیفیکیشن
             $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
@@ -296,8 +296,8 @@ class SetadPriceRequestController extends Controller
             $url = route('setad_price_requests.index');
 
             // اگر نیاز به ارسال نوتیفیکیشن دارید این را از حالت کامنت خارج کنید
-            // Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
-            // Notification::send($setad_price_request->user, new SendMessage($notif_title, $notif_message, $url));
+             Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+             Notification::send($setad_price_request->user, new SendMessage($notif_title, $notif_message, $url));
 
             // ثبت فعالیت
             Activity::create([
@@ -307,11 +307,8 @@ class SetadPriceRequestController extends Controller
                 'created_at' => now(),
             ]);
 
-            // پاسخ موفقیت
-            return response()->json([
-                'message' => 'نتیجه با موفقیت ثبت شد.',
-                'data' => $setad_price_request,
-            ], 200);
+            alert()->success('نتیجه نهایی با موفقیت ثبت شد','ثبت نتیجه');
+            return redirect()->route('setad_price_requests.index');
         } catch (\Exception $e) {
             // مدیریت خطا
             return response()->json([
@@ -373,6 +370,6 @@ class SetadPriceRequestController extends Controller
         $notif_title = 'تایید درخواست ستاد';
         $notif_message = 'تایید درخواست ستاد توسط مدیر انجام گردید';
         $url = route('setad_price_requests.index');
-        //send notificaion
+        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
     }
 }

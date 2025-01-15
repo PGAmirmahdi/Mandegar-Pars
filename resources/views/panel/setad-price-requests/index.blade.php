@@ -21,7 +21,8 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="actionResultForm">
+                            <form id="actionResultForm" method="POST" action="{{ route('setad_price_requests.actionResult') }}">
+                                @csrf
                                 <input type="hidden" id="rowId" name="row_id">
                                 <div class="mb-3">
                                     <label for="resultSelect" class="form-label">نتیجه نهایی</label>
@@ -32,14 +33,18 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="description" class="form-label">توضیحات</label>
-                                    <textarea id="description" class="form-control" name="description"
-                                              rows="3"></textarea>
+                                    <textarea id="description" class="form-control" name="description" rows="3"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                                    <button type="submit" id="saveActionResult" class="btn btn-success">ذخیره</button>
                                 </div>
                             </form>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
-                            <button type="button" id="saveActionResult" class="btn btn-success">ذخیره</button>
+                            <button type="submit" id="saveActionResult" class="btn btn-success">ذخیره</button>
                         </div>
                     </div>
                 </div>
@@ -78,7 +83,7 @@
                             // محاسبه تفاوت تاریخ‌ها به روز
                             $daysLeft = \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false);
                         @endphp
-                        <tr class="@if($daysLeft <= 0 && !in_array($setadprice_request->status, ['accepted'])) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2 && !in_array($setadprice_request->status, ['accepted'])) table-warning @elseif($daysLeft > 2) @elseif($setadprice_request->status == 'accepted') table-success @endif">
+                        <tr class="@if($daysLeft <= 0 && !in_array($setadprice_request->status, ['accepted','winner'])) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2 && !in_array($setadprice_request->status, ['accepted','winner','lose'])) table-warning @elseif($daysLeft > 2) @elseif($setadprice_request->status == 'accepted') table-success @else @endif">
                             <td>{{ ++$key }}</td>
                             <td>{{$setadprice_request->code}}</td>
                             <td>{{ $setadprice_request->user->name . ' ' . $setadprice_request->user->family }}</td>
@@ -88,13 +93,13 @@
                                         class="badge badge-success">{{ \App\Models\SetadPriceRequest::STATUS['accepted'] }}</span>
                                 @elseif($setadprice_request->status == 'rejected')
                                     <span
-                                        class="badge badge-success">{{ \App\Models\SetadPriceRequest::STATUS['winner'] }}</span>
+                                        class="badge badge-danger">{{ \App\Models\SetadPriceRequest::STATUS['rejected'] }}</span>
                                 @elseif($setadprice_request->status == 'winner')
                                     <span
-                                        class="badge badge-danger">{{ \App\Models\SetadPriceRequest::STATUS['lose'] }}</span>
+                                        class="badge badge-success">{{ \App\Models\SetadPriceRequest::STATUS['winner'] }}</span>
                                 @elseif($setadprice_request->status == 'lose')
                                     <span
-                                        class="badge badge-danger">{{ \App\Models\SetadPriceRequest::STATUS['rejected'] }}</span>
+                                        class="badge badge-danger">{{ \App\Models\SetadPriceRequest::STATUS['lose'] }}</span>
                                 @else
                                     <span
                                         class="badge badge-warning">{{ \App\Models\SetadPriceRequest::STATUS['pending'] }}</span>
@@ -142,7 +147,7 @@
                                     منتظر تایید
                                 @elseif($setadprice_request->status == 'winner')
                                     <span
-                                        class="badge badge-warning">{{ \App\Models\SetadPriceRequest::STATUS['winner'] }}</span>
+                                        class="badge badge-success">{{ \App\Models\SetadPriceRequest::STATUS['winner'] }}</span>
                                 @elseif($setadprice_request->status == 'lose')
                                     <span
                                         class="badge badge-warning">{{ \App\Models\SetadPriceRequest::STATUS['lose'] }}</span>
@@ -204,25 +209,25 @@
             $('#rowId').val(rowId); // مقداردهی به فیلد مخفی
             $('#actionResultModal').modal('show'); // نمایش Modal
         });
-        $('#saveActionResult').on('click', function () {
-            const data = $('#actionResultForm').serialize(); // سریال‌سازی اطلاعات فرم
-            console.log(data);
-            $.ajax({
-                url: "{{ url('/setad_price_requests/actionResult') }}",
-                type: 'POST',
-                data: data,
-                success: function (response) {
-                    $('#actionResultModal').modal('hide'); // بستن Modal
-                    alert('نتیجه با موفقیت ذخیره شد.');
-                    // رفرش یا به‌روزرسانی جدول
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                    alert('خطایی رخ داد. لطفاً دوباره تلاش کنید.');
-                }
-            });
-        });
+        {{--$('#saveActionResult').on('click', function () {--}}
+        {{--    const data = $('#actionResultForm').serialize(); // سریال‌سازی اطلاعات فرم--}}
+        {{--    console.log(data);--}}
+        {{--    $.ajax({--}}
+        {{--        url: "{{ url('/setad_price_requests/actionResult') }}",--}}
+        {{--        type: 'POST',--}}
+        {{--        data: data,--}}
+        {{--        success: function (response) {--}}
+        {{--            $('#actionResultModal').modal('hide'); // بستن Modal--}}
+        {{--            alert('نتیجه با موفقیت ذخیره شد.');--}}
+        {{--            // رفرش یا به‌روزرسانی جدول--}}
+        {{--            location.reload();--}}
+        {{--        },--}}
+        {{--        error: function (xhr, status, error) {--}}
+        {{--            console.error('Error:', error);--}}
+        {{--            alert('خطایی رخ داد. لطفاً دوباره تلاش کنید.');--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--});--}}
 
     </script>
 @endsection
