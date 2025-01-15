@@ -669,7 +669,7 @@
                             <span class="price_with_grouping text-primary"></span>
                         </td>
                         <td>
-                            <input type="number" name="other_taxes[]" class="form-control" min="0" value="0" readonly>
+                            <input type="number" name="other_taxes[]" class="form-control" min="0" value="0">
                             <span class="price_with_grouping text-primary"></span>
                         </td>
                         <td>
