@@ -349,6 +349,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Setad Price Request
     Route::resource('setad_price_requests', SetadPriceRequestController::class);
+    Route::get('setad_price_requests/action', [SetadPriceRequestController::class, 'action'])->name('setad_price_requests.action');
+    Route::get('setad_price_requests/actionStore', [SetadPriceRequestController::class, 'actionStore'])->name('setad_price_requests.actionStore');
 
     // Cheque Request
     Route::resource('cheque', ChequeController::class);

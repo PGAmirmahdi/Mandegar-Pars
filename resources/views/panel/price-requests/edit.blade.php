@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'ثبت قیمت')
+@section('title', 'ویرایش درخواست ستاد')
 @section('styles')
     <style>
         table tbody tr td input {
@@ -12,9 +12,9 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
-                <h6>ثبت قیمت</h6>
+                <h6>ویرایش درخواست ستاد</h6>
             </div>
-            <form action="{{ route('price-requests.update', $priceRequest->id) }}" method="post">
+            <form action="{{ route('setad-price-requests.update', $priceRequest->id) }}" method="post">
                 @csrf
                 @method('put')
                 <div class="form-row">
