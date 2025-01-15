@@ -496,6 +496,7 @@
             handleInputChange('other_counts[]');
             handleInputChange('other_prices[]');
             handleInputChange('other_discount_amounts[]');
+            handleInputChange('other_taxes[]');
 
             // end calc the product invoice
 
