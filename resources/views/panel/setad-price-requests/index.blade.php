@@ -121,7 +121,7 @@
                                 @endif
                             </td>
                             <td>
-                                @if(in_array($setadprice_request->status, ['accepted', 'rejected']))
+                                @if(in_array($setadprice_request->status, ['accepted', 'rejected','winner','lose']))
                                     {{$setadprice_request->acceptor->name . ' ' . $setadprice_request->acceptor->family}}
                                 @elseif($setadprice_request->status == 'pending')
                                     منتظر تایید
