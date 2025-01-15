@@ -50,6 +50,10 @@
                                 <label for="need_no">شماره نیاز</label>
                                 <input type="text" name="need_no" class="form-control" id="need_no" value="{{ $setad_price_request->need_no }}" disabled>
                             </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                <label for="acceptor">تایید کننده</label>
+                                <input type="text" name="acceptor" class="form-control" id="acceptor" value="{{ $setad_price_request->acceptor->name . ' - ' . $setad_price_request->acceptor->family }}" disabled>
+                            </div>
                         </div>
                         <table class="table table-striped table-bordered text-center">
                             <thead class="bg-primary">
