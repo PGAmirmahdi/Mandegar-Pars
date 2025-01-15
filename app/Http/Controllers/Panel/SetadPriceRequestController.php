@@ -216,7 +216,10 @@ class SetadPriceRequestController extends Controller
         }
         $setad_price_request = SetadPriceRequest::findOrfail($request->setad_id);
         $items = [];
-        $OrderItems = [];
+        $OrderItems = [
+            'products' => [],
+            'other_products' => [],
+        ];
         foreach (json_decode($setad_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
             if ($product) {
@@ -229,7 +232,7 @@ class SetadPriceRequestController extends Controller
                     'final_price' => str_replace(',', '', $request->final_price[$key] ?? 0),
                     'price' => str_replace(',', '', $request->price[$key] ?? 0),
                 ];
-                $OrderItems[] = [
+                $OrderItems['other_products'][] = [
                     'other_products' => (integer)$product->id,
                     'other_colors' => 'black',
                     'other_counts' => (integer)$request->count[$key],

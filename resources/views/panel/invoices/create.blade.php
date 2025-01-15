@@ -41,20 +41,23 @@
                                     <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
                                         <label
                                             class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'active' : '' }}">
-                                            <input type="radio" id="req_for1" name="req_for" class="custom-control-input"
+                                            <input type="radio" id="req_for1" name="req_for"
+                                                   class="custom-control-input"
                                                    value="pre-invoice"
                                                    form="invoice_form" {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'checked' : '' }}>پیش
                                             فاکتور
                                         </label>
                                         <label
                                             class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'invoice' ? 'active' : '' }}">
-                                            <input type="radio" id="req_for2" name="req_for" class="custom-control-input"
+                                            <input type="radio" id="req_for2" name="req_for"
+                                                   class="custom-control-input"
                                                    value="invoice"
                                                    form="invoice_form" {{ old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
                                         </label>
                                         <label
                                             class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'amani-invoice' ? 'active' : '' }}">
-                                            <input type="radio" id="req_for2" name="req_for" class="custom-control-input"
+                                            <input type="radio" id="req_for2" name="req_for"
+                                                   class="custom-control-input"
                                                    value="amani-invoice"
                                                    form="invoice_form" {{ old('req_for') == 'amani-invoice' ? 'checked' : '' }}>فاکتور
                                             امانی
@@ -94,7 +97,8 @@
                                         <label for="payment_type">نوع پرداختی<span class="text-danger">*</span></label>
                                         <select class="form-control" name="payment_type" id="payment_type">
                                             @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                                <option value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                                <option
+                                                    value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                             @endforeach
                                         </select>
                                         @error('payment_type')
@@ -211,10 +215,9 @@
                                                     class="fa fa-plus mr-2"></i> افزودن کالا
                                             </button>
                                         </div>
-                                        <div class="form-check mb-3">
-                                            <input type="checkbox" name="exclude_tax" id="exclude_tax" class="form-check-input" value="1">
-                                            <label class="form-check-label" for="exclude_tax">محاسبه مالیات را غیرفعال کن</label>
-                                        </div>
+                                        <label for="exclude_tax">عدم محاسبه مالیات</label>
+                                        <input type="checkbox" name="exclude_tax" id="exclude_tax"
+                                               class="form-check-input">
                                         <div class="overflow-auto">
                                             <table class="table table-bordered table-striped text-center"
                                                    id="other_products_table">
@@ -250,6 +253,11 @@
                                                                        placeholder="نام رنگ"
                                                                        value="{{ old('other_colors')[$i] }}"
                                                                        required readonly>
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" name="exclude_tax[]"
+                                                                       class="form-check-input"
+                                                                       value="1">
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="other_counts[]"
@@ -532,22 +540,20 @@
             let count = $('#other_products_table input[name="other_counts[]"]')[index].value;
             let price = $('#other_products_table input[name="other_prices[]"]')[index].value;
             let discount_amount = $('#other_products_table input[name="other_discount_amounts[]"]')[index].value;
-
-
+            let exclude_tax = $('#exclude_tax').is(':checked'); // بررسی وضعیت چک‌باکس
             // thousands grouping
             $($('#other_products_table input[name="other_prices[]"]')[index]).siblings()[0].innerText = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $($('#other_products_table input[name="other_discount_amounts[]"]')[index]).siblings()[0].innerText = discount_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
             $.ajax({
                 url: "{{ route('calcOtherProductsInvoice') }}",
                 type: 'post',
                 data: {
+                    'exclude_tax': exclude_tax,
                     'price': price,
                     'count': count,
                     'discount_amount': discount_amount,
                 },
                 success: function (res) {
-
                     $('#other_products_table input[name="other_prices[]"]')[index].value = res.data.price;
                     $('#other_products_table input[name="other_total_prices[]"]')[index].value = res.data.total_price;
                     $('#other_products_table input[name="other_discount_amounts[]"]')[index].value = res.data.discount_amount;

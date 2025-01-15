@@ -297,17 +297,17 @@ class InvoiceController extends Controller
         $price = $request->price;
         $total_price = $price * $request->count;
         $discount_amount = $request->discount_amount;
-
         $extra_amount = 0; // اگر هزینه اضافی دارید، اینجا محاسبه کنید
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
 
-        // اصلاح محاسبه مالیات
-        $tax = 0; // مقدار پیش‌فرض مالیات
-
-        if (!$request->exclude_tax) { // اگر گزینه محاسبه مالیات انتخاب نشده باشد
-            $tax_percentage = self::TAX_AMOUNT; // درصد مالیات (مثلاً 0.09 یا 9%)
+        $exclude_tax = ($request->exclude_tax === "true" || $request->exclude_tax === true || $request->exclude_tax == 1);
+        if (!$exclude_tax) {
+            $tax_percentage = self::TAX_AMOUNT;
             $tax = $tax_percentage * $total_price_with_off;
+        } else {
+            $tax = 0;
         }
+
 
         $invoice_net = $tax + $total_price_with_off + $extra_amount;
 
