@@ -22,16 +22,16 @@ class SetadPriceRequest extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Customer::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function acceptor()
     {
-        return $this->belongsTo(User::class, 'acceptor_id');
+        return $this->belongsTo(User::class);
     }
 }
