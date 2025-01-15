@@ -40,11 +40,6 @@
                                     <button type="submit" id="saveActionResult" class="btn btn-success">ذخیره</button>
                                 </div>
                             </form>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
-                            <button type="submit" id="saveActionResult" class="btn btn-success">ذخیره</button>
                         </div>
                     </div>
                 </div>
