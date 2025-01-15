@@ -276,8 +276,6 @@ class SetadPriceRequestController extends Controller
             'result' => 'required|in:winner,lose',
             'description' => 'nullable|string',
         ]);
-
-        try {
             // به‌روزرسانی داده‌ها
             $setadPriceRequest = SetadPriceRequest::findOrFail($request->row_id);
             $setadPriceRequest->update([
@@ -309,13 +307,6 @@ class SetadPriceRequestController extends Controller
 
             alert()->success('نتیجه نهایی با موفقیت ثبت شد','ثبت نتیجه');
             return redirect()->route('setad_price_requests.index');
-        } catch (\Exception $e) {
-            // مدیریت خطا
-            return response()->json([
-                'message' => 'خطا در ثبت نتیجه. لطفاً دوباره تلاش کنید.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
     }
 
 
