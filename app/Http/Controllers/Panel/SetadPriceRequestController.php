@@ -17,12 +17,31 @@ use Illuminate\Support\Facades\Notification;
 
 class SetadPriceRequestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('setad-price-requests-list');
-        $setadprice_requests = SetadPriceRequest::latest()->paginate(30);
+
+        $setadprice_requests = SetadPriceRequest::query()
+            ->when($request->code && $request->code !== 'all', function ($query) use ($request) {
+                $query->where('code', $request->code);
+            })
+            ->when($request->user && $request->user !== 'all', function ($query) use ($request) {
+                $query->where('user_id', $request->user);
+            })
+            ->when($request->acceptor && $request->acceptor !== 'all', function ($query) use ($request) {
+                $query->where('acceptor_id', $request->acceptor);
+            })
+            ->when($request->status && $request->status !== 'all', function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->from_date && $request->to_date, function ($query) use ($request) {
+                $query->whereBetween('date', [$request->from_date, $request->to_date]);
+            })
+            ->latest()
+            ->paginate(30);
 
         return view('panel.setad-price-requests.index', compact('setadprice_requests'));
+
     }
 
     public function create()
