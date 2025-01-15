@@ -115,6 +115,17 @@
                                     </button>
                                 </td>
                             @endcan
+                            @can('setad-price-requests-result')
+                                <td>
+                                    <button
+                                        class="btn btn-danger btn-floating trashRow @if(auth()->id() != $setadprice_request->user->id && $setadprice_request->status == 'accepted') disabled @endif "
+                                        data-url="{{ route('setad_price_requests.destroy',$setadprice_request->id) }}"
+                                        data-id="{{ $setadprice_request->id }}"
+                                        @if(auth()->id() != $setadprice_request->user->id && $setadprice_request->status == 'accepted') disabled @endif>
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                     </tbody>

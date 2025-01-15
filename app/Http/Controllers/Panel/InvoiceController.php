@@ -293,19 +293,23 @@ class InvoiceController extends Controller
 
     public function calcOtherProductsInvoice(Request $request)
     {
-        $unofficial = (bool) $request->unofficial;
+        $unofficial = (bool) $request->unofficial; // بررسی اینکه آیا فاکتور رسمی است یا خیر
         $price = $request->price;
         $total_price = $price * $request->count;
         $discount_amount = $request->discount_amount;
 
-        $extra_amount = 0;
+        $extra_amount = 0; // اگر هزینه اضافی دارید، اینجا محاسبه کنید
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
 
         // اصلاح محاسبه مالیات
-        $tax_percentage = self::TAX_AMOUNT; // فرض می‌کنیم این درصد مالیات است (مثلاً 9)
-        $tax = $tax_percentage * $total_price_with_off;
+        $tax = 0; // مقدار پیش‌فرض مالیات
 
-        $invoice_net =  $tax + $total_price_with_off + $extra_amount;
+        if (!$request->exclude_tax) { // اگر گزینه محاسبه مالیات انتخاب نشده باشد
+            $tax_percentage = self::TAX_AMOUNT; // درصد مالیات (مثلاً 0.09 یا 9%)
+            $tax = $tax_percentage * $total_price_with_off;
+        }
+
+        $invoice_net = $tax + $total_price_with_off + $extra_amount;
 
         $data = [
             'price' => $price,
@@ -319,6 +323,7 @@ class InvoiceController extends Controller
 
         return response()->json(['data' => $data]);
     }
+
 
     public function search(Request $request)
     {

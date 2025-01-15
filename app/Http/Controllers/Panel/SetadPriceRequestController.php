@@ -230,12 +230,12 @@ class SetadPriceRequestController extends Controller
                     'price' => str_replace(',', '', $request->price[$key] ?? 0),
                 ];
                 $OrderItems[] = [
-                    'products' => (integer)$product->id,
-                    'colors' => 'black',
-                    'counts' => (integer)$request->count[$key],
-                    'units' => 'number',
-                    'prices' => (integer)$request->price[$key],
-                    'total_prices' => (integer)$request->count[$key] * (integer)$request->price[$key],
+                    'other_products' => (integer)$product->id,
+                    'other_colors' => 'black',
+                    'other_counts' => (integer)$request->count[$key],
+                    'other_units' => 'number',
+                    'other_prices' => (integer)$request->price[$key],
+                    'other_total_prices' => (integer)$request->count[$key] * (integer)$request->price[$key],
                 ];
             }
         }

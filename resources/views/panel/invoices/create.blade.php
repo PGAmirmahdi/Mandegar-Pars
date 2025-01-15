@@ -211,6 +211,10 @@
                                                     class="fa fa-plus mr-2"></i> افزودن کالا
                                             </button>
                                         </div>
+                                        <div class="form-check mb-3">
+                                            <input type="checkbox" name="exclude_tax" id="exclude_tax" class="form-check-input" value="1">
+                                            <label class="form-check-label" for="exclude_tax">محاسبه مالیات را غیرفعال کن</label>
+                                        </div>
                                         <div class="overflow-auto">
                                             <table class="table table-bordered table-striped text-center"
                                                    id="other_products_table">
@@ -496,7 +500,6 @@
             handleInputChange('other_counts[]');
             handleInputChange('other_prices[]');
             handleInputChange('other_discount_amounts[]');
-            handleInputChange('other_taxes[]');
 
             // end calc the product invoice
 
