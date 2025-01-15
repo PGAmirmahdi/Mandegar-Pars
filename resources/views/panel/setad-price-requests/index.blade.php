@@ -78,7 +78,7 @@
                             @canany(['ceo','admin'])
                                 <td>
                                     <a class="btn btn-primary btn-floating @if(in_array($setadprice_request->status, ['accepted', 'rejected'])) disabled @endif" @if(in_array($setadprice_request->status, ['accepted', 'rejected'])) disabled @endif
-                                       href="{{ route('setad_price_requests.edit', $setadprice_request->id) }}">
+                                       href="{{ route('setad_price_requests.action', $setadprice_request->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>

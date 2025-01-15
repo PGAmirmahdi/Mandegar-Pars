@@ -14,9 +14,9 @@
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
                 <h6>ثبت درخواست ستاد</h6>
             </div>
-            <form action="{{ route('setad_price_requests.update',$setad_price_request->id) }}" method="post">
+            <form action="{{ route('setad_price_requests.actionStore') }}" method="post">
                 @csrf
-                @method('PUT')
+                <input type="hidden" value="{{$setad_price_request->id}}" name="setad_id">
                 <div class="form-row">
                     <div class="col-12 mb-3">
                         <div class="col-12 row mb-4">
@@ -51,7 +51,7 @@
                                 <th>دسته‌بندی</th>
                                 <th>تعداد</th>
                                 {{--                                <th>قیمت پیشنهادی سیستم</th>--}}
-                                <th>قیمت کارشناس</th>
+                                <th>قیمت پیشنهادی کارشناس فروش</th>
                                 <th>قیمت نهایی(تومان)</th>
                             </tr>
                             </thead>

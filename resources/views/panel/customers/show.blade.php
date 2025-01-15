@@ -62,17 +62,10 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="customer_type">مشتری <span class="text-danger">*</span></label>
-                        <input type="text" name="type" class="form-control" id="type"
-                               value="@if($customer->customer_type  == 'system')سامانه@elseif($customer->customer_type  == 'tehran')تهران@elseif($customer->customer_type  == 'city')شهرستان@elseif($customer->customer_type  == 'single-sale')تک فروشی@endif"
-                               readonly>
-                        @error('customer_type')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+                        <label for="customer_type">نوع مشتری</label>
+                        <input class="form-control" value="{{ \App\Models\Customer::CUSTOMER_TYPE[$customer->customer_type] }}" disabled id="customer_type">
                     </div>
-
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="economical_number">شماره اقتصادی</label>
                         <input type="text" name="economical_number" class="form-control" id="economical_number"
