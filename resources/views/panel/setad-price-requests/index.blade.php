@@ -122,7 +122,7 @@
                             </td>
                             <td>
                                 @if(in_array($setadprice_request->status, ['accepted', 'rejected']))
-                                    {{$setadprice_request->acceptor->fullName()}}
+                                    {{$setadprice_request->acceptor->name . ' ' . $setadprice_request->acceptor->family}}
                                 @elseif($setadprice_request->status == 'pending')
                                     منتظر تایید
                                 @else
