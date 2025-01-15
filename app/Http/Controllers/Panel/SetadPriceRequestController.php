@@ -269,30 +269,58 @@ class SetadPriceRequestController extends Controller
     public function actionResult(Request $request, SetadPriceRequest $setad_price_request)
     {
         $this->authorize('Organ');
-        $setad_price_request->update([
-            'final_result' => $request->final_result,
-            'status' => 'finished',
-            'final_description' => $request->final_description,
+
+        // اعتبارسنجی ورودی‌ها
+        $request->validate([
+            'status' => 'required|string|in:approved,rejected',
+            'final_description' => 'nullable|string|max:500',
         ]);
-        // notification sent to ceo
-        $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
-            $role->whereHas('permissions', function ($q) {
-                $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
-            });
-        })->get();
-        $notif_title = 'ثبت نتیجه ستاد';
-        $notif_message = 'نتیجه درخواست ستاد توسط کارشناس فروش سامانه ستاد ثبت گردید';
-        $url = route('setad_price_requests.index');
-//        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
-//        Notification::send($setadpriceRequest->user, new SendMessage($notif_title,$notif_message, $url));
-        $activityData = [
-            'user_id' => auth()->id(),
-            'action' => 'نتیجه درخواست ستاد',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ')نتیجه درخواست ستاد را بارگذاری کرد.',
-            'created_at' => now(),
-        ];
-        Activity::create($activityData);
+
+        try {
+            // به‌روزرسانی داده‌ها
+            $setad_price_request = SetadPriceRequest::find($request->row_id);
+
+            $setad_price_request->update([
+                'status' => $request->result,
+                'final_description' => $request->description,
+            ]);
+            // ارسال نوتیفیکیشن
+            $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
+                $role->whereHas('permissions', function ($q) {
+                    $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
+                });
+            })->get();
+
+            $notif_title = 'ثبت نتیجه ستاد';
+            $notif_message = 'نتیجه درخواست ستاد توسط کارشناس فروش سامانه ستاد ثبت گردید';
+            $url = route('setad_price_requests.index');
+
+            // اگر نیاز به ارسال نوتیفیکیشن دارید این را از حالت کامنت خارج کنید
+            // Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+            // Notification::send($setad_price_request->user, new SendMessage($notif_title, $notif_message, $url));
+
+            // ثبت فعالیت
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'نتیجه درخواست ستاد',
+                'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') نتیجه درخواست ستاد را بارگذاری کرد.',
+                'created_at' => now(),
+            ]);
+
+            // پاسخ موفقیت
+            return response()->json([
+                'message' => 'نتیجه با موفقیت ثبت شد.',
+                'data' => $setad_price_request,
+            ], 200);
+        } catch (\Exception $e) {
+            // مدیریت خطا
+            return response()->json([
+                'message' => 'خطا در ثبت نتیجه. لطفاً دوباره تلاش کنید.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     public function destroy(SetadPriceRequest $setad_price_request)
     {

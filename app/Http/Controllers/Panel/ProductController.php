@@ -43,8 +43,8 @@ class ProductController extends Controller
             ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                 $query->where('category_id', $request->category);
             })
-            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
-                $query->where('brand_id', $request->model);
+            ->when($request->brand && $request->brand !== 'all', function ($query) use ($request) {
+                $query->where('brand_id', $request->brand);
             })->when($request->status && $request->status !== 'all', function ($query) use ($request) {
                 $query->where('status', $request->status);
             });
@@ -187,11 +187,9 @@ class ProductController extends Controller
             ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                 $query->where('category_id', $request->category);
             })
-            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
-                $query->where('brand_id', $request->model);
+            ->when($request->brand && $request->brand !== 'all', function ($query) use ($request) {
+                $query->where('brand_id', $request->brand);
             })->latest()->paginate(30);
-
-
         return view('panel.products.index', compact('products'));
     }
 
