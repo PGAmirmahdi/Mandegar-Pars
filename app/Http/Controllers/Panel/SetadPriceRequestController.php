@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Notifications\SendMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 
 class SetadPriceRequestController extends Controller
@@ -89,16 +90,22 @@ class SetadPriceRequestController extends Controller
     {
         $this->authorize('setad-price-requests-list');
 
-        $items = json_decode($setad_price_request->items, true);
+        // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
+        $items = collect(json_decode($setad_price_request->items))->map(function ($item) {
+            // بازیابی قیمت محصول برای فروشنده مشخص
+            $price = DB::table('price_list')
+                ->where('product_id', $item->product_id) // شناسه محصول
+                ->where('seller_id', 4) // آیدی فروشنده (مقدار پیش‌فرض یا داینامیک)
+                ->value('price');
+            $item->price = $items['price'] ?? 0;
+            $item->system_price = $price ?? 0; // مقدار پیش‌فرض 0 در صورت نبودن قیمت
+            return $item;
+        });
 
-        foreach ($items as $key => $item) {
-            $product = Product::find($item['product_id']);
-            if ($product) {
-                $items[$key]['market_price'] = $item['new_price'] ?? null;
-            }
-        }
-
-        return view('panel.price-requests.show', compact('setad_price_request', 'items'));
+        // ارسال داده به ویو
+        return view('panel.setad-price-requests.show', [
+            'setad_price_request' => $setad_price_request->fill(['items' => $items]),
+        ]);
     }
 
 
@@ -181,11 +188,10 @@ class SetadPriceRequestController extends Controller
 
     public function action(SetadPriceRequest $setad_price_request)
     {
-
-        // بررسی مجوزهای کاربر
-        $this->authorize('ceo');
-        $this->authorize('admin');
-
+        if (!Gate::allows('ceo') && !Gate::allows('admin')) {
+            alert()->error('شما به این قسمت دسترسی ندارید', 'عدم دسترسی');
+            return back();
+        }
         $items = collect(json_decode($setad_price_request->items))->map(function ($item) {
             $price = DB::table('price_list')
                 ->where('product_id', $item->product_id)
@@ -204,11 +210,11 @@ class SetadPriceRequestController extends Controller
 
     public function actionStore(Request $request)
     {
-
+        if (!Gate::allows('ceo') && !Gate::allows('admin')) {
+            alert()->error('شما به این قسمت دسترسی ندارید', 'عدم دسترسی');
+            return back();
+        }
         $setad_price_request = SetadPriceRequest::findOrfail($request->setad_id);
-
-        $this->authorize('ceo');
-        $this->authorize('admin');
         $items = [];
         $OrderItems = [];
         foreach (json_decode($setad_price_request->products, true) as $key => $item) {
@@ -219,14 +225,14 @@ class SetadPriceRequestController extends Controller
                     'product_name' => $product->title,
                     'product_model' => $product->productModels->slug,
                     'category_name' => $product->category->slug,
-                    'count' => $request->count,
+                    'count' => $request->count[$key],
                     'final_price' => str_replace(',', '', $request->final_price[$key] ?? 0),
-                    'price' => $request->price[$key],
+                    'price' => str_replace(',', '', $request->price[$key] ?? 0),
                 ];
                 $OrderItems[] = [
                     'products' => (integer)$product->id,
                     'colors' => 'black',
-                    'counts' => (integer)$request->count,
+                    'counts' => (integer)$request->count[$key],
                     'units' => 'number',
                     'prices' => (integer)$request->price[$key],
                     'total_prices' => (integer)$request->count[$key] * (integer)$request->price[$key],
@@ -254,6 +260,7 @@ class SetadPriceRequestController extends Controller
         $this->notif_to_ceo();
         alert()->success('درخواست ستاد با موفقیت تایید شد', 'تایید درخواست ستاد');
         return redirect()->route('setad_price_requests.index');
+
     }
 
     public function actionResult(Request $request, SetadPriceRequest $setad_price_request)
@@ -313,11 +320,15 @@ class SetadPriceRequestController extends Controller
         $order->req_for = 'pre-invoice';
         $order->payment_type = $setad_price_request->payment_type;
         $order->code = $setad_price_request->code;
-        $order->user_id = auth()->id();
-        $order->customer_id = $setad_price_request->customer_id;
+        $order->user_id = $setad_price_request->user->id;
+        $order->customer_id = $setad_price_request->customer->id;
         $order->created_in = 'automation';
         $order->products = json_encode($OrderItems);
         $order->save();
+        $order->order_status()->updateOrCreate(
+            ['status' => 'register'],
+            ['orders' => 1, 'status' => 'register']
+        );
     }
 
     public function notif_to_ceo()

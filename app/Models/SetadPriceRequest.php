@@ -15,12 +15,11 @@ class SetadPriceRequest extends Model
         'accepted' => 'تایید شد',
         'rejected' => 'رد شد',
         'pending_result' => 'منتظر نتیجه ستاد',
-        'finished' => 'بسته شده'
-    ];
-    const Final_Result = [
+        'finished' => 'بسته شده',
         'winner' => 'برنده',
         'lose' => 'برنده نشده'
     ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');

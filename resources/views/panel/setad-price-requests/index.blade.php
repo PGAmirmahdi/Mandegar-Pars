@@ -17,7 +17,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>کد</th>
+                        <th>شناسه</th>
                         <th>ثبت کننده</th>
                         <th>وضعیت</th>
                         <th>زمان ثبت</th>
@@ -44,8 +44,8 @@
                             $daysLeft = \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false);
                         @endphp
                         <tr class="@if($daysLeft <= 0 && !in_array($setadprice_request->status, ['accepted'])) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2 && !in_array($setadprice_request->status, ['accepted'])) table-warning @elseif($daysLeft > 2) @elseif($setadprice_request->status == 'accepted') table-success @endif">
-                            <td>{{$setadprice_request->code}}</td>
                             <td>{{ ++$key }}</td>
+                            <td>{{$setadprice_request->code}}</td>
                             <td>{{ $setadprice_request->user->name }}</td>
                             <td>
                                 @if($setadprice_request->status == 'accepted')
@@ -53,7 +53,13 @@
                                         class="badge badge-success">{{ \App\Models\SetadPriceRequest::STATUS['accepted'] }}</span>
                                 @elseif($setadprice_request->status == 'rejected')
                                     <span
-                                        class="badge badge-success">{{ \App\Models\SetadPriceRequest::STATUS['rejected'] }}</span>
+                                        class="badge badge-success">{{ \App\Models\SetadPriceRequest::STATUS['winner'] }}</span>
+                                @elseif($setadprice_request->status == 'winner')
+                                    <span
+                                        class="badge badge-danger">{{ \App\Models\SetadPriceRequest::STATUS['lose'] }}</span>
+                                @elseif($setadprice_request->status == 'lose')
+                                    <span
+                                        class="badge badge-danger">{{ \App\Models\SetadPriceRequest::STATUS['rejected'] }}</span>
                                 @else
                                     <span
                                         class="badge badge-warning">{{ \App\Models\SetadPriceRequest::STATUS['pending'] }}</span>
@@ -64,7 +70,15 @@
                                 {{$setadprice_request->date . ' ' . $setadprice_request->hour}}
                             </td>
                             <td>
-                                {{$daysLeft}} روز
+                                @if($setadprice_request->status == 'winner')
+                                    برنده
+                                    @elseif($setadprice_request->status == 'lose')
+                                        برنده نشدیم
+                                @elseif(in_array($setadprice_request->status, ['pending','accepted']))
+                                    {{$daysLeft}} روز
+                                @else
+                                    نامشخص
+                                @endif
                             </td>
                             <td>
                                 @if(in_array($setadprice_request->status, ['accepted', 'rejected']))

@@ -22,7 +22,7 @@
                         <div class="col-12 row mb-4">
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="customer">نام سازمان/فروشگاه:</label>
-                                <strong id="customer">{{$setad_price_request->customer->name}}</strong>
+                                <input type="text" value="{{$setad_price_request->customer->name}}" class="readonly form-control" readonly>
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="payment_type">نوع پرداختی</label>
@@ -51,8 +51,8 @@
                                 <th>دسته‌بندی</th>
                                 <th>تعداد</th>
                                 {{--                                <th>قیمت پیشنهادی سیستم</th>--}}
-                                <th>قیمت پیشنهادی کارشناس فروش</th>
-                                <th>قیمت نهایی(تومان)</th>
+                                <th>قیمت پیشنهادی کارشناس فروش(ریال)</th>
+                                <th>قیمت نهایی(ریال)</th>
                             </tr>
                             </thead>
                             <tbody>

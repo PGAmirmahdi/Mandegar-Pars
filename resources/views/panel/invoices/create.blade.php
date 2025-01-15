@@ -309,7 +309,7 @@
                                                             <td>
                                                                 <input type="number" name="other_taxes[]"
                                                                        class="form-control" min="0"
-                                                                       value="{{ old('other_taxes')[$i] }}" readonly>
+                                                                       value="{{ old('other_taxes')[$i] }}">
                                                                 <span
                                                                     class="price_with_grouping text-primary">{{ number_format(old('other_taxes')[$i]) }}</span>
 
@@ -452,7 +452,7 @@
                     <span class="price_with_grouping text-primary"></span>
                 </td>
                 <td>
-                    <input type="number" name="other_taxes[]" class="form-control" min="0" value="0" readonly>
+                    <input type="number" name="other_taxes[]" class="form-control" min="0" value="0">
                     <span class="price_with_grouping text-primary"></span>
                 </td>
                 <td>
