@@ -297,7 +297,7 @@ class SetadPriceRequestController extends Controller
 
             // اگر نیاز به ارسال نوتیفیکیشن دارید این را از حالت کامنت خارج کنید
              Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
-             Notification::send($setad_price_request->user, new SendMessage($notif_title, $notif_message, $url));
+             Notification::send($setad_price_request->user->id, new SendMessage($notif_title, $notif_message, $url));
 
             // ثبت فعالیت
             Activity::create([
