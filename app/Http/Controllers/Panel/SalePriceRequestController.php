@@ -80,7 +80,7 @@ class SalePriceRequestController extends Controller
         $notif_title = 'درخواست ' . auth()->user()->role->label;
         $notif_message = "یک درخواست " . auth()->user()->role->label . " توسط همکار فروش " . auth()->user()->family . " ثبت گردید";
         $url = route('sale_price_requests.index');
-//        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
 
         $activityData = [
             'user_id' => auth()->id(),
@@ -179,8 +179,8 @@ class SalePriceRequestController extends Controller
         $notif_title =  'درخواست ' . auth()->user()->role->label;
         $notif_message = 'ویرایش درخواست ' . auth()->user()->role->label . ' توسط ' . auth()->user()->family . ' انجام شد.';
         $url = route('sale_price_requests.index');
-//        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
-//        Notification::send($sale_price_request->user->id, new SendMessage($notif_title, $notif_message, $url));
+        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+        Notification::send($sale_price_request->user->id, new SendMessage($notif_title, $notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
@@ -303,7 +303,7 @@ class SalePriceRequestController extends Controller
         $notif_message = 'نتیجه درخواست ستاد ثبت گردید';
         $url = route('sale_price_requests.index');
 
-//        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
 
         // ثبت فعالیت
         Activity::create([
@@ -369,6 +369,6 @@ class SalePriceRequestController extends Controller
         $notif_title = 'تایید درخواست فروش';
         $notif_message = 'تایید درخواست فروش توسط مدیر انجام گردید';
         $url = route('sale_price_requests.index');
-//        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
     }
 }
