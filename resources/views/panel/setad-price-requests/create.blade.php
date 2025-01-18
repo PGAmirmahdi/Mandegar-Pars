@@ -107,7 +107,7 @@
                                 </td>
                                 <td><input type="number" class="form-control" name="counts[]" min="1"
                                            required></td>
-                                <td><input type="text" class="form-control price-input" name="price[]"
+                                <td><input type="number" class="form-control price-input" name="price[]"
                                            required>
                                     <div class="formatted-price" style="margin-top: 5px; font-weight: bold;"></div>
                                 </td>
