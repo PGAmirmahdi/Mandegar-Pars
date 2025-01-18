@@ -176,7 +176,7 @@ class SalePriceRequestController extends Controller
             });
         })->get();
 
-        $notif_title =  'درخواست ' . auth()->user()->role->label;
+        $notif_title = 'درخواست ' . auth()->user()->role->label;
         $notif_message = 'ویرایش درخواست ' . auth()->user()->role->label . ' توسط ' . auth()->user()->family . ' انجام شد.';
         $url = route('sale_price_requests.index');
         Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
@@ -229,23 +229,18 @@ class SalePriceRequestController extends Controller
         ];
         foreach (json_decode($sale_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
+//            dd($product, $request->all(), $request->count[$key], $request->price[$key], str_replace(',', '', $request->final_price[$key] ?? 0));
             if ($product) {
-                $items[] = [
-                    'product_id' => $product->id,
-                    'product_name' => $product->title,
-                    'product_model' => $product->productModels->slug,
-                    'category_name' => $product->category->slug,
-                    'count' => $request->count[$key],
-                    'final_price' => str_replace(',', '', $request->final_price[$key] ?? 0),
-                    'price' => str_replace(',', '', $request->price[$key] ?? 0),
-                ];
+
+                $finalPrice = str_replace(',', '', $request->final_price[$key] ?? 0);
+//                dd($finalPrice);
                 $OrderItems['other_products'][] = [
-                    'other_products' => (integer)$product->id,
-                    'other_colors' => 'black',
-                    'other_counts' => (integer)$request->count[$key],
-                    'other_units' => 'number',
-                    'other_prices' => (integer)$request->price[$key],
-                    'other_total_prices' => (integer)$request->count[$key] * (integer)$request->price[$key],
+                    'products' => (integer)$product->id,
+                    'colors' => 'black',
+                    'counts' => (integer)$request->count[$key],
+                    'units' => 'number',
+                    'prices' => $finalPrice,
+                    'total_prices' => (integer)$request->count[$key] * $finalPrice,
                 ];
             }
         }
@@ -254,7 +249,7 @@ class SalePriceRequestController extends Controller
         $status = $sale_price_request->type == 'setad_sale' ? 'accepted' : 'finished';
         $sale_price_request->update([
             'acceptor_id' => auth()->id(),
-            'products' => json_encode($items),
+            'products' => json_encode($OrderItems),
             'status' => $status,
             'description' => $request->description,
         ]);
