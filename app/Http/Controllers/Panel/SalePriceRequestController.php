@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\SetadPriceRequest;
+use App\Models\SalePriceRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Notifications\SendMessage;
@@ -15,27 +15,32 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 
-class SetadPriceRequestController extends Controller
+class SalePriceRequestController extends Controller
 {
     public function index()
     {
-        $this->authorize('setad-price-requests-list');
-        $setadprice_requests = SetadPriceRequest::latest()->paginate(30);
+        $saleprice_requests = SalePriceRequest::query();
 
-        return view('panel.setad-price-requests.index', compact('setadprice_requests'));
+        if (Gate::allows('ceo') || Gate::allows('admin')) {
+            $saleprice_requests = $saleprice_requests->latest()->paginate(30);
+        } else {
+            $saleprice_requests = $saleprice_requests->where('user_id', auth()->id())->paginate(30);
+        }
+
+        return view('panel.sale-price-requests.index', compact('saleprice_requests'));
     }
 
     public function create()
     {
-        $this->authorize('setad-price-requests-create');
+        $this->authorize('sale-price-requests-create');
         // گرفتن همه محصولات از دیتابیس
         $products = Product::all()->where('status', '=', 'approved');
-        return view('panel.setad-price-requests.create', compact('products'));
+        return view('panel.sale-price-requests.create', compact('products'));
     }
 
     public function store(Request $request)
     {
-        $this->authorize('setad-price-requests-create');
+        $this->authorize('sale-price-requests-create');
 
         $items = [];
 
@@ -52,7 +57,7 @@ class SetadPriceRequestController extends Controller
                 ];
             }
         }
-        SetadPriceRequest::create([
+        SalePriceRequest::create([
             'user_id' => auth()->id(),
             'customer_id' => $request->customer,
             'date' => $request->date,
@@ -62,36 +67,38 @@ class SetadPriceRequestController extends Controller
             'status' => 'pending',
             'description' => $request->description,
             'need_no' => $request->need_no,
-            'products' => json_encode($items)
+            'products' => json_encode($items),
+            'type' => auth()->user()->role->name
         ]);
+        $notifiables = User::where('id', '!=', auth()->id())
+            ->whereHas('role', function ($role) {
+                $role->whereHas('permissions', function ($q) {
+                    $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
+                });
+            })->get();
 
-        $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
-            $role->whereHas('permissions', function ($q) {
-                $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
-            });
-        })->get();
-        $notif_title = 'درخواست ستاد';
-        $notif_message = 'یک درخواست ستاد توسط همکار فروش سامانه ستاد ثبت گردید';
-        $url = route('setad_price_requests.index');
-        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
+        $notif_title = 'درخواست ' . auth()->user()->role->label;
+        $notif_message = "یک درخواست " . auth()->user()->role->label . " توسط همکار فروش " . auth()->user()->family . " ثبت گردید";
+        $url = route('sale_price_requests.index');
+//        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
 
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'ثبت درخواست ستاد',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') یک درخواست ستاد ثبت کرد.',
+            'action' => 'ثبت درخواست ' . auth()->user()->role->label,
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') یک درخواست ' . auth()->user()->role->label . ' ثبت کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
-        alert()->success('درخواست ستاد با موفقیت ثبت شد', 'ثبت درخواست ستاد');
-        return redirect()->route('setad_price_requests.index');
+        alert()->success('درخواست فروش با موفقیت ثبت شد', 'ثبت درخواست فروش');
+        return redirect()->route('sale_price_requests.index');
     }
 
-    public function show(SetadPriceRequest $setad_price_request)
+    public function show(SalePriceRequest $sale_price_request)
     {
-        $this->authorize('setad-price-requests-list');
+        $this->authorize('sale-price-requests-list');
 
         // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
-        $items = collect(json_decode($setad_price_request->items))->map(function ($item) {
+        $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             // بازیابی قیمت محصول برای فروشنده مشخص
             $price = DB::table('price_list')
                 ->where('product_id', $item->product_id) // شناسه محصول
@@ -103,20 +110,20 @@ class SetadPriceRequestController extends Controller
         });
 
         // ارسال داده به ویو
-        return view('panel.setad-price-requests.show', [
-            'setad_price_request' => $setad_price_request->fill(['items' => $items]),
+        return view('panel.sale-price-requests.show', [
+            'sale_price_request' => $sale_price_request->fill(['items' => $items]),
         ]);
     }
 
 
-    public function edit(SetadPriceRequest $setad_price_request)
+    public function edit(SalePriceRequest $sale_price_request)
     {
         // بررسی مجوزهای کاربر
         $this->authorize('ceo');
         $this->authorize('admin');
 
         // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
-        $items = collect(json_decode($setad_price_request->items))->map(function ($item) {
+        $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             // بازیابی قیمت محصول برای فروشنده مشخص
             $price = DB::table('price_list')
                 ->where('product_id', $item->product_id) // شناسه محصول
@@ -128,19 +135,19 @@ class SetadPriceRequestController extends Controller
         });
 
         // ارسال داده به ویو
-        return view('panel.setad-price-requests.edit', [
-            'setad_price_request' => $setad_price_request->fill(['items' => $items]),
+        return view('panel.sale-price-requests.edit', [
+            'sale_price_request' => $sale_price_request->fill(['items' => $items]),
         ]);
     }
 
-    public function update(Request $request, SetadPriceRequest $setad_price_request)
+    public function update(Request $request, SalePriceRequest $sale_price_request)
     {
 //        return $request->prices;
         $this->authorize('ceo');
         $this->authorize('admin');
         $items = [];
 
-        foreach (json_decode($setad_price_request->products, true) as $key => $item) {
+        foreach (json_decode($sale_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
             if ($product) {
                 $items[] = [
@@ -155,7 +162,7 @@ class SetadPriceRequestController extends Controller
             }
         }
 
-        $setad_price_request->update([
+        $sale_price_request->update([
             'acceptor_id' => auth()->id(),
             'products' => json_encode($items),
             'status' => 'accepted',
@@ -169,30 +176,30 @@ class SetadPriceRequestController extends Controller
             });
         })->get();
 
-        $notif_title = 'ویرایش درخواست ستاد';
-        $notif_message = 'ویرایش درخواست ستاد توسط کارشناس فروش انجام گردید';
-        $url = route('setad_price_requests.index');
-        Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
-        Notification::send($setad_price_request->user->id, new SendMessage($notif_title,$notif_message, $url));
+        $notif_title =  'درخواست ' . auth()->user()->role->label;
+        $notif_message = 'ویرایش درخواست ' . auth()->user()->role->label . ' توسط ' . auth()->user()->family . ' انجام شد.';
+        $url = route('sale_price_requests.index');
+//        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+//        Notification::send($sale_price_request->user->id, new SendMessage($notif_title, $notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'ویرایش درخواست ستاد',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ')ویرایش درخواست ستاد را ایجاد کرد.',
+            'action' => 'درخواست ' . auth()->user()->role->label,
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ' درخواست  را ویرایش کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData); // ثبت فعالیت در پایگاه داده
-        alert()->success('درخواست ستاد با موفقیت تایید شد', 'تایید درخواست ستاد');
-        return redirect()->route('setad_price_requests.index');
+        alert()->success('درخواست فروش با موفقیت ویرایش شد', 'ویرایش درخواست فروش');
+        return redirect()->route('sale_price_requests.index');
     }
 
-    public function action(SetadPriceRequest $setad_price_request)
+    public function action(SalePriceRequest $sale_price_request)
     {
         if (!Gate::allows('ceo') && !Gate::allows('admin')) {
             alert()->error('شما به این قسمت دسترسی ندارید', 'عدم دسترسی');
             return back();
         }
-        $items = collect(json_decode($setad_price_request->items))->map(function ($item) {
+        $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             $price = DB::table('price_list')
                 ->where('product_id', $item->product_id)
                 ->where('seller_id', 4)
@@ -203,8 +210,8 @@ class SetadPriceRequestController extends Controller
         });
 
         // ارسال داده به ویو
-        return view('panel.setad-price-requests.action', [
-            'setad_price_request' => $setad_price_request->fill(['items' => $items]),
+        return view('panel.sale-price-requests.action', [
+            'sale_price_request' => $sale_price_request->fill(['items' => $items]),
         ]);
     }
 
@@ -214,13 +221,13 @@ class SetadPriceRequestController extends Controller
             alert()->error('شما به این قسمت دسترسی ندارید', 'عدم دسترسی');
             return back();
         }
-        $setad_price_request = SetadPriceRequest::findOrfail($request->setad_id);
+        $sale_price_request = SalePriceRequest::findOrfail($request->sale_id);
         $items = [];
         $OrderItems = [
             'products' => [],
             'other_products' => [],
         ];
-        foreach (json_decode($setad_price_request->products, true) as $key => $item) {
+        foreach (json_decode($sale_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
             if ($product) {
                 $items[] = [
@@ -242,11 +249,13 @@ class SetadPriceRequestController extends Controller
                 ];
             }
         }
-        $this->newOrder($request, $setad_price_request, $OrderItems);
-        $setad_price_request->update([
+        $this->newOrder($request, $sale_price_request, $OrderItems);
+        // تعیین وضعیت بر اساس نوع درخواست
+        $status = $sale_price_request->type == 'setad_sale' ? 'accepted' : 'finished';
+        $sale_price_request->update([
             'acceptor_id' => auth()->id(),
             'products' => json_encode($items),
-            'status' => 'accepted',
+            'status' => $status,
             'description' => $request->description,
         ]);
         // notification sent to ceo
@@ -255,66 +264,66 @@ class SetadPriceRequestController extends Controller
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
-            'action' => 'تایید درخواست ستاد',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') درخواست ستاد را تایید کرد.',
+            'action' => 'تایید درخواست ' . auth()->user()->role->label,
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') درخواست فروش را تایید کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
         $this->notif_to_ceo();
-        alert()->success('درخواست ستاد با موفقیت تایید شد', 'تایید درخواست ستاد');
-        return redirect()->route('setad_price_requests.index');
+        alert()->success('درخواست فروش با موفقیت تایید شد', 'تایید درخواست فروش');
+        return redirect()->route('sale_price_requests.index');
 
     }
 
-    public function actionResult(Request $request, SetadPriceRequest $setad_price_request)
+    public function actionResult(Request $request, SalePriceRequest $sale_price_request)
     {
         $this->authorize('Organ');
 
         // اعتبارسنجی ورودی‌ها
         $request->validate([
-            'row_id' => 'required|exists:setad_price_requests,id',
+            'row_id' => 'required|exists:sale_price_requests,id',
             'result' => 'required|in:winner,lose',
             'description' => 'nullable|string',
         ]);
-            // به‌روزرسانی داده‌ها
-            $setadPriceRequest = SetadPriceRequest::findOrFail($request->row_id);
-            $setadPriceRequest->update([
-                'status' => $request->result,
-                'description' => $request->description,
-            ]);
-            // ارسال نوتیفیکیشن
-            $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
-                $role->whereHas('permissions', function ($q) {
-                    $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
-                });
-            })->get();
+        // به‌روزرسانی داده‌ها
+        $sale_price_request = SalePriceRequest::findOrFail($request->row_id);
+        $sale_price_request->update([
+            'status' => $request->result,
+            'final_result' => $request->result,
+            'final_description' => $request->description,
+        ]);
+        // ارسال نوتیفیکیشن
+        $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
+            $role->whereHas('permissions', function ($q) {
+                $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
+            });
+        })->get();
 
-            $notif_title = 'ثبت نتیجه ستاد';
-            $notif_message = 'نتیجه درخواست ستاد توسط کارشناس فروش سامانه ستاد ثبت گردید';
-            $url = route('setad_price_requests.index');
+        $notif_title = 'ثبت نتیجه درخواست ستاد';
+        $notif_message = 'نتیجه درخواست ستاد ثبت گردید';
+        $url = route('sale_price_requests.index');
 
-            // اگر نیاز به ارسال نوتیفیکیشن دارید این را از حالت کامنت خارج کنید
-             Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+//        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
 
-            // ثبت فعالیت
-            Activity::create([
-                'user_id' => auth()->id(),
-                'action' => 'نتیجه درخواست ستاد',
-                'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') نتیجه درخواست ستاد را بارگذاری کرد.',
-                'created_at' => now(),
-            ]);
+        // ثبت فعالیت
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'نتیجه درخواست ستاد',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') نتیجه درخواست ستاد را بارگذاری کرد.',
+            'created_at' => now(),
+        ]);
 
-            alert()->success('نتیجه نهایی با موفقیت ثبت شد','ثبت نتیجه');
-            return redirect()->route('setad_price_requests.index');
+        alert()->success('نتیجه نهایی با موفقیت ثبت شد', 'ثبت نتیجه');
+        return redirect()->route('sale_price_requests.index');
     }
 
 
-    public function destroy(SetadPriceRequest $setad_price_request)
+    public function destroy(SalePriceRequest $setad_price_request)
     {
-        $this->authorize('setad-price-requests-delete');
+        $this->authorize('sale-price-requests-delete');
 
         $setad_price_request->delete();
-        alert()->success('درخواست ستاد با حذف شد', 'حذف درخواست ستاد');
+        alert()->success('درخواست فروش با موفقیت حذف شد', 'حذف درخواست فروش');
 
         return back();
     }
@@ -323,7 +332,7 @@ class SetadPriceRequestController extends Controller
     {
         $code = '777' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
 
-        while (Order::where('code', $code)->lockForUpdate()->exists()) {
+        while (Order::where('code', $code)->lockForUpdate()->exists() || SalePriceRequest::where('code', $code)->lockForUpdate()->exists()) {
             $code = '777' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
         }
 
@@ -357,9 +366,9 @@ class SetadPriceRequestController extends Controller
             });
         })->get();
 
-        $notif_title = 'تایید درخواست ستاد';
-        $notif_message = 'تایید درخواست ستاد توسط مدیر انجام گردید';
-        $url = route('setad_price_requests.index');
-        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+        $notif_title = 'تایید درخواست فروش';
+        $notif_message = 'تایید درخواست فروش توسط مدیر انجام گردید';
+        $url = route('sale_price_requests.index');
+//        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
     }
 }

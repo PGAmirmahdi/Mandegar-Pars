@@ -75,13 +75,10 @@
 <script src="/assets/js/examples/datatable.js"></script>
 
 <!-- Drop Zone -->
-<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 
 {{--Laravel Echo--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.min.js"></script>
-<!-- اضافه کردن JS Select2 -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.min.js"></script>--}}
 
 <script src="{{ asset('/js/app.js') }}"></script>
 

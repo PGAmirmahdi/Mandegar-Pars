@@ -1,5 +1,4 @@
 @extends('panel.layouts.master')
-@section('title', 'ثبت درخواست ستاد')
 @section('styles')
     <style>
         table tbody tr td input {
@@ -7,19 +6,29 @@
         }
     </style>
 @endsection
+@section('title', 'ایجاد ' . (in_array(auth()->user()->role->name, [
+    'setad_sale', 'internet_sale', 'free_sale',
+    'industrial_sale', 'global_sale', 'organization_sale'
+])
+    ? ' درخواست ' . auth()->user()->role->label
+    : 'درخواست های فروش'))
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
-                <h6>ثبت درخواست ستاد</h6>
+                <h6>ثبت {{ in_array(auth()->user()->role->name, [
+                                'setad_sale', 'internet_sale', 'free_sale',
+                                'industrial_sale', 'global_sale', 'organization_sale'
+                            ])
+                                ? ' درخواست ' . auth()->user()->role->label
+                                : 'درخواست های فروش' }}</h6>
                 <button type="button" class="btn btn-success" id="btn_add">
                     <i class="fa fa-plus mr-2"></i>
                     افزودن کالا
                 </button>
             </div>
-            <form action="{{ route('setad_price_requests.update',$setad_price_request->id) }}" method="post">
+            <form action="{{ route('sale_price_requests.store') }}" method="post">
                 @csrf
-                @method('PUT')
                 <div class="form-row">
                     <div class="col-12 mb-3">
                         <div class="col-12 row mb-4">
@@ -41,11 +50,10 @@
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="payment_type">نوع پرداختی</label>
-                                <select class="form-control" name="payment_type_display" id="payment_type_display">
+                                <select class="form-control" name="payment_type" id="payment_type">
                                     @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                        <option value="{{ $key }}" {{ old('payment_type', $setad_price_request->payment_type ?? '') == $key ? 'selected' : '' }}>
-                                            {{ $value }}
-                                        </option>
+                                        <option
+                                            value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
                                 @error('payment_type')
@@ -108,8 +116,8 @@
                                     </select>
                                 </td>
                                 <td><input type="number" class="form-control" name="counts[]" min="1"
-                                           required value=""></td>
-                                <td><input type="text" class="form-control price-input" name="price[]"
+                                           required></td>
+                                <td><input type="number" class="form-control price-input" name="price[]"
                                            required>
                                     <div class="formatted-price" style="margin-top: 5px; font-weight: bold;"></div>
                                 </td>

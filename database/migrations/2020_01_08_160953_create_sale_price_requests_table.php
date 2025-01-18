@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSetadPriceRequestsTable extends Migration
+class CreateSalePriceRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSetadPriceRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('setad_price_requests', function (Blueprint $table) {
+        Schema::create('sale_price_requests', function (Blueprint $table) {
             $table->id();
 
             // ارتباط با کاربران (درخواست‌دهنده)
@@ -46,9 +46,12 @@ class CreateSetadPriceRequestsTable extends Migration
             $table->longText('products')->comment('محصولات درخواست شده');
             $table->longText('description')->nullable()->comment('توضیحات اضافی');
 
-            // کد یکتا
             $table->string('code', 14)->unique()->comment('کد یکتای درخواست');
+            $table->string('type')->comment('نوع فروش');
 
+            $table->string('need_no');
+            $table->string('final_description')->nullable();
+            $table->string('final_result')->nullable();
             // تاریخ‌های ثبت و بروزرسانی
             $table->timestamps();
         });

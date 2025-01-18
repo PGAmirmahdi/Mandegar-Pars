@@ -30,7 +30,6 @@ class User extends Authenticatable
         'najva_token',
         'fcm_token'
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -51,7 +50,7 @@ class User extends Authenticatable
 
     public function setadRequest()
     {
-        return $this->hasMany(SetadPriceRequest::class);
+        return $this->hasMany(SalePriceRequest::class);
     }
     public function hasAnyRole(array $roles)
     {

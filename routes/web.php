@@ -2,7 +2,6 @@
 
 use App\Events\TestEvent;
 use App\Http\Controllers\Api\v1\WhatsappController;
-use App\Http\Controllers\Auth\PusherAuthController;
 use App\Http\Controllers\Panel\ActivityController;
 use App\Http\Controllers\Panel\AnalyseController;
 use App\Http\Controllers\Panel\AnalysisController;
@@ -45,7 +44,7 @@ use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\SaleReportController;
 use App\Http\Controllers\Panel\ScrapController;
 use App\Http\Controllers\Panel\SetadFeeController;
-use App\Http\Controllers\Panel\SetadPriceRequestController;
+use App\Http\Controllers\Panel\SalePriceRequestController;
 use App\Http\Controllers\Panel\ShopController;
 use App\Http\Controllers\Panel\SMSController;
 use App\Http\Controllers\Panel\SmsHistoryController;
@@ -98,12 +97,31 @@ Route::get('notif', function () {
 Route::get("is_sale_manager",function (){
    return \auth()->user()->isSalesManager();
 });
+Route::get('rolessssssss', function (){
+    $userRole = \App\Models\Role::findOrFail(3); // یافتن نقش با آیدی 5
 
-//Route::get('test/{id?}', function ($id = null) {
+// ایجاد نقش جدید
+    $newRole = \App\Models\Role::create([
+        'label' => 'فروش ستاد',
+        'name' => 'setad_sale',
+    ]);
 
+// افزودن دسترسی‌ها به نقش جدید
+    if ($userRole->permissions) {
+        foreach ($userRole->permissions as $permission) {
+            $newRole->permissions()->attach($permission->id);
+        }
+    }
+
+// بازگرداندن دسترسی‌های نقش جدید برای اطمینان از اختصاص موفق
+    return $newRole->permissions;
+});
+Route::get('test/{id?}', function ($id = null) {
+    return \auth()->loginUsingId($id);
+//
 //    event(new SendMessageEvent(1, []));
-
-//     send sms to customers (install app)
+//
+////     send sms to customers (install app)
 //    set_time_limit(1000000000000000000);
 //    $phones_sent = \App\Models\SmsHistory::whereBetween('created_at', ['2024-05-11 12:00:00','2024-05-11 13:59:59'])->pluck('phone')->unique();
 //    $phones = App\Models\Customer::whereNotIn('phone1',$phones_sent)->where('phone1','like','09_________')->pluck('phone1')->unique();
@@ -114,14 +132,14 @@ Route::get("is_sale_manager",function (){
 //    foreach ($phones as $phone){
 //        sendSMS(215126, $phone, [$amount]);
 //    }
-//     END send sms to customers (install app)
-
+////     END send sms to customers (install app)
+//
 //    return \auth()->loginUsingId($id);
-
+//
 //    foreach (\App\Models\InventoryReport::where('factor_id', '!=', null)->get() as $item){
 //        $item->update(['invoice_id' => $item->factor->invoice_id]);
 //    }
-//});
+});
 
 // import excel
 //Route::match(['get','post'],'import-excel', function (Request $request){
@@ -348,10 +366,10 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('price-requests', PriceRequestController::class);
 
     // Setad Price Request
-    Route::resource('setad_price_requests', SetadPriceRequestController::class);
-    Route::get('setad_price_requests/action/{setad_price_request}', [SetadPriceRequestController::class, 'action'])->name('setad_price_requests.action');
-    Route::post('setad_price_requests/actionStore', [SetadPriceRequestController::class, 'actionStore'])->name('setad_price_requests.actionStore');
-    Route::post('/setad_price_requests/actionResult', [SetadPriceRequestController::class, 'actionResult'])->name('setad_price_requests.actionResult');
+    Route::resource('sale_price_requests', SalePriceRequestController::class);
+    Route::get('sale_price_requests/action/{sale_price_request}', [SalePriceRequestController::class, 'action'])->name('sale_price_requests.action');
+    Route::post('sale_price_requests/actionStore', [SalePriceRequestController::class, 'actionStore'])->name('sale_price_requests.actionStore');
+    Route::post('/sale_price_requests/actionResult', [SalePriceRequestController::class, 'actionResult'])->name('sale_price_requests.actionResult');
 
     // Cheque Request
     Route::resource('cheque', ChequeController::class);
@@ -430,7 +448,6 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
 // Share File
 Route::get('/files/share/{id}', [FileController::class, 'getShareLink'])->name('files.share');
-Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->name('pusher.auth');
 Route::get('/user-visits', function () {
     $userVisits = UserVisit::selectRaw('DATE(created_at) as date, COUNT(*) as visits')
         ->groupBy('date')

@@ -57,12 +57,3 @@ $options = array(
     'cluster' => 'ap1',
     'useTLS' => true
 );
-$pusher = new Pusher\Pusher(
-    'ac8ae105709d7299a673',
-    '38db598a8a1c5e0019b6',
-    '1835964',
-    $options
-);
-
-$data['message'] = 'hello world';
-$pusher->trigger('my-channel', 'my-event', $data);

@@ -14,33 +14,33 @@
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
                 <h6>ثبت درخواست ستاد</h6>
             </div>
-            <form action="{{ route('setad_price_requests.actionStore') }}" method="post">
+            <form action="{{ route('sale_price_requests.actionStore') }}" method="post">
                 @csrf
-                <input type="hidden" value="{{$setad_price_request->id}}" name="setad_id">
+                <input type="hidden" value="{{$sale_price_request->id}}" name="sale_id">
                 <div class="form-row">
                     <div class="col-12 mb-3">
                         <div class="col-12 row mb-4">
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="customer">نام سازمان/فروشگاه:</label>
-                                <input type="text" value="{{$setad_price_request->customer->name}}" class="readonly form-control" readonly>
+                                <input type="text" value="{{$sale_price_request->customer->name}}" class="readonly form-control" readonly>
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="payment_type">نوع پرداختی</label>
                                 <select class="form-control" name="payment_type_display" id="payment_type_display" disabled>
                                     @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                        <option value="{{ $key }}" {{ old('payment_type', $setad_price_request->payment_type ?? '') == $key ? 'selected' : '' }}>
+                                        <option value="{{ $key }}" {{ old('payment_type', $sale_price_request->payment_type ?? '') == $key ? 'selected' : '' }}>
                                             {{ $value }}
                                         </option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" name="payment_type" value="{{ old('payment_type', $setad_price_request->payment_type ?? '') }}">
+                                <input type="hidden" name="payment_type" value="{{ old('payment_type', $sale_price_request->payment_type ?? '') }}">
                                 @error('payment_type')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                 <label for="date">مهلت پرداخت</label>
-                                <input type="text" class="form-control readonly" readonly value="{{$setad_price_request->date . '-' . $setad_price_request->hour}}">
+                                <input type="text" class="form-control readonly" readonly value="{{$sale_price_request->date . ' - ' . $sale_price_request->hour}}">
                             </div>
                         </div>
                         <table class="table table-striped table-bordered text-center">
@@ -56,7 +56,8 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach(json_decode($setad_price_request->products) as $index => $item)
+                            @foreach(json_decode($sale_price_request->products) as $index => $item)
+{{--                                @dd(isset($item->price))--}}
                                 <tr>
                                     <td>
                                         <input class="form-control readonly" type="text" name="product_name[{{ $index }}]" value="{{ $item->product_name }}" readonly>
@@ -68,13 +69,13 @@
                                         <input class="form-control readonly" type="text" name="category_name[{{ $index }}]" value="{{ $item->category_name }}" readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control readonly" type="text" name="count[{{ $index }}]" value="{{ $item->count }}" readonly>
+                                        <input class="form-control readonly" type="number" name="count[{{ $index }}]" value="{{ $item->count }}" readonly>
                                     </td>
                                     <td>
                                         <input class="form-control readonly" type="text" name="price[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->price) : "بدون قیمت" }}" readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control price-input" type="text" name="final_price[{{ $index }}]" value="{{ isset($item->final_price) ? number_format($item->final_price) : 0 }}">
+                                        <input class="form-control price-input" type="number" name="final_price[{{ $index }}]" value="{{ isset($item->final_price) ? number_format($item->final_price) : 0 }}">
                                         <span class="price-display">{{ isset($item->final_price) ? number_format($item->final_price) : '0' }} ریال </span>
                                     </td>
                                 </tr>
@@ -87,7 +88,7 @@
                             <label class="form-label" for="description">توضیحات</label>
                             <textarea name="description" id="description"
                                       class="description form-control"
-                                      rows="10">{{ $setad_price_request->description }}</textarea>
+                                      rows="10">{{ $sale_price_request->description }}</textarea>
                             @error('description')
                             <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                             @enderror
@@ -106,7 +107,6 @@
             const inputValue = $(this).val().replace(/,/g, ''); // حذف کاماها
             if (!isNaN(inputValue)) { // بررسی معتبر بودن مقدار ورودی
                 const formattedValue = addCommas(inputValue); // فرمت سه‌رقم، سه‌رقم
-                $(this).val(formattedValue); // به‌روزرسانی مقدار فیلد
                 $(this).next('.price-display').text(formattedValue); // نمایش مقدار فرمت‌شده
             } else {
                 $(this).next('.price-display').text(''); // پاک کردن مقدار در صورت نامعتبر بودن
