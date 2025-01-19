@@ -96,7 +96,6 @@ class SalePriceRequestController extends Controller
 
     public function show(SalePriceRequest $sale_price_request)
     {
-        $this->authorize('sale-price-requests-list');
 
         // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
         $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
