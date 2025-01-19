@@ -294,27 +294,62 @@
                        href="{{ route('sale-reports.index') }}">گزارشات فروش</a>
                 </li>
             @endcan
+            {{--                <li>--}}
+            {{--                    <a--}}
+            {{--                        class="{{ active_sidebar(['sale_price_requests', 'sale_price_requests/create', 'sale_price_requests/{sale_price_request}/edit', 'sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"--}}
+            {{--                        href="{{ route('sale_price_requests.index') }}">--}}
+            {{--                        {{ auth()->user()->role->name == 'setad_sale' || auth()->user()->role->name == 'internet_sale' || auth()->user()->role->name == 'free_sale' || auth()->user()->role->name == 'industrial_sale' || auth()->user()->role->name == 'global_sale' || auth()->user()->role->name == 'organization_sale'--}}
+            {{--                            ? ' درخواست ' . auth()->user()->role->label--}}
+            {{--                            : 'درخواست های فروش' }}--}}
+            {{--                    </a>--}}
+            {{--                </li>--}}
+            @if(auth()->user()->role->name == 'free_sale')
                 <li>
-                    <a
-                        class="{{ active_sidebar(['sale_price_requests', 'sale_price_requests/create', 'sale_price_requests/{sale_price_request}/edit', 'sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                        href="{{ route('sale_price_requests.index') }}">
-                        {{ auth()->user()->role->name == 'setad_sale' || auth()->user()->role->name == 'internet_sale' || auth()->user()->role->name == 'free_sale' || auth()->user()->role->name == 'industrial_sale' || auth()->user()->role->name == 'global_sale' || auth()->user()->role->name == 'organization_sale'
-                            ? ' درخواست ' . auth()->user()->role->label
-                            : 'درخواست های فروش' }}
-                    </a>
+                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=free_sale') }}">درخواست فروش آزاد</a>
                 </li>
-            {{--                <li>--}}
-            {{--                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}" href="{{ route('sale_price_requests.index') }}">درخواست فروش آزاد</a>--}}
-            {{--                </li>--}}
-            {{--                <li>--}}
-            {{--                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}" href="{{ route('sale_price_requests.index') }}">درخواست فروش سراسری</a>--}}
-            {{--                </li>--}}
-            {{--                <li>--}}
-            {{--                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}" href="{{ route('sale_price_requests.index') }}">درخواست فروش تولیدی</a>--}}
-            {{--                </li>--}}
-            {{--            <li>--}}
-            {{--                <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}" href="{{ route('sale_price_requests.index') }}">درخواست فروش صنعتی</a>--}}
-            {{--            </li>--}}
+            @elseif(auth()->user()->role->name == 'global_sale')
+                <li>
+                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=global_sale') }}">درخواست فروش سراسری</a>
+                </li>
+            @elseif(auth()->user()->role->name == 'setad_sale')
+                <li>
+                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=setad_sale') }}">درخواست فروش ستاد</a>
+                </li>
+            @elseif(auth()->user()->role->name == 'organization_sale')
+                <li>
+                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=organization_sale') }}">درخواست فروش سازمانی</a>
+                </li>
+            @elseif(auth()->user()->role->name == 'industrial_sale')
+                <li>
+                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=industrial_sale') }}">درخواست فروش صنعتی</a>
+                </li>
+            @elseif(auth()->user()->role->name == 'ceo' || auth()->user()->role->name == 'admin' || auth()->user()->role->name == 'office-manager')
+                <li>
+                    <a class="{{ request()->query('type') === 'free_sale' ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=free_sale') }}">درخواست فروش آزاد</a>
+                </li>
+                <li>
+                    <a class="{{ request()->query('type') === 'global_sale' ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=global_sale') }}">درخواست فروش سراسری</a>
+                </li>
+                <li>
+                    <a class="{{ request()->query('type') === 'setad_sale' ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=setad_sale') }}">درخواست فروش ستاد</a>
+                </li>
+                <li>
+                    <a class="{{ request()->query('type') === 'organization_sale' ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=organization_sale') }}">درخواست فروش سازمانی</a>
+                </li>
+                <li>
+                    <a class="{{ request()->query('type') === 'industrial_sale' ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=industrial_sale') }}">درخواست فروش صنعتی</a>
+                </li>
+            @endif
             @can('price-requests-list')
                 <li>
                     <a class="{{ active_sidebar(['price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}']) ? 'active' : '' }}"

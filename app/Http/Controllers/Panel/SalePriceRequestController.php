@@ -20,12 +20,13 @@ class SalePriceRequestController extends Controller
 {
     public function index()
     {
+        $type = request()->get('type')??'setad_sale';
         $saleprice_requests = SalePriceRequest::query();
 
         if (Gate::allows('ceo') || Gate::allows('admin')) {
-            $saleprice_requests = $saleprice_requests->latest()->paginate(30);
+            $saleprice_requests = $saleprice_requests->where('type',$type)->latest()->paginate(30);
         } else {
-            $saleprice_requests = $saleprice_requests->where('user_id', auth()->id())->latest()->paginate(30);
+            $saleprice_requests = $saleprice_requests->where('type',$type)->where('user_id', auth()->id())->latest()->paginate(30);
         }
 
         return view('panel.sale-price-requests.index', compact('saleprice_requests'));
