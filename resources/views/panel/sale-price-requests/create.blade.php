@@ -152,9 +152,6 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            $("#submit").on("click", function () {
-                $(this).prop("disabled", true).text("در حال ارسال...");
-            });
             // Format price input and display formatted price below
             $(document).on('input', '.price-input', function () {
                 let value = $(this).val().replace(/,/g, ''); // Remove existing commas
@@ -200,6 +197,9 @@
             // Remove row
             $(document).on('click', '.btn_remove', function () {
                 $(this).parent().parent().remove();
+            });
+            $("#submit").on("submit", function () {
+                $(this).prop("disabled", true).text("در حال ارسال...");
             });
         });
     </script>
