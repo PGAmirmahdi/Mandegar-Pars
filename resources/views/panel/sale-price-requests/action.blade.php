@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'تایید درخواست ستاد')
+@section('title', 'تایید درخواست')
 @section('styles')
     <style>
         /*table tbody tr td input {*/
@@ -12,7 +12,7 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
-                <h6>ثبت درخواست ستاد</h6>
+                <h6>تایید درخواست</h6>
             </div>
             <form action="{{ route('sale_price_requests.actionStore') }}" method="post">
                 @csrf
@@ -22,26 +22,38 @@
                         <div class="col-12 row mb-4">
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="customer">نام سازمان/فروشگاه:</label>
-                                <input type="text" value="{{$sale_price_request->customer->name}}" class="readonly form-control" readonly>
+                                <input type="text" value="{{$sale_price_request->customer->name}}"
+                                       class="readonly form-control" readonly>
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="payment_type">نوع پرداختی</label>
-                                <select class="form-control" name="payment_type_display" id="payment_type_display" disabled>
+                                <select class="form-control" name="payment_type_display" id="payment_type_display"
+                                        disabled>
                                     @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                        <option value="{{ $key }}" {{ old('payment_type', $sale_price_request->payment_type ?? '') == $key ? 'selected' : '' }}>
+                                        <option
+                                            value="{{ $key }}" {{ old('payment_type', $sale_price_request->payment_type ?? '') == $key ? 'selected' : '' }}>
                                             {{ $value }}
                                         </option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" name="payment_type" value="{{ old('payment_type', $sale_price_request->payment_type ?? '') }}">
+                                <input type="hidden" name="payment_type"
+                                       value="{{ old('payment_type', $sale_price_request->payment_type ?? '') }}">
                                 @error('payment_type')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="date">مهلت پرداخت</label>
-                                <input type="text" class="form-control readonly" readonly value="{{$sale_price_request->date . ' - ' . $sale_price_request->hour}}">
-                            </div>
+                            @can('Organ')
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="date">مهلت پرداخت</label>
+                                    <input type="text" class="form-control readonly" readonly
+                                           value="{{$sale_price_request->date . ' - ' . $sale_price_request->hour}}">
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="need_no">شماره نیاز</label>
+                                    <input type="text" class="form-control readonly" readonly
+                                           value="{{$sale_price_request->need_no}}">
+                                </div>
+                            @endcan
                         </div>
                         <table class="table table-striped table-bordered text-center">
                             <thead>
@@ -57,25 +69,36 @@
                             </thead>
                             <tbody>
                             @foreach(json_decode($sale_price_request->products) as $index => $item)
-{{--                                @dd(isset($item->price))--}}
+                                {{--                                @dd(isset($item->price))--}}
                                 <tr>
                                     <td>
-                                        <input class="form-control readonly" type="text" name="product_name[{{ $index }}]" value="{{ $item->product_name }}" readonly>
+                                        <input class="form-control readonly" type="text"
+                                               name="product_name[{{ $index }}]" value="{{ $item->product_name }}"
+                                               readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control readonly" type="text" name="product_model[{{ $index }}]" value="{{ $item->product_model }}" readonly>
+                                        <input class="form-control readonly" type="text"
+                                               name="product_model[{{ $index }}]" value="{{ $item->product_model }}"
+                                               readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control readonly" type="text" name="category_name[{{ $index }}]" value="{{ $item->category_name }}" readonly>
+                                        <input class="form-control readonly" type="text"
+                                               name="category_name[{{ $index }}]" value="{{ $item->category_name }}"
+                                               readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control readonly" type="number" name="count[{{ $index }}]" value="{{ $item->count }}" readonly>
+                                        <input class="form-control readonly" type="number" name="count[{{ $index }}]"
+                                               value="{{ $item->count }}" readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control readonly" type="text" name="price[{{ $index }}]" value="{{ isset($item->price) ? number_format($item->price) : "بدون قیمت" }}" readonly>
+                                        <input class="form-control readonly" type="text" name="price[{{ $index }}]"
+                                               value="{{ isset($item->price) ? number_format($item->price) : "بدون قیمت" }}"
+                                               readonly>
                                     </td>
                                     <td>
-                                        <input class="form-control price-input" type="number" name="final_price[{{ $index }}]" value="{{ isset($item->final_price) ? number_format($item->final_price) : 0 }}">
+                                        <input class="form-control price-input" type="number"
+                                               name="final_price[{{ $index }}]"
+                                               value="{{ isset($item->final_price) ? number_format($item->final_price) : 0 }}">
                                         <span class="price-display">{{ isset($item->final_price) ? number_format($item->final_price) : '0' }} ریال </span>
                                     </td>
                                 </tr>

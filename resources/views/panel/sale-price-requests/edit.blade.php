@@ -53,7 +53,8 @@
                                 <label for="payment_type">نوع پرداختی</label>
                                 <select class="form-control" name="payment_type_display" id="payment_type_display">
                                     @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                        <option value="{{ $key }}" {{ old('payment_type', $sale_price_request->payment_type ?? '') == $key ? 'selected' : '' }}>
+                                        <option
+                                            value="{{ $key }}" {{ old('payment_type', $sale_price_request->payment_type ?? '') == $key ? 'selected' : '' }}>
                                             {{ $value }}
                                         </option>
                                     @endforeach
@@ -62,37 +63,41 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="date">تاریخ موعد<span class="text-danger">*</span></label>
-                                <input type="text" name="date" autocomplete="off"
-                                       class="form-control date-picker-shamsi-list" id="date" value="{{ old('date') }}">
-                                @error('date')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4 clock-sec">
-                                <label>ساعت موعد<span class="text-danger">*</span></label>
-                                <div class="input-group clockpicker-autoclose-demo">
-                                    <div class="input-group-prepend">
+                            @if(auth()->user()->role->name == 'setad_sale')
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="date">تاریخ موعد<span class="text-danger">*</span></label>
+                                    <input type="text" name="date" autocomplete="off"
+                                           class="form-control date-picker-shamsi-list" id="date"
+                                           value="{{ old('date') }}">
+                                    @error('date')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4 clock-sec">
+                                    <label>ساعت موعد<span class="text-danger">*</span></label>
+                                    <div class="input-group clockpicker-autoclose-demo">
+                                        <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <i class="fa fa-clock-o"></i>
                                 </span>
+                                        </div>
+                                        <input type="text" autocomplete="off" name="hour" class="form-control text-left"
+                                               value="{{ old('hour') }}" dir="ltr">
                                     </div>
-                                    <input type="text" autocomplete="off" name="hour" class="form-control text-left"
-                                           value="{{ old('hour') }}" dir="ltr" required>
+                                    @error('hour')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('hour')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="need_no">شماره نیاز<span class="text-danger">*</span></label>
-                                <input type="text" name="need_no" autocomplete="off" class="form-control" id="need_no"
-                                       value="{{ old('need_no') }}">
-                                @error('need_no')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="need_no">شماره نیاز<span class="text-danger">*</span></label>
+                                    <input type="text" name="need_no" autocomplete="off" class="form-control"
+                                           id="need_no"
+                                           value="{{ old('need_no') }}">
+                                    @error('need_no')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endif
                         </div>
                         <table class="table table-striped table-bordered text-center">
                             <thead class="bg-primary">

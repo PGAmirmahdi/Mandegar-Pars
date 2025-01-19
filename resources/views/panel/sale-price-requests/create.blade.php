@@ -60,37 +60,41 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="date">تاریخ موعد<span class="text-danger">*</span></label>
-                                <input type="text" name="date" autocomplete="off"
-                                       class="form-control date-picker-shamsi-list" id="date" value="{{ old('date') }}">
-                                @error('date')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4 clock-sec">
-                                <label>ساعت موعد<span class="text-danger">*</span></label>
-                                <div class="input-group clockpicker-autoclose-demo">
-                                    <div class="input-group-prepend">
+                            @if(auth()->user()->role->name == 'setad_sale')
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="date">تاریخ موعد<span class="text-danger">*</span></label>
+                                    <input type="text" name="date" autocomplete="off"
+                                           class="form-control date-picker-shamsi-list" id="date"
+                                           value="{{ old('date') }}">
+                                    @error('date')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4 clock-sec">
+                                    <label>ساعت موعد<span class="text-danger">*</span></label>
+                                    <div class="input-group clockpicker-autoclose-demo">
+                                        <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <i class="fa fa-clock-o"></i>
                                 </span>
+                                        </div>
+                                        <input type="text" autocomplete="off" name="hour" class="form-control text-left"
+                                               value="{{ old('hour') }}" dir="ltr">
                                     </div>
-                                    <input type="text" autocomplete="off" name="hour" class="form-control text-left"
-                                           value="{{ old('hour') }}" dir="ltr" required>
+                                    @error('hour')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('hour')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="need_no">شماره نیاز<span class="text-danger">*</span></label>
-                                <input type="text" name="need_no" autocomplete="off" class="form-control" id="need_no"
-                                       value="{{ old('need_no') }}">
-                                @error('need_no')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="need_no">شماره نیاز<span class="text-danger">*</span></label>
+                                    <input type="text" name="need_no" autocomplete="off" class="form-control"
+                                           id="need_no"
+                                           value="{{ old('need_no') }}">
+                                    @error('need_no')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endif
                         </div>
                         <table class="table table-striped table-bordered text-center">
                             <thead class="bg-primary">
@@ -162,7 +166,9 @@
                     $(this).next('.formatted-price').text(''); // Clear the display if input is invalid
                 }
             });
-
+            $("#submit").on("submit", function () {
+                $(this).prop("disabled", true).text("در حال ارسال...");
+            });
             // Add new row
             $(document).on('click', '#btn_add', function () {
                 $('table tbody').append(`
@@ -197,9 +203,6 @@
             // Remove row
             $(document).on('click', '.btn_remove', function () {
                 $(this).parent().parent().remove();
-            });
-            $("#submit").on("submit", function () {
-                $(this).prop("disabled", true).text("در حال ارسال...");
             });
         });
     </script>

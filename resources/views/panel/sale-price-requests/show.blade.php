@@ -58,29 +58,32 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="date">تاریخ موعد</label>
-                                <input type="text" name="date" class="form-control" id="date"
-                                       value="{{ $sale_price_request->date . ' - ' . $sale_price_request->hour }}"
-                                       disabled>
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="need_no">شماره نیاز</label>
-                                <input type="text" name="need_no" class="form-control" id="need_no"
-                                       value="{{ $sale_price_request->need_no }}" disabled>
-                            </div>
+                            @can('Organ')
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="date">تاریخ موعد</label>
+                                    <input type="text" name="date" class="form-control" id="date"
+                                           value="{{ $sale_price_request->date . ' - ' . $sale_price_request->hour }}"
+                                           disabled>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="need_no">شماره نیاز</label>
+                                    <input type="text" name="need_no" class="form-control" id="need_no"
+                                           value="{{ $sale_price_request->need_no }}" disabled>
+                                </div>
+                            @endcan
                             @if($sale_price_request->acceptor)
-                            <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
-                                <label for="acceptor">تایید کننده</label>
-                                <input type="text" name="acceptor" class="form-control" id="acceptor"
-                                       value="{{ $sale_price_request->acceptor->name . ' - ' . $sale_price_request->acceptor->family }}"
-                                       disabled>
-                            </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="acceptor">تایید کننده</label>
+                                    <input type="text" name="acceptor" class="form-control" id="acceptor"
+                                           value="{{ $sale_price_request->acceptor->name . ' - ' . $sale_price_request->acceptor->family }}"
+                                           disabled>
+                                </div>
                             @endif
                             <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                 <label for="type">نوع فروش</label>
                                 <input type="text" name="type" class="form-control" id="type"
-                                       value="{{ \App\Models\SalePriceRequest::TYPE[$sale_price_request->type]}}" disabled>
+                                       value="{{ \App\Models\SalePriceRequest::TYPE[$sale_price_request->type]}}"
+                                       disabled>
                             </div>
                         </div>
                         <table class="table table-striped table-bordered text-center">
@@ -139,12 +142,12 @@
                                       disabled>{{ $sale_price_request->description }}</textarea>
                         </div>
                         @if($sale_price_request->type == 'setad_sale' && in_array($sale_price_request->status, ['winner','lose']))
-                        <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
-                            <label for="type">توضیحات نهایی</label>
-                            <textarea name="description" id="description" class="form-control" rows="10"
-                                      disabled>{{ $sale_price_request->final_description }}</textarea>
-                        </div>
-                            @endif
+                            <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
+                                <label for="type">توضیحات نهایی</label>
+                                <textarea name="description" id="description" class="form-control" rows="10"
+                                          disabled>{{ $sale_price_request->final_description }}</textarea>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </form>
