@@ -229,11 +229,17 @@ class SalePriceRequestController extends Controller
         ];
         foreach (json_decode($sale_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
-//            dd($product, $request->all(), $request->count[$key], $request->price[$key], str_replace(',', '', $request->final_price[$key] ?? 0));
             if ($product) {
-
+                $items[] = [
+                    'product_id' => $product->id,
+                    'product_name' => $product->title,
+                    'product_model' => $product->productModels->slug,
+                    'category_name' => $product->category->slug,
+                    'count' => $request->count[$key],
+                    'final_price' => str_replace(',', '', $request->final_price[$key] ?? 0),
+                    'price' => str_replace(',', '', $request->price[$key] ?? 0),
+                ];
                 $finalPrice = str_replace(',', '', $request->final_price[$key] ?? 0);
-//                dd($finalPrice);
                 $OrderItems['other_products'][] = [
                     'products' => (integer)$product->id,
                     'colors' => 'black',
@@ -249,7 +255,7 @@ class SalePriceRequestController extends Controller
         $status = $sale_price_request->type == 'setad_sale' ? 'accepted' : 'finished';
         $sale_price_request->update([
             'acceptor_id' => auth()->id(),
-            'products' => json_encode($OrderItems),
+            'products' => json_encode($items),
             'status' => $status,
             'description' => $request->description,
         ]);
