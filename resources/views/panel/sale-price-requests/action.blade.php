@@ -42,7 +42,7 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            @can('Organ')
+                            @can('setad_sale')
                                 <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                     <label for="date">مهلت پرداخت</label>
                                     <input type="text" class="form-control readonly" readonly

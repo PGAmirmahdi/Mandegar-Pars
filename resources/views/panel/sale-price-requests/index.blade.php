@@ -77,7 +77,9 @@
                         <th>زمان ثبت</th>
                         <th>مهلت تایید</th>
                         <th>تایید/رد کننده</th>
+                        @can('setad_sale')
                         <th>مهلت باقی مانده</th>
+                        @endcan
                         <th>وضعیت</th>
                         @canany(['Organ','ceo'])
                             <th>نتیجه نهایی</th>

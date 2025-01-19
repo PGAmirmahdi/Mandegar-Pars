@@ -63,7 +63,7 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            @if(auth()->user()->role->name == 'setad_sale')
+                            @can('setad_sale')
                                 <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                     <label for="date">تاریخ موعد<span class="text-danger">*</span></label>
                                     <input type="text" name="date" autocomplete="off"
@@ -97,7 +97,7 @@
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            @endif
+                            @endcan
                         </div>
                         <table class="table table-striped table-bordered text-center">
                             <thead class="bg-primary">

@@ -177,9 +177,11 @@ class PermissionSeeder extends Seeder
 //            'PartnerCity'=>'همکار شهرستان'
 //            'sales-engineering' => 'مهندسی  خرید'
 
-           'sale-price-requests-list' => 'لیست درخواست ستاد',
-           'sale-price-requests-create' => 'ثبت درخواست ستاد',
-            'sale-price-requests-delete' => 'حذف درخواست ستاد',
+//           'sale-price-requests-list' => 'لیست درخواست ستاد',
+//           'sale-price-requests-create' => 'ثبت درخواست ستاد',
+//            'sale-price-requests-delete' => 'حذف درخواست ستاد',
+
+        'setad_sale' => 'فروش ستاد'
         ];
 
         foreach ($items as $key => $item)

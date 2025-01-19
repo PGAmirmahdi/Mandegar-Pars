@@ -58,7 +58,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            @can('Organ')
+                            @can('setad_sale')
                                 <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                     <label for="date">تاریخ موعد</label>
                                     <input type="text" name="date" class="form-control" id="date"
