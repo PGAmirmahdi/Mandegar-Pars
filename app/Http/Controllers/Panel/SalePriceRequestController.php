@@ -92,7 +92,7 @@ class SalePriceRequestController extends Controller
         ];
         Activity::create($activityData);
         alert()->success('درخواست فروش با موفقیت ثبت شد', 'ثبت درخواست فروش');
-        return redirect()->route('sale_price_requests.index');
+        return redirect()->route('sale_price_requests.index',['type' => $request->type]);
     }
 
     public function show(SalePriceRequest $sale_price_request)
@@ -191,7 +191,7 @@ class SalePriceRequestController extends Controller
         ];
         Activity::create($activityData); // ثبت فعالیت در پایگاه داده
         alert()->success('درخواست فروش با موفقیت ویرایش شد', 'ویرایش درخواست فروش');
-        return redirect()->route('sale_price_requests.index');
+        return redirect()->route('sale_price_requests.index',['type' => $request->type]);
     }
 
     public function action(SalePriceRequest $sale_price_request)
@@ -313,7 +313,7 @@ class SalePriceRequestController extends Controller
         ]);
 
         alert()->success('نتیجه نهایی با موفقیت ثبت شد', 'ثبت نتیجه');
-        return redirect()->route('sale_price_requests.index');
+        return redirect()->route('sale_price_requests.index',['type' => $request->type]);
     }
 
 
