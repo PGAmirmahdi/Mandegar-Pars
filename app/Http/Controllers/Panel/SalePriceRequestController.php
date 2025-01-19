@@ -224,10 +224,7 @@ class SalePriceRequestController extends Controller
         }
         $sale_price_request = SalePriceRequest::findOrfail($request->sale_id);
         $items = [];
-        $OrderItems = [
-            'products' => [],
-            'other_products' => [],
-        ];
+        $OrderItems = [];
         foreach (json_decode($sale_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
             if ($product) {
@@ -241,7 +238,7 @@ class SalePriceRequestController extends Controller
                     'price' => str_replace(',', '', $request->price[$key] ?? 0),
                 ];
                 $finalPrice = str_replace(',', '', $request->final_price[$key] ?? 0);
-                $OrderItems['products'][] = [
+                $OrderItems[] = [
                     'products' => (integer)$product->id,
                     'colors' => 'black',
                     'counts' => (integer)$request->count[$key],
