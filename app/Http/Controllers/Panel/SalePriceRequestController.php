@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreSalePriceRequest;
 use App\Models\Activity;
 use App\Models\Order;
 use App\Models\Product;
@@ -38,7 +39,7 @@ class SalePriceRequestController extends Controller
         return view('panel.sale-price-requests.create', compact('products'));
     }
 
-    public function store(SalePriceRequest $request)
+    public function store(StoreSalePriceRequest $request)
     {
         $this->authorize('sale-price-requests-create');
 
