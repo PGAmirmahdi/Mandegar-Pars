@@ -24,7 +24,7 @@ class SalePriceRequestController extends Controller
         if (Gate::allows('ceo') || Gate::allows('admin')) {
             $saleprice_requests = $saleprice_requests->latest()->paginate(30);
         } else {
-            $saleprice_requests = $saleprice_requests->where('user_id', auth()->id())->paginate(30);
+            $saleprice_requests = $saleprice_requests->where('user_id', auth()->id())->latest()->paginate(30);
         }
 
         return view('panel.sale-price-requests.index', compact('saleprice_requests'));
