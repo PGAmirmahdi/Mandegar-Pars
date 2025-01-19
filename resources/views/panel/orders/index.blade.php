@@ -335,8 +335,9 @@
                                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                                 </div>
                             </div>
+                            <div class="overflow-auto">
                                 <table
-                                    class="table table-responsive table-striped table-bordered dataTable dtr-inline text-center overflow-auto"
+                                    class="table table-striped table-bordered dataTable dtr-inline text-center overflow-auto"
                                     style="width: 100%">
                                     <thead>
                                     <tr>
@@ -487,6 +488,7 @@
                                     </tr>
                                     </tfoot>
                                 </table>
+                            </div>
                             <div
                                 class="d-flex justify-content-center">{{ $orders->appends(request()->all())->links() }}</div>
                         </div>

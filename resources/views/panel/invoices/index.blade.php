@@ -32,11 +32,11 @@
                                     </div>
                                 @endcannot
                             @endcan
-                                <div class="alert alert-info">
-                                    <i class="fa fa-info-circle font-size-20 align-middle"></i>
-                                    <strong>توجه!</strong>
-                                    قیمت کل موجود در جدول بدون هزینه اضافی میباشد
-                                </div>
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle font-size-20 align-middle"></i>
+                                <strong>توجه!</strong>
+                                قیمت کل موجود در جدول بدون هزینه اضافی میباشد
+                            </div>
                             <div class="card-title d-flex justify-content-end">
                                 <div>
                                     <form action="{{ route('orders.excel') }}" method="post" id="excel_form">
@@ -61,7 +61,8 @@
                             <form action="{{ route('invoices.search') }}" method="get" id="search_form"></form>
                             <div class="row mb-3 mt-5">
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="customer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                    <select name="customer" form="search_form"
+                                            class="js-example-basic-single select2-hidden-accessible"
                                             data-select2-id="0">
                                         <option value="all">نام مشتری(همه)</option>
                                         @foreach(\App\Models\Customer::all() as $customer)
@@ -71,7 +72,8 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                    <select name="province" form="search_form"
+                                            class="js-example-basic-single select2-hidden-accessible"
                                             data-select2-id="1">
                                         <option value="all">استان (همه)</option>
                                         @foreach(\App\Models\Province::all() as $province)
@@ -81,7 +83,8 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="status" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                    <select name="status" form="search_form"
+                                            class="js-example-basic-single select2-hidden-accessible"
                                             data-select2-id="2">
                                         <option value="all">وضعیت (همه)</option>
                                         @foreach(\App\Models\Invoice::STATUS as $key => $value)
@@ -91,7 +94,8 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="payment_type" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                    <select name="payment_type" form="search_form"
+                                            class="js-example-basic-single select2-hidden-accessible"
                                             data-select2-id="4">
                                         <option value="all">نوع پرداختی (همه)</option>
                                         @foreach(\App\Models\Order::Payment_Type as $key => $value)
@@ -101,7 +105,8 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="created_in" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                    <select name="created_in" form="search_form"
+                                            class="js-example-basic-single select2-hidden-accessible"
                                             data-select2-id="5">
                                         <option value="all">ثبت شده در(همه)</option>
                                         @foreach(\App\Models\Order::CREATED_IN as $key => $value)
@@ -112,7 +117,8 @@
                                 </div>
                                 @can('accountant')
                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                        <select name="user" form="search_form" class="js-example-basic-single select2-hidden-accessible"
+                                        <select name="user" form="search_form"
+                                                class="js-example-basic-single select2-hidden-accessible"
                                                 data-select2-id="3">
                                             <option value="all">همکار (همه)</option>
                                             @foreach(\App\Models\User::whereIn('role_id', $roles_id)->get() as $user)
@@ -130,7 +136,8 @@
                                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                                 </div>
                             </div>
-                                <table class="table  table-striped table-bordered dataTable dtr-inline text-center table-responsive">
+                            <div class="overflow-auto">
+                                <table class="table  table-striped table-bordered dataTable dtr-inline text-center">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -173,7 +180,9 @@
                                     @foreach($invoices as $key => $invoice)
                                         <tr>
                                             <td>{{ ++$key }}</td>
-                                            <td><a href="/panel/orders?code={{$invoice->order->code??'-'}}">{{ $invoice->order->code??'-' }}</a></td>
+                                            <td>
+                                                <a href="/panel/orders?code={{$invoice->order->code??'-'}}">{{ $invoice->order->code??'-' }}</a>
+                                            </td>
                                             <td>{{ $invoice->customer->name}}</td>
                                             <td>{{ \App\Models\Order::Payment_Type[$invoice->payment_type] ?? 'تعیین نشده'}}</td>
                                             <td>{{ \App\Models\Invoice::REQ_FOR[$invoice->req_for] }}</td>
@@ -273,7 +282,9 @@
                                     </tr>
                                     </tfoot>
                                 </table>
-                            <div class="d-flex justify-content-center">{{ $invoices->appends(request()->all())->links() }}</div>
+                            </div>
+                            <div
+                                class="d-flex justify-content-center">{{ $invoices->appends(request()->all())->links() }}</div>
                         </div>
                     </div>
                 </div>
