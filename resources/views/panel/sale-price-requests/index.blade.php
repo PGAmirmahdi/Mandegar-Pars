@@ -67,8 +67,8 @@
                 </div>
             </div>
 
-            <div class="">
-                <table class="table table-responsive table-striped table-bordered dataTable dtr-inline text-center">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
                     <tr>
                         <th>#</th>
