@@ -356,7 +356,7 @@ class SalePriceRequestController extends Controller
         ]);
 
         alert()->success('نتیجه نهایی با موفقیت ثبت شد', 'ثبت نتیجه');
-        return redirect()->route('sale_price_requests.index');
+        return redirect(url('/panel/sale_price_requests?type=' . $sale_price_request->type));
     }
 
     public function destroy(SalePriceRequest $setad_price_request)
