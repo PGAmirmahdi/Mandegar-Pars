@@ -78,7 +78,7 @@
                         <th>مهلت تایید</th>
                         <th>تایید/رد کننده</th>
                         @can('setad_sale')
-                        <th>مهلت باقی مانده</th>
+                            <th>مهلت باقی مانده</th>
                         @endcan
                         <th>وضعیت</th>
                         @canany(['Organ','ceo'])
@@ -125,23 +125,25 @@
                                 @endif
                             </td>
                             <td>
-                                @if($saleprice_request->status == 'winner')
-                                    <span
-                                        class="badge badge-success">{{ \App\Models\SalePriceRequest::STATUS['winner'] }}</span>
-                                @elseif($saleprice_request->status == 'lose')
-                                    <span
-                                        class="badge badge-danger">{{ \App\Models\SalePriceRequest::STATUS['lose'] }}</span>
-                                @elseif(in_array($saleprice_request->status, ['pending','accepted','finished']))
-                                    @if($daysLeft<0)
-                                        {{$daysLeft * -1}} روز گذشته
-                                    @elseif($daysLeft>0)
-                                        {{$daysLeft}} روز
+                                @can('setad_sale')
+                                    @if($saleprice_request->status == 'winner')
+                                        <span
+                                            class="badge badge-success">{{ \App\Models\SalePriceRequest::STATUS['winner'] }}</span>
+                                    @elseif($saleprice_request->status == 'lose')
+                                        <span
+                                            class="badge badge-danger">{{ \App\Models\SalePriceRequest::STATUS['lose'] }}</span>
+                                    @elseif(in_array($saleprice_request->status, ['pending','accepted','finished']))
+                                        @if($daysLeft<0)
+                                            {{$daysLeft * -1}} روز گذشته
+                                        @elseif($daysLeft>0)
+                                            {{$daysLeft}} روز
+                                        @else
+                                            بدون مهلت
+                                        @endif
                                     @else
-                                        بدون مهلت
+                                        نامشخص
                                     @endif
-                                @else
-                                    نامشخص
-                                @endif
+                                @endcan
                             </td>
                             <td>
                                 @if($saleprice_request->status == 'accepted')
