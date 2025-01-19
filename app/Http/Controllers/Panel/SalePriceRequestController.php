@@ -38,7 +38,7 @@ class SalePriceRequestController extends Controller
         return view('panel.sale-price-requests.create', compact('products'));
     }
 
-    public function store(Request $request)
+    public function store(SalePriceRequest $request)
     {
         $this->authorize('sale-price-requests-create');
 
@@ -140,7 +140,7 @@ class SalePriceRequestController extends Controller
         ]);
     }
 
-    public function update(Request $request, SalePriceRequest $sale_price_request)
+    public function update(SalePriceRequest $request, SalePriceRequest $sale_price_request)
     {
 //        return $request->prices;
         $this->authorize('ceo');
@@ -230,7 +230,7 @@ class SalePriceRequestController extends Controller
         foreach (json_decode($sale_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
             if ($product) {
-                $items['products'][] = [
+                $items[] = [
                     'product_id' => $product->id,
                     'product_name' => $product->title,
                     'product_model' => $product->productModels->slug,
@@ -240,7 +240,7 @@ class SalePriceRequestController extends Controller
                     'price' => str_replace(',', '', $request->price[$key] ?? 0),
                 ];
                 $finalPrice = str_replace(',', '', $request->final_price[$key] ?? 0);
-                $OrderItems['other_products'][] = [
+                $OrderItems['products'][] = [
                     'products' => (integer)$product->id,
                     'colors' => 'black',
                     'counts' => (integer)$request->count[$key],

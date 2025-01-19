@@ -44,7 +44,7 @@
                                             value="{{ $customer->id }}" {{ old('customer') == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('buyer_name')
+                                @error('customer')
                                 <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -144,7 +144,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary mt-5" type="submit">ثبت فرم</button>
+                <button class="btn btn-primary mt-5" type="submit" id="submit">ثبت فرم</button>
             </form>
         </div>
     </div>
@@ -152,6 +152,9 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            $("#submit").on("click", function () {
+                $(this).prop("disabled", true).text("در حال ارسال...");
+            });
             // Format price input and display formatted price below
             $(document).on('input', '.price-input', function () {
                 let value = $(this).val().replace(/,/g, ''); // Remove existing commas
@@ -179,7 +182,7 @@
             </td>
             <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
             <td>
-                <input type="text" class="form-control price-input" name="price[]" value="0" required>
+                <input type="number" class="form-control price-input" name="price[]" value="0" required>
                 <div class="formatted-price" style="margin-top: 5px; font-weight: bold;"></div> <!-- نمایش قیمت فرمت‌شده -->
             </td>
             <td>
