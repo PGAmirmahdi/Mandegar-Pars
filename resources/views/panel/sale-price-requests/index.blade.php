@@ -84,6 +84,7 @@
                         @endcan
                         @canany(['ceo','admin'])
                             <th>ثبت قیمت</th>
+                            <th>مشاهده قیمت</th>
                         @else
                             <th>مشاهده قیمت</th>
                             <th>ویرایش</th>
