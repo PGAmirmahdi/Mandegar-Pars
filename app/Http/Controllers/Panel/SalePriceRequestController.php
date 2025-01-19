@@ -230,7 +230,7 @@ class SalePriceRequestController extends Controller
         foreach (json_decode($sale_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
             if ($product) {
-                $items[] = [
+                $items['products'][] = [
                     'product_id' => $product->id,
                     'product_name' => $product->title,
                     'product_model' => $product->productModels->slug,
