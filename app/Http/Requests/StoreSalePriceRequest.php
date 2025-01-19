@@ -25,10 +25,10 @@ class StoreSalePriceRequest extends FormRequest
     {
         return [
             'customer' => 'required|exists:customers,id',
-            'date' => 'required|date',
-            'hour' => 'required|date_format:H:i',
+            'date' => 'nullable|date',
+            'hour' => 'nullable|date_format:H:i',
             'payment_type' => 'required',
-            'need_no' => 'required|string|max:255',
+            'need_no' => 'nullable|string|max:255',
 //            'products' => 'required|array',
 //            'products.*.id' => 'required|exists:products,id',
 //            'products.*.quantity' => 'required|integer|min:1',
@@ -39,9 +39,7 @@ class StoreSalePriceRequest extends FormRequest
         return [
             'customer.required' => 'انتخاب مشتری الزامی است.',
             'customer.exists' => 'مشتری انتخاب‌ شده معتبر نیست.',
-            'date.required' => 'تاریخ را وارد کنید.',
             'date.date' => 'تاریخ وارد شده معتبر نیست.',
-            'hour.required' => 'ساعت را وارد کنید.',
             'hour.date_format' => 'فرمت ساعت باید به صورت HH:mm باشد.',
             'payment_type.required' => 'نوع پرداخت الزامی است.',
             'payment_type.in' => 'نوع پرداخت انتخاب‌شده معتبر نیست.',
@@ -51,7 +49,6 @@ class StoreSalePriceRequest extends FormRequest
 //            'products.*.quantity.required' => 'تعداد محصول الزامی است.',
 //            'products.*.quantity.integer' => 'تعداد محصول باید عدد صحیح باشد.',
 //            'products.*.quantity.min' => 'تعداد محصول نمی‌تواند کمتر از ۱ باشد.',
-            'need_no.required' => 'شماره نیاز الزامی است'
         ];
     }
 }
