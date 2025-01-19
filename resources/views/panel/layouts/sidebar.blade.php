@@ -330,23 +330,23 @@
                 </li>
             @elseif(auth()->user()->role->name == 'ceo' || auth()->user()->role->name == 'admin' || auth()->user()->role->name == 'office-manager')
                 <li>
-                    <a class="{{ request()->query('type') === 'free_sale' ? 'active' : '' }}"
+                    <a class="{{ request()->query('type') === 'free_sale' || request()->is('sale_price_requests/action/*') ? 'active' : '' }}"
                        href="{{ url('/panel/sale_price_requests?type=free_sale') }}">درخواست فروش آزاد</a>
                 </li>
                 <li>
-                    <a class="{{ request()->query('type') === 'global_sale' ? 'active' : '' }}"
+                    <a class="{{ request()->query('type') === 'global_sale' || request()->is('sale_price_requests/action/*') ? 'active' : '' }}"
                        href="{{ url('/panel/sale_price_requests?type=global_sale') }}">درخواست فروش سراسری</a>
                 </li>
                 <li>
-                    <a class="{{ request()->query('type') === 'setad_sale' ? 'active' : '' }}"
+                    <a class="{{ request()->query('type') === 'setad_sale' || request()->is('sale_price_requests/action/*') ? 'active' : '' }}"
                        href="{{ url('/panel/sale_price_requests?type=setad_sale') }}">درخواست فروش ستاد</a>
                 </li>
                 <li>
-                    <a class="{{ request()->query('type') === 'organization_sale' ? 'active' : '' }}"
+                    <a class="{{ request()->query('type') === 'organization_sale' || request()->is('sale_price_requests/action/*') ? 'active' : '' }}"
                        href="{{ url('/panel/sale_price_requests?type=organization_sale') }}">درخواست فروش سازمانی</a>
                 </li>
                 <li>
-                    <a class="{{ request()->query('type') === 'industrial_sale' ? 'active' : '' }}"
+                    <a class="{{ request()->query('type') === 'industrial_sale' || request()->is('sale_price_requests/action/*') ? 'active' : '' }}"
                        href="{{ url('/panel/sale_price_requests?type=industrial_sale') }}">درخواست فروش صنعتی</a>
                 </li>
             @endif
