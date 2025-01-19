@@ -156,6 +156,9 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            $("#submit").on("submit", function () {
+                $(this).prop("disabled", true).text("در حال ارسال...");
+            });
             // Format price input and display formatted price below
             $(document).on('input', '.price-input', function () {
                 let value = $(this).val().replace(/,/g, ''); // Remove existing commas
@@ -165,9 +168,6 @@
                 } else {
                     $(this).next('.formatted-price').text(''); // Clear the display if input is invalid
                 }
-            });
-            $("#submit").on("submit", function () {
-                $(this).prop("disabled", true).text("در حال ارسال...");
             });
             // Add new row
             $(document).on('click', '#btn_add', function () {
