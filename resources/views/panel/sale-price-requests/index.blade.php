@@ -124,8 +124,8 @@
                                     نامشخص
                                 @endif
                             </td>
-                            <td>
-                                @can('setad_sale')
+                            @can('setad_sale')
+                                <td>
                                     @if($saleprice_request->status == 'winner')
                                         <span
                                             class="badge badge-success">{{ \App\Models\SalePriceRequest::STATUS['winner'] }}</span>
@@ -143,8 +143,8 @@
                                     @else
                                         نامشخص
                                     @endif
-                                @endcan
-                            </td>
+                                </td>
+                            @endcan
                             <td>
                                 @if($saleprice_request->status == 'accepted')
                                     <span
