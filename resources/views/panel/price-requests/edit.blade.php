@@ -14,7 +14,7 @@
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
                 <h6>ویرایش درخواست ستاد</h6>
             </div>
-            <form action="{{ route('sale-price-requests.update', $priceRequest->id) }}" method="post">
+            <form action="{{ route('price-requests.update', $priceRequest->id) }}" method="post">
                 @csrf
                 @method('put')
                 <div class="form-row">
