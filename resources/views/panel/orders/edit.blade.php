@@ -164,9 +164,8 @@
                                                 </thead>
                                                 <tbody>
                                                 @if(!is_null(json_decode($order->products)))
-                                                    @foreach(json_decode($order->products)->products as  $product)
-                                                        {{--                                                        @dd($products->products)--}}
-
+                                                    @foreach(json_decode($order->products) as  $product)
+                                                        {{-- @dd($products->products)--}}
                                                         <tr>
                                                             <td>
                                                                 <select class="form-control" name="products[]"
