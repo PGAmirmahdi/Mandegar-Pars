@@ -506,33 +506,22 @@ class OrderController extends Controller
         $mergedProducts = [];
 
         if ($order) {
-            $decodedProducts = json_decode($order->products);
+            $decodedProducts = json_decode($order->products, true); // تبدیل به آرایه
+
             $total_price = $this->calculateTotal($decodedProducts);
 
-            if (!empty($decodedProducts->products)) {
-                $productIds = collect($decodedProducts->products)->pluck('products');
+            if (!empty($decodedProducts)) {
+                $productIds = collect(array_column($decodedProducts, 'products')); // استخراج 'products' از JSON
                 $productsFromDB = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-                foreach ($decodedProducts->products as $product) {
-                    $productModel = $productsFromDB->get($product->products);
+                foreach ($decodedProducts as $product) {
+                    $productModel = $productsFromDB->get($product['products']); // دسترسی به 'products' به صورت آرایه
                     $mergedProducts[] = [
                         'title' => $productModel ? $productModel->title : 'Unknown Product',
-                        'color' => Product::COLORS[$product->colors] ?? 'Unknown Color',
-                        'count' => $product->counts,
-                        'unit' => $product->units,
-                        'price' => 0,
-                    ];
-                }
-            }
-
-            if (!empty($decodedProducts->other_products)) {
-                foreach ($decodedProducts->other_products as $product) {
-                    $mergedProducts[] = [
-                        'title' => $product->other_products,
-                        'color' => $product->other_colors,
-                        'count' => $product->other_counts,
-                        'unit' => $product->other_units,
-                        'price' => 0,
+                        'color' => Product::COLORS[$product['colors']] ?? 'Unknown Color', // دسترسی به 'colors' به صورت آرایه
+                        'count' => $product['counts'], // دسترسی به 'counts' به صورت آرایه
+                        'unit' => $product['units'], // دسترسی به 'units' به صورت آرایه
+                        'price' => 0, // می‌توانید از قیمت خاص استفاده کنید یا در صورت نیاز آن را از دیتابیس بگیرید
                     ];
                 }
             }
@@ -544,21 +533,23 @@ class OrderController extends Controller
                 'order' => $mergedProducts,
                 'total_price' => $total_price,
             ];
+
             $response = [
                 'status' => 'success',
                 'data' => $data
             ];
             return response()->json($response, 200);
         }
+
         $response = [
             'status' => 'failed',
             'data' => null
         ];
         return response()->json($response, 200);
-    }
+        }
 
 
-    public function calculateTotal($products)
+        public function calculateTotal($products)
     {
         $sum_total_price = 0;
         if (!empty($products->products)) {

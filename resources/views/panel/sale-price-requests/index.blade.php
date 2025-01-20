@@ -109,6 +109,7 @@
                             <td>{{ ++$key }}</td>
                             <td>{{$saleprice_request->code}}</td>
                             <td>{{ $saleprice_request->user->name . ' ' . $saleprice_request->user->family }}</td>
+                            <td>{{ $saleprice_request->customer->name}}</td>
                             <td>{{ verta($saleprice_request->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
                                 {{$saleprice_request->date . ' ' . $saleprice_request->hour}}
