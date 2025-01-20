@@ -46,35 +46,52 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>دسته بندی</th>
-                        <th>برند</th>
-                        <th>تاریخ آنالیز</th>
-                        <th>ریز جزئیات</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @php
-                    $index = 0;
-                    @endphp
-                    @foreach($analyses as $analyse)
+                @php
+                    $monthNames = [
+                        1 => 'فروردین',
+                        2 => 'اردیبهشت',
+                        3 => 'خرداد',
+                        4 => 'تیر',
+                        5 => 'مرداد',
+                        6 => 'شهریور',
+                        7 => 'مهر',
+                        8 => 'آبان',
+                        9 => 'آذر',
+                        10 => 'دی',
+                        11 => 'بهمن',
+                        12 => 'اسفند'
+                    ];
+                @endphp
+                @foreach($analyses as $month => $monthAnalyses)
+                    <h5 class="mt-4">{{ $monthNames[$month] }}</h5> <!-- نمایش نام ماه به فارسی -->
+                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                        <thead>
                         <tr>
-                            <td>{{ $index += 1 }}</td>
-                            <td>{{ $analyse->category->name }}</td>
-                            <td>{{ $analyse->brand->name }}</td>
-                            <td><strong style="font-size: 20px">{{ $analyse->date }}</strong></td>
-                            <td>
-                                <a href="{{ route('analyse.show', $analyse->id) }}" class="btn btn-lg btn-outline-behance btn-floating">
-                                    <i class="fa fa-chart-simple"></i>
-                                </a>
-                            </td>
+                            <th>#</th>
+                            <th>دسته‌بندی</th>
+                            <th>برند</th>
+                            <th>تاریخ آنالیز</th>
+                            <th>محصولات</th>
                         </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        @php $index = 0; @endphp
+                        @foreach($monthAnalyses as $analyse)
+                            <tr>
+                                <td>{{ ++$index }}</td>
+                                <td>{{ $analyse->category->name }}</td>
+                                <td>{{ $analyse->brand->name }}</td>
+                                <td>{{ \Verta::parse($analyse->date)->format('%d %B %Y') }}</td>
+                                <td>
+                                    <a href="{{ route('analyse.show', $analyse->id) }}" class="btn btn-lg btn-outline-behance btn-floating">
+                                        <i class="fa fa-chart-simple"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                @endforeach
             </div>
         </div>
     </div>

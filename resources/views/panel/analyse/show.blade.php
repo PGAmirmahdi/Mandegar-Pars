@@ -1,12 +1,17 @@
 @extends('panel.layouts.master')
 @section('title', 'ریز جزئیات آنالیز')
 @section('content')
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle font-size-20 align-middle"></i>
+        <strong>توجه!</strong>
+        موجودی انبار موجودی زمان ثبت آنالیز هستش و موجودی لحظه ای موجودی فعلی انبار هستش
+    </div>
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ریز جزئیات آنالیز در تاریخ {{ $analyse->date ?? 'نامشخص' }}</h6>
+                <a href="{{route('analyse.index')}}" class="btn btn-danger">بازگشت</a>
             </div>
-
             <!-- فرم جستجو -->
             <form method="GET" action="{{ route('analyse.show', $analyse->id) }}" id="search_form" class="mb-3">
                 <div class="row">
@@ -31,18 +36,24 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>نام محصول</th>
-                        <th>تعداد</th>
+                        <th>دسته بندی</th>
                         <th>برند</th>
+                        <th>نام محصول</th>
+                        <th>تعداد آنالیز</th>
+                        <th>موجودی انبار</th>
+                        <th>موجودی لحظه ای</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($products as $index => $product)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $product->title ?? 'نامشخص' }}</td>
-                            <td>{{ $product->pivot->quantity }}</td> <!-- مقدار quantity -->
+                            <td>{{ $analyse->category->slug ?? 'نامشخص' }}</td>
                             <td>{{ $analyse->brand->slug ?? 'نامشخص' }}</td>
+                            <td>{{ $product->title ?? 'نامشخص' }}</td>
+                            <td>{{ $product->pivot->quantity }}</td>
+                            <td>{{ $product->pivot->storage_count ?? 'نامشخص' }}</td>
+                            <td>{{ $product->total_count ?? 'نامشخص' }}</td>
                         </tr>
                     @endforeach
                     </tbody>

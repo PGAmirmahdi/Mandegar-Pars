@@ -9,32 +9,32 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductModel;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AnalyseController extends Controller
 {
+
+
     public function index(Request $request)
     {
-        // ساخت کوئری برای جدول `Analyse`
         $analyses = Analyse::query()
-            // فیلتر تاریخ بین `start_date` و `end_date`
             ->when($request->start_date && $request->end_date, function ($query) use ($request) {
                 $query->whereBetween('date', [$request->start_date, $request->end_date]);
             })
-            // فیلتر بر اساس دسته‌بندی (category)
             ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                 $query->where('category_id', $request->category);
             })
-            // فیلتر بر اساس مدل (brand/model)
             ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
                 $query->where('brand_id', $request->model);
             })
-            // مرتب‌سازی جدیدترین‌ها
-            ->latest()
-            // صفحه‌بندی نتایج (30 نتیجه در هر صفحه)
-            ->paginate(30);
+            ->get()
+            ->groupBy(function ($analyse) {
+                return Carbon::parse($analyse->date)->month; // گروه‌بندی بر اساس عدد ماه
+            });
+
         $categories = Category::all();
         $models = ProductModel::all();
-        // ارسال داده‌ها به ویو
+
         return view('panel.analyse.index', compact('analyses', 'categories', 'models'));
     }
 
@@ -42,7 +42,7 @@ class AnalyseController extends Controller
     {
         // دریافت آنالیز و محصولات مرتبط
         $analyse = Analyse::with(['products' => function ($query) use ($request) {
-            $query->select('products.id', 'products.title', 'analyse_products.quantity')->orderBy('analyse_products.quantity', 'desc');
+            $query->select('products.id', 'products.title','products.total_count', 'analyse_products.quantity')->orderBy('analyse_products.quantity', 'desc');
 
             // اگر محصول خاصی انتخاب شده باشد
             if ($request->has('product') && $request->product != 'all') {
@@ -83,6 +83,7 @@ class AnalyseController extends Controller
             if ($product) {
                 $analyse->products()->attach($productId, [
                     'quantity' => $quantity,
+                    'storage_count' => $product->storage_count,
                 ]);
             }
         }
@@ -107,14 +108,19 @@ class AnalyseController extends Controller
         $products = Product::where('category_id', $category_id)
             ->where('brand_id', $brand_id)
             ->get();
-        // اضافه کردن مقدار quantity برای هر محصول
+
         $productsWithQuantity = $products->map(function ($product) {
-            // پیدا کردن quantity مربوط به هر محصول
-            $quantity = AnalyseProducts::where('product_id', $product->id)->select('quantity')->first();
-            // افزودن quantity به هر محصول
-            $product->quantity = $quantity ? $quantity->quantity : 0; // اگر quantity یافت نشد، 0 را تنظیم می‌کنیم
+            $lastQuantity = AnalyseProducts::where('product_id', $product->id)
+                ->latest('id')
+                ->value('quantity'); // آخرین مقدار quantity
+
+            $storageCount = $product->total_count ?? 0; // فرض بر این که storage_count در مدل Product موجود است
+
+            $product->quantity = $lastQuantity ?? 0; // مقدار پیش‌فرض 0 اگر موجود نباشد
+            $product->total_count = $storageCount; // مقدار موجودی انبار
             return $product;
         });
+
         return response()->json(['products' => $productsWithQuantity]);
     }
 

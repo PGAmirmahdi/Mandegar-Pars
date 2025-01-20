@@ -1,24 +1,24 @@
 <?php return array (
   'anhskohbo/no-captcha' => 
   array (
-    'aliases' => 
-    array (
-      'NoCaptcha' => 'Anhskohbo\\NoCaptcha\\Facades\\NoCaptcha',
-    ),
     'providers' => 
     array (
       0 => 'Anhskohbo\\NoCaptcha\\NoCaptchaServiceProvider',
     ),
+    'aliases' => 
+    array (
+      'NoCaptcha' => 'Anhskohbo\\NoCaptcha\\Facades\\NoCaptcha',
+    ),
   ),
   'barryvdh/laravel-debugbar' => 
   array (
-    'aliases' => 
-    array (
-      'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
-    ),
     'providers' => 
     array (
       0 => 'Barryvdh\\Debugbar\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
     ),
   ),
   'beyondcode/laravel-websockets' => 
@@ -34,24 +34,24 @@
   ),
   'carlos-meneses/laravel-mpdf' => 
   array (
-    'aliases' => 
-    array (
-      'PDF' => 'Mccarlosen\\LaravelMpdf\\Facades\\LaravelMpdf',
-    ),
     'providers' => 
     array (
       0 => 'Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider',
     ),
+    'aliases' => 
+    array (
+      'PDF' => 'Mccarlosen\\LaravelMpdf\\Facades\\LaravelMpdf',
+    ),
   ),
   'facade/ignition' => 
   array (
-    'aliases' => 
-    array (
-      'Flare' => 'Facade\\Ignition\\Facades\\Flare',
-    ),
     'providers' => 
     array (
       0 => 'Facade\\Ignition\\IgnitionServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Flare' => 'Facade\\Ignition\\Facades\\Flare',
     ),
   ),
   'fruitcake/laravel-cors' => 
@@ -63,24 +63,24 @@
   ),
   'hekmatinasser/verta' => 
   array (
-    'aliases' => 
-    array (
-      'Verta' => 'Hekmatinasser\\Verta\\Verta',
-    ),
     'providers' => 
     array (
       0 => 'Hekmatinasser\\Verta\\Laravel\\VertaServiceProvider',
     ),
+    'aliases' => 
+    array (
+      'Verta' => 'Hekmatinasser\\Verta\\Verta',
+    ),
   ),
   'jenssegers/agent' => 
   array (
-    'aliases' => 
-    array (
-      'Agent' => 'Jenssegers\\Agent\\Facades\\Agent',
-    ),
     'providers' => 
     array (
       0 => 'Jenssegers\\Agent\\AgentServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Agent' => 'Jenssegers\\Agent\\Facades\\Agent',
     ),
   ),
   'laravel/sail' => 
@@ -113,35 +113,35 @@
   ),
   'maatwebsite/excel' => 
   array (
-    'aliases' => 
-    array (
-      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
-    ),
     'providers' => 
     array (
       0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
+    'aliases' => 
+    array (
+      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
   ),
   'melipayamak/laravel' => 
   array (
-    'aliases' => 
-    array (
-      'Melipayamak' => 'Melipayamak\\Laravel\\Facade',
-    ),
     'providers' => 
     array (
       0 => 'Melipayamak\\Laravel\\ServiceProvider',
     ),
+    'aliases' => 
+    array (
+      'Melipayamak' => 'Melipayamak\\Laravel\\Facade',
+    ),
   ),
   'mews/captcha' => 
   array (
-    'aliases' => 
-    array (
-      'Captcha' => 'Mews\\Captcha\\Facades\\Captcha',
-    ),
     'providers' => 
     array (
       0 => 'Mews\\Captcha\\CaptchaServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Captcha' => 'Mews\\Captcha\\Facades\\Captcha',
     ),
   ),
   'nesbot/carbon' => 
@@ -160,13 +160,13 @@
   ),
   'uxweb/sweet-alert' => 
   array (
-    'aliases' => 
-    array (
-      'Alert' => 'UxWeb\\SweetAlert\\SweetAlert',
-    ),
     'providers' => 
     array (
       0 => 'UxWeb\\SweetAlert\\SweetAlertServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Alert' => 'UxWeb\\SweetAlert\\SweetAlert',
     ),
   ),
 );
