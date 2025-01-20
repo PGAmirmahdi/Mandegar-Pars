@@ -174,7 +174,7 @@ class OrderController extends Controller
         return back();
     }
 
-    private function sortData($request)
+    private function    sortData($request)
     {
         $products = [];
         if (isset($request->products) && is_array($request->products)) {
@@ -190,24 +190,7 @@ class OrderController extends Controller
             }
         }
 
-
-        $other_products = [];
-        if (isset($request->other_products) && is_array($request->other_products)) {
-            foreach ($request->other_products as $index => $other_product) {
-                $other_products[] = [
-                    'other_products' => $other_product,
-                    'other_colors' => $request->other_colors[$index],
-                    'other_counts' => $request->other_counts[$index],
-                    'other_units' => $request->other_units[$index],
-                    'other_prices' => $request->other_prices[$index],
-                    'other_total_prices' => $request->other_total_prices[$index],
-                ];
-            }
-        }
-        return [
-            'products' => $products,
-            'other_products' => $other_products,
-        ];
+        return $products;
     }
 
 
