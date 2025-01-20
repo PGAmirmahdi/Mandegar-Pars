@@ -58,7 +58,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            @can('setad_sale')
+                            @if($sale_price_request->type == 'setad_sale')
                                 <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                     <label for="date">تاریخ موعد</label>
                                     <input type="text" name="date" class="form-control" id="date"
@@ -70,7 +70,7 @@
                                     <input type="text" name="need_no" class="form-control" id="need_no"
                                            value="{{ $sale_price_request->need_no }}" disabled>
                                 </div>
-                            @endcan
+                            @endif
                             @if($sale_price_request->acceptor)
                                 <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                     <label for="acceptor">تایید کننده</label>

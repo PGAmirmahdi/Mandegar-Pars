@@ -42,7 +42,7 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            @can('setad_sale')
+                            @if($sale_price_request->type == 'setad_sale')
                                 <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
                                     <label for="date">مهلت پرداخت</label>
                                     <input type="text" class="form-control readonly" readonly
@@ -53,7 +53,7 @@
                                     <input type="text" class="form-control readonly" readonly
                                            value="{{$sale_price_request->need_no}}">
                                 </div>
-                            @endcan
+                            @endif
                         </div>
                         <table class="table table-striped table-bordered text-center">
                             <thead>
