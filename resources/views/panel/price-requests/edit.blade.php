@@ -12,7 +12,7 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
-                <h6>ویرایش درخواست ستاد</h6>
+                <h6>ویرایش درخواست قیمت</h6>
             </div>
             <form action="{{ route('price-requests.update', $priceRequest->id) }}" method="post">
                 @csrf
