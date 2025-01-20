@@ -468,6 +468,10 @@
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this)
             })
+            $(document).on('change', '#products_table input[name="prices[]"]', function () {
+                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
+                CalcProductInvoice(this)
+            })
             // $(document).on('keyup', '#other_products_table input[name="other_counts[]"]', function (e) {
             //     if (e.originalEvent && e.originalEvent.explicitOriginalTarget) {
             //         if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value) {
