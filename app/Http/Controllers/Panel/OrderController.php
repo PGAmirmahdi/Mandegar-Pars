@@ -84,6 +84,8 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
+
+
         $this->authorize('customer-order-create');
         $customer = Customer::whereId($request->buyer_name)->first();
 //        dd($customer);

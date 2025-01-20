@@ -68,7 +68,7 @@
                         </div>
                         <div class="p-3" style="overflow-y: auto; max-height: 400px;">
                             <div class="timeline">
-                                @foreach(auth()->user()->unreadNotifications as $notification)
+                                @foreach(auth()->user()->unreadNotifications->take(10) as $notification)
                                     <div class="timeline-item">
                                         <div>
                                             <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">

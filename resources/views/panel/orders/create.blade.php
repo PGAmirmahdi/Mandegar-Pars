@@ -46,14 +46,16 @@
                                     <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
                                         <label
                                             class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'active' : '' }}">
-                                            <input type="radio" id="req_for1" name="req_for" class="custom-control-input"
+                                            <input type="radio" id="req_for1" name="req_for"
+                                                   class="custom-control-input"
                                                    value="pre-invoice"
                                                    form="invoice_form" {{ old('req_for') == 'pre-invoice' || old('req_for') == null ? 'checked' : '' }}>پیش
                                             فاکتور
                                         </label>
                                         <label
                                             class="btn btn-outline-primary justify-content-center {{ old('req_for') == 'invoice' ? 'active' : '' }}">
-                                            <input type="radio" id="req_for2" name="req_for" class="custom-control-input"
+                                            <input type="radio" id="req_for2" name="req_for"
+                                                   class="custom-control-input"
                                                    value="invoice"
                                                    form="invoice_form" {{ old('req_for') == 'invoice' ? 'checked' : '' }}>فاکتور
                                         </label>
@@ -91,7 +93,8 @@
                                             <label for="payment_type">نوع پرداختی</label>
                                             <select class="form-control" name="payment_type" id="payment_type">
                                                 @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                                    <option value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                                    <option
+                                                        value="{{ $key }}" {{ old('payment_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                             @error('payment_type')
@@ -188,39 +191,15 @@
                                                                 <input type="number" name="prices[]"
                                                                        class="form-control" min="0"
                                                                        value="{{ old('prices')[$i] }}">
+                                                                <span
+                                                                    class="text-info">{{number_format(old('prices')[$i] )}}</span>
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="total_prices[]"
                                                                        class="form-control" min="0"
                                                                        value="{{ old('total_prices')[$i] }}" readonly>
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" name="discount_amounts[]"
-                                                                       class="form-control"
-                                                                       min="0" value="{{ old('discount_amounts')[$i] }}"
-                                                                       readonly>
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" name="extra_amounts[]"
-                                                                       class="form-control" min="0"
-                                                                       value="{{ old('extra_amounts')[$i] }}" readonly>
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" name="total_prices_with_off[]"
-                                                                       class="form-control"
-                                                                       min="0"
-                                                                       value="{{ old('total_prices_with_off')[$i] }}"
-                                                                       readonly>
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" name="taxes[]" class="form-control"
-                                                                       min="0"
-                                                                       value="{{ old('taxes')[$i] }}" readonly>
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" name="invoice_nets[]"
-                                                                       class="form-control" min="0"
-                                                                       value="{{ old('invoice_nets')[$i] }}" readonly>
+                                                                <span
+                                                                    class="text-info">{{number_format(old('total_prices')[$i])}}</span>
                                                             </td>
                                                             <td>
                                                                 <button class="btn btn-danger btn-floating btn_remove"
@@ -234,89 +213,89 @@
                                             </table>
                                         </div>
                                     </div>
-{{--                                    <div class="col-12 mt-4 text-center">--}}
-{{--                                        <h5>محصولات دیگر</h5>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="col-12 mb-3">--}}
-{{--                                        <div class="d-flex justify-content-between mb-3">--}}
-{{--                                            <button class="btn btn-outline-success" type="button" id="btn_other_add"><i--}}
-{{--                                                    class="fa fa-plus mr-2"></i> افزودن کالا--}}
-{{--                                            </button>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="overflow-auto">--}}
-{{--                                            <table class="table table-bordered table-striped text-center"--}}
-{{--                                                   id="other_products_table">--}}
-{{--                                                <thead>--}}
-{{--                                                <tr>--}}
-{{--                                                    <th>کالا</th>--}}
-{{--                                                    <th>رنگ</th>--}}
-{{--                                                    <th>تعداد</th>--}}
-{{--                                                    <th>واحد اندازه گیری</th>--}}
-{{--                                                    <th>مبلغ واحد (ریال)</th>--}}
-{{--                                                    <th>مبلغ کل (ریال)</th>--}}
-{{--                                                    <th>حذف</th>--}}
-{{--                                                </tr>--}}
-{{--                                                </thead>--}}
-{{--                                                <tbody>--}}
-{{--                                                @if(old('other_products'))--}}
-{{--                                                    @foreach(old('other_products') as $i => $otherProduct)--}}
-{{--                                                        <tr>--}}
-{{--                                                            <td>--}}
-{{--                                                                <input type="text" class="form-control"--}}
-{{--                                                                       name="other_products[]"--}}
-{{--                                                                       placeholder="عنوان کالا"--}}
-{{--                                                                       value="{{ $otherProduct }}" required>--}}
-{{--                                                            </td>--}}
-{{--                                                            <td>--}}
-{{--                                                                <input type="text" class="form-control"--}}
-{{--                                                                       name="other_colors[]"--}}
-{{--                                                                       placeholder="نام رنگ"--}}
-{{--                                                                       value="{{ old('other_colors')[$i] }}"--}}
-{{--                                                                       required>--}}
-{{--                                                            </td>--}}
-{{--                                                            <td>--}}
-{{--                                                                <input type="number" name="other_counts[]"--}}
-{{--                                                                       class="form-control" min="1"--}}
-{{--                                                                       value="{{ old('other_counts')[$i] }}" required>--}}
-{{--                                                            </td>--}}
-{{--                                                            <td>--}}
-{{--                                                                <select class="form-control" name="other_units[]">--}}
-{{--                                                                    <option value="number">عدد</option>--}}
-{{--                                                                    <option value="pack">بسته</option>--}}
-{{--                                                                    <option value="box">جعبه</option>--}}
-{{--                                                                    <option value="kg">کیلوگرم</option>--}}
-{{--                                                                    <option value="ton">تن</option>--}}
-{{--                                                                </select>--}}
-{{--                                                            </td>--}}
-{{--                                                            <td>--}}
-{{--                                                                <input type="number" name="other_prices[]"--}}
-{{--                                                                       class="form-control" min="0"--}}
-{{--                                                                       value="{{ old('other_prices')[$i] }}" required>--}}
-{{--                                                                <span--}}
-{{--                                                                    class="price_with_grouping text-primary">{{ number_format(old('other_prices')[$i]) }}</span>--}}
-{{--                                                            </td>--}}
-{{--                                                            <td>--}}
-{{--                                                                <input type="number" name="other_total_prices[]"--}}
-{{--                                                                       class="form-control"--}}
-{{--                                                                       min="0"--}}
-{{--                                                                       value="{{ old('other_total_prices')[$i] }}"--}}
-{{--                                                                       readonly>--}}
-{{--                                                                <span--}}
-{{--                                                                    class="total_price_with_grouping text-primary">{{number_format(old('other_total_prices')[$i])}}</span>--}}
-{{--                                                            </td>--}}
+                                    {{--                                    <div class="col-12 mt-4 text-center">--}}
+                                    {{--                                        <h5>محصولات دیگر</h5>--}}
+                                    {{--                                    </div>--}}
+                                    {{--                                    <div class="col-12 mb-3">--}}
+                                    {{--                                        <div class="d-flex justify-content-between mb-3">--}}
+                                    {{--                                            <button class="btn btn-outline-success" type="button" id="btn_other_add"><i--}}
+                                    {{--                                                    class="fa fa-plus mr-2"></i> افزودن کالا--}}
+                                    {{--                                            </button>--}}
+                                    {{--                                        </div>--}}
+                                    {{--                                        <div class="overflow-auto">--}}
+                                    {{--                                            <table class="table table-bordered table-striped text-center"--}}
+                                    {{--                                                   id="other_products_table">--}}
+                                    {{--                                                <thead>--}}
+                                    {{--                                                <tr>--}}
+                                    {{--                                                    <th>کالا</th>--}}
+                                    {{--                                                    <th>رنگ</th>--}}
+                                    {{--                                                    <th>تعداد</th>--}}
+                                    {{--                                                    <th>واحد اندازه گیری</th>--}}
+                                    {{--                                                    <th>مبلغ واحد (ریال)</th>--}}
+                                    {{--                                                    <th>مبلغ کل (ریال)</th>--}}
+                                    {{--                                                    <th>حذف</th>--}}
+                                    {{--                                                </tr>--}}
+                                    {{--                                                </thead>--}}
+                                    {{--                                                <tbody>--}}
+                                    {{--                                                @if(old('other_products'))--}}
+                                    {{--                                                    @foreach(old('other_products') as $i => $otherProduct)--}}
+                                    {{--                                                        <tr>--}}
+                                    {{--                                                            <td>--}}
+                                    {{--                                                                <input type="text" class="form-control"--}}
+                                    {{--                                                                       name="other_products[]"--}}
+                                    {{--                                                                       placeholder="عنوان کالا"--}}
+                                    {{--                                                                       value="{{ $otherProduct }}" required>--}}
+                                    {{--                                                            </td>--}}
+                                    {{--                                                            <td>--}}
+                                    {{--                                                                <input type="text" class="form-control"--}}
+                                    {{--                                                                       name="other_colors[]"--}}
+                                    {{--                                                                       placeholder="نام رنگ"--}}
+                                    {{--                                                                       value="{{ old('other_colors')[$i] }}"--}}
+                                    {{--                                                                       required>--}}
+                                    {{--                                                            </td>--}}
+                                    {{--                                                            <td>--}}
+                                    {{--                                                                <input type="number" name="other_counts[]"--}}
+                                    {{--                                                                       class="form-control" min="1"--}}
+                                    {{--                                                                       value="{{ old('other_counts')[$i] }}" required>--}}
+                                    {{--                                                            </td>--}}
+                                    {{--                                                            <td>--}}
+                                    {{--                                                                <select class="form-control" name="other_units[]">--}}
+                                    {{--                                                                    <option value="number">عدد</option>--}}
+                                    {{--                                                                    <option value="pack">بسته</option>--}}
+                                    {{--                                                                    <option value="box">جعبه</option>--}}
+                                    {{--                                                                    <option value="kg">کیلوگرم</option>--}}
+                                    {{--                                                                    <option value="ton">تن</option>--}}
+                                    {{--                                                                </select>--}}
+                                    {{--                                                            </td>--}}
+                                    {{--                                                            <td>--}}
+                                    {{--                                                                <input type="number" name="other_prices[]"--}}
+                                    {{--                                                                       class="form-control" min="0"--}}
+                                    {{--                                                                       value="{{ old('other_prices')[$i] }}" required>--}}
+                                    {{--                                                                <span--}}
+                                    {{--                                                                    class="price_with_grouping text-primary">{{ number_format(old('other_prices')[$i]) }}</span>--}}
+                                    {{--                                                            </td>--}}
+                                    {{--                                                            <td>--}}
+                                    {{--                                                                <input type="number" name="other_total_prices[]"--}}
+                                    {{--                                                                       class="form-control"--}}
+                                    {{--                                                                       min="0"--}}
+                                    {{--                                                                       value="{{ old('other_total_prices')[$i] }}"--}}
+                                    {{--                                                                       readonly>--}}
+                                    {{--                                                                <span--}}
+                                    {{--                                                                    class="total_price_with_grouping text-primary">{{number_format(old('other_total_prices')[$i])}}</span>--}}
+                                    {{--                                                            </td>--}}
 
-{{--                                                            <td>--}}
-{{--                                                                <button class="btn btn-danger btn-floating btn_remove"--}}
-{{--                                                                        type="button"><i--}}
-{{--                                                                        class="fa fa-trash"></i></button>--}}
-{{--                                                            </td>--}}
-{{--                                                        </tr>--}}
-{{--                                                    @endforeach--}}
-{{--                                                @endif--}}
-{{--                                                </tbody>--}}
-{{--                                            </table>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
+                                    {{--                                                            <td>--}}
+                                    {{--                                                                <button class="btn btn-danger btn-floating btn_remove"--}}
+                                    {{--                                                                        type="button"><i--}}
+                                    {{--                                                                        class="fa fa-trash"></i></button>--}}
+                                    {{--                                                            </td>--}}
+                                    {{--                                                        </tr>--}}
+                                    {{--                                                    @endforeach--}}
+                                    {{--                                                @endif--}}
+                                    {{--                                                </tbody>--}}
+                                    {{--                                            </table>--}}
+                                    {{--                                        </div>--}}
+                                    {{--                                    </div>--}}
                                 </div>
                                 <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
                             </form>
@@ -395,9 +374,11 @@
                 </td>
                 <td>
                     <input type="number" name="prices[]" class="form-control" min="0" value="0">
+                    <span class="total_price_with_grouping text-primary"></span>
                 </td>
                 <td>
                     <input type="number" name="total_prices[]" class="form-control" min="0" value="0">
+                    <span class="total_price_with_grouping text-primary"></span>
                 </td>
                 <td>
                     <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
@@ -468,10 +449,13 @@
                 $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
                 CalcProductInvoice(this)
             })
-            $(document).on('change', '#products_table input[name="prices[]"]', function () {
-                $('#btn_form').attr('disabled', 'disabled').text('درحال محاسبه...');
-                CalcProductInvoice(this)
-            })
+            $(document).on('input', '#products_table input[name="prices[]"]', function () {
+                $('#btn_form').attr('disabled', true).text('درحال محاسبه...');
+                console.log($(this).val()); // استفاده صحیح از متد val
+                changePriceOnInput(this);
+                // CalcProductInvoice(this)
+            });
+
             // $(document).on('keyup', '#other_products_table input[name="other_counts[]"]', function (e) {
             //     if (e.originalEvent && e.originalEvent.explicitOriginalTarget) {
             //         if (e.originalEvent.explicitOriginalTarget.defaultValue != this.value) {
@@ -535,7 +519,6 @@
             var index = $(changeable).parent().parent().index()
             let product_id = $('#products_table select[name="products[]"]')[index].value;
             let count = $('#products_table input[name="counts[]"]')[index].value;
-
             $.ajax({
                 url: "{{ route('calcProductsInvoice') }}",
                 type: 'post',
@@ -547,6 +530,8 @@
                     $('#products_table input[name="prices[]"]')[index].value = res.data.price;
                     $('#products_table input[name="total_prices[]"]')[index].value = res.data.total_price;
                     $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+                //     $($('#products_table input[name="prices[]"]')[index]).siblings()[0].innerText = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                //     $($('#products_table input[name="total_prices[]"]')[index]).siblings()[0].innerText = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 },
                 error: function (request, status, error) {
                     //
@@ -582,6 +567,22 @@
                 this.selectionStart = this.selectionEnd = cursorPos + 1;
             }
         });
+
+        function changePriceOnInput(changeable) {
+            var index = $(changeable).parent().parent().index();
+            var count = $('#products_table input[name="counts[]"]')[index].value;
+            var price = $('#products_table input[name="prices[]"]')[index].value;
+            console.log("gheymat:" + price);
+            console.log("tedad:" + count);
+            var total = count * price;
+            $('#products_table input[name="total_prices[]"]')[index].value = total;
+            $($('#products_table input[name="prices[]"]')[index]).siblings()[0].innerText = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $($('#products_table input[name="total_prices[]"]')[index]).siblings()[0].innerText = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            $('#btn_form').removeAttr('disabled').text('ثبت فرم');
+
+        }
+
 
     </script>
 @endsection
