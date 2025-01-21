@@ -225,7 +225,7 @@
             @endcan
             <li>
                 <a class="{{ active_sidebar(['analyse','analyse/create','analyse/*','analyse/{analyse}/edit','search/analyse']) ? 'active' : '' }}"
-                   href="{{ route('analyse.index') }}">مدیریت آنالیز کالا</a>
+                   href="{{ route('analyse.index') }}">مدیریت آنالیز کالا تطبیقی</a>
             </li>
             @can('prices-list')
                 {{--                <li>--}}

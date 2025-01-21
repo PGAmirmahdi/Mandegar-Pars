@@ -36,6 +36,7 @@
                     <tr>
                         <th>نام محصول</th>
                         <th>تعداد</th>
+                        <th>موجودی انبار</th>
                     </tr>
                     </thead>
                     <tbody id="products-table-body">
@@ -62,14 +63,15 @@
                             brand_id: brand_id
                         },
                         success: function (data) {
-                            console.log(data); // برای دیباگ
+                            console.log(data); // بررسی داده‌ها در کنسول
                             $('#products-table-body').empty(); // پاک کردن جدول محصولات
                             $.each(data.products, function (index, product) {
-                                // اضافه کردن ردیف محصول به جدول همراه با فیلد تعداد
+                                console.log(product); // بررسی هر محصول در کنسول
                                 $('#products-table-body').append(
                                     '<tr>' +
                                     '<td>' + product.title + '</td>' +
-                                    '<td><input type="number" name="products[' + product.id + ']" min="0" class="form-control" value="' + (product.quantity || 0) + '"></td>' + // مقدار quantity از داده‌ها
+                                    '<td><input type="number" name="products[' + product.id + ']" min="0" class="form-control" value="' + (product.quantity || 0) + '"></td>' +
+                                    '<td><input type="number" name="products[' + product.id + ']" min="0" class="form-control" value="' + (product.total_count || 0) + '"></td>' +
                                     '</tr>'
                                 );
                             });
