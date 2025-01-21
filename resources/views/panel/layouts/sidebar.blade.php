@@ -304,10 +304,10 @@
             {{--                    </a>--}}
             {{--                </li>--}}
             @if(auth()->user()->role->name == 'internet_sale')
-                <li>
-                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=internet_sale') }}">درخواست فروش اینترنتی</a>
-                </li>
+{{--                <li>--}}
+{{--                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"--}}
+{{--                       href="{{ url('/panel/sale_price_requests?type=internet_sale') }}">درخواست فروش اینترنتی</a>--}}
+{{--                </li>--}}
             @elseif(auth()->user()->role->name == 'free_sale')
                 <li>
                     <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
@@ -334,10 +334,10 @@
                        href="{{ url('/panel/sale_price_requests?type=industrial_sale') }}">درخواست فروش صنعتی</a>
                 </li>
             @elseif(auth()->user()->role->name == 'ceo' || auth()->user()->role->name == 'admin' || auth()->user()->role->name == 'office-manager')
-                <li>
-                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=internet_sale') }}">درخواست فروش اینترنتی</a>
-                </li>
+{{--                <li>--}}
+{{--                    <a class="{{ request()->query('type') === 'internet_sale' || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"--}}
+{{--                       href="{{ url('/panel/sale_price_requests?type=internet_sale') }}">درخواست فروش اینترنتی</a>--}}
+{{--                </li>--}}
                 <li>
                     <a class="{{ request()->query('type') === 'free_sale' || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"
                        href="{{ url('/panel/sale_price_requests?type=free_sale') }}">درخواست فروش آزاد</a>
