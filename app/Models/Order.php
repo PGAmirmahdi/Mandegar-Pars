@@ -27,6 +27,7 @@ class Order extends Model
         '45DW'=>'45 روز کاری',
         '15D'=>'15 روزه',
         '1W' => 'یک هفته',
+        '2WM' => 'دو ماه کاری'
     ];
     const CREATED_IN = [
     'website' => 'وبسایت',
