@@ -215,9 +215,9 @@
                                                     class="fa fa-plus mr-2"></i> افزودن کالا
                                             </button>
                                         </div>
-                                        <label for="exclude_tax">عدم محاسبه مالیات</label>
                                         <input type="checkbox" name="exclude_tax" id="exclude_tax"
                                                class="form-check-input">
+                                        <label for="exclude_tax">عدم محاسبه مالیات</label>
                                         <div class="overflow-auto">
                                             <table class="table table-bordered table-striped text-center"
                                                    id="other_products_table">
@@ -253,11 +253,6 @@
                                                                        placeholder="نام رنگ"
                                                                        value="{{ old('other_colors')[$i] }}"
                                                                        required readonly>
-                                                            </td>
-                                                            <td>
-                                                                <input type="checkbox" name="exclude_tax[]"
-                                                                       class="form-check-input"
-                                                                       value="1">
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="other_counts[]"
@@ -321,7 +316,7 @@
                                                             <td>
                                                                 <input type="number" name="other_taxes[]"
                                                                        class="form-control" min="0"
-                                                                       value="{{ old('other_taxes')[$i] }}">
+                                                                       value="{{ old('other_taxes')[$i] }}" readonly>
                                                                 <span
                                                                     class="price_with_grouping text-primary">{{ number_format(old('other_taxes')[$i]) }}</span>
 
@@ -464,7 +459,7 @@
                     <span class="price_with_grouping text-primary"></span>
                 </td>
                 <td>
-                    <input type="number" name="other_taxes[]" class="form-control" min="0" value="0">
+                    <input type="number" name="other_taxes[]" class="form-control" min="0" value="0" readonly>
                     <span class="price_with_grouping text-primary"></span>
                 </td>
                 <td>
@@ -679,7 +674,7 @@
                             <span class="price_with_grouping text-primary"></span>
                         </td>
                         <td>
-                            <input type="number" name="other_taxes[]" class="form-control" min="0" value="0">
+                            <input type="number" name="other_taxes[]" class="form-control" min="0" value="0" readonly>
                             <span class="price_with_grouping text-primary"></span>
                         </td>
                         <td>
