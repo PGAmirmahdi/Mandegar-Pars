@@ -30,6 +30,16 @@
                            value="{{ request()->code ?? null }}">
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <select name="user" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5">
+                        <option value="all" selected>همکار (همه)</option>
+                        @foreach(\App\Models\User::all() as $user)
+                            <option value="{{ $user->id }}" {{ request()->user == $user->id ? 'selected' : '' }}>
+                                {{ $user->name . " " . $user->family}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                     <select name="employer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="4">
                         <option value="all" selected>نام کارپرداز(همه)</option>
