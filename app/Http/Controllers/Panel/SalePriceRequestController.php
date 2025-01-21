@@ -129,9 +129,7 @@ class SalePriceRequestController extends Controller
 
     public function edit(SalePriceRequest $sale_price_request)
     {
-        // بررسی مجوزهای کاربر
-        $this->authorize('ceo');
-        $this->authorize('admin');
+        $this->authorize('sale_price_request_edit');
 
         // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
         $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
@@ -253,8 +251,7 @@ class SalePriceRequestController extends Controller
     public function update(SalePriceRequest $request, SalePriceRequest $sale_price_request)
     {
 //        return $request->prices;
-        $this->authorize('ceo');
-        $this->authorize('admin');
+        $this->authorize('sale_price_request_edit');
         $items = [];
 
         foreach (json_decode($sale_price_request->products, true) as $key => $item) {

@@ -150,6 +150,9 @@ class CustomerController extends Controller
             ->when($request->customer && $request->customer != 'all', function ($q) use ($request) {
                 $q->where('name', $request->customer);
             })
+            ->when($request->user && $request->user != 'all', function ($q) use ($request) {
+                $q->where('user_id', $request->user);
+            })
             ->when($request->customer_type && $request->customer_type != 'all', function ($q) use ($customerType) {
                 $q->whereIn('customer_type', $customerType);
             })

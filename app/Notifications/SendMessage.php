@@ -74,7 +74,7 @@ class SendMessage extends Notification
     {
 
         $credential = new ServiceAccountCredentials(
-            "https://www.googleapis.com/auth/firebase.messaging",
+                "https://www.googleapis.com/auth/firebase.messaging",
             json_decode(file_get_contents(public_path('firebase-private-key.json')), true)
         );
         $token = $credential->fetchAuthToken(HttpHandlerFactory::build());

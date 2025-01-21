@@ -90,9 +90,9 @@ Route::get('notif', function () {
     $title = 'ثبت کالا';
     $message = "یک درخواست ثبت کالا توسط " . 'مجید' . " ایجاد شد.";
     $url = route('products.index');
-
-        $user = User::whereId(173)->first();
+    $user = User::whereId(173)->first();
     Notification::send($user, new SendMessage($title, $message, $url));
+
 });
 Route::get("is_sale_manager",function (){
    return \auth()->user()->isSalesManager();
