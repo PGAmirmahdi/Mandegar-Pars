@@ -56,6 +56,9 @@
                             <th>برند</th>
                             <th>از تاریخ</th>
                             <th>تا تاریخ</th>
+                            @can('admin')
+                            <th>تاریخ ایجاد</th>
+                            @endcan
                             <th>محصولات</th>
                         </tr>
                         </thead>
@@ -68,6 +71,9 @@
                                 <td>{{ $analyse->brand->name }}</td>
                                 <td>{{ \Verta::parse($analyse->date)->format('%d %B %Y') }}</td>
                                 <td>{{ \Verta::parse($analyse->to_date)->format('%d %B %Y') }}</td>
+                                @can('admin')
+                                <td>{{\Verta::parse($analyse->created_at)->format('H:i')}}</td>
+                                @endcan
                                 <td>
                                     <a href="{{ route('analyse.show', $analyse->id) }}" class="btn btn-lg btn-outline-behance btn-floating">
                                         <i class="fa fa-chart-simple"></i>

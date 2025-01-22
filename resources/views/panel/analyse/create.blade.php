@@ -46,7 +46,7 @@
                     <tbody id="products-table-body">
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-success" id="submit_button">ثبت آنالیز</button>
+                <button type="submit" class="btn btn-success" id="">ثبت آنالیز</button>
             </form>
         </div>
     </div>
@@ -86,10 +86,10 @@
                                     '<tr>' +
                                     '<td>' + product.title + '</td>' +
                                     '<td><input type="number" name="products[' + product.id + '][quantity]" min="0" class="form-control" value="' + (product.quantity || 0) + '"></td>' +
-                                '<td><input type="number" name="products[' + product.id + '][storage_count]" min="0" class="form-control" value="' + (product.total_count || 0) + '"></td>'
-                                +
+                                    '<td><input type="number" name="products[' + product.id + '][storage_count]" min="0" class="form-control" value="' + (product.storage_count || 0) + '"></td>' +
                                     '</tr>'
                                 );
+
                             });
                         },
                         error: function (xhr, status, error) {

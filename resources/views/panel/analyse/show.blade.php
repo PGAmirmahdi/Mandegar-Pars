@@ -9,17 +9,22 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>ریز جزئیات آنالیز در تاریخ {{ $analyse->date ?? 'نامشخص' }}</h6>
+                <div><h3>ریز جزئیات آنالیز در تاریخ {{ $analyse->date ?? 'نامشخص' }}</h3>
+                    <p>دسته‌بندی: {{ $analyse->category->name }}</p>
+                    <p>برند: {{ $analyse->brand->name }}</p></div>
                 <a href="{{route('analyse.index')}}" class="btn btn-danger">بازگشت</a>
             </div>
             <!-- فرم جستجو -->
             <form method="GET" action="{{ route('analyse.show', $analyse->id) }}" id="search_form" class="mb-3">
                 <div class="row">
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                        <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible">
-                            <option value="all" {{ request()->product == 'all' ? 'selected' : '' }}>مدل کالا (همه)</option>
+                        <select name="product" form="search_form"
+                                class="js-example-basic-single select2-hidden-accessible">
+                            <option value="all" {{ request()->product == 'all' ? 'selected' : '' }}>مدل کالا (همه)
+                            </option>
                             @foreach($allProducts as $product)
-                                <option value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>
+                                <option
+                                    value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>
                                     {{ $product->title }}
                                 </option>
                             @endforeach
@@ -36,8 +41,6 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>دسته بندی</th>
-                        <th>برند</th>
                         <th>نام محصول</th>
                         <th>تعداد آنالیز</th>
                         <th>موجودی انبار</th>
@@ -48,11 +51,9 @@
                     @foreach($products as $index => $product)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $analyse->category->slug ?? 'نامشخص' }}</td>
-                            <td>{{ $analyse->brand->slug ?? 'نامشخص' }}</td>
                             <td>{{ $product->title ?? 'نامشخص' }}</td>
                             <td>{{ $product->pivot->quantity }}</td>
-                            <td>{{ $product->pivot->storage_count ?? 'نامشخص' }}</td>
+                            <td>{{ $product->storage_count ?? 'نامشخص' }}</td>
                             <td>{{ $product->total_count ?? 'نامشخص' }}</td>
                         </tr>
                     @endforeach

@@ -61,7 +61,7 @@ class AnalyseController extends Controller
     {
         // دریافت آنالیز و محصولات مرتبط
         $analyse = Analyse::with(['products' => function ($query) use ($request) {
-            $query->select('products.id', 'products.title','products.total_count', 'analyse_products.quantity')->orderBy('analyse_products.quantity', 'desc');
+            $query->select('products.id', 'products.title','products.total_count', 'analyse_products.quantity','analyse_products.storage_count')->orderBy('analyse_products.quantity', 'desc');
 
             // اگر محصول خاصی انتخاب شده باشد
             if ($request->has('product') && $request->product != 'all') {
@@ -92,24 +92,28 @@ class AnalyseController extends Controller
     public function store(Request $request)
     {
         $analyse = Analyse::create([
-            'date' =>$request->date ,
-            'to_date' =>$request->to_date ,
-            'category_id' =>$request->category_id,
+            'date' => $request->date,
+            'to_date' => $request->to_date,
+            'category_id' => $request->category_id,
             'brand_id' => $request->brand_id,
             'creator_id' => auth()->id(),
         ]);
         foreach ($request->products as $productId => $productData) {
+
             $product = Product::find($productId);
             if ($product) {
                 $analyse->products()->attach($productId, [
-                    'quantity' => $productData['quantity'], // دریافت تعداد
-                    'storage_count' => $productData['storage_count'], // دریافت موجودی انبار
+                    'quantity' => $productData['quantity'], // مقدار تعداد از فرم
+                    'storage_count' => $productData['storage_count'], // مقدار موجودی انبار از فرم
+
                 ]);
             }
         }
-        alert()->success('آنالیز با موفقیت ثبت شد','ثبت آنالیز');
+
+        alert()->success('آنالیز با موفقیت ثبت شد', 'ثبت آنالیز');
         return redirect()->route('analyse.index');
     }
+
     public function destroy(Analyse $analyse)
     {
         $analyse->delete();
