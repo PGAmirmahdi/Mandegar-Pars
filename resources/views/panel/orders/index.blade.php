@@ -277,8 +277,8 @@
                             <form action="{{ route('orders.index') }}" method="get" id="search_form"></form>
                             <div class="row mb-3 mt-5">
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="customer_id" form="search_form" class="form-control"
-                                            data-toggle="select2">
+                                    <select name="customer_id" form="search_form" class="form-control js-example-basic-single select2-hidden-accessible"
+                                            data-toggle="0">
                                         <option value="all">خریدار (همه)</option>
                                         @foreach($customers as $customer)
                                             <option

@@ -308,7 +308,7 @@
                                         @endif
                                     @endcan
                                 @else
-                                    <button class="btn btn-success" type="submit" id="btn_form">
+                                    <button class="btn btn-success" type="submit" id="submit_button">
                                         <i class="fa fa-paper-plane mr-2"></i>
                                         <span id="btn_send_text">ثبت و ارسال به همکار فروش</span>
                                     </button>
@@ -323,6 +323,17 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).ready(function () {
+            $('#submit_button').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
+            });
+        });
         $(document).ready(function () {
             var status = $("input[name='status']").val();
             @if(!old('status'))

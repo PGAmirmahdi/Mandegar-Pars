@@ -148,13 +148,24 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary mt-5" type="submit" id="submit">ثبت فرم</button>
+                <button class="btn btn-primary mt-5" type="submit" id="submit_button">ثبت فرم</button>
             </form>
         </div>
     </div>
 @endsection
 @section('scripts')
     <script>
+        $(document).ready(function () {
+            $('#submit_button').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
+            });
+        });
         $(document).ready(function () {
             $("#submit").on("submit", function () {
                 $(this).prop("disabled", true).text("در حال ارسال...");
