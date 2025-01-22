@@ -14,7 +14,7 @@ class AddToDateToAnalysesTable extends Migration
     public function up()
     {
         Schema::table('analyses', function (Blueprint $table) {
-            $table->string('to_date')->comment('تا تاریخ');
+            $table->string('to_date')->comment('تا تاریخ')->nullable();
         });
     }
 

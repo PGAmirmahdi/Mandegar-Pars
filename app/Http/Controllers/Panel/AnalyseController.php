@@ -19,7 +19,10 @@ class AnalyseController extends Controller
     {
         $analyses = Analyse::query()
             ->when($request->start_date && $request->end_date, function ($query) use ($request) {
-                $query->whereBetween('date', [$request->start_date, $request->end_date]);
+                $query->where(function ($subQuery) use ($request) {
+                    $subQuery->where('date', '<=', $request->end_date)
+                        ->where('to_date', '>=', $request->start_date);
+                });
             })
             ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
                 $query->where('category_id', $request->category);
@@ -29,13 +32,29 @@ class AnalyseController extends Controller
             })
             ->get()
             ->groupBy(function ($analyse) {
-                return Carbon::parse($analyse->date)->month; // گروه‌بندی بر اساس عدد ماه
-            });
+                return Carbon::parse($analyse->date)->month; // گروه‌بندی بر اساس ماه
+            })
+            ->sortKeysDesc(); // مرتب‌سازی نزولی بر اساس کلید ماه
 
+// آرایه نام ماه‌های فارسی
+        $monthNames = [
+            1 => 'فروردین',
+            2 => 'اردیبهشت',
+            3 => 'خرداد',
+            4 => 'تیر',
+            5 => 'مرداد',
+            6 => 'شهریور',
+            7 => 'مهر',
+            8 => 'آبان',
+            9 => 'آذر',
+            10 => 'دی',
+            11 => 'بهمن',
+            12 => 'اسفند',
+        ];
         $categories = Category::all();
         $models = ProductModel::all();
 
-        return view('panel.analyse.index', compact('analyses', 'categories', 'models'));
+        return view('panel.analyse.index', compact('analyses', 'categories', 'models','monthNames'));
     }
 
     public function show(Request $request, $id)
@@ -74,16 +93,17 @@ class AnalyseController extends Controller
     {
         $analyse = Analyse::create([
             'date' =>$request->date ,
+            'to_date' =>$request->to_date ,
             'category_id' =>$request->category_id,
             'brand_id' => $request->brand_id,
             'creator_id' => auth()->id(),
         ]);
-        foreach ($request->products as $productId => $quantity) {
+        foreach ($request->products as $productId => $productData) {
             $product = Product::find($productId);
             if ($product) {
                 $analyse->products()->attach($productId, [
-                    'quantity' => $quantity,
-                    'storage_count' => $product->storage_count,
+                    'quantity' => $productData['quantity'], // دریافت تعداد
+                    'storage_count' => $productData['storage_count'], // دریافت موجودی انبار
                 ]);
             }
         }

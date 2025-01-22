@@ -9,8 +9,12 @@
             <form method="POST" action="{{ route('analyse.store') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="date">تاریخ</label>
+                    <label for="date">تاریخ شروع</label>
                     <input type="text" id="date" name="date" class="form-control date-picker-shamsi-list" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                    <label for="to_date">تاریخ پایان</label>
+                    <input type="text" id="to_date" name="to_date" class="form-control date-picker-shamsi-list" autocomplete="off" required>
                 </div>
                 <div class="form-group">
                     <label for="category">دسته‌بندی</label>
@@ -42,12 +46,23 @@
                     <tbody id="products-table-body">
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-success">ثبت آنالیز</button>
+                <button type="submit" class="btn btn-success" id="submit_button">ثبت آنالیز</button>
             </form>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        $(document).ready(function () {
+            $('#submit_button').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
+            });
+        });
         $(document).ready(function () {
             $('#category, #brand').change(function () {
                 var category_id = $('#category').val();
@@ -70,8 +85,9 @@
                                 $('#products-table-body').append(
                                     '<tr>' +
                                     '<td>' + product.title + '</td>' +
-                                    '<td><input type="number" name="products[' + product.id + ']" min="0" class="form-control" value="' + (product.quantity || 0) + '"></td>' +
-                                    '<td><input type="number" name="products[' + product.id + ']" min="0" class="form-control" value="' + (product.total_count || 0) + '"></td>' +
+                                    '<td><input type="number" name="products[' + product.id + '][quantity]" min="0" class="form-control" value="' + (product.quantity || 0) + '"></td>' +
+                                '<td><input type="number" name="products[' + product.id + '][storage_count]" min="0" class="form-control" value="' + (product.total_count || 0) + '"></td>'
+                                +
                                     '</tr>'
                                 );
                             });

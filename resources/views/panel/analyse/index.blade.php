@@ -46,22 +46,6 @@
                 </div>
             </div>
             <div class="table-responsive">
-                @php
-                    $monthNames = [
-                        1 => 'فروردین',
-                        2 => 'اردیبهشت',
-                        3 => 'خرداد',
-                        4 => 'تیر',
-                        5 => 'مرداد',
-                        6 => 'شهریور',
-                        7 => 'مهر',
-                        8 => 'آبان',
-                        9 => 'آذر',
-                        10 => 'دی',
-                        11 => 'بهمن',
-                        12 => 'اسفند'
-                    ];
-                @endphp
                 @foreach($analyses as $month => $monthAnalyses)
                     <h5 class="mt-4">{{ $monthNames[$month] }}</h5> <!-- نمایش نام ماه به فارسی -->
                     <table class="table table-striped table-bordered dataTable dtr-inline text-center">
@@ -70,7 +54,8 @@
                             <th>#</th>
                             <th>دسته‌بندی</th>
                             <th>برند</th>
-                            <th>تاریخ آنالیز</th>
+                            <th>از تاریخ</th>
+                            <th>تا تاریخ</th>
                             <th>محصولات</th>
                         </tr>
                         </thead>
@@ -82,6 +67,7 @@
                                 <td>{{ $analyse->category->name }}</td>
                                 <td>{{ $analyse->brand->name }}</td>
                                 <td>{{ \Verta::parse($analyse->date)->format('%d %B %Y') }}</td>
+                                <td>{{ \Verta::parse($analyse->to_date)->format('%d %B %Y') }}</td>
                                 <td>
                                     <a href="{{ route('analyse.show', $analyse->id) }}" class="btn btn-lg btn-outline-behance btn-floating">
                                         <i class="fa fa-chart-simple"></i>
