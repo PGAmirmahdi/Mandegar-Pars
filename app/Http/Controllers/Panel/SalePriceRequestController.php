@@ -130,7 +130,7 @@ class SalePriceRequestController extends Controller
     public function edit(SalePriceRequest $sale_price_request)
     {
         $this->authorize('sale_price_request_edit');
-        $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
+        $items = collect(json_decode($sale_price_request->products))->map(function ($item) {
             // بازیابی قیمت محصول برای فروشنده مشخص
             $price = DB::table('price_list')
                 ->where('product_id', $item->product_id) // شناسه محصول
