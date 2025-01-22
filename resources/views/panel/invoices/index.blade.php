@@ -67,7 +67,7 @@
                                         <option value="all">نام مشتری(همه)</option>
                                         @foreach(\App\Models\Customer::all() as $customer)
                                             <option
-                                                value="{{ $customer->name }}" {{ request()->customer == $customer->name ? 'selected' : '' }}>{{ $customer->name }}</option>
+                                                value="{{ $customer->id }}" {{ request()->customer == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -78,7 +78,7 @@
                                         <option value="all">استان (همه)</option>
                                         @foreach(\App\Models\Province::all() as $province)
                                             <option
-                                                value="{{ $province->name }}" {{ request()->province == $province->name ? 'selected' : '' }}>{{ $province->name }}</option>
+                                                value="{{ $province->id }}" {{ request()->province == $province->id ? 'selected' : '' }}>{{ $province->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
