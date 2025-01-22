@@ -113,7 +113,7 @@
                                 <td>
                                     <select class="js-example-basic-single" name="products[]" required>
                                         <option value="" disabled selected>انتخاب کنید</option>
-                                        @foreach($items as $item)
+                                        @foreach($products as $item)
                                             <option
                                                 value="{{ $item->id }}"
                                                 {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
@@ -177,7 +177,7 @@
                     <td>
                         <select class="js-example-basic-single" name="products[]" required>
                             <option value="" disabled selected>انتخاب کنید</option>
-                            @foreach($items as $item)
+                            @foreach($products as $item)
                 <option value="{{ $item->id }}">
                                     {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                 </option>

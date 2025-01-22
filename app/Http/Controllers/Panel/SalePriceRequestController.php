@@ -130,13 +130,16 @@ class SalePriceRequestController extends Controller
     public function edit(SalePriceRequest $sale_price_request)
     {
         $this->authorize('sale_price_request_edit');
-        $items = collect(json_decode($sale_price_request->products))->map(function ($item) {
-            // بازیابی قیمت محصول برای فروشنده مشخص
+
+        // بازیابی محصولات
+        $products = \App\Models\Product::with(['category', 'productModels'])->get();
+
+        $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             $price = DB::table('price_list')
-                ->where('product_id', $item->product_id) // شناسه محصول
-                ->where('seller_id', 4) // آیدی فروشنده (مقدار پیش‌فرض یا داینامیک)
+                ->where('product_id', $item->product_id)
+                ->where('seller_id', 4) // مقدار پیش‌فرض یا داینامیک
                 ->value('price');
-            $item->price = $items['price'] ?? 0;
+            $item->price = $item->price ?? 0;
             $item->system_price = $price ?? 0; // مقدار پیش‌فرض 0 در صورت نبودن قیمت
             return $item;
         });
@@ -144,8 +147,10 @@ class SalePriceRequestController extends Controller
         // ارسال داده به ویو
         return view('panel.sale-price-requests.edit', [
             'sale_price_request' => $sale_price_request->fill(['items' => $items]),
+            'products' => $products, // ارسال محصولات به ویو
         ]);
     }
+
 
     public function action(SalePriceRequest $sale_price_request)
     {
