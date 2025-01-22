@@ -329,10 +329,12 @@ class InvoiceController extends Controller
     {
         $this->authorize('invoices-list');
 
+        // دریافت لیست مشتریان
         $customers = auth()->user()->hasAnyRole(['Admin', 'Organ', 'WareHouseKeeper', 'Accountant', 'CEO', 'SalesManager'])
             ? Customer::all(['id', 'name'])
             : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
+        // دریافت نقش‌های دارای دسترسی
         $roles_id = Role::whereHas('permissions', function ($q) {
             $q->whereIn('permission_id', Permission::whereIn('name', [
                 'partner-tehran-user',
@@ -342,34 +344,33 @@ class InvoiceController extends Controller
             ])->pluck('id'));
         })->pluck('id');
 
+        // جستجو در فاکتورها
         $invoices = Invoice::query()
-            ->when($request->customer_id && $request->customer_id !== 'all', function ($query) use ($request) {
-                $query->where('customer_id', $request->customer_id);
+            ->when($request->filled('customer') && $request->customer !== 'all', function ($query) use ($request) {
+                $query->where('customer_id', $request->customer);
             })
-            ->when($request->province && $request->province !== 'all', function ($query) use ($request) {
+            ->when($request->filled('province') && $request->province !== 'all', function ($query) use ($request) {
                 $query->where('province', $request->province);
             })
-            ->when($request->status && $request->status !== 'all', function ($query) use ($request) {
+            ->when($request->filled('status') && $request->status !== 'all', function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
-            ->when($request->type && $request->type !== 'all', function ($query) use ($request) {
-                $query->where('type', $request->type);
-            })
-            ->when($request->payment_type && $request->payment_type !== 'all', function ($query) use ($request) {
+            ->when($request->filled('payment_type') && $request->payment_type !== 'all', function ($query) use ($request) {
                 $query->where('payment_type', $request->payment_type);
             })
-            ->when($request->created_in && $request->created_in !== 'all', function ($query) use ($request) {
+            ->when($request->filled('created_in') && $request->created_in !== 'all', function ($query) use ($request) {
                 $query->where('created_in', $request->created_in);
             })
-            ->when($request->need_no, function ($query) use ($request) {
+            ->when($request->filled('need_no'), function ($query) use ($request) {
                 $query->where('need_no', $request->need_no);
             })
-            ->when($request->user && $request->user !== 'all', function ($query) use ($request) {
+            ->when($request->filled('user') && $request->user !== 'all', function ($query) use ($request) {
                 $query->where('user_id', $request->user);
             })
             ->latest()
             ->paginate(30);
 
+        // ارسال داده‌ها به ویو
         return view('panel.invoices.index', [
             'invoices' => $invoices,
             'customers' => $customers,

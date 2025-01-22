@@ -58,84 +58,85 @@
                                     @endcan
                                 </div>
                             </div>
-                            <form action="{{ route('invoices.search') }}" method="get" id="search_form"></form>
-                            <div class="row mb-3 mt-5">
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="customer" form="search_form"
-                                            class="js-example-basic-single select2-hidden-accessible"
-                                            data-select2-id="0">
-                                        <option value="all">نام مشتری(همه)</option>
-                                        @foreach(\App\Models\Customer::all() as $customer)
-                                            <option
-                                                value="{{ $customer->id }}" {{ request()->customer == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="province" form="search_form"
-                                            class="js-example-basic-single select2-hidden-accessible"
-                                            data-select2-id="1">
-                                        <option value="all">استان (همه)</option>
-                                        @foreach(\App\Models\Province::all() as $province)
-                                            <option
-                                                value="{{ $province->id }}" {{ request()->province == $province->id ? 'selected' : '' }}>{{ $province->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="status" form="search_form"
-                                            class="js-example-basic-single select2-hidden-accessible"
-                                            data-select2-id="2">
-                                        <option value="all">وضعیت (همه)</option>
-                                        @foreach(\App\Models\Invoice::STATUS as $key => $value)
-                                            <option
-                                                value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="payment_type" form="search_form"
-                                            class="js-example-basic-single select2-hidden-accessible"
-                                            data-select2-id="4">
-                                        <option value="all">نوع پرداختی (همه)</option>
-                                        @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                            <option
-                                                value="{{ $key }}" {{ request()->payment_type == $key ? 'selected' : '' }}>{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <select name="created_in" form="search_form"
-                                            class="js-example-basic-single select2-hidden-accessible"
-                                            data-select2-id="5">
-                                        <option value="all">ثبت شده در(همه)</option>
-                                        @foreach(\App\Models\Order::CREATED_IN as $key => $value)
-                                            <option
-                                                value="{{ $key }}" {{ request()->created_in == $key ? 'selected' : '' }}>{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @can('accountant')
+                            <form action="{{ route('invoices.search') }}" method="get" id="search_form">
+                                <div class="row mb-3 mt-5">
                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                        <select name="user" form="search_form"
+                                        <select name="customer" form="search_form"
                                                 class="js-example-basic-single select2-hidden-accessible"
-                                                data-select2-id="3">
-                                            <option value="all">همکار (همه)</option>
-                                            @foreach(\App\Models\User::whereIn('role_id', $roles_id)->get() as $user)
+                                                data-select2-id="0">
+                                            <option value="all">نام مشتری(همه)</option>
+                                            @foreach(\App\Models\Customer::all() as $customer)
                                                 <option
-                                                    value="{{ $user->id }}" {{ request()->user == $user->id ? 'selected' : '' }}>{{ $user->fullName() }}</option>
+                                                    value="{{ $customer->id }}" {{ request()->customer == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                @endcan
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <input type="text" form="search_form" name="need_no" class="form-control"
-                                           value="{{ request()->need_no ?? null }}" placeholder="شماره نیاز">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                        <select name="province" form="search_form"
+                                                class="js-example-basic-single select2-hidden-accessible"
+                                                data-select2-id="1">
+                                            <option value="all">استان (همه)</option>
+                                            @foreach(\App\Models\Province::all() as $province)
+                                                <option
+                                                    value="{{ $province->id }}" {{ request()->province == $province->id ? 'selected' : '' }}>{{ $province->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                        <select name="status" form="search_form"
+                                                class="js-example-basic-single select2-hidden-accessible"
+                                                data-select2-id="2">
+                                            <option value="all">وضعیت (همه)</option>
+                                            @foreach(\App\Models\Invoice::STATUS as $key => $value)
+                                                <option
+                                                    value="{{ $key }}" {{ request()->status == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                        <select name="payment_type" form="search_form"
+                                                class="js-example-basic-single select2-hidden-accessible"
+                                                data-select2-id="4">
+                                            <option value="all">نوع پرداختی (همه)</option>
+                                            @foreach(\App\Models\Order::Payment_Type as $key => $value)
+                                                <option
+                                                    value="{{ $key }}" {{ request()->payment_type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                        <select name="created_in" form="search_form"
+                                                class="js-example-basic-single select2-hidden-accessible"
+                                                data-select2-id="5">
+                                            <option value="all">ثبت شده در(همه)</option>
+                                            @foreach(\App\Models\Order::CREATED_IN as $key => $value)
+                                                <option
+                                                    value="{{ $key }}" {{ request()->created_in == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @can('accountant')
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                            <select name="user" form="search_form"
+                                                    class="js-example-basic-single select2-hidden-accessible"
+                                                    data-select2-id="3">
+                                                <option value="all">همکار (همه)</option>
+                                                @foreach(\App\Models\User::whereIn('role_id', $roles_id)->get() as $user)
+                                                    <option
+                                                        value="{{ $user->id }}" {{ request()->user == $user->id ? 'selected' : '' }}>{{ $user->fullName() }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endcan
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                        <input type="text" form="search_form" name="need_no" class="form-control"
+                                               value="{{ request()->need_no ?? null }}" placeholder="شماره نیاز">
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                        <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                                    </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
-                                </div>
-                            </div>
+                            </form>
                             <div class="overflow-auto">
                                 <table class="table  table-striped table-bordered dataTable dtr-inline text-center">
                                     <thead>
