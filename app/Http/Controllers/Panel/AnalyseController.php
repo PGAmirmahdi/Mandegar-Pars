@@ -126,7 +126,7 @@ class AnalyseController extends Controller
         $brand_id = $request->input('brand_id');
 
         if (!$category_id || !$brand_id) {
-            return response()->json(['products' => []]); // اگر ورودی معتبر نیست، آرایه خالی برگردانید
+            return response()->json(['products' => []]);
         }
 
         $products = Product::where('category_id', $category_id)
@@ -136,13 +136,12 @@ class AnalyseController extends Controller
         $productsWithQuantity = $products->map(function ($product) {
             $lastQuantity = AnalyseProducts::where('product_id', $product->id)
                 ->latest('id')
-                ->value('quantity'); // آخرین مقدار quantity
+                ->value('quantity');
 
-            $storageCount = $product->total_count ?? 0; // فرض بر این که storage_count در مدل Product موجود است
-
-            $product->quantity = $lastQuantity ?? 0; // مقدار پیش‌فرض 0 اگر موجود نباشد
-            $product->total_count = $storageCount; // مقدار موجودی انبار
-            return $product;
+            $storageCount = $product->total_count ?? 0 ;
+            $product->quantity = $lastQuantity ?? 0;
+            $product->storage_count = $storageCount;
+return $product;
         });
 
         return response()->json(['products' => $productsWithQuantity]);
