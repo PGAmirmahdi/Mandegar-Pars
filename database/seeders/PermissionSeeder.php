@@ -180,7 +180,7 @@ class PermissionSeeder extends Seeder
 //           'sale-price-requests-list' => 'لیست درخواست ستاد',
 //           'sale-price-requests-create' => 'ثبت درخواست ستاد',
 //            'sale-price-requests-delete' => 'حذف درخواست ستاد',
-            'sale-price-requests-delete'=> 'ویرایش درخواست فروش',
+            'sale-price-requests-edit'=> 'ویرایش درخواست فروش',
 //            'setad_sale' => 'فروش ستاد'
         ];
 

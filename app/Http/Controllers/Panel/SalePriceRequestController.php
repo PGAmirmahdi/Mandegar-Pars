@@ -130,8 +130,6 @@ class SalePriceRequestController extends Controller
     public function edit(SalePriceRequest $sale_price_request)
     {
         $this->authorize('sale_price_request_edit');
-
-        // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
         $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             // بازیابی قیمت محصول برای فروشنده مشخص
             $price = DB::table('price_list')
@@ -356,11 +354,11 @@ class SalePriceRequestController extends Controller
         return redirect(url('/panel/sale_price_requests?type=' . $sale_price_request->type));
     }
 
-    public function destroy(SalePriceRequest $setad_price_request)
+    public function destroy(SalePriceRequest $sale_price_request)
     {
         $this->authorize('sale-price-requests-delete');
 
-        $setad_price_request->delete();
+        $sale_price_request->delete();
         alert()->success('درخواست فروش با موفقیت حذف شد', 'حذف درخواست فروش');
 
         return back();
