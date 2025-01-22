@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->job(new SendWeeklyPriceList)->dailyAt('13:00');
-        $schedule->job(new ReportReminder)->dailyAt('17:32');
+        $schedule->job(new ReportReminder)->dailyAt('17:35');
         $schedule->job(new PaymentDue)->dailyAt('10:00');
     }
 
