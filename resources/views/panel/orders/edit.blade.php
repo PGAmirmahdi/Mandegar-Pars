@@ -205,7 +205,7 @@
                                                             <td>
                                                                 <input type="number" name="prices[]"
                                                                        class="form-control" min="0"
-                                                                       value="{{ $product->prices }}" readonly>
+                                                                       value="{{ $product->prices }}">
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="total_prices[]"
@@ -225,9 +225,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
+                                <button class="btn btn-primary mt-5" type="submit" id="submit_button">
+                                    ثبت فرم
+                                </button>
                             </form>
-
                         </div>
                     </div>
                 </div>
@@ -237,6 +238,17 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).ready(function () {
+            $('#submit_button').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
+            });
+        });
         var products = [];
         var colors = [];
 
@@ -302,7 +314,7 @@
                     </select>
                 </td>
                 <td>
-                    <input type="number" name="prices[]" class="form-control" min="0" value="0" readonly>
+                    <input type="number" name="prices[]" class="form-control" min="0" value="0">
                 </td>
                 <td>
                     <input type="number" name="total_prices[]" class="form-control" min="0" value="0" readonly>
