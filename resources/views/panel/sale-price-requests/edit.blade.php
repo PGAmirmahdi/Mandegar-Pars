@@ -177,7 +177,7 @@
                     <td>
                         <select class="js-example-basic-single" name="products[]" required>
                             <option value="" disabled selected>انتخاب کنید</option>
-                            @foreach($products as $item)
+                            @foreach($items as $item)
                 <option value="{{ $item->id }}">
                                     {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
                 </option>
