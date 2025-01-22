@@ -59,7 +59,6 @@ class SendMessage extends Notification
             'message' => $this->message,
             'url' => $this->url,
         ];
-
         if ($notifiable->fcm_token) {
             $this->send_firebase_notification($this->title,$this->message, $this->url, $notifiable->fcm_token);
         }
@@ -78,7 +77,7 @@ class SendMessage extends Notification
             json_decode(file_get_contents(public_path('firebase-private-key.json')), true)
         );
         $token = $credential->fetchAuthToken(HttpHandlerFactory::build());
-        $ch = curl_init("https://fcm.googleapis.com/v1/projects/mandegarpars2-9e7d9/messages:send");
+        $ch = curl_init("https://fcm.googleapis.com/v1/projects/mandagar569874586/messages:send");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -98,7 +97,6 @@ class SendMessage extends Notification
                 ]
             ]
         ];
-
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "post");
         curl_exec($ch);

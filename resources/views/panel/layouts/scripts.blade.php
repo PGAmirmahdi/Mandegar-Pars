@@ -223,12 +223,12 @@
 
     // firebase push notification
     var firebaseConfig = {
-        apiKey: "AIzaSyDM5ZCt_ibX3EmgaSQAsaxykeEXgbWgf5w",
-        authDomain: "mandegarpars2-9e7d9.firebaseapp.com",
-        projectId: "mandegarpars2-9e7d9",
-        storageBucket: "mandegarpars2-9e7d9.firebasestorage.app",
-        messagingSenderId: "778812623421",
-        appId: "1:778812623421:web:913b44ef07f2a7432eb854"
+        apiKey: "AIzaSyCtEA3i9gCB6dFxg8EqaVM1D5IpwB-ylHU",
+        authDomain: "mandagar569874586.firebaseapp.com",
+        projectId: "mandagar569874586",
+        storageBucket: "mandagar569874586.firebasestorage.app",
+        messagingSenderId: "521491944",
+        appId: "1:521491944:web:bc9dc1a872ee0c1c4dc05d",
     };
 
     firebase.initializeApp(firebaseConfig);
