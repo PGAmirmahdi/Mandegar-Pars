@@ -27,7 +27,7 @@
                     افزودن کالا
                 </button>
             </div>
-            <form action="{{ route('sale_price_requests.store') }}" method="post">
+            <form action="{{ route('sale_price_requests.store') }}" method="post" id="store_form">
                 @csrf
                 <div class="form-row">
                     <div class="col-12 mb-3">
@@ -96,7 +96,7 @@
                                 </div>
                             @endcan
                         </div>
-                        <table class="table table-striped table-bordered text-center">
+                        <table class="table table-striped table-bordered text-center" id="products_table">
                             <thead class="bg-primary">
                             <tr>
                                 <th>عنوان کالا</th>
@@ -106,35 +106,65 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>
-                                    <select class="js-example-basic-single" name="products[]" required>
-                                        <option value="" disabled selected>انتخاب کنید</option>
-                                        @foreach($products as $item)
-                                            <option
-                                                value="{{ $item->id }}"
-                                                {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
-                                                {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td><input type="number" class="form-control" name="counts[]" min="1"
-                                           required></td>
-                                <td><input type="number" class="form-control price-input" name="price[]"
-                                           required>
-                                    <div class="formatted-price" style="margin-top: 5px; font-weight: bold;"></div>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-floating btn_remove"><i
-                                            class="fa fa-trash"></i></button>
-                                </td>
-                            </tr>
+                            @if(old('products'))
+                                @foreach(old('products') as $key => $odlProduct)
+                                    <tr>
+                                        <td>
+                                            <select class="js-example-basic-single" name="products[]" required>
+                                                <option value="" disabled selected>انتخاب کنید</option>
+                                                @foreach($products as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $odlProduct == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td><input type="number" class="form-control" name="counts[]" min="1" value="{{ old('counts')[$key] }}" required></td>
+                                        <td><input type="number" class="form-control price-input" name="price[]" value="{{ old('price')[$key] }}" required>
+                                            <div class="formatted-price" style="margin-top: 5px; font-weight: bold;">{{ old('price')[$key] != 0 ? number_format(old('price')[$key]) : '' }}</div>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td>
+                                        <select class="js-example-basic-single" name="products[]" required>
+                                            <option value="" disabled selected>انتخاب کنید</option>
+                                            @foreach($products as $item)
+                                                <option
+                                                    value="{{ $item->id }}"
+                                                    {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
+                                                    {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td><input type="number" class="form-control" name="counts[]" min="1"
+                                               required></td>
+                                    <td><input type="number" class="form-control price-input" name="price[]"
+                                               required>
+                                        <div class="formatted-price" style="margin-top: 5px; font-weight: bold;"></div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-floating btn_remove"><i
+                                                class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            @endif
                             </tbody>
                             <tfoot>
                             <tr></tr>
                             </tfoot>
                         </table>
+                        @error('products')
+                            <div class="alert alert-danger">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                     <div class="col-12 row mb-4">
                         <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
@@ -156,6 +186,27 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            var products = [];
+            var products_options_html = '';
+
+            @foreach($products as $product)
+                products.push({
+                        "id": "{{ $product->id }}",
+                        "title": "{{ $product->title }}",
+                        "categorySlug": "{{ $product->category->slug }}",
+                        "modelSlug": "{{ $product->productModels->slug }}",
+                    })
+            @endforeach
+
+            $.each(products, function (i, item) {
+                products_options_html += `<option value="${item.id}">${item.categorySlug + ' - ' + item.title + ' - ' + item.modelSlug}</option>`
+            })
+
+            $('#store_form').on('keydown', function (e){
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                }
+            })
             $('#submit_button').on('click', function () {
                 let button = $(this);
 
@@ -164,11 +215,6 @@
 
                 // ارسال فرم به صورت خودکار
                 button.closest('form').submit();
-            });
-        });
-        $(document).ready(function () {
-            $("#submit").on("submit", function () {
-                $(this).prop("disabled", true).text("در حال ارسال...");
             });
             // Format price input and display formatted price below
             $(document).on('input', '.price-input', function () {
@@ -182,16 +228,12 @@
             });
             // Add new row
             $(document).on('click', '#btn_add', function () {
-                $('table tbody').append(`
+                $('#products_table tbody').append(`
                 <tr>
                     <td>
                         <select class="js-example-basic-single" name="products[]" required>
                             <option value="" disabled selected>انتخاب کنید</option>
-                            @foreach($products as $item)
-                <option value="{{ $item->id }}">
-                                    {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
-                </option>
-@endforeach
+                            ${products_options_html}
                 </select>
             </td>
             <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>

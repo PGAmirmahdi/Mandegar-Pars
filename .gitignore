@@ -36,3 +36,5 @@ etc/
 /vendor.zip
 /app/Providers/AppServiceProvider.php
 /public/firebase-private-key.json
+/public/serviceworker.js
+/storage
