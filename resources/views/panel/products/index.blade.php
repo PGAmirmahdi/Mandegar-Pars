@@ -43,8 +43,8 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="category">شرح کالا</label>
-                        <option value="">انتخاب کنید</option>
                         <select class="form-control" name="category" id="category">
+                            <option value="">انتخاب کنید</option>
                             @foreach(\App\Models\Category::all() as $category)
                                 <option
                                     value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
