@@ -175,7 +175,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 400px !important;
+        height: 500px !important;
     }
 
     .form-group input:focus {
