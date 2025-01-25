@@ -132,7 +132,7 @@ class SalePriceRequestController extends Controller
         $this->authorize('sale_price_request_edit');
 
         // بازیابی محصولات
-        $products = \App\Models\Product::with(['category', 'productModels'])->get();
+        $products = \App\Models\Product::with(['category', 'productModels'])->where('status','=','approved')->get();
 
         $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             $price = DB::table('price_list')
