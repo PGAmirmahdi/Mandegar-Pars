@@ -28,7 +28,7 @@ class Order extends Model
         '15D'=>'15 روزه',
         '1W' => 'یک هفته',
         '2WM' => 'دو ماه کاری',
-        '20D' => '20 روزه'
+        '20D' => '20 روزه',
     ];
     const CREATED_IN = [
     'website' => 'وبسایت',
