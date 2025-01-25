@@ -37,6 +37,11 @@
             head.appendChild(script);
         })()
     </script>
+    <!-- END NAJVA PUSH NOTIFICATION -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.8/site.min.js" async
+            defer></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.8/site.compat.min.js" async
+            defer></script>
 </head>
 
 <style>
@@ -250,7 +255,7 @@
                 <input type="password" name="password" id="password" class="form-control text-left" placeholder="" dir="ltr" required autocomplete="off">
                 <label for="password">رمز عبور</label>
             </div>
-            <div class="frc-captcha" data-sitekey="{{ env('FRIENDLY_CAPTCHA_SITEKEY') }}" style="width:100vw;"></div>
+            <div class="frc-captcha" data-sitekey="{!! env('FRIENDLY_CAPTCHA_SITEKEY') !!}" style="width:100vw;"></div>
             <div class="form-group" id="captcha_sec">
                 @error('frc-captcha-response')
                 <span class="invalid-feedback d-block" role="alert">
@@ -276,17 +281,6 @@
 <script nomodule src="https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.8/site.compat.min.js" async
         defer></script>
 <script>
-    setTimeout(() => {
-        const formWrapper = document.querySelector('.form-wrapper');
-        formWrapper.style.opacity = '1';
-        formWrapper.classList.add('slide-down');
-    }, 4000);
-
-    const video = document.querySelector('.video-background');
-    video.addEventListener('ended', () => {
-        video.pause();
-    });
-
     $(document).ready(function () {
         $(document).on('click', '#captcha_sec img', function () {
             $.ajax({
@@ -306,6 +300,16 @@
         } else if (captchaResponse.value === '.UNACTIVATED') {
             captchaResponse.value = ''; // مقدار را خالی کنید
         }
+    });
+    setTimeout(() => {
+        const formWrapper = document.querySelector('.form-wrapper');
+        formWrapper.style.opacity = '1';
+        formWrapper.classList.add('slide-down');
+    }, 4000);
+
+    const video = document.querySelector('.video-background');
+    video.addEventListener('ended', () => {
+        video.pause();
     });
 </script>
 
