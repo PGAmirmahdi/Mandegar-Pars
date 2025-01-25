@@ -43,6 +43,7 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="category">شرح کالا</label>
+                        <option value="">انتخاب کنید</option>
                         <select class="form-control" name="category" id="category">
                             @foreach(\App\Models\Category::all() as $category)
                                 <option
@@ -73,7 +74,7 @@
                             <option value="all">مدل کالا (همه)</option>
                             @foreach(\App\Models\Product::all(['id','title','status'])->where('status','=' , 'approved') as $product)
                                 <option
-                                    value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>
+                                    value="{{ $product->id }}" {{ old('product') == $product->id ? 'selected' : '' }}>
                                     {{ $product->title }}
                                 </option>
                             @endforeach

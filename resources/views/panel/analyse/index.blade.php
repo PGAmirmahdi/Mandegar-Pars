@@ -60,6 +60,11 @@
                             <th>تاریخ ایجاد</th>
                             @endcan
                             <th>محصولات</th>
+                            @can('analyse-delete')
+                                <th>
+                                    حذف
+                                </th>
+                                @endcan
                         </tr>
                         </thead>
                         <tbody>
