@@ -43,7 +43,12 @@
     #captcha_sec img {
         cursor: pointer;
     }
-
+    #captcha_sec{
+        z-index: 9999;
+    }
+    .frc-captcha{
+        z-index: 9999 !important;
+    }
     #captcha_sec input {
         text-align: center !important;
         letter-spacing: 1rem;
@@ -268,13 +273,14 @@
 
 <!-- App scripts -->
 <script src="assets/js/app.js"></script>
-
+<script nomodule src="https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.8/site.compat.min.js" async
+        defer></script>
 <script>
     setTimeout(() => {
         const formWrapper = document.querySelector('.form-wrapper');
         formWrapper.style.opacity = '1';
         formWrapper.classList.add('slide-down');
-    }, 3000);
+    }, 4000);
 
     const video = document.querySelector('.video-background');
     video.addEventListener('ended', () => {
@@ -300,7 +306,6 @@
         } else if (captchaResponse.value === '.UNACTIVATED') {
             captchaResponse.value = ''; // مقدار را خالی کنید
         }
-
     });
 </script>
 
