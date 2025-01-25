@@ -20,9 +20,40 @@
     <link rel="stylesheet" href="assets/css/app.css" type="text/css">
 
     <link rel="manifest" href="/manifest.json">
+    <script type="text/javascript">
+        (function () {
+            var now = new Date();
+            var version = now.getFullYear().toString() + "0" + now.getMonth() + "0" + now.getDate() +
+                "0" + now.getHours();
+            var head = document.getElementsByTagName("head")[0];
+            var link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "https://van.najva.com/static/cdn/css/local-messaging.css" + "?v=" + version;
+            head.appendChild(link);
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            script.async = true;
+            script.src = "https://van.najva.com/static/js/scripts/new-website436970-website-54287-1faec3c1-6f27-4881-b219-5f5b5737f31b.js" + "?v=" + version;
+            head.appendChild(script);
+        })()
+    </script>
 </head>
 
 <style>
+    #captcha_sec img {
+        cursor: pointer;
+    }
+
+    #captcha_sec input {
+        text-align: center !important;
+        letter-spacing: 1rem;
+    }
+    iframe {
+        width: 100%; /* عرض کامل */
+        height: 80px; /* ارتفاع مورد نظر */
+        margin:0px;
+        position:relative !important;
+    }
     body {
         margin: 0;
         padding: 0;
@@ -251,22 +282,25 @@
     });
 
     $(document).ready(function () {
-        $('#captcha_sec img').on('click', function () {
+        $(document).on('click', '#captcha_sec img', function () {
             $.ajax({
                 type: 'get',
                 url: '/captcha/api',
                 success: function (res) {
-                    $('#captcha_sec img').attr('src', res.img);
+                    $('#captcha_sec img').attr('src', res.img)
+                    // console.log($(this))
                 }
-            });
-        });
-    });
-
+            })
+        })
+    })
     document.querySelector('form').addEventListener('submit', function (event) {
         const captchaResponse = document.querySelector('input[name="frc-captcha-response"]');
-        if (captchaResponse && (captchaResponse.value === '.ACTIVATED' || captchaResponse.value === '.UNACTIVATED')) {
-            captchaResponse.value = '';
+        if (captchaResponse.value === '.ACTIVATED') {
+            captchaResponse.value = ''; // مقدار را خالی کنید
+        } else if (captchaResponse.value === '.UNACTIVATED') {
+            captchaResponse.value = ''; // مقدار را خالی کنید
         }
+
     });
 </script>
 
