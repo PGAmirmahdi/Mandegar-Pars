@@ -10,7 +10,7 @@
                 </a>
             </li>
             @canany(['categories-list','products-list','printers-list','prices-list','foreign-customers-list','customers-list','debtors-list'])
-                <li class="{{ active_sidebar(['request/products','debtors','debtors/create','debtors/{debtor}/edit','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search', 'artin-products', 'other-prices-list']) ? 'active' : '' }}"
+                <li class="{{ active_sidebar(['request/products','debtors/{debtor}','debtors','debtors/create','debtors/{debtor}/edit','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','customers/{customer}','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search', 'artin-products', 'other-prices-list']) ? 'active' : '' }}"
                     data-toggle="tooltip" title="عملیات پایه">
                     <a href="#navigationProducts" title="عملیات پایه">
                         <i class="icon ti-view-list"></i>
@@ -26,7 +26,7 @@
                 </li>
             @endcanany
             @canany(['packets-list','transporters-list'])
-                <li class="{{ active_sidebar(['costs/{cost}/finalaccountantupdate','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports','transporters','transporters/create','transporters/{transporter}/edit','search/transporters','packets','packets/create','packets/{packet}/edit','search/packets']) ? 'active' : '' }}"
+                <li class="{{ active_sidebar(['costs/{cost}/finalaccountantupdate','panel/transports/{id}/finalaccounting','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports','transporters','transporters/create','transporters/{transporter}/edit','search/transporters','packets','packets/create','packets/{packet}/edit','search/packets']) ? 'active' : '' }}"
                     data-toggle="tooltip" title="بسته های ارسالی">
                     <a href="#navigationPackets" title="بسته های ارسالی">
                         <i class="icon ti-package"></i>
@@ -173,7 +173,7 @@
             </li>
         </ul>
         <ul id="navigationProducts"
-            class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}/edit','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}','debtors/{debtor}/edit','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','customers/{customer}','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">عملیات پایه</li>
             @can('products-list')
                 <li>
@@ -201,7 +201,7 @@
             @endcan
             @can('customers-list')
                 <li>
-                    <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}/edit','search/customers']) ? 'active' : '' }}"
+                    <a class="{{ active_sidebar(['customers','customers/create','customers/{customer}','customers/{customer}/edit','search/customers']) ? 'active' : '' }}"
                        href="{{ route('customers.index') }}">بارگذاری تمامی مشتریان داخلی</a>
                 </li>
             @endcan
@@ -213,7 +213,7 @@
             @endcan
             @can('debtors-list')
                 <li>
-                    <a class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}/edit']) ? 'active' : '' }}"
+                    <a class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}/edit','debtors/{debtor}']) ? 'active' : '' }}"
                        href="{{ route('debtors.index') }}">لیست بدهکاران</a>
                 </li>
             @endcan
@@ -250,7 +250,7 @@
             @endcan
         </ul>
         <ul id="navigationInvoices"
-            class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}','orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','order-action/{order}','setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}','costs/{cost}/accounting','costs','costs/create','costs/{cost}/edit','invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days','cheque','cheque/create','cheque/{cheque}/edit','cheque/{cheque}']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['sale_price_requests/action/{sale_price_request}','sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}','orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','panel/customers/{customer}','order-action/{order}','setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}','costs/{cost}/accounting','costs','costs/create','costs/{cost}/edit','invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days','cheque','cheque/create','cheque/{cheque}/edit','cheque/{cheque}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">سفارشات</li>
             @can('costs-list')
                 <li>
@@ -303,63 +303,31 @@
             {{--                            : 'درخواست های فروش' }}--}}
             {{--                    </a>--}}
             {{--                </li>--}}
-            @if(auth()->user()->role->name == 'internet_sale')
-{{--                <li>--}}
-{{--                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"--}}
-{{--                       href="{{ url('/panel/sale_price_requests?type=internet_sale') }}">درخواست فروش اینترنتی</a>--}}
-{{--                </li>--}}
-            @elseif(auth()->user()->role->name == 'free_sale')
+            @php
+                $roles = [
+                    'free_sale' => 'درخواست فروش آزاد',
+                    'global_sale' => 'درخواست فروش سراسری',
+                    'setad_sale' => 'درخواست فروش ستاد',
+                    'organization_sale' => 'درخواست فروش سازمانی',
+                    'industrial_sale' => 'درخواست فروش صنعتی'
+                ];
+                $userRole = auth()->user()->role->name;
+            @endphp
+
+            @if(in_array($userRole, array_keys($roles)))
                 <li>
-                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=free_sale') }}">درخواست فروش آزاد</a>
+                    <a class="{{ active_sidebar(['sale_price_requests', 'sale_price_requests/action/{sale_price_request}', 'sale_price_requests/create', 'sale_price_requests/{sale_price_request}/edit', 'sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=' . $userRole) }}">{{ $roles[$userRole] }}</a>
                 </li>
-            @elseif(auth()->user()->role->name == 'global_sale')
-                <li>
-                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=global_sale') }}">درخواست فروش سراسری</a>
-                </li>
-            @elseif(auth()->user()->role->name == 'setad_sale')
-                <li>
-                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=setad_sale') }}">درخواست فروش ستاد</a>
-                </li>
-            @elseif(auth()->user()->role->name == 'organization_sale')
-                <li>
-                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=organization_sale') }}">درخواست فروش سازمانی</a>
-                </li>
-            @elseif(auth()->user()->role->name == 'industrial_sale')
-                <li>
-                    <a class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=industrial_sale') }}">درخواست فروش صنعتی</a>
-                </li>
-            @elseif(auth()->user()->role->name == 'ceo' || auth()->user()->role->name == 'admin' || auth()->user()->role->name == 'office-manager')
-{{--                <li>--}}
-{{--                    <a class="{{ request()->query('type') === 'internet_sale' || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"--}}
-{{--                       href="{{ url('/panel/sale_price_requests?type=internet_sale') }}">درخواست فروش اینترنتی</a>--}}
-{{--                </li>--}}
-                <li>
-                    <a class="{{ request()->query('type') === 'free_sale' || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=free_sale') }}">درخواست فروش آزاد</a>
-                </li>
-                <li>
-                    <a class="{{ request()->query('type') === 'global_sale' || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=global_sale') }}">درخواست فروش سراسری</a>
-                </li>
-                <li>
-                    <a class="{{ request()->query('type') === 'setad_sale' || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=setad_sale') }}">درخواست فروش ستاد</a>
-                </li>
-                <li>
-                    <a class="{{ request()->query('type') === 'organization_sale' || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=organization_sale') }}">درخواست فروش سازمانی</a>
-                </li>
-                <li>
-                    <a class="{{ request()->query('type') === 'industrial_sale' || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=industrial_sale') }}">درخواست فروش صنعتی</a>
-                </li>
+            @elseif(in_array($userRole, ['ceo', 'admin', 'office-manager']))
+                @foreach($roles as $key => $label)
+                    <li>
+                        <a class="{{ request()->query('type') === $key || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"
+                           href="{{ url('/panel/sale_price_requests?type=' . $key) }}">{{ $label }}</a>
+                    </li>
+                @endforeach
             @endif
-            @can('price-requests-list')
+        @can('price-requests-list')
                 <li>
                     <a class="{{ active_sidebar(['price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}']) ? 'active' : '' }}"
                        href="{{ route('price-requests.index') }}">درخواست قیمت</a>
@@ -373,7 +341,7 @@
             @endcan
         </ul>
         <ul id="navigationPackets"
-            class="{{ active_sidebar(['transports/{transport}/finalaccountantupdate','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports','transporters','transporters/create','transporters/{transporter}/edit','search/transporters','packets','packets/create','packets/{packet}/edit','search/packets']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['panel/transports/{id}/finalaccounting','transports/{transport}/finalaccountantupdate','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports','transporters','transporters/create','transporters/{transporter}/edit','search/transporters','packets','packets/create','packets/{packet}/edit','search/packets']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">بسته های ارسالی</li>
             @can('packets-list')
                 <li>
@@ -389,7 +357,7 @@
             @endcan
             @can('transport-list')
                 <li>
-                    <a class="{{ active_sidebar(['transports/{transport}/finalaccountantupdate','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports']) ? 'active' : '' }}"
+                    <a class="{{ active_sidebar(['panel/transports/{id}/finalaccounting','transports/{transport}/finalaccountantupdate','transports/{transport}/finalaccounting','transports/{transport}/storeBijak','transports/{transport}/bijak','transports/{transport}/accountantupdate','transports/{transport}/accounting','transports','transports/create','transports/{transport}/edit','search/transports']) ? 'active' : '' }}"
                        href="{{ route('transports.index') }}">حمل و نقل</a>
                 </li>
             @endcan
