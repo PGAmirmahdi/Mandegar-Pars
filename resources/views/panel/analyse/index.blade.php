@@ -79,6 +79,21 @@
                                         <i class="fa fa-chart-simple"></i>
                                     </a>
                                 </td>
+                                @can('analyse-delete')
+                                    <td>
+                                        @php
+                                            $isDisabled = $analyse->created_at->addDay() < \Carbon\Carbon::now();
+                                        @endphp
+                                        <button
+                                            class="btn btn-danger btn-floating trashRow"
+                                            data-url="{{ $isDisabled ? '#' : route('analyse.destroy', $analyse->id) }}"
+                                            data-id="{{ $analyse->id }}"
+                                            {{ $isDisabled ? 'disabled' : '' }}
+                                        >
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                @endcan
                             </tr>
                         @endforeach
                         </tbody>
