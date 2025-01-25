@@ -41,8 +41,7 @@
                                         data-select2-id="1">
                                     <option value="" disabled selected>انتخاب کنید...</option>
                                     @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
-                                        <option
-                                            value="{{ $customer->id }}" {{ old('customer') == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
+                                        <option value="{{ $customer->id }}" {{ $sale_price_request->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->code.' - '.$customer->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('buyer_name')
@@ -51,10 +50,9 @@
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="payment_type">نوع پرداختی</label>
-                                <select class="form-control" name="payment_type_display" id="payment_type_display">
+                                <select class="form-control" name="payment_type" id="payment_type">
                                     @foreach(\App\Models\Order::Payment_Type as $key => $value)
-                                        <option
-                                            value="{{ $key }}" {{ old('payment_type', $sale_price_request->payment_type ?? '') == $key ? 'selected' : '' }}>
+                                        <option value="{{ $key }}" {{ $sale_price_request->payment_type == $key ? 'selected' : '' }}>
                                             {{ $value }}
                                         </option>
                                     @endforeach
@@ -68,7 +66,7 @@
                                     <label for="date">تاریخ موعد<span class="text-danger">*</span></label>
                                     <input type="text" name="date" autocomplete="off"
                                            class="form-control date-picker-shamsi-list" id="date"
-                                           value="{{ old('date') }}">
+                                           value="{{ $sale_price_request->date }}">
                                     @error('date')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
@@ -82,7 +80,7 @@
                                 </span>
                                         </div>
                                         <input type="text" autocomplete="off" name="hour" class="form-control text-left"
-                                               value="{{ old('hour') }}" dir="ltr">
+                                               value="{{ $sale_price_request->hour }}" dir="ltr">
                                     </div>
                                     @error('hour')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -92,14 +90,14 @@
                                     <label for="need_no">شماره نیاز<span class="text-danger">*</span></label>
                                     <input type="text" name="need_no" autocomplete="off" class="form-control"
                                            id="need_no"
-                                           value="{{ old('need_no') }}">
+                                           value="{{ $sale_price_request->need_no }}">
                                     @error('need_no')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
                             @endcan
                         </div>
-                        <table class="table table-striped table-bordered text-center">
+                        <table class="table table-striped table-bordered text-center" id="products_table">
                             <thead class="bg-primary">
                             <tr>
                                 <th>عنوان کالا</th>
@@ -109,35 +107,41 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>
-                                    <select class="js-example-basic-single" name="products[]" required>
-                                        <option value="" disabled selected>انتخاب کنید</option>
-                                        @foreach($products as $item)
-                                            <option
-                                                value="{{ $item->id }}"
-                                                {{ isset($productId) && $item->id == $productId ? 'selected' : '' }}>
-                                                {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td><input type="number" class="form-control" name="counts[]" min="1"
-                                           required value=""></td>
-                                <td><input type="text" class="form-control price-input" name="price[]"
-                                           required>
-                                    <div class="formatted-price" style="margin-top: 5px; font-weight: bold;"></div>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-floating btn_remove"><i
-                                            class="fa fa-trash"></i></button>
-                                </td>
-                            </tr>
+{{--                            @dd($sale_price_request)--}}
+
+                            @foreach(json_decode($sale_price_request->products) as $product)
+                                <tr>
+                                    <td>
+                                        <select class="js-example-basic-single" name="products[]" required>
+                                            {{--                                        <option value="" disabled selected>انتخاب کنید</option>--}}
+                                            @foreach($products as $item)
+                                                <option
+                                                    value="{{ $item->id }}"
+                                                    {{ $item->id == $product->product_id ? 'selected' : '' }}>
+                                                    {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td><input type="number" class="form-control" name="counts[]" min="1" value="{{ $product->count }}" required></td>
+                                    <td><input type="text" class="form-control price-input" name="price[]" value="{{ $product->price }}" required>
+                                        <div class="formatted-price" style="margin-top: 5px; font-weight: bold;">{{ $product->price != 0 ? number_format($product->price) : '' }}</div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            @endforeach
                             </tbody>
                             <tfoot>
                             <tr></tr>
                             </tfoot>
                         </table>
+                        @error('products')
+                        <div class="alert alert-danger">
+                            {{ $message }}
+                        </div>
+                        @enderror
                     </div>
                     <div class="col-12 row mb-4">
                         <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
@@ -158,7 +162,23 @@
 @endsection
 @section('scripts')
     <script>
+        var products = [];
+        var products_options_html = '';
         $(document).ready(function () {
+
+            @foreach($products as $product)
+            products.push({
+                "id": "{{ $product->id }}",
+                "title": "{{ $product->title }}",
+                "categorySlug": "{{ $product->category->slug }}",
+                "modelSlug": "{{ $product->productModels->slug }}",
+            })
+            @endforeach
+
+            $.each(products, function (i, item) {
+                products_options_html += `<option value="${item.id}">${item.categorySlug + ' - ' + item.title + ' - ' + item.modelSlug}</option>`
+            })
+
             $('#submit_button').on('click', function () {
                 let button = $(this);
 
@@ -188,11 +208,7 @@
                     <td>
                         <select class="js-example-basic-single" name="products[]" required>
                             <option value="" disabled selected>انتخاب کنید</option>
-                            @foreach($products as $item)
-                <option value="{{ $item->id }}">
-                                    {{ $item->category->slug . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
-                </option>
-@endforeach
+                            ${products_options_html}
                 </select>
             </td>
             <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>

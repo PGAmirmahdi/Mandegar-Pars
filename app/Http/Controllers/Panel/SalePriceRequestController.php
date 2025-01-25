@@ -251,32 +251,37 @@ class SalePriceRequestController extends Controller
         );
     }
 
-    public function update(SalePriceRequest $request, SalePriceRequest $sale_price_request)
+    public function update(StoreSalePriceRequest $request, SalePriceRequest $sale_price_request)
     {
 //        return $request->prices;
         $this->authorize('sale_price_request_edit');
         $items = [];
 
-        foreach (json_decode($sale_price_request->products, true) as $key => $item) {
-            $product = Product::with('category', 'productModels')->find($item['product_id']);
+        foreach ($request->products as $key => $productId) {
+            $product = Product::with('category', 'productModels')->find($productId);
             if ($product) {
                 $items[] = [
                     'product_id' => $product->id,
                     'product_name' => $product->title,
                     'product_model' => $product->productModels->slug,
                     'category_name' => $product->category->slug,
-                    'count' => $request->counts,
+                    'count' => $request->counts[$key],
                     'price' => $request->price[$key],
                 ];
-
             }
         }
 
         $sale_price_request->update([
-            'acceptor_id' => auth()->id(),
             'products' => json_encode($items),
-            'status' => 'accepted',
+            'status' => 'pending',
             'description' => $request->description,
+            'customer_id' => $request->customer,
+            'date' => $request->date,
+            'hour' => $request->hour,
+            'code' => $this->generateCode(),
+            'payment_type' => $request->payment_type,
+            'need_no' => $request->need_no,
+//            'type' => auth()->user()->role->name
         ]);
 
         // notification sent to ceo
@@ -289,8 +294,9 @@ class SalePriceRequestController extends Controller
         $notif_title = 'درخواست ' . auth()->user()->role->label;
         $notif_message = 'ویرایش درخواست ' . auth()->user()->role->label . ' توسط ' . auth()->user()->family . ' انجام شد.';
         $url = route('sale_price_requests.index');
+
         Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
-        Notification::send($sale_price_request->user->id, new SendMessage($notif_title, $notif_message, $url));
+        Notification::send($sale_price_request->user, new SendMessage($notif_title, $notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
