@@ -264,7 +264,7 @@
                                         دریافت اکسل
                                     </button>
 
-                                    @can('customer-order-list')
+                                    @can('customer-order-create')
                                         @cannot('accountant')
                                             <a href="{{ route('orders.create') }}" class="btn btn-primary">
                                                 <i class="fa fa-plus mr-2"></i>
