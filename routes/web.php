@@ -400,7 +400,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     });
 
     // analyse
-    Route::resource('analyse', AnalyseController::class)->except(['edit', 'update']);
+    Route::resource('analyse', AnalyseController::class);
     Route::get('analyse/show/{date}', [AnalyseController::class, 'show'])->name('analyse.show');
     Route::get('/get-products', [AnalyseController::class, 'getProducts'])->name('get.products');
 

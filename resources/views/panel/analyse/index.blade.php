@@ -36,13 +36,18 @@
                     </select>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12">
-                    <input type="text" id="start_date" name="start_date" class="form-control date-picker-shamsi-list" autocomplete="off" placeholder="از تاریخ" value="{{ request()->start_date ?? null }}" form="search_form">
+                    <input type="text" id="start_date" name="start_date" class="form-control date-picker-shamsi-list"
+                           autocomplete="off" placeholder="از تاریخ" value="{{ request()->start_date ?? null }}"
+                           form="search_form">
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12">
-                    <input type="text" id="end_date" name="end_date" class="form-control date-picker-shamsi-list" autocomplete="off" placeholder="تا تاریخ" value="{{ request()->end_date ?? null }}" form="search_form">
+                    <input type="text" id="end_date" name="end_date" class="form-control date-picker-shamsi-list"
+                           autocomplete="off" placeholder="تا تاریخ" value="{{ request()->end_date ?? null }}"
+                           form="search_form">
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-4 col-sm-12 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary" form="search_form"><i class="fa fa-filter"></i></button>
+                    <button type="submit" class="btn btn-primary" form="search_form"><i class="fa fa-filter"></i>
+                    </button>
                 </div>
             </div>
             <div class="table-responsive">
@@ -57,14 +62,19 @@
                             <th>از تاریخ</th>
                             <th>تا تاریخ</th>
                             @can('admin')
-                            <th>تاریخ ایجاد</th>
+                                <th>تاریخ ایجاد</th>
                             @endcan
                             <th>محصولات</th>
+                            @can('analyse-edit')
+                                <th>
+                                    ویرایش
+                                </th>
+                            @endcan
                             @can('analyse-delete')
                                 <th>
                                     حذف
                                 </th>
-                                @endcan
+                            @endcan
                         </tr>
                         </thead>
                         <tbody>
@@ -77,18 +87,29 @@
                                 <td>{{ \Verta::parse($analyse->date)->format('%d %B %Y') }}</td>
                                 <td>{{ \Verta::parse($analyse->to_date)->format('%d %B %Y') }}</td>
                                 @can('admin')
-                                <td>{{\Verta::parse($analyse->created_at)->format('H:i')}}</td>
+                                    <td>{{\Verta::parse($analyse->created_at)->format('H:i')}}</td>
                                 @endcan
                                 <td>
-                                    <a href="{{ route('analyse.show', $analyse->id) }}" class="btn btn-lg btn-outline-behance btn-floating">
+                                    <a href="{{ route('analyse.show', $analyse->id) }}"
+                                       class="btn btn-lg btn-outline-behance btn-floating">
                                         <i class="fa fa-chart-simple"></i>
                                     </a>
                                 </td>
+                                @php
+                                    $isDisabled = $analyse->created_at->addDay() < \Carbon\Carbon::now();
+                                @endphp
+                                @can('analyse-edit')
+                                    <td>
+                                        <a
+                                            class="btn btn-primary btn-floating {{ $isDisabled ? 'disabled' : '' }}"
+                                            href="{{ $isDisabled ? '#' : route('analyse.edit', $analyse->id) }}"
+                                        >
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    </td>
+                                @endcan
                                 @can('analyse-delete')
                                     <td>
-                                        @php
-                                            $isDisabled = $analyse->created_at->addDay() < \Carbon\Carbon::now();
-                                        @endphp
                                         <button
                                             class="btn btn-danger btn-floating trashRow"
                                             data-url="{{ $isDisabled ? '#' : route('analyse.destroy', $analyse->id) }}"

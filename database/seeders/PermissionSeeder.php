@@ -182,7 +182,8 @@ class PermissionSeeder extends Seeder
 //            'sale-price-requests-delete' => 'حذف درخواست ستاد',
 //            'sale-price-requests-edit'=> 'ویرایش درخواست فروش',
 //            'setad_sale' => 'فروش ستاد'
-        'analyse-delete' => 'حذف آنالیز'
+        'analyse-delete' => 'حذف آنالیز',
+            'analyse-edit' => 'ویرایش آنالیز'
         ];
 
         foreach ($items as $key => $item)

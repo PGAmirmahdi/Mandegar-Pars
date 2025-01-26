@@ -211,7 +211,6 @@
             @endif
         </div>
     </div>
-    @canany(['accountant','Organ','partner-tehran','internet-sale','partner-city','office-manager'])
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -557,7 +556,6 @@
                 </div>
             </div>
         @endcan
-    @endcanany
 @endsection
 @section('scripts')
     <script>
