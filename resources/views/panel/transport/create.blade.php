@@ -107,8 +107,7 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" name="prices[]" class="form-control" min="0"
-                                                   value="{{ old('prices')[$i] }}" readonly>
+                                            <input type="number" name="prices[]" class="form-control" min="0" value="{{ old('prices')[$i] }}" readonly>
                                             <div id="formatted-price-{{ $i }}" class="formatted-price"></div>
                                         </td>
                                         <td>
@@ -169,6 +168,7 @@
             });
         });
 
+        var i = 1;
         // افزودن حمل و نقل کننده جدید
         $('#btn_add').click(function () {
             let rowCount = $('#products_table tbody tr').length;
@@ -183,6 +183,7 @@
         </td>
         <td>
             <input type="number" name="prices[]" class="form-control w-100" min="0" required>
+            <div id="formatted-price-${i++}" class="formatted-price"></div>
         </td>
         <td>
             <select class="form-control w-100" name="payment_type[]">
@@ -203,6 +204,18 @@
         // حذف ردیف حمل و نقل
         $(document).on('click', '.remove-row', function () {
             $(this).closest('tr').remove();
+        });
+
+        // format price
+        $(document).on('input', 'input[name="prices[]"]', function () {
+            let value = $(this).val().replace(/,/g, ''); // Remove existing commas
+            if (!isNaN(value) && value.trim() !== '') {
+                let formattedValue = new Intl.NumberFormat('fa-IR').format(value); // Format with three-digit separation
+                console.log($(this))
+                $(this).next('.formatted-price').text(formattedValue); // Update the formatted price display
+            } else {
+                $(this).next('.formatted-price').text(''); // Clear the display if input is invalid
+            }
         });
     </script>
 @endsection

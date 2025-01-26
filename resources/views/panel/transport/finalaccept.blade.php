@@ -77,6 +77,7 @@
                                     </td>
                                     <td>
                                         <input type="number" name="prices[]" class="form-control" min="0" value="{{ $item->price }}" readonly>
+                                        <div id="formatted-price-{{ $i }}" class="formatted-price">{{ number_format($item->price) }}</div>
                                     </td>
                                     <td>
                                         <select class="form-control" name="payment_type[]" disabled>
