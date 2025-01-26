@@ -33,17 +33,27 @@
                 </div>
                 <div class="col-12 row justify-content-around">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="invoice_id">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
+                        @php
+                            // دریافت آیدی‌های فاکتورهایی که در جدول transports موجود هستند
+                                    $invoiceIdsInTransports = \App\Models\Transport::where('invoice_id', '!=', $transport->invoice_id)->pluck('invoice_id')->toArray();
+                                    $invoices = \App\Models\Invoice::with(['customer:id,name', 'order:id,code']) // بارگذاری مشتری و سفارش
+                                     ->whereNotIn('id', $invoiceIdsInTransports) // فیلتر کردن فاکتورهایی که در transports نیستند
+                                     ->whereHas('order', function($query) {
+                                         $query->whereNotNull('code'); // فقط سفارش‌هایی که کد آنها null نیست
+                                     })
+                                     ->get(['id', 'customer_id','order_id']);
+                            @endphp
+                        <label for="invoice_id">سفارش <span class="text-danger">*</span></label>
                         <select name="invoice_id" id="invoice_id" class="js-example-basic-single select2-hidden-accessible">
                             <option value="" disabled>انتخاب کنید</option>
-                            @foreach(Invoice::with('customer:id,name')->get(['id', 'customer_id']) as $invoice)
+                            @foreach($invoices as $invoice)
                                 <option value="{{ $invoice->id }}" {{ $invoice->id == $transport->invoice_id ? 'selected' : '' }}>
-                                    {{ $invoice->customer->name }}
+                                    {{ $invoice->customer->name }} - {{ $invoice->order->code }}
                                 </option>
                             @endforeach
                         </select>
                         @error('invoice_id')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -54,10 +64,9 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="address">نشانی<span class="text-danger">*</span></label>
-                        <input name="address" id="address" class="form-control col-12" value="{{ $transport->invoice->customer->address }}" readonly>
+                        <input name="address" id="address" class="form-control col-12" value="{{ $transport->invoice->customer->address1 }}" readonly>
                         @error('address')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror

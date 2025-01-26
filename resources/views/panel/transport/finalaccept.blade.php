@@ -32,8 +32,8 @@
 
                 <div class="col-12 row justify-content-around">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="invoice_id">نام شخص حقیقی/حقوقی</label>
-                        <input name="invoice_id" id="invoice_id" class="form-control" value="{{ $invoice->customer->name }}" readonly>
+                        <label for="invoice_id">سفارش</label>
+                        <input name="invoice_id" id="invoice_id" class="form-control" value="{{ $invoice->customer->name }} - {{ $invoice->order ? $invoice->order->code : '' }}" title="{{ $invoice->order ? $invoice->order->code : '' }}" readonly>
                     </div>
 
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">

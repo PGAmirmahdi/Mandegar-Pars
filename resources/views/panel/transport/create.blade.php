@@ -127,6 +127,9 @@
                             @endif
                             </tbody>
                         </table>
+                        @error('transporters')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
