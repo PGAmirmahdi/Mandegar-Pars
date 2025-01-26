@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreAnalyseRequest;
 use App\Models\Analyse;
 use App\Models\AnalyseProducts;
 use App\Models\Category;
@@ -86,10 +87,57 @@ class AnalyseController extends Controller
     {
         $categories=Category::all();
         $brands=ProductModel::all();
-        $products = []; // متغیر خالی برای محصولات
+        $products = [];
         return view('panel.analyse.create',compact('categories','brands','products'));
     }
-    public function store(Request $request)
+
+    public function edit(Request $request,$id)
+    {
+        $this->authorize('analyse-edit');
+        $categories=Category::all();
+        $brands=ProductModel::all();
+        $analyse = Analyse::with(['products' => function ($query) use ($request) {
+            $query->select('products.id', 'products.title','products.total_count', 'analyse_products.quantity','analyse_products.storage_count')->orderBy('analyse_products.quantity', 'desc');
+
+            // اگر محصول خاصی انتخاب شده باشد
+            if ($request->has('product') && $request->product != 'all') {
+                // فیلتر کردن بر اساس محصول انتخاب شده
+                $query->where('products.id', $request->product);
+            }
+        }])->findOrFail($id);
+        $products = [];
+        return view('panel.analyse.edit', compact('analyse','categories','brands','products'));
+    }
+
+    public function update(StoreAnalyseRequest $request, Analyse $analyse)
+    {
+        $this->authorize('analyse-edit');
+
+        $analyse->update([
+            'date' => $request->date,
+            'to_date' => $request->to_date,
+            'category_id' => $request->category_id,
+            'brand_id' => $request->brand_id,
+        ]);
+
+        $analyse->products()->detach();
+
+        // افزودن یا به‌روزرسانی ارتباط محصولات جدید
+        foreach ($request->products as $productId => $productData) {
+            $product = Product::find($productId);
+            if ($product) {
+                $analyse->products()->attach($productId, [
+                    'quantity' => $productData['quantity'], // مقدار تعداد از فرم
+                    'storage_count' => $productData['storage_count'], // مقدار موجودی انبار از فرم
+                ]);
+            }
+        }
+
+        alert()->success('آنالیز با موفقیت به‌روزرسانی شد', 'ویرایش آنالیز');
+        return redirect()->route('analyse.index');
+    }
+
+    public function store(StoreAnalyseRequest $request)
     {
         $analyse = Analyse::create([
             'date' => $request->date,
