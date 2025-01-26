@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-12 row justify-content-around">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="invoice_id">نام شخص حقیقی/حقوقی <span class="text-danger">*</span></label>
+                        <label for="invoice_id">سفارش <span class="text-danger">*</span></label>
                         @php
                             // دریافت آیدی‌های فاکتورهایی که در جدول transports موجود هستند
                             $invoiceIdsInTransports = \App\Models\Transport::pluck('invoice_id')->toArray();
@@ -39,19 +39,15 @@
                                      ->whereHas('order', function($query) {
                                          $query->whereNotNull('code'); // فقط سفارش‌هایی که کد آنها null نیست
                                      })
-                                     ->get(['id', 'customer_id'])
+                                     ->get(['id', 'customer_id','order_id'])
                         @endphp
-                        @dd($invoices)
                         <select name="invoice_id" id="invoice_id"
                                 class="js-example-basic-single select2-hidden-accessible" data-select2-id="5"
                                 tabindex="-2" aria-hidden="true">
                             <option value="" disabled selected>انتخاب کنید</option>
                             @foreach($invoices as $invoice)
                                 <option value="{{ $invoice->id }}">
-                                    {{ $invoice->customer->name }}
-                                    @if($invoice->order)
-                                        - {{ $invoice->order->code }}
-                                    @endif
+                                    {{ $invoice->customer->name }} - {{ $invoice->order->code }}
                                 </option>
                             @endforeach
 
