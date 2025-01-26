@@ -14,9 +14,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('path.public', function(){
-            return '/home/admin/public_html';
-        });
+        if (env('APP_URL') != 'http://localhost') {
+            $this->app->bind('path.public', function(){
+                return '/home/admin/public_html';
+            });
+        }
     }
 
     /**
