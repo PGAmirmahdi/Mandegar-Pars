@@ -26,10 +26,12 @@
                         <label for="title">مدل<span class="text-danger">*</span></label>
                         <input type="text" name="title" class="form-control" id="title" value="{{ old('title') }}"
                                placeholder="پرینتر HP">
+                        <div id="title-error" class="mt-1"></div> <!-- پیام خطا اینجا نمایش داده می‌شود -->
                         @error('title')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
+
                     {{--                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">--}}
                     {{--                        <label for="slug">اسلاگ<span class="text-danger">*</span></label>--}}
                     {{--                        <input type="text" name="slug" class="form-control" id="slug" value="{{ old('slug') }}" placeholder="hp-printer">--}}
@@ -295,6 +297,51 @@
                 }
             });
         });
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+        $('#title').on('input', debounce(function () {
+            const title = $(this).val();
+            const category = $('#category').val();
+
+            // پاک کردن پیام‌های قبلی
+            $('#duplicateMessage').remove();
+
+            // بررسی اگر ورودی خالی است، نیازی به ارسال درخواست نیست
+            if (!title.trim()) {
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('products.check_duplicate') }}',
+                method: 'POST',
+                data: {
+                    title: title,
+                    category: category,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // نمایش پیام موفقیت یا لینک محصول
+                        $('#title').after(`<div id="duplicateMessage" class="text-success mt-2">
+                    <a href="${response.product_url}" target="_blank" class="text-danger">این محصول قبلاً ثبت شده است. مشاهده محصول</a>
+                </div>`);
+                    }
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                    $('#title').after(`<div id="duplicateMessage" class="text-danger mt-2">
+                خطایی در ارسال درخواست رخ داده است.
+            </div>`);
+                }
+            });
+        }, 300));
+
 
     </script>
 @endsection

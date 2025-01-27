@@ -96,7 +96,7 @@
                                     </a>
                                 </td>
                                 @php
-                                    $isDisabled = $analyse->created_at->addDay() < \Carbon\Carbon::now();
+                                    $isDisabled = $analyse->created_at->addMonth() < \Carbon\Carbon::now();
                                 @endphp
                                 @can('analyse-edit')
                                     <td>

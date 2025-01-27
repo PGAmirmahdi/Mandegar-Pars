@@ -183,6 +183,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::match(['get','post'],'request/products', [ProductController::class, 'request'])->name('products.request');
     Route::post('excel/products', [ProductController::class, 'excel'])->name('products.excel');
     Route::post('/get-models-by-category', [ProductController::class, 'getModelsByCategory'])->name('get.models.by.category');
+    Route::post('/products/check-duplicate', [ProductController::class, 'checkDuplicate'])->name('products.check_duplicate');
 
     // Customer Order
     Route::resource('/orders', OrderController::class);

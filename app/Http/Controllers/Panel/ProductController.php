@@ -21,13 +21,24 @@ use PDF;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('products-list');
 
-        $products = Product::query()->where('status','=','approved')->paginate(30);
-        return view('panel.products.index', compact('products'));
+        $category_id = $request->query('category');
+
+        $products = Product::query()
+            ->where('status', 'approved')
+            ->when($category_id, function ($query) use ($category_id) {
+                return $query->where('category_id', $category_id);
+            })
+            ->paginate(30);
+
+        $highlightedProductId = $request->query('highlighted_product_id');
+
+        return view('panel.products.index', compact('products', 'highlightedProductId'));
     }
+
 
     public function request(Request $request)
     {
@@ -63,23 +74,35 @@ class ProductController extends Controller
     {
         $this->authorize('products-create');
 
+        // جستجوی محصولات مشابه با استفاده از LIKE
+        $similarProduct = Product::where('category_id', $request->category)
+            ->where('title', 'LIKE', '%' . $request->title . '%')
+            ->first();
 
-        $image = null; // مقدار پیش‌فرض برای تصویر
+        if ($similarProduct) {
+            return back()->withErrors([
+                'title' => 'محصولی مشابه با عنوان "' . $similarProduct->title . '" قبلاً ثبت شده است.'
+            ])->withInput();
+        }
+
+        // آپلود تصویر
+        $image = null;
         if ($request->has('image')) {
             $image = upload_file($request->image, 'Products');
         }
 
-        // product properties
+        // تنظیمات محصول
         $properties = $this->json_properties($request);
         $total_count = array_sum($request->counts);
         $status = auth()->user()->isAdmin() || auth()->user()->isOfficeManager() ? $request->status : 'pending';
-        // create product
+
+        // ایجاد محصول
         $product = Product::create([
             'title' => $request->title,
             'code' => 'MP' . random_int(10000, 99999),
             'image' => $image,
             'category_id' => $request->category,
-            'brand_id' => $request->brand, // تغییر از 'model' به 'brand'
+            'brand_id' => $request->brand,
             'properties' => $properties,
             'description' => $request->description,
             'system_price' => $request->system_price,
@@ -91,12 +114,12 @@ class ProductController extends Controller
             'status' => $status,
         ]);
 
+        // ارسال اعلان برای ادمین‌ها
         if (!auth()->user()->isAdmin()) {
             $title = 'ثبت کالا';
             $message = "یک درخواست ثبت کالا توسط " . auth()->user()->family . " ایجاد شد.";
             $url = route('products.index');
 
-            // Find all admin users
             $admins = User::whereHas('role', function ($query) {
                 $query->where('name', 'admin');
             })->get();
@@ -104,20 +127,63 @@ class ProductController extends Controller
             Notification::send($admins, new SendMessage($title, $message, $url));
         }
 
-
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ایجاد درخواست کالا',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') درخواست ثبت کالای جدیدی به نام ' . $request->title . ' ایجاد کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') درخواست ثبت کالای جدیدی به نام ' . $request->title . ' ایجاد کرد.',
             'created_at' => now(),
         ];
-        Activity::create($activityData); // ذخیره فعالیت
+        Activity::create($activityData);
 
         alert()->success('درخواست ثبت کالا مورد نظر با موفقیت ایجاد شد', 'ایجاد  درخواست ثبت کالا');
         return redirect()->route('products.index');
     }
+    public function checkDuplicate(Request $request)
+    {
+        $title = $request->input('title');
+        $category_id = $request->input('category');
 
+
+        $product = Product::where('title', $title)
+            ->where('category_id', $category_id)
+            ->first();
+
+        if ($product) {
+
+            $totalProductsInCategory = Product::where('category_id', $category_id)->count();
+
+
+            $rowNumber = Product::where('category_id', $category_id)
+                ->where('id', '<=', $product->id)
+                ->orderBy('id')
+                ->count();
+
+
+            $perPage = 30;
+            $page = ceil($rowNumber / $perPage);
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'محصول مورد نظر یافت شد.',
+                'product_id' => $product->id,
+                'product_url' => route('products.index', [
+                    'page' => $page,
+                    'category' => $category_id,
+                    'highlighted_product_id' => $product->id
+                ]),
+                'row_number' => $rowNumber,
+                'page' => $page,
+                'total_products' => $totalProductsInCategory
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'محصولی با این مشخصات یافت نشد.',
+        ]);
+    }
     private function json_properties($request)
     {
         $items = [];

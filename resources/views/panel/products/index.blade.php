@@ -2,10 +2,15 @@
 @section('title', 'لیست کالاها')
 @section('content')
     <style>
-        .table-warning {
-            background-color: #fff3cd; /* رنگ پس‌زمینه زرد */
-            color: #856404; /* رنگ متن برای بهتر دیده شدن */
+        .table-color {
+            border:2px dashed #bdad7a !important;
+            color: #856404;
+            box-shadow: 0px 0px 50px 0px inset #c5ac61;
         }
+        .highlight {
+            background-color: #ffeb3b !important; /* هایلایت با اولویت بالا */
+        }
+
     </style>
     <div class="card">
         <div class="card-body">
@@ -97,7 +102,7 @@
                 </div>
             </form>
             <div class="table-responsive">
-                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                <table class="table table-bordered dataTable dtr-inline text-center">
                     <thead>
                     <tr>
                         <th>ردیف</th>
@@ -124,7 +129,7 @@
                     </thead>
                     <tbody>
                     @foreach($products as $key => $product)
-                        <tr @if($product->latestInventory() < 10 ) @canany(['admin','accountant','OfficeManager']) class="table-warning" @endcanany @endif>
+                        <tr id="row-{{ $product->id }}" @if($product->latestInventory() < 10) @canany(['admin','accountant','OfficeManager']) class="table-color" @endcanany @endif>
                             <td>{{ ++$key }}</td>
                             <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->code }}</td>
                             <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
@@ -213,5 +218,26 @@
                 }
             });
         });
+        document.addEventListener("DOMContentLoaded", function () {
+            const highlightedProductId = "{{ $highlightedProductId ?? '' }}";
+            const category = "{{ request()->category ?? '' }}"; // خواندن دسته‌بندی از URL
+
+            if (highlightedProductId) {
+                const row = document.getElementById(`row-${highlightedProductId}`);
+                if (row) {
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    // اضافه کردن کلاس table-color برای هایلایت
+                    row.classList.add('table-warning');
+
+                    // حذف کلاس بعد از 2 ثانیه
+                    setTimeout(() => {
+                        row.classList.remove('table-warning');
+                    }, 2000);
+                }
+            }
+        });
+
+
     </script>
 @endsection

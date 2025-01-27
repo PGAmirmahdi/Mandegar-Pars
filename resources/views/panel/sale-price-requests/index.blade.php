@@ -222,15 +222,14 @@
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
-
                             @endcanany
                             @can('sale-price-requests-delete')
                                 <td>
                                     <button
-                                        class="btn btn-danger btn-floating trashRow @if(auth()->id() != $saleprice_request->user->id) disabled @endif "
-                                        data-url="{{ route('sale_price_requests.destroy',$saleprice_request  ->id) }}"
+                                        class="btn btn-danger btn-floating trashRow @if(auth()->id() != $saleprice_request->user->id && !in_array(auth()->user()->role->name, ['admin', 'office-manager', 'ceo'])) disabled @endif"
+                                        data-url="{{ route('sale_price_requests.destroy', $saleprice_request->id) }}"
                                         data-id="{{ $saleprice_request->id }}"
-                                        @if(auth()->id() != $saleprice_request->user->id) disabled @endif>
+                                        @if(auth()->id() != $saleprice_request->user->id && !in_array(auth()->user()->role->name, ['admin', 'office-manager', 'ceo'])) disabled @endif>
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
