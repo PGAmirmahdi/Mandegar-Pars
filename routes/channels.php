@@ -21,3 +21,6 @@ Broadcast::channel('notification.{userId}', function ($user, $userId){
     return (int) $user->id === (int) $userId;
 });
 
+Broadcast::channel('my-test', function ($user){
+    return $user;
+});
