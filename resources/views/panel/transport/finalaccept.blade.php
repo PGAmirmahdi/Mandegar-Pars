@@ -8,6 +8,7 @@
         #products_table input, #products_table select {
             width: auto;
         }
+
         .radio-custom {
             margin: 0;
             padding: 0;
@@ -22,7 +23,8 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('transports.finalaccountantupdate.finalaccounting', $transport->id) }}" method="POST">
+            <form action="{{ route('transports.finalaccountantupdate.finalaccounting', $transport->id) }}"
+                  method="POST">
                 @csrf
                 @method('PUT')
 
@@ -33,17 +35,21 @@
                 <div class="col-12 row justify-content-around">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="invoice_id">سفارش</label>
-                        <input name="invoice_id" id="invoice_id" class="form-control" value="{{ $invoice->customer->name }} - {{ $invoice->order ? $invoice->order->code : '' }}" title="{{ $invoice->order ? $invoice->order->code : '' }}" readonly>
+                        <input name="invoice_id" id="invoice_id" class="form-control"
+                               value="{{ $invoice->customer->name }} - {{ $invoice->order ? $invoice->order->code : '' }}"
+                               title="{{ $invoice->order ? $invoice->order->code : '' }}" readonly>
                     </div>
 
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="customer">نام مشتری</label>
-                        <input name="customer" id="customer" class="form-control" value="{{ $invoice->customer->name }}" readonly>
+                        <input name="customer" id="customer" class="form-control" value="{{ $invoice->customer->name }}"
+                               readonly>
                     </div>
 
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="address">نشانی</label>
-                        <input name="address" id="address" class="form-control" value="{{ $invoice->customer->address1 }}" readonly>
+                        <input name="address" id="address" class="form-control"
+                               value="{{ $invoice->customer->address1 }}" readonly>
                     </div>
                 </div>
 
@@ -69,26 +75,32 @@
                                         <select class="form-control" name="transporters[]" required disabled>
                                             <option value="" disabled selected>انتخاب کنید</option>
                                             @foreach(Transporter::all(['id', 'name']) as $transporter)
-                                                <option value="{{ $transporter->id }}" {{ $transporter->id == $item->transporter_id ? 'selected' : '' }}>
+                                                <option
+                                                    value="{{ $transporter->id }}" {{ $transporter->id == $item->transporter_id ? 'selected' : '' }}>
                                                     {{ $transporter->name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" name="prices[]" class="form-control" min="0" value="{{ $item->price }}" readonly>
-                                        <div id="formatted-price-{{ $i }}" class="formatted-price">{{ number_format($item->price) }}</div>
+                                        <input type="number" name="prices[]" class="form-control" min="0"
+                                               value="{{ $item->price }}" readonly>
+                                        <div id="formatted-price-{{ $i }}"
+                                             class="formatted-price">{{ number_format($item->price) }}</div>
                                     </td>
                                     <td>
                                         <select class="form-control" name="payment_type[]" disabled>
                                             @foreach(App\Models\Transport::Payment_Type as $key => $value)
-                                                <option value="{{ $key }}" {{ $key == $item->payment_type ? 'selected' : '' }}>{{ $value }}</option>
+                                                <option
+                                                    value="{{ $key }}" {{ $key == $item->payment_type ? 'selected' : '' }}>{{ $value }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td>
                                         <!-- رادیو باتن‌ها باید name یکسان داشته باشند تا فقط یکی از آن‌ها قابل انتخاب باشد -->
-                                        <input type="radio" name="selected_item" value="{{ $item->id }}" class="radio-custom" disabled {{ $item->select == 'selected' ? 'checked' : '' }}>
+                                        <input type="radio" name="selected_item" value="{{ $item->id }}"
+                                               class="radio-custom"
+                                               disabled {{ $item->select == 'selected' ? 'checked' : '' }}>
                                     </td>
                                 </tr>
                             @endforeach
@@ -108,24 +120,24 @@
                         <p>فایلی برای نمایش وجود ندارد.</p>
                     @endif
                 </div>
+                <div class="row justify-content-between align-items-center col-12">
+                    <!-- دکمه‌های تایید و عدم تایید -->
+                    <form action="{{ route('transports.finalaccountantupdate.finalaccounting', $transport->id) }}"
+                          method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="level4">
+                        <button class="btn btn-success" type="submit">تایید</button>
+                    </form>
 
-                <!-- دکمه‌های تایید و عدم تایید -->
-                <form action="{{ route('transports.finalaccountantupdate.finalaccounting', $transport->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-
-                    <input type="hidden" name="status" value="level4">
-                    <button class="btn btn-success" type="submit">تایید</button>
-                </form>
-
-                <form action="{{ route('transports.finalaccountantupdate.finalaccounting', $transport->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-
-                    <input type="hidden" name="status" value="level2">
-                    <button class="btn btn-danger" type="submit">عدم تایید</button>
-                </form>
-
+                    <form action="{{ route('transports.finalaccountantupdate.finalaccounting', $transport->id) }}"
+                          method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="level2">
+                        <button class="btn btn-danger" type="submit">عدم تایید</button>
+                    </form>
+                </div>
             </form>
         </div>
     </div>

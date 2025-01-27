@@ -362,7 +362,7 @@
                                         {{--                        @endcanany--}}
                                         {{--                                        <th>وضعیت سفارش</th>--}}
 
-                                        @canany(['sales-manager','accountant','PartnerCity','Organ','partner-tehran','buying_engineering','ceo'])
+                                        @canany(['sales-manager','accountant','PartnerCity','Organ','partner-tehran','buying_engineering','ceo','admin'])
                                             <th>اقدام</th>
                                         @endcanany
 
@@ -432,7 +432,7 @@
                                                     </a>
                                                 </td>
                                             @else
-                                                @canany(['sales-manager','accountant','PartnerCity','Organ','buying_engineering','ceo'])
+                                                @canany(['sales-manager','accountant','PartnerCity','Organ','buying_engineering','ceo','admin'])
                                                     <td>
                                                         <a class="btn btn-primary btn-floating @cannot('accountant') {{ $order->action ? '' : 'disabled' }} @endcannot"
                                                            href="{{ route('order.action', $order->id) }}">
