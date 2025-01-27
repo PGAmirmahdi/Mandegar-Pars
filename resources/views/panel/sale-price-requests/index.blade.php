@@ -76,15 +76,13 @@
                         <th>ثبت کننده</th>
                         <th>طرف حساب</th>
                         <th>زمان ثبت</th>
-                        <th>مهلت تایید</th>
                         <th>تایید/رد کننده</th>
-                        @can('setad_sale')
-                            <th>مهلت باقی مانده</th>
-                        @endcan
                         <th>وضعیت</th>
-                        @canany(['Organ','ceo'])
+                        @if(request()->query('type') === 'setad_sale')
+                            <th>مهلت تایید</th>
+                            <th>مهلت باقی مانده</th>
                             <th>نتیجه نهایی</th>
-                        @endcan
+                        @endif
                         @canany(['ceo','admin'])
                             <th>ثبت قیمت</th>
                             <th>مشاهده قیمت</th>
@@ -113,10 +111,6 @@
                             <td>{{ $saleprice_request->customer->name}}</td>
                             <td>{{ verta($saleprice_request->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
-                                {{$saleprice_request->date . ' ' . $saleprice_request->hour}}
-                            </td>
-
-                            <td>
                                 @if(in_array($saleprice_request->status, ['accepted', 'rejected','winner','lose','finished']))
                                     {{$saleprice_request->acceptor->name . ' ' . $saleprice_request->acceptor->family}}
                                 @elseif($saleprice_request->status == 'pending')
@@ -126,27 +120,6 @@
                                     نامشخص
                                 @endif
                             </td>
-                            @can('setad_sale')
-                                <td>
-                                    @if($saleprice_request->status == 'winner')
-                                        <span
-                                            class="badge badge-success">{{ \App\Models\SalePriceRequest::STATUS['winner'] }}</span>
-                                    @elseif($saleprice_request->status == 'lose')
-                                        <span
-                                            class="badge badge-danger">{{ \App\Models\SalePriceRequest::STATUS['lose'] }}</span>
-                                    @elseif(in_array($saleprice_request->status, ['pending','accepted','finished']))
-                                        @if($daysLeft<0)
-                                            {{$daysLeft * -1}} روز گذشته
-                                        @elseif($daysLeft>0)
-                                            {{$daysLeft}} روز
-                                        @else
-                                            بدون مهلت
-                                        @endif
-                                    @else
-                                        نامشخص
-                                    @endif
-                                </td>
-                            @endcan
                             <td>
                                 @if($saleprice_request->status == 'accepted')
                                     <span
@@ -168,7 +141,29 @@
                                         class="badge badge-warning">{{ \App\Models\SalePriceRequest::STATUS['pending'] }}</span>
                                 @endif
                             </td>
-                            @canany(['Organ','ceo'])
+                            @if(request()->query('type') === 'setad_sale')
+                                <td>
+                                    {{$saleprice_request->date . ' ' . $saleprice_request->hour}}
+                                </td>
+                                <td>
+                                    @if($saleprice_request->status == 'winner')
+                                        <span
+                                            class="badge badge-success">{{ \App\Models\SalePriceRequest::STATUS['winner'] }}</span>
+                                    @elseif($saleprice_request->status == 'lose')
+                                        <span
+                                            class="badge badge-danger">{{ \App\Models\SalePriceRequest::STATUS['lose'] }}</span>
+                                    @elseif(in_array($saleprice_request->status, ['pending','accepted','finished']))
+                                        @if($daysLeft<0)
+                                            {{$daysLeft * -1}} روز گذشته
+                                        @elseif($daysLeft>0)
+                                            {{$daysLeft}} روز
+                                        @else
+                                            بدون مهلت
+                                        @endif
+                                    @else
+                                        نامشخص
+                                    @endif
+                                </td>
                                 <td>
                                     @if($saleprice_request->status == 'accepted')
                                         @can('Organ')
@@ -196,7 +191,7 @@
                                         نامشخص
                                     @endif
                                 </td>
-                            @endcanany
+                            @endif
                             @canany(['ceo','admin'])
                                 <td>
                                     <a class="btn btn-primary btn-floating @if(in_array($saleprice_request->status, ['accepted', 'rejected','finished','winner','lose'])) disabled @endif"

@@ -51,19 +51,23 @@ class SalePriceRequestController extends Controller
                 ];
             }
         }
-        SalePriceRequest::create([
+        $data = [
             'user_id' => auth()->id(),
             'customer_id' => $request->customer,
-            'date' => $request->date,
-            'hour' => $request->hour,
             'code' => $this->generateCode(),
             'payment_type' => $request->payment_type,
             'status' => 'pending',
             'description' => $request->description,
-            'need_no' => $request->need_no,
             'products' => json_encode($items),
             'type' => auth()->user()->role->name
-        ]);
+        ];
+        if (auth()->user()->role->name == 'setad_sale') {
+            $data['date'] = $request->date;
+            $data['hour'] = $request->hour;
+            $data['need_no'] = $request->need_no;
+        }
+        SalePriceRequest::create($data);
+
         $notifiables = User::where('id', '!=', auth()->id())
             ->whereHas('role', function ($role) {
                 $role->whereHas('permissions', function ($q) {
@@ -132,7 +136,7 @@ class SalePriceRequestController extends Controller
         $this->authorize('sale_price_request_edit');
 
         // بازیابی محصولات
-        $products = \App\Models\Product::with(['category', 'productModels'])->where('status','=','approved')->get();
+        $products = \App\Models\Product::with(['category', 'productModels'])->where('status', '=', 'approved')->get();
 
         $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             $price = DB::table('price_list')
