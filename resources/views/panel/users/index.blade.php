@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'کاربران')
+@section('title', 'همکاران')
 @section('content')
     <style>
         .profile{
@@ -7,17 +7,17 @@
             border-radius: 100%;
         }
         .profile2{
-            border-radius: 100%;
+            filter: drop-shadow(0px 4px 2px rgba(0, 0, 0, 0.5));
         }
     </style>
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>کاربران</h6>
+                <h6>همکاران</h6>
                 @can('users-create')
                     <a href="{{ route('users.create') }}" class="btn btn-primary">
                         <i class="fa fa-plus mr-2"></i>
-                        ایجاد کاربر
+                        ایجاد همکار
                     </a>
                 @endcan
             </div>
