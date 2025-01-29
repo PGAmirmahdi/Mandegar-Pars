@@ -37,6 +37,17 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="gender">جنسیت</label>
+                        <select class="form-control" name="gender">
+                            <option value="" disabled selected>انتخاب کنید</option>
+                            <option value="male">آقا<i class="fa fa-male"></i></option>
+                            <option value="female">خانم<i class="fa fa-female"></i></option>
+                        </select>
+                        @error('gender')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
                     @can('admin')
                         @if(auth()->id() != $user->id)
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
@@ -101,8 +112,8 @@
         .modal-content {
             width: 300px;
             background-color: rgba(255, 255, 255, 0.72);
-            backdrop-filter:blur(6.9px);
-            box-shadow:0px 5px 5px 2px gainsboro;
+            backdrop-filter: blur(6.9px);
+            box-shadow: 0px 5px 5px 2px gainsboro;
         }
 
         .modal {
@@ -116,7 +127,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
-            backdrop-filter:blur(6px);
+            backdrop-filter: blur(6px);
         }
 
         .progress-circle {

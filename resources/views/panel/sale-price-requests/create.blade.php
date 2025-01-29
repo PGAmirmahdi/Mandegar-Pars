@@ -186,6 +186,17 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            $('#submit_button').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
+            });
+        });
+        $(document).ready(function () {
             var products = [];
             var products_options_html = '';
 

@@ -29,7 +29,8 @@ class User extends Authenticatable
         'sign_image',
         'password',
         'najva_token',
-        'fcm_token'
+        'fcm_token',
+        'gender'
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -39,6 +40,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+    const Gender = [
+        'male' => 'آقا',
+        'female' => 'خانم'
     ];
     public function supplier()
     {
