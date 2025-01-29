@@ -114,6 +114,7 @@ class ApiController extends Controller
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,
                 'created_in' => $data['created_in'] ,
+                'shipping_cost' => $shipping_cost * 10,
                 'products' => json_encode($products), // ذخیره محصولات به صورت JSON
             ]);
             $order->order_status()->updateOrCreate(

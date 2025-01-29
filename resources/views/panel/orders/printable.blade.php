@@ -127,7 +127,6 @@ $otherProducts = isset($productsData->other_products) ? $productsData->other_pro
                                             <td class="text-center">
                                                 {{ number_format($product->prices ?? $product->other_prices) ?? 0 }}
                                             </td>
-
                                             <td class="text-start">
                                                 {{
                                                     number_format(
@@ -139,15 +138,26 @@ $otherProducts = isset($productsData->other_products) ? $productsData->other_pro
                                         </tr>
 
                                         @php
-                                            $total += (($product->counts ?? $product->other_counts ?? 0) *
-                                                       ($product->prices ?? $product->other_prices ?? 0));
+                                            $total = $total ?? 0; // اطمینان از مقداردهی اولیه
+
+                                            if (!empty($order->created_in) && $order->created_in == 'website') {
+                                                $total += (($product->counts ?? $product->other_counts ?? 0) *
+                                                           (($product->prices ?? $product->other_prices ?? 0) + ($order->shipping_cost ?? 0)));
+                                            } else {
+                                                $total += (($product->counts ?? $product->other_counts ?? 0) *
+                                                           ($product->prices ?? $product->other_prices ?? 0));
+                                            }
                                         @endphp
                                     @endforeach
 
-
                                     <tr class="tr2">
-                                        <td></td>
-                                        <td></td>
+                                        @if(!empty($order->created_in) && $order->created_in == 'website')
+                                            <td>هزینه حمل و نقل</td>
+                                            <td class="f-w-600 text-start active-color">{{ number_format($order->shipping_cost) }}</td>
+                                        @else
+                                            <td></td>
+                                            <td></td>
+                                        @endif
                                         <td></td>
                                         <td></td>
                                         <td class="text-center f-w-600 active-color">جمع کل</td>
