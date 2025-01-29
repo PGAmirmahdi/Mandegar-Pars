@@ -39,7 +39,14 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->family }}</td>
-                            <td>{{ $user->gender }}</td>
+                            <td>
+                                @if($user->gender == 'male')
+                                    آقا
+                                @elseif($user->gender == 'female')
+                                    خانم
+                                @else
+                                    تعیین نشده
+                                @endif</td>
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->role->label }}</td>
                             <td>
