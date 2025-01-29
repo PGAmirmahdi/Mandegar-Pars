@@ -120,6 +120,11 @@
                                          data-toggle="tooltip" data-placement="bottom"
                                          title="{{ auth()->user()->fullName() }}"
                                          class="rounded-circle" alt="image">
+                                @else
+                                    <img src="{{ asset('assets/media/image/inquery.png') }}"
+                                         data-toggle="tooltip" data-placement="bottom"
+                                         title="{{ auth()->user()->fullName() }}"
+                                         class="rounded-circle" alt="image">
                                 @endif
                             </figure>
                         </div>

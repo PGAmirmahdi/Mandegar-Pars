@@ -56,7 +56,8 @@
                                     <img src="{{asset('assets/media/image/Male.png')}}" class="profile" alt="female-profile" width="60px"
                                          height="60px">
                                     @else
-                                    عکس پروفایل ندارد
+                                    <img src="{{asset('assets/media/image/inquery.png')}}" class="profile" alt="female-profile" width="60px"
+                                         height="60px">
                                 @endif
                             </td>
                             <td>{{ $user->name }}</td>
