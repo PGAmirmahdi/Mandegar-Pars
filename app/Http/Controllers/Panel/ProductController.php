@@ -226,6 +226,11 @@ class ProductController extends Controller
             return response('این کالا در سفارشاتی موجود است', 500);
         }
 
+        // بررسی وجود محصول در سفارشات
+        if ($product->inventories()->exists()) {
+            return response('این کالا در انبار موجود است', 500);
+        }
+
         // ثبت فعالیت قبل از حذف محصول
         $activityData = [
             'user_id' => auth()->id(),

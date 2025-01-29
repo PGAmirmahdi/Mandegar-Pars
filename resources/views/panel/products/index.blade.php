@@ -41,30 +41,31 @@
             </div>
             <form action="{{ route('products.search') }}" method="get" id="search_form">
                 <div class="row mb-3">
-                    <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                         <label for="code">کد کالا</label>
                         <input type="text" name="code" class="form-control" placeholder="کد کالا"
                                value="{{ request()->code ?? null }}" form="search_form">
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-3">
                         <label for="category">شرح کالا</label>
                         <select class="form-control" name="category" id="category">
                             <option value="">انتخاب کنید</option>
                             @foreach(\App\Models\Category::all() as $category)
-                                <option
-                                    value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <option value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
                         </select>
                         @error('category')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-3">
                         <label for="brand">برند</label>
                         <select class="form-control" name="brand" id="brand">
                             <option value="">انتخاب کنید</option>
-                            @if(old('brand'))
-                                <option value="{{ old('brand') }}" selected>{{ old('brand_name') }}</option>
+                            @if(request()->category)
+                                @foreach(App\Models\ProductModel::where('category_id', request()->category)->get() as $productModel)
+                                    <option value="{{ $productModel->id }}" {{ request()->brand == $productModel->id ? 'selected' : '' }}>{{ $productModel->name }}</option>
+                                @endforeach
                             @endif
                         </select>
                         @error('model')
@@ -78,8 +79,7 @@
                                 data-select2-id="3">
                             <option value="all">مدل کالا (همه)</option>
                             @foreach(\App\Models\Product::all(['id','title','status'])->where('status','=' , 'approved') as $product)
-                                <option
-                                    value="{{ $product->id }}" {{ old('product') == $product->id ? 'selected' : '' }}>
+                                <option value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>
                                     {{ $product->title }}
                                 </option>
                             @endforeach
@@ -95,7 +95,7 @@
                     {{--                        @endforeach--}}
                     {{--                    </select>--}}
                     {{--                </div>--}}
-                    <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                         <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                     </div>
 

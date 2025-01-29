@@ -22,8 +22,7 @@
                         <label for="category">شرح کالا<span class="text-danger">*</span></label>
                         <select class="form-control" name="category" id="category">
                             @foreach(Category::all() as $category)
-                                <option
-                                    value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
                         </select>
                         @error('category')
@@ -42,10 +41,9 @@
                         <label for="brand">برند<span class="text-danger">*</span></label>
                         <select class="form-control" name="brand" id="brand">
                             <option value="">انتخاب کنید</option>
-                            @if(old('brand', $product->brand))
-                                <option value="{{ old('brand', $product->brand ? $product->brand->id : '') }}"
-                                        selected>{{ old('brand_name', $product->brand ? $product->brand->name : 'انتخاب کنید') }}</option>
-                            @endif
+                            @foreach(ProductModel::where('category_id', $product->category_id)->get() as $productModel)
+                                <option value="{{ $productModel->id }}" {{ $product->brand_id == $productModel->id ? 'selected' : '' }}>{{ $productModel->name }}</option>
+                            @endforeach
                         </select>
                         @error('brand')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -63,7 +61,7 @@
                             <label for="status">وضعیت<span class="text-danger">*</span></label>
                             <select class="form-control" name="status" id="status">
                                 @foreach(\App\Models\Product::STATUS as $key => $value)
-                                    <option value="{{ $key }}" {{ old('type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                    <option value="{{ $key }}" {{ $product->status == $key ? 'selected' : '' }}>{{ $value }}</option>
                                 @endforeach
                             </select>
                             @error('status')

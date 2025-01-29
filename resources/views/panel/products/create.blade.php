@@ -51,7 +51,9 @@
                         <select class="form-control" name="brand" id="brand">
                             <option value="">انتخاب کنید</option>
                             @if(old('brand'))
-                                <option value="{{ old('brand') }}" selected>{{ old('brand_name') }}</option>
+                                @foreach(ProductModel::where('category_id', old('category'))->get() as $productModel)
+                                    <option value="{{ old('brand') }}" {{ old('brand') == $productModel->id ? 'selected' : '' }}>{{ $productModel->name }}</option>
+                                @endforeach
                             @endif
                         </select>
                         @error('model')
@@ -113,7 +115,7 @@
                     </div>
                     <div class="col-12 mb-3">
                         <label for="editor-demo2">توضیحات </label>
-                        <textarea id="editor-demo2" name="description"></textarea>
+                        <textarea id="editor-demo2" name="description">{!! old('description') !!}</textarea>
                         @error('category')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
