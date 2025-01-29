@@ -42,6 +42,7 @@ class UserController extends Controller
             'family' => $request->family,
             'phone' => $request->phone,
             'role_id' => $request->role ?? $user->role_id,
+            'gender' => $request->gender,
         ];
 
         // بروزرسانی رمز عبور در صورت ادمین بودن
@@ -99,6 +100,7 @@ class UserController extends Controller
             'phone' => $request->phone,
             'role_id' => $request->role,
             'password' => bcrypt($request->password),
+            'gender' => $request->gender,
         ]);
         // ثبت فعالیت
         $activityData = [

@@ -464,6 +464,17 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).ready(function () {
+            $('#btn_form').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
+            });
+        });
         var products = [];
         var colors = [];
         var totalTotalInvoice = 0;

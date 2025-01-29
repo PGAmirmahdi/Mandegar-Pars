@@ -266,6 +266,17 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            $('#btn_form').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
+            });
+        });
+        $(document).ready(function () {
             var status = $("input[name='status']").val();
             @if(!old('status'))
             show_section(status);

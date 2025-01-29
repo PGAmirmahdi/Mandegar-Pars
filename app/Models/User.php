@@ -39,6 +39,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    const Gender = [
+        'male' => 'آقا',
+        'female' => 'خانم'
+    ];
     public function supplier()
     {
         return $this->hasMany(Sms::class);

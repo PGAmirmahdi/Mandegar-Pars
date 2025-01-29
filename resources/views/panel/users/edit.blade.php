@@ -35,7 +35,21 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    @can('admin')
+                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                        <label for="gender">
+                            <i class="fa fa-venus-mars"></i> جنسیت
+                        </label>
+                        <select class="form-control" name="gender" id="gender" required>
+                            <option value="" disabled selected>انتخاب کنید</option>
+                            <option value="male">آقا</option>
+                            <option value="female">خانم</option>
+                        </select>
+                        @error('gender')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                @can('admin')
                         @if(auth()->id() != $user->id)
                             <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                 <label for="role">نقش <span class="text-danger">*</span></label>
