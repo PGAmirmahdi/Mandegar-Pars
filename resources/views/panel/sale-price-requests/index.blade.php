@@ -104,7 +104,14 @@
                             // محاسبه تفاوت تاریخ‌ها به روز
                             $daysLeft = \Carbon\Carbon::parse($today)->diffInDays(\Carbon\Carbon::parse($paymentDueGregorian), false);
                         @endphp
-                        <tr class="@if($daysLeft <= 0 && !in_array($saleprice_request->status, ['accepted','winner','finished'])) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2 && !in_array($saleprice_request->status, ['accepted','winner','lose'])) table-warning @elseif($daysLeft > 2) @elseif($saleprice_request->status == 'accepted') table-success @else @endif">
+                        <tr class="@if($saleprice_request->status == 'accepted')
+                table-success
+            @elseif($daysLeft <= 0 && !in_array($saleprice_request->status, ['accepted','winner','finished']))
+                table-danger
+            @elseif($daysLeft > 0 && $daysLeft <= 2 && !in_array($saleprice_request->status, ['accepted','winner','lose']))
+                table-warning
+            @else
+            @endif">
                             <td>{{ ++$key }}</td>
                             <td>{{$saleprice_request->code}}</td>
                             <td>{{ $saleprice_request->user->name . ' ' . $saleprice_request->user->family }}</td>
