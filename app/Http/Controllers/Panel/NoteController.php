@@ -15,7 +15,7 @@ class NoteController extends Controller
         $this->authorize('notes-list');
 
 //        $notes = Note::where('user_id', auth()->id())->latest()->paginate(30);
-        $notes = Note::query()->paginate(10);
+        $notes = Note::latest()->paginate(10);
         return view('panel.notes.index', compact('notes'));
     }
 
