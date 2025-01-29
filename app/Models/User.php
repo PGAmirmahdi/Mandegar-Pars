@@ -28,7 +28,8 @@ class User extends Authenticatable
         'sign_image',
         'password',
         'najva_token',
-        'fcm_token'
+        'fcm_token',
+        'gender'
     ];
     /**
      * The attributes that should be hidden for serialization.
