@@ -6,6 +6,9 @@
             box-shadow: 0px 3px 3px 0px gainsboro;
             border-radius: 100%;
         }
+        .profile2{
+            border-radius: 100%;
+        }
     </style>
     <div class="card">
         <div class="card-body">
@@ -56,7 +59,7 @@
                                     <img src="{{asset('assets/media/image/Male.png')}}" class="profile" alt="female-profile" width="60px"
                                          height="60px">
                                     @else
-                                    <img src="{{asset('assets/media/image/inquery.png')}}" class="profile" alt="female-profile" width="60px"
+                                    <img src="{{asset('assets/media/image/inquery.png')}}" class="profile2" alt="female-profile" width="60px"
                                          height="60px">
                                 @endif
                             </td>
