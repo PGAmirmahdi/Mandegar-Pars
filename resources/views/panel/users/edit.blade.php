@@ -1,10 +1,10 @@
 @extends('panel.layouts.master')
-@section('title', 'ویرایش کاربر')
+@section('title', 'ویرایش همکار')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>ویرایش کاربر</h6>
+                <h6>ویرایش همکار</h6>
             </div>
 
             <!-- فرم اصلی برای به‌روزرسانی سایر اطلاعات کاربر -->
@@ -14,7 +14,7 @@
                 @csrf
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="name">نام کاربر<span class="text-danger">*</span></label>
+                        <label for="name">نام<span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" id="name" value="{{ $user->name }}">
                         @error('name')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -66,6 +66,9 @@
                         @error('sign_image')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
+                        @if($user->sign_image)
+                            <a href="{{ $user->sign_image }}" class="btn-link" target="_blank">مشاهده تصویر امضا</a>
+                        @endif
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="profile">تصویر پروفایل<span class="text-danger">*</span></label>
@@ -74,6 +77,9 @@
                         @error('profile')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
+                        @if($user->profile)
+                            <a href="{{ $user->profile }}" class="btn-link" target="_blank">مشاهده تصویر پروفایل</a>
+                        @endif
                     </div>
                 </div>
                 <button type="submit" class="btn btn-outline-info" id="submit-btn">ثبت فرم</button>

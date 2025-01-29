@@ -100,19 +100,26 @@ class UserController extends Controller
             'role_id' => $request->role,
             'password' => bcrypt($request->password),
         ]);
+
+        // آپلود فایل پروفایل در صورت موجود بودن
+        if ($request->hasFile('profile')) {
+            // ذخیره فایل جدید
+            $filePath = upload_file($request->file('profile'), 'profiles');
+            $user->update(['profile' => $filePath]);
+        }
+
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' کاربر جدیدی با نام ' . $user->family . ' ایجاد کرد',
-            'action' => 'ایجاد کاربر',
+            'description' => 'همکار ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' همکار جدیدی با نام ' . $user->family . ' ایجاد کرد',
+            'action' => 'ایجاد همکار',
             'created_at' => now(),
         ];
         Activity::create($activityData);
-        // ارسال پیام موفقیت
-        alert()->success('کاربر با موفقیت ساخته شد', 'ساخت کاربر');
 
-        // برگرداندن پاسخ JSON
-        return response()->json(['redirect' => route('users.index')]); // به جای return route
+        // ارسال پیام موفقیت
+        alert()->success('همکار با موفقیت ساخته شد', 'ایجاد همکار');
+        return redirect()->route('users.index');
     }
 
 

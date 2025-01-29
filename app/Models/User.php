@@ -25,6 +25,7 @@ class User extends Authenticatable
         'family',
         'phone',
         'role_id',
+        'profile',
         'sign_image',
         'password',
         'najva_token',
