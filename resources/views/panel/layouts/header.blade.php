@@ -110,8 +110,13 @@
                                         data-toggle="tooltip" data-placement="bottom"
                                         title="{{ auth()->user()->fullName() }}"
                                         class="rounded-circle" alt="image">
-                                @else
-                                    <img src="{{ asset('assets/media/image/avatar.png') }}"
+                                @elseif(auth()->user()->gender == 'female')
+                                    <img src="{{ asset('assets/media/image/Female.png') }}"
+                                         data-toggle="tooltip" data-placement="bottom"
+                                         title="{{ auth()->user()->fullName() }}"
+                                         class="rounded-circle" alt="image">
+                                @elseif(auth()->user()->gender == 'male')
+                                    <img src="{{ asset('assets/media/image/Male.png') }}"
                                          data-toggle="tooltip" data-placement="bottom"
                                          title="{{ auth()->user()->fullName() }}"
                                          class="rounded-circle" alt="image">

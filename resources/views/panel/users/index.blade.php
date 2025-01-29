@@ -1,6 +1,12 @@
 @extends('panel.layouts.master')
 @section('title', 'کاربران')
 @section('content')
+    <style>
+        .profile{
+            box-shadow: 0px 3px 3px 0px gainsboro;
+            border-radius: 100%;
+        }
+    </style>
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
@@ -17,13 +23,13 @@
                     <thead>
                     <tr>
                         <th>#</th>
+                        <th>عکس پروفایل</th>
                         <th>نام</th>
                         <th>نام خانوادگی</th>
                         <th>جنسیت</th>
                         <th>شماره موبایل</th>
                         <th>نقش</th>
                         <th>عکس امضا</th>
-                        <th>عکس پروفایل</th>
                         <th>تاریخ ایجاد</th>
                         @can('users-edit')
                             <th>ویرایش</th>
@@ -37,6 +43,22 @@
                     @foreach($users as $key => $user)
                         <tr>
                             <td>{{ ++$key }}</td>
+                            <td>
+                                @if($user->profile)
+                                    <a href="{{ $user->profile ?? '' }}">
+                                        <img src="{{ $user->profile ?? '' }}" class="profile" alt="profile" width="60px"
+                                             height="60px">
+                                    </a>
+                                @elseif(!$user->profile && $user->gender == 'female')
+                                    <img src="{{asset('assets/media/image/Female.png')}}" class="profile" alt="female-profile" width="60px"
+                                         height="60px">
+                                @elseif(!$user->profile && $user->gender == 'male')
+                                    <img src="{{asset('assets/media/image/Male.png')}}" class="profile" alt="female-profile" width="60px"
+                                         height="60px">
+                                    @else
+                                    عکس پروفایل ندارد
+                                @endif
+                            </td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->family }}</td>
                             <td>
@@ -57,16 +79,6 @@
                                     </a>
                                 @else
                                     عکس امضا ندارد
-                                @endif
-                            </td>
-                            <td>
-                                @if($user->profile)
-                                    <a href="{{ $user->profile ?? '' }}">
-                                        <img src="{{ $user->profile ?? '' }}" class="profile" alt="profile" width="75px"
-                                             height="75px">
-                                    </a>
-                                @else
-                                    عکس پروفایل ندارد
                                 @endif
                             </td>
                             <td>{{ verta($user->created_at)->format('H:i - Y/m/d') }}</td>
