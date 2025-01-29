@@ -19,6 +19,7 @@
                         <th>#</th>
                         <th>نام</th>
                         <th>نام خانوادگی</th>
+                        <th>جنسیت</th>
                         <th>شماره موبایل</th>
                         <th>نقش</th>
                         <th>عکس امضا</th>
@@ -38,6 +39,7 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->family }}</td>
+                            <td>{{ $user->gender }}}</td>
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->role->label }}</td>
                             <td>
