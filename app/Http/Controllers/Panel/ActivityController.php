@@ -11,6 +11,8 @@ class ActivityController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('admin');
+
         $query = Activity::query()->with('user'); // اضافه کردن رابطه کاربران
 
         // اعمال فیلتر بر اساس user_id اگر کاربر مشخص شده باشد
@@ -26,6 +28,8 @@ class ActivityController extends Controller
 
     public function search(Request $request)
     {
+        $this->authorize('admin');
+
         $users_id = $request->user == 'all' ? User::all()->pluck('id') : [$request->user];
 
         $activities = Activity::whereIn('user_id', $users_id)->latest()->paginate(10);
