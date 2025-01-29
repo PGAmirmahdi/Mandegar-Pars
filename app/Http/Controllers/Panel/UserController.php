@@ -78,8 +78,8 @@ class UserController extends Controller
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' اطلاعات کاربر ' . $user->family . ' را ویرایش کرد',
-            'action' => 'ویرایش کاربر',
+            'description' => 'همکار ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' اطلاعات همکار ' . $user->family . ' را ویرایش کرد',
+            'action' => 'ویرایش همکار',
             'created_at' => now(),
         ];
         Activity::create($activityData);
@@ -145,8 +145,8 @@ class UserController extends Controller
         $this->authorize('users-delete');
         $activityData = [
             'user_id' => auth()->id(),
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' کاربر با نام ' . $user->family . ' را حذف کرد',
-            'action' => 'حذف کاربر',
+            'description' => 'همکار ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' همکار با نام ' . $user->family . ' را حذف کرد',
+            'action' => 'حذف همکار',
             'created_at' => now(),
         ];
         Activity::create($activityData);

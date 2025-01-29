@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -22,18 +23,14 @@ class ActivityController extends Controller
 
         return view('panel.activity.index', compact('activities'));
     }
-    public function destroy($id)
+
+    public function search(Request $request)
     {
-        // بررسی مجوز حذف فعالیت
-        $this->authorize('activity-delete');
+        $users_id = $request->user == 'all' ? User::all()->pluck('id') : [$request->user];
 
-        // پیدا کردن فعالیت بر اساس ID
-        $activity = Activity::findOrFail($id);
+        $activities = Activity::whereIn('user_id', $users_id)->latest()->paginate(10);
 
-        // حذف فعالیت
-        $activity->delete();
-        alert()->success('فعالیت مورد نظر باموفقیت حذف شد','حذف فعالیت');
-        return route('activity');
+        return view('panel.activity.index', compact('activities'));
     }
 
 }

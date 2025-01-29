@@ -387,9 +387,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Activity
     Route::match(['get','post'],'activity', [ActivityController::class, 'index'])->name('activity');
-
-    // routes/web.php
-    Route::delete('/activity/{id}', [ActivityController::class, 'destroy'])->name('activity.destroy');
+    Route::match(['get', 'post'], 'search/activity', [ActivityController::class, 'search'])->name('activity.search');
 
 
     // Delivery Days
