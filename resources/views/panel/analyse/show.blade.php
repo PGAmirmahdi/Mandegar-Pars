@@ -43,6 +43,7 @@
                         <th>#</th>
                         <th>نام محصول</th>
                         <th>تعداد آنالیز</th>
+                        <th>تعداد فروش رفته</th>
                         <th>موجودی انبار</th>
                         <th>موجودی لحظه ای</th>
                     </tr>
@@ -53,6 +54,7 @@
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $product->title ?? 'نامشخص' }}</td>
                             <td>{{ $product->pivot->quantity }}</td>
+                            <td>{{ $product->sold_count ?? 'نامشخص' }}</td>
                             <td>{{ $product->storage_count ?? 'نامشخص' }}</td>
                             <td>{{ $product->total_count ?? 'نامشخص' }}</td>
                         </tr>

@@ -84,6 +84,7 @@
                     <tr>
                         <th>نام محصول</th>
                         <th>تعداد</th>
+                        <th>تعداد فروش رفته</th>
                         <th>موجودی انبار</th>
                         <th>موجودی لحظه ای</th>
                     </tr>
@@ -99,6 +100,15 @@
                                     min="0"
                                     class="form-control"
                                     value="{{ $product->pivot->quantity }}"
+                                >
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    name="products[{{ $product->id }}][sold_count]"
+                                    min="0"
+                                    class="form-control"
+                                    value="{{ $product->sold_count }}"
                                 >
                             </td>
                             <td>
@@ -168,6 +178,17 @@
                 } else {
                     $('#products-table-body').empty();
                 }
+            });
+        });
+        $(document).ready(function () {
+            $('#submit_button').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
             });
         });
     </script>

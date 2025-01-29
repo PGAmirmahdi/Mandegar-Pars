@@ -40,13 +40,14 @@
                     <tr>
                         <th>نام محصول</th>
                         <th>تعداد</th>
+                        <th>تعداد فروش رفته</th>
                         <th>موجودی انبار</th>
                     </tr>
                     </thead>
                     <tbody id="products-table-body">
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-success" id="">ثبت آنالیز</button>
+                <button type="submit" class="btn btn-success" id="submit_button">ثبت آنالیز</button>
             </form>
         </div>
     </div>
@@ -86,6 +87,7 @@
                                     '<tr>' +
                                     '<td>' + product.title + '</td>' +
                                     '<td><input type="number" name="products[' + product.id + '][quantity]" min="0" class="form-control" value="' + (product.quantity || 0) + '"></td>' +
+                                    '<td><input type="number" name="products[' + product.id + '][sold_count]" min="0" class="form-control" value="' + (product.sold_count || 0) + '"></td>' +
                                     '<td><input type="number" name="products[' + product.id + '][storage_count]" min="0" class="form-control" value="' + (product.storage_count || 0) + '"></td>' +
                                     '</tr>'
                                 );
@@ -99,6 +101,17 @@
                 } else {
                     $('#products-table-body').empty(); // پاک کردن جدول در صورت عدم انتخاب
                 }
+            });
+        });
+        $(document).ready(function () {
+            $('#submit_button').on('click', function () {
+                let button = $(this);
+
+                // تغییر متن و غیر فعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال...');
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
             });
         });
     </script>

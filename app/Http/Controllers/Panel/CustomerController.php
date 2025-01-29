@@ -158,7 +158,7 @@ class CustomerController extends Controller
             })
             ->whereIn('province', $province)
             ->whereIn('type', $type)
-            ->orderByRaw('-code DESC')
+            ->orderByDesc('id')
             ->paginate(30);
 
         return view('panel.customers.index', compact('customers'));

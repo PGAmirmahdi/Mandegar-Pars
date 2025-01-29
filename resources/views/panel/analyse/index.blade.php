@@ -101,7 +101,7 @@
                                 @can('analyse-edit')
                                     <td>
                                         <a
-                                            class="btn btn-primary btn-floating {{ $isDisabled ? 'disabled' : '' }}"
+                                            class="btn btn-warning btn-floating {{ $isDisabled ? 'disabled' : '' }}"
                                             href="{{ $isDisabled ? '#' : route('analyse.edit', $analyse->id) }}"
                                         >
                                             <i class="fa fa-edit"></i>

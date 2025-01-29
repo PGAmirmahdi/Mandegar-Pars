@@ -62,7 +62,7 @@ class AnalyseController extends Controller
     {
         // دریافت آنالیز و محصولات مرتبط
         $analyse = Analyse::with(['products' => function ($query) use ($request) {
-            $query->select('products.id', 'products.title','products.total_count', 'analyse_products.quantity','analyse_products.storage_count')->orderBy('analyse_products.quantity', 'desc');
+            $query->select('products.id', 'products.title','products.total_count', 'analyse_products.quantity','analyse_products.storage_count','analyse_products.sold_count')->orderBy('analyse_products.quantity', 'desc');
 
             // اگر محصول خاصی انتخاب شده باشد
             if ($request->has('product') && $request->product != 'all') {
@@ -97,7 +97,7 @@ class AnalyseController extends Controller
         $categories=Category::all();
         $brands=ProductModel::all();
         $analyse = Analyse::with(['products' => function ($query) use ($request) {
-            $query->select('products.id', 'products.title','products.total_count', 'analyse_products.quantity','analyse_products.storage_count')->orderBy('analyse_products.quantity', 'desc');
+            $query->select('products.id', 'products.title','products.total_count', 'analyse_products.quantity','analyse_products.storage_count','analyse_products.sold_count')->orderBy('analyse_products.quantity', 'desc');
 
             // اگر محصول خاصی انتخاب شده باشد
             if ($request->has('product') && $request->product != 'all') {
@@ -129,6 +129,7 @@ class AnalyseController extends Controller
                 $analyse->products()->attach($productId, [
                     'quantity' => $productData['quantity'], // مقدار تعداد از فرم
                     'storage_count' => $productData['storage_count'], // مقدار موجودی انبار از فرم
+                    'sold_count' => $productData['sold_count'],
                 ]);
             }
         }
@@ -153,7 +154,7 @@ class AnalyseController extends Controller
                 $analyse->products()->attach($productId, [
                     'quantity' => $productData['quantity'], // مقدار تعداد از فرم
                     'storage_count' => $productData['storage_count'], // مقدار موجودی انبار از فرم
-
+                    'sold_count' => $productData['sold_count'],
                 ]);
             }
         }
