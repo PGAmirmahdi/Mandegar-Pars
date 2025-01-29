@@ -85,7 +85,7 @@
 @yield('scripts')
 <script>
 
-    {{--var userId = {{ Auth::user()->id }}; --}}
+    var userId = {{ Auth::user()->id }};
 
     {{--Pusher.logToConsole = false;--}}
 
@@ -196,29 +196,35 @@
 
     // realtime notification
     var audio = new Audio('/audio/notification.wav');
-    // Echo.channel('presence-notification.'+userId)
-    //     .listen('SendMessage', (e) =>{
-    //         $('#notification_sec a').addClass('nav-link-notify')
-    //         $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
-    //         $(".timeline").prepend(`<div class="timeline-item">
-    //                                     <div>
-    //                                         <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-	// 											<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-	// 												<i class="fa fa-bell font-size-20"></i>
-	// 											</span>
-    //                                         </figure>
-    //                                     </div>
-    //                                     <div>
-    //                                         <p class="m-b-5">
-    //                                             <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-    //                                         </p>
-    //                                         <small class="text-muted">
-    //                                             <i class="fa fa-clock-o m-r-5"></i>الان
-    //                                             </small>
-    //                                         </div>
-    //                                     </div>`)
-    //         audio.play();
-    //     });
+    Echo.channel('presence-notification.'+userId)
+        .listen('SendMessage', (e) =>{
+            $('#notification_sec a').addClass('nav-link-notify')
+            $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
+            $(".timeline").prepend(`<div class="timeline-item">
+                                        <div>
+                                            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
+													<i class="fa fa-bell font-size-20"></i>
+												</span>
+                                            </figure>
+                                        </div>
+                                        <div>
+                                            <p class="m-b-5">
+                                                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                                            </p>
+                                            <small class="text-muted">
+                                                <i class="fa fa-clock-o m-r-5"></i>الان
+                                                </small>
+                                            </div>
+                                        </div>`)
+            audio.play();
+        });
+
+    // window.Echo.channel(`my-test`)
+    //     .listen('.test.event', (e) => {
+    //         console.log(e)
+    //     })
+    // console.log(window.Echo)
     // end realtime
 
     // firebase push notification

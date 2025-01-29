@@ -121,7 +121,8 @@ Route::get('rolessssssss', function (){
 Route::get('test/{id?}', function ($id = null) {
     return \auth()->loginUsingId($id);
 //
-//    event(new SendMessageEvent(1, []));
+//    broadcast(new TestEvent(json_encode('dsfsdf')));
+//    event(new TestEvent(json_encode('dsfsdf')));
 //
 ////     send sms to customers (install app)
 //    set_time_limit(1000000000000000000);
