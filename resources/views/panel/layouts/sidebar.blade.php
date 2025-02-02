@@ -10,7 +10,7 @@
                 </a>
             </li>
             @canany(['categories-list','products-list','printers-list','prices-list','foreign-customers-list','customers-list','debtors-list'])
-                <li class="{{ active_sidebar(['request/products','debtors/{debtor}','debtors','debtors/create','debtors/{debtor}/edit','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','customers/{customer}','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search', 'artin-products', 'other-prices-list']) ? 'active' : '' }}"
+                <li class="{{ active_sidebar(['request/products','debtors/{debtor}','debtors','debtors/create','debtors/{debtor}/edit','search/debtors','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','customers/{customer}','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search', 'artin-products', 'other-prices-list']) ? 'active' : '' }}"
                     data-toggle="tooltip" title="عملیات پایه">
                     <a href="#navigationProducts" title="عملیات پایه">
                         <i class="icon ti-view-list"></i>
@@ -173,7 +173,7 @@
             </li>
         </ul>
         <ul id="navigationProducts"
-            class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}','debtors/{debtor}/edit','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','customers/{customer}','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','artin-products','other-prices-list','request/products']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}','debtors/{debtor}/edit','search/debtors','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','customers/{customer}','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','artin-products','other-prices-list','request/products']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">عملیات پایه</li>
             @can('products-list')
                 <li>
@@ -213,7 +213,7 @@
             @endcan
             @can('debtors-list')
                 <li>
-                    <a class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}/edit','debtors/{debtor}']) ? 'active' : '' }}"
+                    <a class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}/edit','debtors/{debtor}','search/debtors']) ? 'active' : '' }}"
                        href="{{ route('debtors.index') }}">لیست بدهکاران</a>
                 </li>
             @endcan

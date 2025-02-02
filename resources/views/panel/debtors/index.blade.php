@@ -19,41 +19,25 @@
                     </a>
                 @endcan
             </div>
-            <form method="GET" action="{{ route('debtors.index') }}" class="mb-4">
+            <form method="GET" action="{{ route('debtors.search') }}" class="mb-4">
                 <div class="row">
                     <!-- جستجو بر اساس کد مشتری -->
-                    <div class="col-md-3">
-                        <label for="customer_code">کد مشتری</label>
-                        <select class="js-example-basic-single select2-hidden-accessible" name="customer_code"
-                                id="customer_code" data-select2-id="1">
-                            <option value="">انتخاب کد مشتری</option>
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <label for="customer_id">مشتری</label>
+                        <select class="js-example-basic-single select2-hidden-accessible" name="customer_id" id="customer_id" data-select2-id="1">
+                            <option value="all">انتخاب مشتری (همه)</option>
                             @foreach($customers as $customer)
-                                <option
-                                    value="{{ $customer->code }}" {{ request('customer_code') == $customer->code ? 'selected' : '' }}>
+                                <option value="{{ $customer->id }}" {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
                                     {{ $customer->code . ' - ' .  $customer->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
 
-                    <!-- جستجو بر اساس نام مشتری -->
-                    <div class="col-md-3">
-                        <label for="customer_name">نام مشتری</label>
-                        <select class="js-example-basic-single select2-hidden-accessible" name="customer_name"
-                                id="customer_name" data-select2-id="2">
-                            <option value="">انتخاب نام مشتری</option>
-                            @foreach($customers as $customer)
-                                <option
-                                    value="{{ $customer->id }}" {{ request('customer_name') == $customer->id ? 'selected' : '' }}>
-                                    {{ $customer->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
                     <!-- جستجو بر اساس وضعیت بدهی -->
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
                         <label for="status">وضعیت پرداخت</label>
-                        <select name="status" id="status" form="search_form"
+                        <select name="status" id="status"
                                 class="js-example-basic-single select2-hidden-accessible" data-select2-id="3">
                             <option value="all">وضعیت (همه)</option>
                             @foreach(App\Models\Debtor::STATUS as $key => $value)
@@ -64,13 +48,8 @@
                         </select>
                     </div>
                     <!-- دکمه جستجو -->
-                    <div class="col-md-3 align-self-end">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-search"></i> جستجو
-                        </button>
-                        <a href="{{ route('debtors.index') }}" class="btn btn-secondary">
-                            نمایش همه
-                        </a>
+                    <div class="col-md-3 align-self-end mt-2">
+                        <button type="submit" class="btn btn-primary">جستجو</button>
                     </div>
                 </div>
             </form>
@@ -109,13 +88,13 @@
                         @endphp
                         <tr class="@if($daysLeft <= 0 && !in_array($debtor->status, ['paid', 'partial'])) table-danger @elseif($daysLeft > 0 && $daysLeft <= 2 && !in_array($debtor->status, ['paid', 'partial'])) table-warning @elseif($daysLeft > 2) @elseif($debtor->status == 'paid') table-success @endif">
                             <td>{{ ++$key }}</td>
-                            <td>{{$debtor->buy_date}}</td>
+                            <td>{{$debtor->buy_date ?? '---'}}</td>
                             <td>{{ $debtor->customer->code }}</td>
                             <td>{{ $debtor->customer->name }}</td>
                             <td>{{ $debtor->factor_number }}</td>
                             <td>{{$debtor->customer->phone1}}</td>
                             <td>{{ number_format($debtor->price) . ' ریال ' }}</td>
-                            <td>{{ $debtor->payment_due}}</td>
+                            <td>{{ $debtor->payment_due ?? '---'}}</td>
                             <td>
                                 @if($debtor->status == 'unpaid')
                                     <span class="badge badge-warning">پرداخت نشده</span>
