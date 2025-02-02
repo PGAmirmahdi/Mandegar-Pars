@@ -25,11 +25,11 @@
             </div>
             <form action="{{ route('customers.search') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <input type="text" name="code" form="search_form" class="form-control" placeholder="کد مشتری"
                            value="{{ request()->code ?? null }}">
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <select name="user" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="5">
                         <option value="all" selected>همکار (همه)</option>
                         @foreach(\App\Models\User::all() as $user)
@@ -39,7 +39,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <select name="employer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="4">
                         <option value="all" selected>نام کارپرداز(همه)</option>
@@ -49,7 +49,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <select name="customer" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="0">
                         <option value="all">نام سازمان/فروشگاه(همه)</option>
@@ -59,7 +59,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <select name="province" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="1">
                         <option value="all">استان (همه)</option>
@@ -70,7 +70,7 @@
                     </select>
                 </div>
                 @can('admin')
-                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                         <select name="customer_type" form="search_form"
                                 class="js-example-basic-single select2-hidden-accessible" data-select2-id="2">
                             <option value="all">مشتری (همه)</option>
@@ -81,7 +81,7 @@
                         </select>
                     </div>
                 @endcan
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <select name="type" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="3">
                         <option value="all">نوع (همه)</option>
@@ -91,7 +91,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
             </div>
