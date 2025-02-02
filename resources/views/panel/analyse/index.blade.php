@@ -12,7 +12,7 @@
             </div>
             <form method="GET" action="{{ route('analyse.index') }}" id="search_form"></form>
             <div class="row mb-3">
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mt-2">
                     <select name="category" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="1">
                         <option value="all">شرح کالا (همه)</option>
@@ -24,7 +24,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mt-2">
                     <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="2">
                         <option value="all">برند (همه)</option>
@@ -35,19 +35,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mt-2">
                     <input type="text" id="start_date" name="start_date" class="form-control date-picker-shamsi-list"
                            autocomplete="off" placeholder="از تاریخ" value="{{ request()->start_date ?? null }}"
                            form="search_form">
                 </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mt-2">
                     <input type="text" id="end_date" name="end_date" class="form-control date-picker-shamsi-list"
                            autocomplete="off" placeholder="تا تاریخ" value="{{ request()->end_date ?? null }}"
                            form="search_form">
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-12 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary" form="search_form"><i class="fa fa-filter"></i>
-                    </button>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mt-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
             </div>
             <div class="table-responsive">
@@ -78,16 +77,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @php $index = 0; @endphp
-                        @foreach($monthAnalyses as $analyse)
+                        @foreach($monthAnalyses as $key => $analyse)
                             <tr>
-                                <td>{{ ++$index }}</td>
+                                <td>{{ ++$key }}</td>
                                 <td>{{ $analyse->category->name }}</td>
                                 <td>{{ $analyse->brand->name }}</td>
                                 <td>{{ \Verta::parse($analyse->date)->format('%d %B %Y') }}</td>
                                 <td>{{ \Verta::parse($analyse->to_date)->format('%d %B %Y') }}</td>
                                 @can('admin')
-                                    <td>{{\Verta::parse($analyse->created_at)->format('H:i')}}</td>
+                                    <td>{{verta($analyse->created_at)->format('H:i - Y/m/d')}}</td>
                                 @endcan
                                 <td>
                                     <a href="{{ route('analyse.show', $analyse->id) }}"
@@ -114,8 +112,7 @@
                                             class="btn btn-danger btn-floating trashRow"
                                             data-url="{{ $isDisabled ? '#' : route('analyse.destroy', $analyse->id) }}"
                                             data-id="{{ $analyse->id }}"
-                                            {{ $isDisabled ? 'disabled' : '' }}
-                                        >
+                                            {{ $isDisabled ? 'disabled' : '' }}>
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </td>
