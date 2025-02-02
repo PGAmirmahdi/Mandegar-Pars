@@ -202,7 +202,7 @@
                         @enderror
                     </div>
                 </div>
-                <a href="{{route('customers.index')}}" class="btn btn-danger">بازگشت</a>
+                <a href="{{url()->previous()}}" class="btn btn-danger">بازگشت</a>
             </form>
         </div>
     </div>

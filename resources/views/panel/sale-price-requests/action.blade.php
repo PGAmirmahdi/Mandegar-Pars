@@ -98,8 +98,8 @@
                                     <td>
                                         <input class="form-control price-input" type="number"
                                                name="final_price[{{ $index }}]"
-                                               value="{{ isset($item->final_price) ? number_format($item->final_price) : 0 }}">
-                                        <span class="price-display">{{ isset($item->final_price) ? number_format($item->final_price) : '0' }} ریال </span>
+                                               value="{{$item->price}}">
+                                        <span class="price-display">{{ isset($item->price) ? number_format($item->price) : '0' }} ریال </span>
                                     </td>
                                 </tr>
                             @endforeach

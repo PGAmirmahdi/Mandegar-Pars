@@ -341,9 +341,10 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="row mt-3">
+                                        <div class="flex-column mt-3">
                                             <span class="">مجموع سفارش مشتری (ریال) :<span
                                                     class="text-primary sum_total_price">{{number_format(old('sum_total_price'))}}</span></span>
+                                            <br>
                                             <span class="">مجموع پیش فاکتور با مالیات و ارزش افزوده (ریال) :<span
                                                     class="text-primary total_invoice">{{number_format(old('total_invoice'))}}</span></span>
                                             <input type="hidden" class="sum_total_price"
