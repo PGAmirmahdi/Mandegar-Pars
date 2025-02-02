@@ -107,11 +107,11 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" name="prices[]" class="form-control" min="0" value="{{ old('prices')[$i] }}" readonly>
+                                            <input type="number" name="prices[]" class="form-control w-100 text-center" min="0" value="{{ old('prices')[$i] }}" readonly>
                                             <div id="formatted-price-{{ $i }}" class="formatted-price"></div>
                                         </td>
                                         <td>
-                                            <select class="form-control" name="payment_type[]">
+                                            <select class="form-control w-100 text-center" name="payment_type[]">
                                                 @foreach(App\Models\Transport::Payment_Type as $key => $value)
                                                     <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach

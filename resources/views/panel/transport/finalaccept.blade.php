@@ -72,7 +72,7 @@
                             @foreach($transportItems as $i => $item)
                                 <tr>
                                     <td>
-                                        <select class="form-control" name="transporters[]" required disabled>
+                                        <select class="form-control w-100 text-center" name="transporters[]" required disabled>
                                             <option value="" disabled selected>انتخاب کنید</option>
                                             @foreach(Transporter::all(['id', 'name']) as $transporter)
                                                 <option
@@ -83,13 +83,13 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" name="prices[]" class="form-control" min="0"
+                                        <input type="number" name="prices[]" class="form-control w-100 text-center" min="0"
                                                value="{{ $item->price }}" readonly>
                                         <div id="formatted-price-{{ $i }}"
                                              class="formatted-price">{{ number_format($item->price) }}</div>
                                     </td>
                                     <td>
-                                        <select class="form-control" name="payment_type[]" disabled>
+                                        <select class="form-control w-100 text-center" name="payment_type[]" disabled>
                                             @foreach(App\Models\Transport::Payment_Type as $key => $value)
                                                 <option
                                                     value="{{ $key }}" {{ $key == $item->payment_type ? 'selected' : '' }}>{{ $value }}</option>

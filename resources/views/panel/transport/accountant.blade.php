@@ -76,18 +76,17 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" name="prices[]" class="form-control" min="0" value="{{ $item->price }}" readonly>
+                                        <input type="number" name="prices[]" class="form-control w-100 text-center" min="0" value="{{ $item->price }}" readonly>
                                         <div id="formatted-price-{{ $i }}" class="formatted-price">{{ number_format($item->price) }}</div>
                                     </td>
                                     <td>
-                                        <select class="form-control" name="payment_type[]" disabled>
+                                        <select class="form-control w-100 text-center" name="payment_type[]" disabled>
                                             @foreach(App\Models\Transport::Payment_Type as $key => $value)
                                                 <option value="{{ $key }}" {{ $key == $item->payment_type ? 'selected' : '' }}>{{ $value }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td>
-                                        <!-- رادیو باتن‌ها باید name یکسان داشته باشند تا فقط یکی از آن‌ها قابل انتخاب باشد -->
                                         <input type="radio" name="selected_item" value="{{ $item->id }}" class="radio-custom">
                                     </td>
                                 </tr>
