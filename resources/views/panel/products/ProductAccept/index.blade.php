@@ -45,11 +45,11 @@
             </div>
             <form action="{{ route('products.request') }}" method="get" id="search_form"></form>
             <div class="row mb-3">
-                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12 mt-2">
                     <input type="text" name="code" class="form-control" placeholder="کد کالا"
                            value="{{ request()->code ?? null }}" form="search_form">
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <select name="category" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="1">
                         <option value="all">شرح کالا (همه)</option>
@@ -61,7 +61,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="2">
                         <option value="all">برند (همه)</option>
@@ -72,7 +72,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                     <select name="product" form="search_form" class="js-example-basic-single select2-hidden-accessible"
                             data-select2-id="3">
                         <option value="all">مدل کالا (همه)</option>
@@ -87,7 +87,7 @@
                 @php
                     $status = 'pending';
                 @endphp
-                <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                <div class="col-xl-2 col-lg-2 col-md-2 mt-2">
                     <select name="status" class="js-example-basic-single select2-hidden-accessible" id="status">
                         @foreach(\App\Models\Product::STATUS as $key => $value)
                             <option value="{{ $key }}" {{ old('status', $status) == $key ? 'selected' : '' }}>
@@ -99,7 +99,7 @@
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
+                <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12 mt-2">
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
             </div>
