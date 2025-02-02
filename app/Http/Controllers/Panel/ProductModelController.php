@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductModelRequest;
+use App\Http\Requests\StoreProductRequest;
 use App\Models\Activity;
 use App\Models\Category;
 use App\Models\Product;
@@ -27,14 +29,17 @@ class ProductModelController extends Controller
         return view('panel.productsModel.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductModelRequest $request)
     {
         $this->authorize('productsModel-create');
-        $request->validate([
-            'name' => 'required',
-            'slug' => 'required',
-            'category_id' => 'required'
-        ]);
+
+        $productModelExist = ProductModel::where(['category_id' => $request->category_id, 'slug' => make_slug($request->slug)])->exists();
+
+        if ($productModelExist){
+            $request->validate(['exist.required']);
+
+            return back()->withInput($request->all())->withErrors(['exist' => 'اسلاگ وارد شده در دسته بندی مورد نظر موجود می باشد']);
+        }
 
         ProductModel::create([
             'name' => $request->name,
@@ -47,6 +52,7 @@ class ProductModelController extends Controller
             'action' => 'ایجاد مدل',
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') مدل ' . $request->name . ' را ایجاد کرد.',
         ]);
+
         alert()->success('مدل با موفقیت ایجاد شد','ایجاد مدل');
         return redirect()->route('productsModel.index');
     }
@@ -58,15 +64,17 @@ class ProductModelController extends Controller
         return view('panel.productsModel.edit', compact('productsModel', 'categories'));
     }
 
-    public function update(Request $request, ProductModel $productsModel)
+    public function update(StoreProductModelRequest $request, ProductModel $productsModel)
     {
         $this->authorize('productsModel-edit');
 
-        $productsModel->update([
-            'name' => $request->name,
-            'slug' => $request->slug,
-            'category_id' => $request->category_id,
-        ]);
+        $productModelExist = ProductModel::where(['category_id' => $request->category_id, 'slug' => make_slug($request->slug)])->where('id','!=',$productsModel->id)->exists();
+
+        if ($productModelExist){
+            $request->validate(['exist.required']);
+
+            return back()->withInput($request->all())->withErrors(['exist' => 'اسلاگ وارد شده در دسته بندی مورد نظر موجود می باشد']);
+        }
 
         Activity::create([
             'user_id' => auth()->id(),
