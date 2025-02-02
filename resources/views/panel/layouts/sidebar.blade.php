@@ -114,7 +114,7 @@
     </div>
     <div class="navigation-menu-body">
         <ul id="navigationDashboards"
-            class="{{ active_sidebar(['request/products','activity','search/activity','panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit', 'leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit','software-updates','software-updates/create','software-updates/{software_update}/edit','baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['activity','search/activity','panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit', 'leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit','software-updates','software-updates/create','software-updates/{software_update}/edit','baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">داشبورد</li>
             <li>
                 <a class="{{ active_sidebar(['panel']) ? 'active' : '' }}" href="{{ route('panel') }}">پنل</a>
@@ -173,7 +173,7 @@
             </li>
         </ul>
         <ul id="navigationProducts"
-            class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}','debtors/{debtor}/edit','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','customers/{customer}','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','artin-products','other-prices-list']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['debtors','debtors/create','debtors/{debtor}','debtors/{debtor}/edit','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','customers/{customer}','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','artin-products','other-prices-list','request/products']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">عملیات پایه</li>
             @can('products-list')
                 <li>
