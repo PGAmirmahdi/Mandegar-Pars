@@ -10,34 +10,12 @@ use Illuminate\Http\Request;
 
 class DebtorController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Debtor::query();
-
-        // فیلتر بر اساس کد مشتری
-        if ($request->filled('customer_code')) {
-            $query->whereHas('customer', function ($q) use ($request) {
-                $q->where('code', $request->customer_code);
-            });
-        }
-
-        // فیلتر بر اساس نام مشتری
-        if ($request->filled('customer_name')) {
-            $query->where('customer_id', $request->customer_name);
-        }
-
-        // فیلتر بر اساس وضعیت
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // دریافت لیست بدهکاران
-        $debtors = $query->with('customer')->paginate(10);
-
         // دریافت لیست مشتریان برای Select2
-        $customers = Customer::all();
-
-        return view('panel.debtors.index', compact('debtors', 'customers'));
+        $customers = Customer::get(['id','code','name']);
+        $debtors = Debtor::with('customer')->latest()->paginate(10);
+        return view('panel.debtors.index', compact( 'debtors','customers'));
     }
 
     public function create()
@@ -163,5 +141,18 @@ class DebtorController extends Controller
         $debtor->delete();
         alert()->success('بدهکار با موفقیت حذف شد','حذف بدهکار');
         return redirect()->route('debtors.index');
+    }
+
+    public function search(Request $request)
+    {
+        $customers_id = $request->customer_id == 'all' ? Customer::pluck('id') : [$request->customer_id];
+        $status = $request->status == 'all' ? array_keys(Debtor::STATUS) : [$request->customer_id];
+        $customers = Customer::get(['id','code','name']);
+
+        $debtors = Debtor::whereIn('customer_id', $customers_id)
+                ->whereIn('status', $status)
+                ->latest()->paginate(10);
+
+        return view('panel.debtors.index', compact('debtors','customers'));
     }
 }

@@ -8,31 +8,47 @@
         <div class="card-body">
             <form method="POST" action="{{ route('analyse.store') }}">
                 @csrf
-                <div class="form-group">
-                    <label for="date">تاریخ شروع</label>
-                    <input type="text" id="date" name="date" class="form-control date-picker-shamsi-list" autocomplete="off" required>
-                </div>
-                <div class="form-group">
-                    <label for="to_date">تاریخ پایان</label>
-                    <input type="text" id="to_date" name="to_date" class="form-control date-picker-shamsi-list" autocomplete="off" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">دسته‌بندی</label>
-                    <select id="category" name="category_id" class="form-control js-example-basic-single select2-hidden-accessible" data-select2-id="1" required>
-                        <option value="">انتخاب کنید</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="brand">برند</label>
-                    <select id="brand" name="brand_id" class="form-control js-example-basic-single select2-hidden-accessible" data-select2-id="2" required>
-                        <option value="">انتخاب کنید</option>
-                        @foreach($brands as $brand)
-                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="form-row mb-5">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label for="date">تاریخ شروع</label>
+                            <input type="text" id="date" name="date" class="form-control date-picker-shamsi-list" autocomplete="off" required>
+                            @error('date')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <div class="form-group">
+                        <label for="to_date">تاریخ پایان</label>
+                        <input type="text" id="to_date" name="to_date" class="form-control date-picker-shamsi-list" autocomplete="off" required>
+                        @error('to_date')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <div class="form-group">
+                        <label for="category">دسته‌بندی</label>
+                        <select id="category" name="category_id" class="form-control js-example-basic-single select2-hidden-accessible" data-select2-id="1" required>
+                            <option value="">انتخاب کنید</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                        <div class="form-group">
+                        <label for="brand">برند</label>
+                        <select id="brand" name="brand_id" class="form-control js-example-basic-single select2-hidden-accessible" data-select2-id="2" required>
+                            <option value="">انتخاب کنید</option>
+                            @foreach($brands as $brand)
+                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    </div>
                 </div>
                 @csrf
                 <table class="table table-bordered table-striped">

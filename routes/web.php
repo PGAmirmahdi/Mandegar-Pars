@@ -406,6 +406,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Debtors
     Route::resource('debtors', DebtorController::class);
+    Route::match(['get','post'],'search/debtors', [DebtorController::class, 'search'])->name('debtors.search');
 
     // Cost
     Route::resource('costs', CostController::class);
