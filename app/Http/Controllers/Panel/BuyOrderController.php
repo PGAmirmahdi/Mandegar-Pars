@@ -20,18 +20,23 @@ class BuyOrderController extends Controller
     public function index()
     {
         $this->authorize('buy-orders-list');
-            $orders = BuyOrder::latest()->paginate(30);
+        $orders = BuyOrder::latest()->paginate(30);
+
         return view('panel.buy-orders.index', compact('orders'));
     }
 
     public function create()
     {
-        $products = Product::all()->where('status','=','approved');
+        $products = Product::with(['productModels' => function ($query) {
+            $query->select('id', 'slug');
+        },'category' => function ($query) {
+            $query->select('id', 'name');
+        }])->where('status','=','approved')->get(['id','title','code','category_id','brand_id']);
 
         return view('panel.buy-orders.create', compact('products'));
     }
 
-    public function store(Request $request)
+    public function store(StoreBuyOrderRequest $request)
     {
         $this->authorize('buy-orders-create');
 
@@ -80,10 +85,8 @@ class BuyOrderController extends Controller
         return redirect()->route('buy-orders.index');
     }
 
-    public function show($id)
+    public function show(BuyOrder $buyOrder)
     {
-        $buyOrder = BuyOrder::findOrFail($id);
-
         // Decode items and fetch related product information
         $items = collect(json_decode($buyOrder->items))->map(function ($item) {
             $product = Product::find($item->product); // اطلاعات محصول را دریافت کنید
@@ -99,7 +102,12 @@ class BuyOrderController extends Controller
     public function edit($id)
     {
         $this->authorize('buy-orders-edit');
-        $products = Product::all()->where('status','=','approved');
+        $products = Product::with(['productModels' => function ($query) {
+            $query->select('id', 'slug');
+        },'category' => function ($query) {
+            $query->select('id', 'name');
+        }])->where('status','=','approved')->get(['id','title','code','category_id','brand_id']);
+
         // پیدا کردن سفارش خرید بر اساس ID
         $buyOrder = BuyOrder::findOrFail($id);
 
@@ -132,6 +140,7 @@ class BuyOrderController extends Controller
         $items = [];
 
         $products = $request->products;
+
         $counts = $request->counts;
         foreach ($products as $key => $product) {
             $items[] = [
