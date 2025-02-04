@@ -60,7 +60,7 @@
                             </div>
                             <form action="{{ route('invoices.search') }}" method="get" id="search_form">
                                 <div class="row mb-3 mt-5">
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                                         <select name="customer" form="search_form"
                                                 class="js-example-basic-single select2-hidden-accessible"
                                                 data-select2-id="0">
@@ -71,7 +71,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                                         <select name="province" form="search_form"
                                                 class="js-example-basic-single select2-hidden-accessible"
                                                 data-select2-id="1">
@@ -82,7 +82,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                                         <select name="status" form="search_form"
                                                 class="js-example-basic-single select2-hidden-accessible"
                                                 data-select2-id="2">
@@ -93,7 +93,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                                         <select name="payment_type" form="search_form"
                                                 class="js-example-basic-single select2-hidden-accessible"
                                                 data-select2-id="4">
@@ -104,7 +104,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                                         <select name="created_in" form="search_form"
                                                 class="js-example-basic-single select2-hidden-accessible"
                                                 data-select2-id="5">
@@ -116,7 +116,7 @@
                                         </select>
                                     </div>
                                     @can('accountant')
-                                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                                             <select name="user" form="search_form"
                                                     class="js-example-basic-single select2-hidden-accessible"
                                                     data-select2-id="3">
@@ -128,11 +128,11 @@
                                             </select>
                                         </div>
                                     @endcan
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                                         <input type="text" form="search_form" name="need_no" class="form-control"
                                                value="{{ request()->need_no ?? null }}" placeholder="شماره نیاز">
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
                                         <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                                     </div>
                                 </div>
