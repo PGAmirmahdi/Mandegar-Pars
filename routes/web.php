@@ -250,7 +250,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Suppliers
     Route::resource('suppliers', SupplierController::class);
     Route::post('excel/suppliers', [SupplierController::class, 'excel'])->name('suppliers.excel');
+    Route::match(['get', 'post'], 'search/suppliers', [SupplierController::class, 'search'])->name('suppliers.search');
     Route::post('get-supplier-info/{supplier}', [SupplierController::class, 'getSupplierInfo'])->name('getSupplierInfo');
+    Route::get('relevant-suppliers', [SupplierController::class, 'getRelevantSuppliers'])->name('suppliers.relevant');
 
     // Notifications
     Route::get('read-notifications/{notification?}', [PanelController::class, 'readNotification'])->name('notifications.read');

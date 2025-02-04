@@ -38,16 +38,19 @@
                         </select>
                     </div>
                     </div>
-                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                        <div class="form-group">
-                        <label for="brand">برند</label>
-                        <select id="brand" name="brand_id" class="form-control js-example-basic-single select2-hidden-accessible" data-select2-id="2" required>
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-3">
+                        <label for="brand">برند<span class="text-danger">*</span></label>
+                        <select class="form-control" name="brand_id" id="brand">
                             <option value="">انتخاب کنید</option>
-                            @foreach($brands as $brand)
-                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                            @endforeach
+                            @if(old('brand_id'))
+                                @foreach(\App\Models\ProductModel::where('category_id', old('category'))->get() as $productModel)
+                                    <option value="{{ old('brand_id') }}" {{ old('brand_id') == $productModel->id ? 'selected' : '' }}>{{ $productModel->name }}</option>
+                                @endforeach
+                            @endif
                         </select>
-                    </div>
+                        @error('model')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 @csrf
@@ -128,6 +131,35 @@
 
                 // ارسال فرم به صورت خودکار
                 button.closest('form').submit();
+            });
+        });
+        $(document).ready(function () {
+            $('select[name="category_id"]').on('change', function () {
+                let categoryId = $(this).val();
+                let brandSelect = $('select[name="brand_id"]'); // تغییر از 'model' به 'brand'
+
+                // پاک کردن گزینه‌های قبلی
+                brandSelect.empty();
+
+                if (categoryId) {
+                    $.ajax({
+                        url: '{{ route('get.models.by.category') }}',
+                        type: 'POST',
+                        data: {
+                            category_id: categoryId,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (data) {
+                            // اضافه کردن گزینه‌های جدید به لیست برندها
+                            $.each(data, function (key, value) {
+                                brandSelect.append(`<option value="${value.id}">${value.name}</option>`);
+                            });
+                        },
+                        error: function () {
+                            alert('مشکلی در دریافت اطلاعات رخ داده است.');
+                        }
+                    });
+                }
             });
         });
     </script>

@@ -18,7 +18,7 @@ class CreateSuppliersTable extends Migration
             $table->string('name')->unique();
             $table->foreignId('user_id')->comment('ثبت کننده')->nullable()->constrained()->onDelete('cascade');
             $table->enum('supplier_type', ['local','foreign']);
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->longText('category')->comment('دسته بندی ها')->nullable();
             $table->string('code', 8)->unique();
             $table->string('economical_number')->comment('شماره اقتصادی')->nullable();
             $table->string('national_number')->comment('شماره ملی');

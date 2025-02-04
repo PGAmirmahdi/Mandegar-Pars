@@ -133,7 +133,7 @@ class ApiController extends Controller
                 'address' => $customer->address1,
                 'postal_code' => $customer->postal_code,
                 'phone' => $customer->phone1,
-                'status' => 'order',
+                'status' => 'invoiced',
                 'created_in' => $data['created_in'],
                 'discount' => 0,
                 'description' => $data['customer_note'],

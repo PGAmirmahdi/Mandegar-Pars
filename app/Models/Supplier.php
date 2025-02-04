@@ -9,6 +9,13 @@ class Supplier extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $casts = [
+        'category' => 'array',
+    ];
+    const TYPE = [
+        'local' => 'داخلی',
+        'foreign' => 'خارجی',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

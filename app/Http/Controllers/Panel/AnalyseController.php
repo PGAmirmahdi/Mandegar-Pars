@@ -25,11 +25,11 @@ class AnalyseController extends Controller
                         ->where('to_date', '>=', $request->start_date);
                 });
             })
-            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
-                $query->where('category_id', $request->category);
+            ->when($request->category_id && $request->category_id !== 'all', function ($query) use ($request) {
+                $query->where('category_id', $request->category_id);
             })
-            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
-                $query->where('brand_id', $request->model);
+            ->when($request->brand_id && $request->brand_id !== 'all', function ($query) use ($request) {
+                $query->where('brand_id', $request->brand_id);
             })
             ->get()
             ->groupBy(function ($analyse) {

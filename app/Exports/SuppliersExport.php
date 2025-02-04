@@ -40,6 +40,7 @@ class SuppliersExport implements FromCollection, WithMapping, WithHeadings, With
             $suppliers->phone1 ?? '---',
             $suppliers->address1 ?? '---',
             $suppliers->description ?? '---',
+            $suppliers->supplier_type ?? '---',
         ];
     }
 
@@ -72,6 +73,7 @@ class SuppliersExport implements FromCollection, WithMapping, WithHeadings, With
             'H' => 'شماره تماس',
             'I' => 'آدرس',
             'J' => 'توضیحات',
+            'K' => 'نوع'
         ];
     }
 
