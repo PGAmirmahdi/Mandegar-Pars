@@ -226,13 +226,8 @@ class PacketController extends Controller
         @$dom->loadHTML('<?xml encoding="UTF-8">' . $result);
         $rows = $dom->getElementById('pnlResult')->childNodes->item(0)->childNodes;
 
-        dd($dom->getElementById('pnlResult')->parentNode);
-
-        foreach ($dom->getElementById('pnlResult')->childNodes as $row) {
-            dump($row);
-        }
-
-        dd('rt');
+//        dd($dom->getElementById('pnlResult')->parentNode->getAttribute('class'));
+        return $dom;
 
 //    $xpath = new DOMXPath($dom);
 //    $elements = $xpath->query('//*[contains(@class, "newrowdata")]');
