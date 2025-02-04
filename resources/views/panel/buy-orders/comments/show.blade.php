@@ -26,7 +26,7 @@
                 <div class="chat-body-header">
                     <div>
                         <h6 class="mb-1 primary-font line-height-18">
-                            سفارش خرید شماره {{ $order->id }} - {{ $order->customer->name }}
+                            سفارش خرید شماره {{ $order->id }}
                         </h6>
                     </div>
                     <div class="ml-auto d-flex">

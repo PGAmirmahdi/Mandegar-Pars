@@ -22,7 +22,7 @@
                 @method('PUT')
                 <div class="form-row">
                     <div class="col-12 mb-3">
-                        <table class="table table-striped table-bordered text-center">
+                        <table class="table table-striped table-bordered text-center" id="buy-orders-table">
                             <thead class="bg-primary">
                             <tr>
                                 <th>عنوان کالا</th>
@@ -52,6 +52,9 @@
                             @endforeach
                             </tbody>
                         </table>
+                        @error('products')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                         <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-3">
                             <label for="description">توضیحات</label>
                             <textarea name="description" id="description" class="form-control" rows="5">{{ $buyOrder->description }}</textarea>
@@ -65,24 +68,36 @@
 @endsection
 @section('scripts')
     <script>
+        var products = [];
+        var options_html;
+
+        @foreach($products as $item)
+            products.push({
+                "id": "{{ $item->id }}",
+                "slug": "{{ $item->productModels->slug }}",
+                "category": "{{ $item->category->name }}",
+                "title": "{{ $item->title }}",
+            })
+        @endforeach
+
+        $.each(products, function (i, item) {
+            options_html += `<option value="${item.id}">${item.category} - ${item.title} - ${item.slug}</option>`
+        });
+
         $(document).ready(function () {
             // add item
             $(document).on('click', '#btn_add', function () {
-                $('table tbody').append(`
+                $('#buy-orders-table tbody').append(`
                     <tr>
                         <td>
                             <select class="js-example-basic-single" name="products[]" required>
                                 <option value="" disabled selected>انتخاب کنید</option>
-                                @foreach($products as $item)
-                <option value="{{ $item->id }}">
-                                        {{ $item->category->name . ' - ' . $item->title . ' - ' . $item->productModels->slug }}
-                </option>
-@endforeach
-                </select>
-            </td>
-            <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
-            <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
-        </tr>
+                                ${options_html}
+                            </select>
+                        </td>
+                        <td><input type="number" class="form-control" name="counts[]" min="1" value="1" required></td>
+                        <td><button type="button" class="btn btn-danger btn-floating btn_remove"><i class="fa fa-trash"></i></button></td>
+                    </tr>
 `);
 
                 // Reinitialize select2 after adding new row

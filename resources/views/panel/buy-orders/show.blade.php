@@ -10,8 +10,31 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <div class="card-title mb-4">
+            <div class="card-title d-flex justify-content-between mb-4">
                 <h6>مشاهده سفارش خرید</h6>
+                @can('ceo')
+                    @if($buyOrder->status == 'bought')
+                        <form action="{{ route('buy-orders.changeStatus', $buyOrder->id) }}" method="post">
+                            @csrf
+                            <button type="submit"
+                                    class="btn btn-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</button>
+                        </form>
+                    @else
+                        <form action="{{ route('buy-orders.changeStatus', $buyOrder->id) }}" method="post">
+                            @csrf
+                            <button type="submit"
+                                    class="btn btn-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</button>
+                        </form>
+                    @endif
+                @else
+                    @if($buyOrder->status == 'bought')
+                        <span
+                            class="badge badge-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</span>
+                    @else
+                        <span
+                            class="badge badge-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</span>
+                    @endif
+                @endcan
             </div>
             <div class="form-row">
                 <div class="col-12 mb-3">
