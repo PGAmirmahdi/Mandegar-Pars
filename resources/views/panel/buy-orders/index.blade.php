@@ -17,10 +17,10 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>وضعیت</th>
                         @canany(['admin','ceo','sales-manager'])
                             <th>همکار</th>
                         @endcanany
+                        <th>وضعیت</th>
                         <th>زمان ثبت</th>
                         <th>مشاهده</th>
                         <th>چت درباره سفارش</th>
@@ -36,34 +36,18 @@
                     @foreach($orders as $key => $order)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>
-                                @can('ceo')
-                                    @if($order->status == 'bought')
-                                        <form action="{{ route('buy-orders.changeStatus', $order->id) }}" method="post">
-                                            @csrf
-                                            <button type="submit"
-                                                    class="btn btn-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</button>
-                                        </form>
-                                    @else
-                                        <form action="{{ route('buy-orders.changeStatus', $order->id) }}" method="post">
-                                            @csrf
-                                            <button type="submit"
-                                                    class="btn btn-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</button>
-                                        </form>
-                                    @endif
-                                @else
-                                    @if($order->status == 'bought')
-                                        <span
-                                            class="badge badge-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</span>
-                                    @else
-                                        <span
-                                            class="badge badge-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</span>
-                                    @endif
-                                @endcan
-                            </td>
                             @canany(['admin','ceo','sales-manager'])
                                 <td>{{ $order->user->fullName() }}</td>
                             @endcanany
+                            <td>
+                                @if($order->status == 'bought')
+                                    <span
+                                        class="badge badge-success">{{ \App\Models\BuyOrder::STATUS['bought'] }}</span>
+                                @else
+                                    <span
+                                        class="badge badge-warning">{{ \App\Models\BuyOrder::STATUS['order'] }}</span>
+                                @endif
+                            </td>
                             <td>{{ verta($order->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
                                 <a class="btn btn-info btn-floating" href="{{ route('buy-orders.show', $order->id) }}">

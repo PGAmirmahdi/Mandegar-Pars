@@ -60,9 +60,15 @@ class SendMessage extends Notification
             'url' => $this->url,
         ];
 
-            if ($notifiable->fcm_token) {
+        if ($notifiable->fcm_token) {
+            if (isset($_SERVER['SERVER_NAME'])){
+                if ($_SERVER['SERVER_NAME'] != '127.0.0.1') {
+                    $this->send_firebase_notification($this->title,$this->message, $this->url, $notifiable->fcm_token);
+                }
+            }else{
                 $this->send_firebase_notification($this->title,$this->message, $this->url, $notifiable->fcm_token);
             }
+        }
 
         event(new SendMessageEvent($notifiable->id, $data));
 

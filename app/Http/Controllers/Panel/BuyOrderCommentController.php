@@ -30,7 +30,7 @@ class BuyOrderCommentController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ارسال پیام',
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'پیام جدید "' . $comment->comment . '" در سفارش فروش ' . $comment->buyOrder->customer->name . ' گذاشت',
+            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') ' . 'پیام جدید "' . $comment->comment . '" در سفارش فروش ' . $comment->buyOrder->id . ' گذاشت',
             'created_at' => now(),
         ];
         Activity::create($activityData);
