@@ -22,7 +22,7 @@ class SupplierController extends Controller
     public function index()
     {
         $this->authorize('suppliers-list');
-        $suppliers = Supplier::with('categories')->orderByRaw('-code DESC')->paginate(30);
+        $suppliers = Supplier::with('category')->orderByRaw('-code DESC')->paginate(30);
 
         return view('panel.suppliers.index', compact('suppliers'));
     }
