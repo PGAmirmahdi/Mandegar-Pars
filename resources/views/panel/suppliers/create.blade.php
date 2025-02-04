@@ -60,9 +60,9 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="categories">زمینه فعالیت<span class="text-danger">*</span></label>
-                        <select name="category[]" id="category" class="js-example-basic-single select2-hidden-accessible" multiple="" data-select2-id="5" tabindex="-1" aria-hidden="true">
+                        <select name="category[]" id="category" class="js-example-basic-single select2-hidden-accessible" multiple>
                             @foreach(\App\Models\Category::all() as $cat)
-                                <option value="{{ $cat->id }}" {{ in_array($cat->id, old('category', $supplier->category ?: [])) ? 'selected' : '' }}>
+                                <option value="{{ $cat->id }}" {{ in_array($cat->id, old('category', [])) ? 'selected' : '' }}>
                                     {{ $cat->name }}
                                 </option>
                             @endforeach
