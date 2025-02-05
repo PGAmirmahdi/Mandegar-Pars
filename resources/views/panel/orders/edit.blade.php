@@ -67,8 +67,7 @@
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label class="form-label" for="buyer_name">نام شخص حقیقی/حقوقی <span
                                                 class="text-danger">*</span></label>
-                                        <select name="buyer_name" id="buyer_name" class="js-example-basic-single"
-                                                data-toggle="select2">
+                                        <select name="buyer_name" id="buyer_name" class="js-example-basic-single w-100">
                                             <option value="" disabled selected>انتخاب کنید...</option>
                                             @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
                                                 <option
@@ -168,8 +167,8 @@
                                                         {{-- @dd($products->products)--}}
                                                         <tr>
                                                             <td>
-                                                                <select class="form-control" name="products[]"
-                                                                        data-toggle="select2" required>
+                                                                <select class="js-example-basic-single w-100" name="products[]"
+                                                                         required>
                                                                     <option value="" disabled selected>
                                                                         ..................... انتخاب کنید
                                                                         .....................
@@ -181,7 +180,7 @@
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                                <select class="form-control" name="colors[]" required>
+                                                                <select class="form-control w-100" name="colors[]" required>
                                                                     @foreach(\App\Models\Product::COLORS as $key => $value)
                                                                         <option
                                                                             value="{{ $key }}" {{ $key == $product->colors ? 'selected' : '' }}>{{ $value }}</option>
@@ -190,11 +189,11 @@
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="counts[]"
-                                                                       class="form-control" min="1"
+                                                                       class="form-control w-100" min="1"
                                                                        value="{{ $product->counts }}" required>
                                                             </td>
                                                             <td>
-                                                                <select class="form-control" name="units[]">
+                                                                <select class="form-control w-100" name="units[]">
                                                                     <option value="number">عدد</option>
                                                                     <option value="pack">بسته</option>
                                                                     <option value="box">جعبه</option>
@@ -204,12 +203,12 @@
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="prices[]"
-                                                                       class="form-control" min="0"
+                                                                       class="form-control w-100" min="0"
                                                                        value="{{ $product->prices }}">
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="total_prices[]"
-                                                                       class="form-control" min="0"
+                                                                       class="form-control w-100" min="0"
                                                                        value="{{$product->total_prices }}" readonly>
                                                             </td>
                                                             <td>
@@ -290,21 +289,21 @@
                 $('#products_table tbody').append(`
                 <tr>
                 <td>
-                    <select class="form-control" name="products[]" data-toggle="select2" style="width: 300px !important;" required>
+                    <select class="js-example-basic-single w-100" name="products[]" style="width: 300px !important;" required>
                         <option value="" disabled selected>..................... انتخاب کنید .....................</option>
                         ${products_options_html}
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" name="colors[]" required>
+                    <select class="form-control w-100" name="colors[]" required>
                         ${colors_options_html}
                     </select>
                 </td>
                 <td>
-                    <input type="number" name="counts[]" class="form-control" min="1" value="1" required>
+                    <input type="number" name="counts[]" class="form-control w-100" min="1" value="1" required>
                 </td>
                 <td>
-                    <select class="form-control" name="units[]">
+                    <select class="form-control w-100" name="units[]">
                         <option value="number">عدد</option>
                         <option value="pack">بسته</option>
                         <option value="box">جعبه</option>
@@ -314,10 +313,10 @@
                     </select>
                 </td>
                 <td>
-                    <input type="number" name="prices[]" class="form-control" min="0" value="0">
+                    <input type="number" name="prices[]" class="form-control w-100" min="0" value="0">
                 </td>
                 <td>
-                    <input type="number" name="total_prices[]" class="form-control" min="0" value="0" readonly>
+                    <input type="number" name="total_prices[]" class="form-control w-100" min="0" value="0" readonly>
                 </td>
                 <td>
                     <button class="btn btn-danger btn-floating btn_remove" type="button"><i class="fa fa-trash"></i></button>
