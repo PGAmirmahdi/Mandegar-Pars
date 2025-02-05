@@ -12,19 +12,24 @@ class Packet extends Model
     protected $guarded = [];
 
     const PACKET_STATUS = [
-        'delivered' => 'تحویل شده',
         'sending' => 'در حال ارسال',
+        'delivered' => 'تحویل شده',
     ];
 
     const INVOICE_STATUS = [
-        'delivered' => 'تحویل شرکت',
         'unknown' => 'نامشخص',
+        'delivered' => 'تحویل شرکت',
     ];
 
     const SENT_TYPE = [
         'post' => 'پست',
         'tipax' => 'تیپاکس',
         'delivery' => 'پیک',
+    ];
+
+    const DELIVERY_VERIFY = [
+        'confirmed' => 'تایید شده',
+        'unconfirmed' => 'تایید نشده',
     ];
 
     public function invoice()

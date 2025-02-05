@@ -55,6 +55,7 @@ class PacketController extends Controller
             'send_tracking_code' => $request->send_tracking_code,
             'receive_tracking_code' => $request->receive_tracking_code,
             'packet_status' => $request->packet_status,
+            'delivery_code' => $this->generateCode(),
             'invoice_status' => $request->invoice_status,
             'description' => $request->description,
             'sent_time' => $sent_time,
@@ -234,7 +235,7 @@ class PacketController extends Controller
         $dom = new DOMDocument();
         $dom->validateOnParse = true;
         @$dom->loadHTML('<?xml encoding="UTF-8">' . $result);
-        
+
         $rows = $dom->getElementById('pnlResult')->childNodes->item(0)->childNodes;
 
         if ($rows->item(0)->getAttribute('class') == 'alert alert-danger') {
@@ -273,5 +274,14 @@ class PacketController extends Controller
         }
 
         return response()->json(['data' => $data]);
+    }
+
+    private function generateCode()
+    {
+        $code = rand(10000, 99999);
+        while (Packet::where('delivery_code', $code)->exists()) {
+            $code = rand(10000, 99999);
+        }
+        return $code;
     }
 }

@@ -53,7 +53,7 @@
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="invoice">سفارش<span class="text-danger">*</span></label>
-                        <select class="form-control" name="invoice" id="invoice">
+                        <select class="js-example-basic-single select2-hidden-accessible" name="invoice" id="invoice">
                             @if($invoices->count())
                                 <option value="{{ $packet->invoice_id }}" selected> {{ $packet->invoice_id }} - {{ $packet->invoice->customer->name }}</option>
                                 @foreach($invoices as $invoiceId => $customerName)
