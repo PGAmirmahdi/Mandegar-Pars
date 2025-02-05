@@ -234,9 +234,13 @@ class PacketController extends Controller
         $dom = new DOMDocument();
         $dom->validateOnParse = true;
         @$dom->loadHTML('<?xml encoding="UTF-8">' . $result);
+        
         $rows = $dom->getElementById('pnlResult')->childNodes->item(0)->childNodes;
 
-        dd($rows->item(0)->childNodes->item(0)->textContent);
+        if ($rows->item(0)->getAttribute('class') == 'alert alert-danger') {
+            return response()->json(['data' => $rows->item(0)->textContent]);
+        }
+
 //    $xpath = new DOMXPath($dom);
 //    $elements = $xpath->query('//*[contains(@class, "newrowdata")]');
 

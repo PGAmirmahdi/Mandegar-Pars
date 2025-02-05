@@ -161,7 +161,6 @@
         // btn post status
         $('.btn_post_status').on('click', function () {
             var code = $(this).data('code');
-            console.log($(this))
             $('#postStatusModal .modal-body').html(`<div class="spinner-grow text-primary"></div>`)
 
             $.ajax({
@@ -173,9 +172,10 @@
                 success: function (res) {
                     $('#postStatusModal .modal-body').html('')
 
-                    $.each(res.data, function (i, item) {
-                        if(item.is_header){
-                            $('#postStatusModal .modal-body').append(`
+                    if ($.isArray(res.data)) {
+                        $.each(res.data, function (i, item) {
+                            if(item.is_header){
+                                $('#postStatusModal .modal-body').append(`
                                     <table class="table table-bordered table-striped text-center">
                                         <thead class="bg-primary">
                                             <tr>
@@ -188,8 +188,8 @@
                                         </tbody>
                                     </table>
                                 `)
-                        }else{
-                            $('#postStatusModal .modal-body table:last tbody').append(`
+                            }else{
+                                $('#postStatusModal .modal-body table:last tbody').append(`
                                         <tr>
                                             <td>${item.row}</td>
                                             <td>${item.last_status}</td>
@@ -197,8 +197,11 @@
                                             <td>${item.time}</td>
                                         </tr>
                                 `)
-                        }
-                    })
+                            }
+                        })
+                    }else{
+                        $('#postStatusModal .modal-body').html(`<div class="alert alert-danger">${res.data}</div>`)
+                    }
                 }
             })
         })
