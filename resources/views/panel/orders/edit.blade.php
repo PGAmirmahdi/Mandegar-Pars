@@ -67,7 +67,7 @@
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label class="form-label" for="buyer_name">نام شخص حقیقی/حقوقی <span
                                                 class="text-danger">*</span></label>
-                                        <select name="buyer_name" id="buyer_name" class="form-control"
+                                        <select name="buyer_name" id="buyer_name" class="form-control js-example-basic-single"
                                                 data-toggle="select2">
                                             <option value="" disabled selected>انتخاب کنید...</option>
                                             @foreach(\App\Models\Customer::all(['id','name','code']) as $customer)
