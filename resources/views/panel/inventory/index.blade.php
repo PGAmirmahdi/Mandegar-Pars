@@ -145,7 +145,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory.edit', $item->id) }}">
+                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory.edit',[ $item->id,'warehouse_id' => $warehouse_id]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
