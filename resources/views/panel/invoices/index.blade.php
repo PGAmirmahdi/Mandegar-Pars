@@ -143,6 +143,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>شناسه سفارش</th>
+                                        @if(auth()->role()->name == 'inventory-manager')
+                                            <th>شماره سفارش</th>
+                                        @endcan
                                         <th>خریدار</th>
                                         <th>نوع پرداختی</th>
                                         <th>درخواست جهت</th>
@@ -184,6 +187,9 @@
                                             <td>
                                                 <a href="/panel/orders?code={{$invoice->order->code??'-'}}">{{ $invoice->order->code??'-' }}</a>
                                             </td>
+                                            @if(auth()->role()->name == 'inventory-manager')
+                                                <th>{{$invoice->id}}</th>
+                                            @endcan
                                             <td>{{ $invoice->customer->name}}</td>
                                             <td>{{ \App\Models\Order::Payment_Type[$invoice->payment_type] ?? 'تعیین نشده'}}</td>
                                             <td>{{ \App\Models\Invoice::REQ_FOR[$invoice->req_for] }}</td>
