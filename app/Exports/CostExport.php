@@ -29,7 +29,7 @@ class CostExport implements FromCollection, WithMapping, WithHeadings, WithStyle
     public function map($cost): array
     {
         return [
-            $cost->product,
+            $cost->product->title,
             number_format($cost->count),
             number_format($cost->price),
             number_format($cost->Logistic_price),
