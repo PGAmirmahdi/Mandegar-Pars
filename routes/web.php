@@ -418,7 +418,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Cost
     Route::resource('costs', CostController::class);
-    Route::post('excel/costs', [CostController::class, 'excel'])->name('costs.excel');
+    Route::post('excel/costs', [CostController::class, 'exportExcel'])->name('costs.excel');
     Route::match(['get', 'post'], 'search/cost', [CostController::class, 'search'])->name('costs.search');
 
     // Sms
