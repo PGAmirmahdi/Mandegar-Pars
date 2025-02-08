@@ -463,14 +463,13 @@
                                     <button class="btn btn-primary float-start mx-1" type="submit" id="btn_form">ثبت فرم
                                     </button>
                                 </div>
-                                <form action="{{ route('invoices.download') }}" method="post" class="w-100 row justify-content-end">
-                                    @csrf
-                                    <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
-                                    <button class="btn btn-danger"><i class="fa fa-file-pdf me-2"></i>دانلود
-                                    </button>
-                                </form>
                             </form>
-
+                            <form action="{{ route('invoices.download') }}" method="post" class="w-100 row justify-content-end">
+                                @csrf
+                                <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
+                                <button class="btn btn-danger"><i class="fa fa-file-pdf me-2"></i>دانلود
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
