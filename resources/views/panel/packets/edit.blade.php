@@ -23,7 +23,7 @@
                             <option value="177554">کد رهگیری مرسوله</option>
                             <option value="178278">عودت فاکتور</option>
                             <option value="185679">یادآوری پرداخت فاکتور</option>
-                            <option value="000000">کد تحویل مرسوله</option>
+                            <option value="296995">کد تحویل مرسوله</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -288,7 +288,7 @@
                         `Artintoner.com`)
 
                     args = [receiver];
-                }else if(bodyId == 000000){
+                }else if(bodyId == 296995){
                     if(delivery_code == ''){
                         $('#text_error').text('بسته های ارسالی قدیمی فاقد کد تحویل می باشند')
                         text_error = true;
@@ -297,11 +297,9 @@
                         $('#text_error').text('')
                     }
 
-                    $('#text').html(`مشتری گرامی \n` +
-                        `کد تحویل مرسوله را هنگام مراجعه پیک تحویل دهید: \n` +
+                    $('#text').html(`مشتری گرامی لطفا کد تحویل مرسوله را هنگام مراجعه پیک تحویل دهید: \n` +
                         `${delivery_code} \n` +
-                        `شرکت صنایع ماشین های اداری ماندگار پارس \n` +
-                        `Artintoner.com`)
+                        `شرکت صنایع ماشین های اداری ماندگار پارس \n`)
 
                     args = [delivery_code];
                 }else{
