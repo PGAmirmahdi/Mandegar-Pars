@@ -143,7 +143,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>شناسه سفارش</th>
-                                        @if(auth()->role()->name == 'inventory-manager')
+                                        @if(auth()->user()->role()->name == 'inventory-manager')
                                             <th>شماره سفارش</th>
                                         @endcan
                                         <th>خریدار</th>
@@ -187,7 +187,7 @@
                                             <td>
                                                 <a href="/panel/orders?code={{$invoice->order->code??'-'}}">{{ $invoice->order->code??'-' }}</a>
                                             </td>
-                                            @if(auth()->role()->name == 'inventory-manager')
+                                            @if(auth()->user()->role()->name == 'inventory-manager')
                                                 <th>{{$invoice->id}}</th>
                                             @endcan
                                             <td>{{ $invoice->customer->name}}</td>
