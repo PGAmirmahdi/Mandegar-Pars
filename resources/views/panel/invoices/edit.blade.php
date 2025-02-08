@@ -459,16 +459,16 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="w-100 row justify-content-between">
+                                <div class="w-100 row justify-content-start">
                                     <button class="btn btn-primary float-start mx-1" type="submit" id="btn_form">ثبت فرم
                                     </button>
-                                    <form action="{{ route('invoices.download') }}" method="post" class="">
-                                        @csrf
-                                        <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
-                                        <button class="btn btn-danger"><i class="fa fa-file-pdf me-2"></i>دانلود
-                                        </button>
-                                    </form>
                                 </div>
+                                <form action="{{ route('invoices.download') }}" method="post" class="w-100 row justify-content-end">
+                                    @csrf
+                                    <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
+                                    <button class="btn btn-danger"><i class="fa fa-file-pdf me-2"></i>دانلود
+                                    </button>
+                                </form>
                             </form>
 
                         </div>
