@@ -184,7 +184,7 @@ class InvoiceController extends Controller
 
 //        send notif to creator of the invoice
         if ($request->status != $invoice->status){
-            $status = Invoice::STATUS[$request->status];
+            $status = Invoice::STATUS['orders'];
             $title='ویرایش سفارش فروش';
             $url = route('invoices.index');
             $message = "وضعیت سفارش شماره {$invoice->id} به '{$status}' تغییر یافت";
@@ -217,7 +217,7 @@ class InvoiceController extends Controller
             'discount' => $request->final_discount ?? $invoice->discount,
             'description' => $request->description,
             'payment_type' => $request->payment_type,
-            'payment_doc' => $payment_doc,
+//            'payment_doc' => $payment_doc,
         ]);
         $customer = $invoice->customer; // or get customer based on your structure
         $data = [
