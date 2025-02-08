@@ -23,6 +23,7 @@
                             <option value="177554">کد رهگیری مرسوله</option>
                             <option value="178278">عودت فاکتور</option>
                             <option value="185679">یادآوری پرداخت فاکتور</option>
+                            <option value="296995">کد تحویل مرسوله</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -53,7 +54,7 @@
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="invoice">سفارش<span class="text-danger">*</span></label>
-                        <select class="form-control" name="invoice" id="invoice">
+                        <select class="js-example-basic-single select2-hidden-accessible" name="invoice" id="invoice">
                             @if($invoices->count())
                                 <option value="{{ $packet->invoice_id }}" selected> {{ $packet->invoice_id }} - {{ $packet->invoice->customer->name }}</option>
                                 @foreach($invoices as $invoiceId => $customerName)
@@ -164,6 +165,7 @@
             var receiver;
             var args;
             var text_error;
+            var delivery_code = "{{ $packet->delivery_code }}";
 
             $('#btn_sms').on('click', function (){
                 code = $('#send_tracking_code').val().trim();
@@ -286,6 +288,20 @@
                         `Artintoner.com`)
 
                     args = [receiver];
+                }else if(bodyId == 296995){
+                    if(delivery_code == ''){
+                        $('#text_error').text('بسته های ارسالی قدیمی فاقد کد تحویل می باشند')
+                        text_error = true;
+                    }else {
+                        text_error = false;
+                        $('#text_error').text('')
+                    }
+
+                    $('#text').html(`مشتری گرامی لطفا کد تحویل مرسوله را هنگام مراجعه پیک تحویل دهید: \n` +
+                        `${delivery_code} \n` +
+                        `شرکت صنایع ماشین های اداری ماندگار پارس \n`)
+
+                    args = [delivery_code];
                 }else{
                     if(receiver == ''){
                         $('#text_error').text('ابتدا فیلد گیرنده را وارد نمایید')
