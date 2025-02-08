@@ -2,6 +2,11 @@
 @section('title', 'بهای تمام شده')
 
 @section('content')
+    <style>
+        select[name=product]{
+            width: 200px !important;
+        }
+    </style>
     <div class="content">
         <div class="container-fluid">
             <!-- start page title -->
@@ -19,30 +24,47 @@
                     <div class="card">
                         <div class="card-body">
 
-                            <div class="card-title d-flex justify-content-end">
+                            <!-- فرم جستجو و دکمه‌های اکسل/ایجاد -->
+                            <div class="card-title d-flex justify-content-between align-items-center">
+                                <!-- فرم جستجو -->
+                                <div class="col-3">
+                                    <form action="{{ route('costs.search') }}" method="get" class="d-flex" id="search_form">
+                                        <select name="product" form="search_form"
+                                                class="js-example-basic-single select2-hidden-accessible"
+                                                data-select2-id="0">
+                                            <option value="all">نام کالا(همه)</option>
+                                            @foreach(\App\Models\Product::all() as $product)
+                                                <option
+                                                    value="{{ $product->id }}" {{ request()->product == $product->id ? 'selected' : '' }}>{{ $product->title }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn btn-primary ms-2">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- دکمه‌های دریافت اکسل و ایجاد بهای تمام شده -->
                                 <div>
                                     <form action="{{ route('costs.excel') }}" method="post" id="excel_form">
                                         @csrf
                                     </form>
-
                                     <button class="btn btn-success" form="excel_form">
                                         <i class="fa fa-file-excel mr-2"></i>
                                         دریافت اکسل
                                     </button>
 
                                     @can('costs-create')
-                                        {{--                                        @cannot('accountant')--}}
                                         <a href="{{ route('costs.create') }}" class="btn btn-primary">
                                             <i class="fa fa-plus mr-2"></i>
                                             ایجاد بهای تمام شده
                                         </a>
-                                        {{--                                        @endcannot--}}
                                     @endcan
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered dataTable dtr-inline text-center"
-                                       style="width: 100%">
+                            <!-- پایان فرم جستجو و دکمه‌ها -->
+
+                            <div class="overflow-auto">
+                                <table class="table table-striped table-bordered dataTable dtr-inline text-center" style="width: 100%">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -56,24 +78,20 @@
                                             <th>همکار</th>
                                         @endcanany
                                         <th>تاریخ ایجاد</th>
-
-
                                         @can('costs-edit')
                                             <th>ویرایش</th>
                                         @endcan
                                         @can('costs-delete')
                                             <th>حذف</th>
                                         @endcan
-
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($costs as $key => $cost)
                                         <tr>
                                             <td>{{ ++$key }}</td>
-
-                                            <td>{{$cost->product}}</td>
-                                            <td>{{$cost->count}}</td>
+                                            <td>{{ $cost->product->title }}</td>
+                                            <td>{{ $cost->count }}</td>
                                             <td>{{ number_format($cost->price) }} ریال</td>
                                             <td>{{ number_format($cost->Logistic_price) }} ریال</td>
                                             <td>{{ number_format($cost->other_price) }} ریال</td>
@@ -82,14 +100,10 @@
                                                 <td>{{ $cost->user->fullName() }}</td>
                                             @endcanany
                                             <td>{{ verta($cost->created_at)->format('H:i - Y/m/d') }}</td>
-
-
-
                                             @can('sales-manager')
                                                 @can('costs-edit')
                                                     <td>
-                                                        <a class="btn btn-warning btn-floating"
-                                                           href="{{ route('costs.edit', $cost->id) }}" >
+                                                        <a class="btn btn-warning btn-floating" href="{{ route('costs.edit', $cost->id) }}">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
                                                     </td>
@@ -97,7 +111,7 @@
                                                 @can('costs-delete')
                                                     <td>
                                                         <button class="btn btn-danger btn-floating trashRow"
-                                                                data-url="{{ route('costs.destroy',$cost->id) }}"
+                                                                data-url="{{ route('costs.destroy', $cost->id) }}"
                                                                 data-id="{{ $cost->id }}">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
@@ -106,8 +120,7 @@
                                             @else
                                                 @can('costs-edit')
                                                     <td>
-                                                        <a class="btn btn-warning btn-floating"
-                                                           href="{{ route('costs.edit', $cost->id) }}">
+                                                        <a class="btn btn-warning btn-floating" href="{{ route('costs.edit', $cost->id) }}">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
                                                     </td>
@@ -115,7 +128,7 @@
                                                 @can('costs-delete')
                                                     <td>
                                                         <button class="btn btn-danger btn-floating trashRow"
-                                                                data-url="{{ route('costs.destroy',$cost->id) }}"
+                                                                data-url="{{ route('costs.destroy', $cost->id) }}"
                                                                 data-id="{{ $cost->id }}">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
@@ -131,32 +144,30 @@
                                     </tfoot>
                                 </table>
                             </div>
-                            <div
-                                class="d-flex justify-content-center">{{ $costs->appends(request()->all())->links() }}</div>
+                            <div class="d-flex justify-content-center">
+                                {{ $costs->appends(request()->all())->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel"
-         aria-hidden="true">
+
+    <!-- Modal (در صورت نیاز به استفاده از آن) -->
+    <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="timelineModalLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="بستن"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
                     <!-- تایم‌لاین عمودی -->
                     <div class="d-flex flex-column position-relative">
-
                         <!-- مرحله 1 (متن در چپ) -->
                         <div class="timeline-content" style="display: none;">
                         </div>
-
-
                         <div class="loading">
                             <div class="lds-roller">
                                 <div></div>
@@ -169,8 +180,6 @@
                                 <div></div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -180,63 +189,3 @@
         </div>
     </div>
 @endsection
-
-{{--@section('scripts')--}}
-{{--    <script>--}}
-{{--        $(document).ready(function () {--}}
-{{--            $(document).on('click', '.show-status', function () {--}}
-{{--                var id = $(this).data('id');--}}
-{{--                var code = $(this).data('code');--}}
-{{--                $('#timelineModalLabel').text(`وضعیت سفارش ${code}`)--}}
-{{--                var loading = $('.loading');--}}
-{{--                var timelineContent = $('.timeline-content');--}}
-{{--                timelineContent.empty();--}}
-{{--                loading.show();--}}
-{{--                $.ajax({--}}
-{{--                    url: '/panel/get-customer-order-status/' + id,--}}
-{{--                    type: 'GET',--}}
-{{--                    dataType: 'json',--}}
-{{--                    success: function (response) {--}}
-{{--                        loading.hide();--}}
-{{--                        console.log('Response:', response);--}}
-{{--                        response.forEach((stage, index) => {--}}
-{{--                            const hasDate = stage.date !== '';--}}
-{{--                            const stageClass = stage.pending ? 'bg-warning' : hasDate ? 'bg-success' : 'bg-secondary';--}}
-{{--                            const icon = stage.pending ? '<i class="fa fa-undo rotate-icon"></i>' : hasDate ? '✓' : '✖';--}}
-{{--                            const date = stage.pending ? 'در حال بررسی' : hasDate ? stage.date : '';--}}
-
-{{--                            const progressBar = index === 0 ? '' : `--}}
-{{--                            <div class="progress progress-vertical ${stageClass}">--}}
-{{--                                <div class="progress-bar progress-bar-striped progress-bar-animated ${stageClass}" role="progressbar" style="height: 100%;"></div>--}}
-{{--                            </div>--}}
-{{--                        `;--}}
-
-{{--                           const stageTemplate = `--}}
-{{--                            ${progressBar}--}}
-{{--                            <div class="timeline-stage stage-left d-flex align-items-center">--}}
-{{--                                <div class="rounded-circle ${stageClass} text-white stage-circle me-2">${icon}</div>--}}
-{{--                                <div>--}}
-{{--                                    <h6 class="stage-text" style="font-weight: bolder;font-size: medium;">${stage.status_label}</h6>--}}
-{{--                                    <small class="stage-text">${date}</small>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        `;--}}
-
-{{--                            timelineContent.append(stageTemplate);--}}
-{{--                        });--}}
-
-{{--                        timelineContent.show();--}}
-{{--                    }--}}
-{{--                    ,--}}
-
-{{--                    error: function (xhr, status, error) {--}}
-{{--                        console.log('Error:', error);--}}
-{{--                        loading.hide();--}}
-{{--                    }--}}
-{{--                });--}}
-{{--            });--}}
-{{--        });--}}
-{{--    </script>--}}
-{{--@endsection--}}
-
-
