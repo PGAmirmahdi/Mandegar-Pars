@@ -40,13 +40,35 @@
             <form action="{{ route('reports.store') }}" method="post" id="form">
                 @csrf
                 <input type="hidden" name="items" id="items_input">
-                <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <button class="btn btn-primary" type="submit" id="submit_button">ثبت فرم</button>
             </form>
         </div>
     </div>
 @endsection
 @section('scripts')
     <script>
+        $(document).ready(function () {
+            $('#submit_button').on('click', function () {
+                let button = $(this);
+                let dots = 0;
+
+                // غیرفعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال');
+
+                // ایجاد افکت چشمک‌زن و تغییر نقطه‌ها
+                let interval = setInterval(() => {
+                    dots = (dots + 1) % 4; // مقدار 0 تا 3
+                    let text = 'در حال ارسال' + '.'.repeat(dots);
+                    button.text(text).fadeOut(3000).fadeIn(3000); // افکت چشمک زدن
+                }, 6000);
+
+                // ارسال فرم به صورت خودکار
+                button.closest('form').submit();
+
+                // متوقف کردن افکت بعد از ارسال (اختیاری، چون صفحه معمولاً رفرش می‌شود)
+                setTimeout(() => clearInterval(interval), 10000);
+            });
+        });
         var items = [];
         @error('date')
             @foreach(explode(',',session('items')) as $item)

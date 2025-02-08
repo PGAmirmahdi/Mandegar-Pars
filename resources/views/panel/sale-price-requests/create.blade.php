@@ -188,12 +188,23 @@
         $(document).ready(function () {
             $('#submit_button').on('click', function () {
                 let button = $(this);
+                let dots = 0;
 
-                // تغییر متن و غیر فعال کردن دکمه
-                button.prop('disabled', true).text('در حال ارسال...');
+                // غیرفعال کردن دکمه
+                button.prop('disabled', true).text('در حال ارسال');
+
+                // ایجاد افکت چشمک‌زن و تغییر نقطه‌ها
+                let interval = setInterval(() => {
+                    dots = (dots + 1) % 4; // مقدار 0 تا 3
+                    let text = 'در حال ارسال' + '.'.repeat(dots);
+                    button.text(text).fadeOut(3000).fadeIn(3000); // افکت چشمک زدن
+                }, 6000);
 
                 // ارسال فرم به صورت خودکار
                 button.closest('form').submit();
+
+                // متوقف کردن افکت بعد از ارسال (اختیاری، چون صفحه معمولاً رفرش می‌شود)
+                setTimeout(() => clearInterval(interval), 10000);
             });
         });
         $(document).ready(function () {

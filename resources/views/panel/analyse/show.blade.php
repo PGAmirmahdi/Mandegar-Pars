@@ -9,9 +9,9 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <div><h3>ریز جزئیات آنالیز در تاریخ {{ $analyse->date ?? 'نامشخص' }}</h3>
-                    <p>دسته‌بندی: {{ $analyse->category->name }}</p>
-                    <p>برند: {{ $analyse->brand->name }}</p></div>
+                <div><h3>ریز جزئیات آنالیز از تاریخ {{ $analyse->date ?? 'نامشخص' }} تا تاریخ {{$analyse->to_date ?? 'نامشخص'}} در دسته بندی </h3>
+                    <p class="font-weight-bold">دسته‌بندی: {{ $analyse->category->name }}</p>
+                    <p class="font-weight-bold">برند: {{ $analyse->brand->name }}</p></div>
                 <a href="{{route('analyse.index')}}" class="btn btn-danger">بازگشت</a>
             </div>
             <!-- فرم جستجو -->

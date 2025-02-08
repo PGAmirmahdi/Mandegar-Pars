@@ -108,6 +108,10 @@ class Product extends Model
             ->withTimestamps();
     }
 
+    public function cost()
+    {
+        return $this->hasMany(Cost::class);
+    }
     public function creator()
     {
         return $this->belongsTo(User::class, 'creator_id');
