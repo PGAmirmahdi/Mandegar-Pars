@@ -16,6 +16,7 @@ class UpdatePacketsTable2 extends Migration
         Schema::table('packets', function (Blueprint $table) {
             $table->unsignedInteger('delivery_code')->unique()->nullable()->after('packet_status');
             $table->enum('delivery_verify', ['confirmed','unconfirmed'])->after('delivery_code')->default('unconfirmed')->comment('تایید توسط تحویل دهنده');
+            $table->timestamp('verify_date')->after('delivery_verify')->nullable();
         });
     }
 
@@ -29,6 +30,7 @@ class UpdatePacketsTable2 extends Migration
         Schema::table('packets', function (Blueprint $table) {
             $table->dropColumn('delivery_code');
             $table->dropColumn('delivery_verify');
+            $table->dropColumn('verify_date');
         });
     }
 }
