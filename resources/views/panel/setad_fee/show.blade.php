@@ -1,5 +1,5 @@
 @extends('panel.layouts.master')
-@section('title', 'ویرایش کارمزد ستاد')
+@section('title', 'مشاهده جزئیات کارمزد ستاد')
 @section('styles')
     <style>
         input[type="number"]::-webkit-inner-spin-button,
@@ -24,7 +24,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box">
-                        <h4 class="page-title">ایجاد کارمزد ستاد</h4>
+                        <h4 class="page-title">مشاهده جزئیات کارمزد سامانه ستاد</h4>
                     </div>
                 </div>
             </div>
@@ -33,16 +33,15 @@
             <div class="row">
                 <div class="col">
                     <div class="card">
-                        <form action="{{ route('setad-fee.update',$setad->id) }}" method="post">
+                        <form action="{{ route('setad-fee.store.action',$setad->id) }}" method="post" enctype="multipart/form-data">
                             @csrf
-                            @method('PATCH')
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label for="order">
                                             شماره سفارش<span class="text-danger">*</span></label>
-                                        <input type="number" name="order" id="order" class="form-control text-start"
-                                               value="{{old('order',$order->code)}}">
+                                        <input type="number" id="order" class="form-control disabled text-start"
+                                               value="{{old('order',$order->code)}}" disabled>
                                         <span class="text-info  processing">درحال بررسی ...</span>
                                         <div id="desc-order"></div>
                                         @error('order')
@@ -52,8 +51,8 @@
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label for="tracking_number">
                                             شماره پیگیری<span class="text-danger">*</span></label>
-                                        <input type="text" name="tracking_number" class="form-control"
-                                               value="{{old('tracking_number',$setad->tracking_number)}}">
+                                        <input type="text"  class="form-control disabled"
+                                               value="{{old('tracking_number',$setad->tracking_number)}}" disabled>
                                         @error('tracking_number')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
@@ -61,10 +60,9 @@
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label for="tracking_number">
                                             مبلغ کارمزد(ریال)<span class="text-danger">*</span></label>
-                                        <input type="number" name="price" id="priceInput" class="form-control"
-                                               value="{{old('price',$setad->price)}}">
-                                        <div class="text-center text-info d-block"
-                                             id="price">{{old('price',$setad->price)?number_format(old('price',$setad->price)):''}}</div>
+                                        <input id="priceInput" class="form-control disabled"
+                                               value="{{old('price',$setad->price)}}" disabled>
+                                        <div class="text-center text-info d-block" id="price">{{old('price',$setad->price)?number_format(old('price',$setad->price)):''}}</div>
                                         @error('price')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
@@ -72,39 +70,38 @@
                                     {{--                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">--}}
                                     {{--                                        <label for="tracking_number">--}}
                                     {{--                                            شماره شبا<span class="text-danger">*</span></label>--}}
-                                    {{--                                        <input type="text" name="shaba_number" class="form-control"--}}
-                                    {{--                                               value="{{old('shaba_number',$setad->shaba_number)}}" placeholder="به همراه IR">--}}
+                                    {{--                                        <input type="text"  class="form-control disabled"--}}
+                                    {{--                                               value="{{old('shaba_number',$setad->shaba_number)}}" placeholder="به همراه IR" disabled>--}}
                                     {{--                                        @error('shaba_number')--}}
                                     {{--                                        <div class="invalid-feedback text-danger d-block">{{ $message }}</div>--}}
                                     {{--                                        @enderror--}}
                                     {{--                                    </div>--}}
                                     <div class="col-12 mb-3">
                                         <label for="tracking_number">توضیحات</label>
-                                        <textarea class="form-control"
-                                                  name="description">{{old('description',$setad->description)}}</textarea>
+                                        <textarea class="form-control disabled" disabled>{{old('description',$setad->description)}}</textarea>
                                     </div>
                                     <div class="col-4 mb-3">
                                         @if($setad->receipt_file_path == null)
-                                            <label for="tracking_number">آپلود رسید کارمزد (PDF)<span
-                                                    class="text-danger">*</span></label>
-                                            <input type="file" class="form-control" name="receipt"
-                                                   accept="application/pdf">
+                                            <label for="tracking_number">آپلود رسید کارمزد (PDF)<span class="text-danger">*</span></label>
+                                            <input type="file" class="form-control" name="receipt" accept="application/pdf">
                                         @else
                                             <a href="{{ $setad->receipt_file_path }}" class="btn btn-primary mt-3"
                                                download="{{ $setad->receipt_file_path }}">
                                                 <i class="fa fa-file-pdf mr-2"></i>
                                                 دانلود فایل رسید
                                             </a>
-                                            <a href="#factorResetModal" class="nav-link" data-bs-toggle="modal">
-                                                <i class="fa fa-times mr-2 text-danger"></i>
-                                                حذف و بارگذاری مجدد فایل
-                                            </a>
+                                            {{--                                            @can('accountant')--}}
+                                            {{--                                                <a href="#factorResetModal" class="nav-link" data-bs-toggle="modal">--}}
+                                            {{--                                                    <i class="fa fa-times mr-2 text-danger"></i>--}}
+                                            {{--                                                    حذف و بارگذاری مجدد فایل--}}
+                                            {{--                                                </a>--}}
+                                            {{--                                            @endcan--}}
                                         @endif
                                     </div>
                                 </div>
 
-
-                                <button type="submit" class="btn btn-primary mt-3" id="submit_button">ثبت فرم</button>
+                                <a href="{{url()->previous()}}" class="btn btn-outline-danger">بازگشت</a>
+                                {{--                                <button type="submit" class="btn btn-success mt-3" id="submit_button">آپلود رسید</button>--}}
 
                             </div>
                         </form>
@@ -113,39 +110,34 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="factorResetModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="factorResetModalLabel">تایید حذف</h5>
-                    <button type="button" class="ban" data-bs-dismiss="modal" aria-label="بستن">
-                        <i class="ti-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h6>می خواهید فایل رسید را حذف و مجدد بارگذاری کنید؟</h6>
-                    <form action="{{ route('receipt.action.delete', $setad->id) }}" method="post"
-                          id="deleteFactorAction">
-                        @csrf
-                        @method('put')
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
-                    <button type="submit" class="btn btn-danger" form="deleteFactorAction">حذف</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{--    <div class="modal fade" id="factorResetModal" tabindex="-1" role="dialog" aria-hidden="true">--}}
+    {{--        <div class="modal-dialog modal-dialog-centered" role="document">--}}
+    {{--            <div class="modal-content">--}}
+    {{--                <div class="modal-header">--}}
+    {{--                    <h5 class="modal-title" id="factorResetModalLabel">تایید حذف</h5>--}}
+    {{--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن">--}}
+    {{--                        <i class="ti-close"></i>--}}
+    {{--                    </button>--}}
+    {{--                </div>--}}
+    {{--                <div class="modal-body">--}}
+    {{--                    <h6>می خواهید فایل رسید را حذف و مجدد بارگذاری کنید؟</h6>--}}
+    {{--                    <form action="{{ route('receipt.action.delete', $setad->id) }}" method="post"--}}
+    {{--                          id="deleteFactorAction">--}}
+    {{--                        @csrf--}}
+    {{--                        @method('put')--}}
+    {{--                    </form>--}}
+    {{--                </div>--}}
+    {{--                <div class="modal-footer">--}}
+    {{--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>--}}
+    {{--                    <button type="submit" class="btn btn-danger" form="deleteFactorAction">حذف</button>--}}
+    {{--                </div>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--    </div>--}}
+
 @endsection
 @section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).on('click', '.nav-link', function () {
-            const factor = $(this).data('id'); // دریافت ID ردیف
-            $('#factor').val(factor); // مقداردهی به فیلد مخفی
-            $('#factorResetModal').modal('show'); // نمایش Modal
-        });
         $(document).ready(function () {
             $('#submit_button').on('click', function () {
                 let button = $(this);
@@ -181,14 +173,14 @@
             $.ajax({
                 url: '/panel/search-setad-fee/' + $(this).val(),
                 method: 'GET',
-                beforeSend: function () {
+                beforeSend: function() {
                     processing.show();
                 },
-                success: function (response) {
+                success: function(response) {
                     processing.hide();
                     handleResponse(response);
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     processing.hide();
                     console.error('خطا در ارسال درخواست:', error);
                 }

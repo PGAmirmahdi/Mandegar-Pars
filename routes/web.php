@@ -19,6 +19,7 @@ use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\DebtorController;
 use App\Http\Controllers\Panel\DeliveryDayController;
+use App\Http\Controllers\Panel\ExchangeController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
 use App\Http\Controllers\Panel\FileController;
@@ -234,6 +235,11 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Coupons
     Route::resource('coupons', CouponController::class)->except('show');
 
+    // Exchange Price
+    Route::resource('exchange', ExchangeController::class)->except('show');
+    Route::get('/exchange/ohlc', [ExchangeController::class, 'ohlcSearch'])->name('exchange.ohlc');
+    Route::get('/exchange/details/{item}', [ExchangeController::class, 'showDetails'])->name('exchange.details');
+
     // Packets
     Route::resource('packets', PacketController::class)->except('show');
     Route::match(['get', 'post'], 'search/packets', [PacketController::class, 'search'])->name('packets.search');
@@ -413,6 +419,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Cost
     Route::resource('costs', CostController::class);
     Route::post('excel/costs', [CostController::class, 'excel'])->name('costs.excel');
+    Route::match(['get', 'post'], 'search/cost', [CostController::class, 'search'])->name('costs.search');
 
     // Sms
     Route::resource('sms', SMSController::class)->except('edit', 'update');
