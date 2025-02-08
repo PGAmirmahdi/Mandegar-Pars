@@ -77,25 +77,52 @@ class  SetadFeeController extends Controller
         $setad->order_id = $order->id;
         $setad->tracking_number = $request->input('tracking_number');
         $setad->price = $request->input('price');
-        $setad->shaba_number = $request->input('shaba_number');
         $setad->description = $request->input('description');
         $setad->user_id = auth()->id();
+        $order = Order::findOrfail($setad->order_id);
+        $file = upload_file($request->receipt, 'Action/receipt');
+        $setad->status = 'approved';
+        $setad->receipt_file_path = $file;
+        $setad->upload_time = now();
+        //        $setad->shaba_number = $request->input('shaba_number');
         $setad->save();
+
+        $permissionsId = Permission::whereIn('name', ['accountant'])->pluck('id');
+        $roles_id = Role::whereHas('permissions', function ($q) use ($permissionsId) {
+            $q->whereIn('permission_id', $permissionsId);
+        })->pluck('id');
+        $title_message= 'کارمزد ستاد';
+        $url = route('costs.index');
+        $notif_message = "رسید کارمزد ستاد با شناسه {$setad->order->code} دریافت شد";
+        $accountants = User::whereIn('role_id', $roles_id)->get();
+        Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
+
+
+        $order->order_status()->updateOrCreate(
+            ['status' => 'processing_by_accountant_step_2'],
+            ['orders' => 6, 'status' => 'processing_by_accountant_step_2']
+        );
+        $order->order_status()->updateOrCreate(
+            ['status' => 'upload_setad_fee'],
+            ['orders' => 7, 'status' => 'upload_setad_fee']
+        );
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'ایجاد کارمزد',
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  کارمزد ستاد به شماره ' . $request->input('tracking_number') . ' ثبت کرد.'
         ]);
 
-        $order->order_status()->updateOrCreate(
-            ['status' => 'awaiting_confirm_by_sales_manager'],
-            ['orders' => 4, 'status' => 'awaiting_confirm_by_sales_manager']
-        );
+//        old method with shaba code
 
-        $order->order_status()->updateOrCreate(
-            ['status' => 'setad_fee'],
-            ['orders' => 5, 'status' => 'setad_fee']
-        );
+//        $order->order_status()->updateOrCreate(
+//            ['status' => 'awaiting_confirm_by_sales_manager'],
+//            ['orders' => 4, 'status' => 'awaiting_confirm_by_sales_manager']
+//        );
+//
+//        $order->order_status()->updateOrCreate(
+//            ['status' => 'setad_fee'],
+//            ['orders' => 5, 'status' => 'setad_fee']
+//        );
 
         $this->send_notif_to_accountants($order);
         $this->send_notif_to_sales_manager($order);
@@ -109,7 +136,9 @@ class  SetadFeeController extends Controller
 
     public function show($id)
     {
-        //
+        $setad = SetadFee::findOrfail($id);
+        $order = Order::findOrfail($setad->order_id);
+        return view('panel.setad_fee.show', compact(['setad','order']));
     }
 
 
@@ -119,7 +148,6 @@ class  SetadFeeController extends Controller
         $setad = SetadFee::findOrfail($id);
         $order = Order::findOrfail($setad->order_id);
         return view('panel.setad_fee.edit', compact(['setad', 'order']));
-
     }
 
 
@@ -175,14 +203,6 @@ class  SetadFeeController extends Controller
         $setad->delete();
         return back();
 
-
-
-
-
-
-
-
-
     }
 
     public function search($orderCode)
@@ -190,7 +210,7 @@ class  SetadFeeController extends Controller
         $order = Order::where('code', $orderCode)->first();
 
         if ($order) {
-            $totalPrice = $this->calculateTotalPrice(json_decode($order->products));
+            $totalPrice = $this->calculateTotalPrice(json_decode($order->products,true));
 
             $data = [
                 'customer' => $order->customer->name,
@@ -281,21 +301,18 @@ class  SetadFeeController extends Controller
 
 
 
-    private function calculateTotalPrice($order)
+    private function calculateTotalPrice($products)
     {
         $totalPrice = 0;
+        if (!empty($products)) {
+            foreach ($products as $product) {
+                if (isset($product['total_prices'])) {
+                    $totalPrice += $product['total_prices'];
+                }
 
-
-        if (!empty($order->products)) {
-            foreach ($order->products as $product) {
-                $totalPrice += (int)$product->total_prices;
-            }
-        }
-
-
-        if (!empty($order->other_products)) {
-            foreach ($order->other_products as $otherProduct) {
-                $totalPrice += (int)$otherProduct->other_total_prices;
+                if (isset($product['other_total_prices'])) {
+                    $totalPrice += $product['other_total_prices'];
+                }
             }
         }
 

@@ -27,8 +27,9 @@ class StoreSetadFeeRequest extends FormRequest
             'order' => 'required|digits:8|exists:orders,code',
             'tracking_number' => 'required',
             'price' => 'required',
-            'shaba_number' => 'required',
+//            'shaba_number' => 'required',
             'description' => 'nullable',
+            'receipt'=>'nullable'
         ];
     }
     public function messages()
@@ -39,7 +40,7 @@ class StoreSetadFeeRequest extends FormRequest
             'order.digits' => 'شماره سفارش باید 8 رقمی باشد.',
             'tracking_number.required' => 'شماره پیگیری الزامی است.',
             'price.required' => 'مبلغ الزامی است.',
-            'shaba_number.required' => 'شماره شبا الزامی است.',
+//            'shaba_number.required' => 'شماره شبا الزامی است.',
         ];
     }
 }

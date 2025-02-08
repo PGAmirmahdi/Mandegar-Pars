@@ -76,8 +76,8 @@ class InventoryController extends Controller
     public function edit(Inventory $inventory)
     {
         $this->authorize('inventory-edit');
-
-        return view('panel.inventory.edit', compact('inventory'));
+        $warehouse_id = request()->get('warehouse_id');
+        return view('panel.inventory.edit', compact('inventory', 'warehouse_id'));
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)

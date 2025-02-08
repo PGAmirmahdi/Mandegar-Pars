@@ -150,9 +150,14 @@ class User extends Authenticatable
 
     public function fullName()
     {
-        return $this->name.' '.$this->family;
+        if ($this->gender == 'male') {
+            return 'آقای ' . $this->name . ' ' . $this->family;
+        } elseif ($this->gender == 'female') {
+            return 'خانم ' . $this->name . ' ' . $this->family;
+        } else {
+            return $this->name . ' ' . $this->family;
+        }
     }
-
     public function leaves()
     {
         return $this->hasMany(Leave::class);

@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </form>
-            <div class="table-responsive">
+            <div class="overflow-auto">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
                     <tr>

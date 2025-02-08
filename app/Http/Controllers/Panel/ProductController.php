@@ -75,7 +75,7 @@ class ProductController extends Controller
         $this->authorize('products-create');
 
         // جستجوی محصولات مشابه با استفاده از LIKE
-        $similarProduct = Product::where('category_id', $request->category)
+        $similarProduct = Product::where('category_id', $request->category)->where('brand_id', $request->brand)
             ->where('title', 'LIKE', '%' . $request->title . '%')
             ->first();
 
@@ -143,10 +143,11 @@ class ProductController extends Controller
     {
         $title = $request->input('title');
         $category_id = $request->input('category');
+        $brand_id = $request->input('brand');
 
 
         $product = Product::where('title', $title)
-            ->where('category_id', $category_id)
+            ->where('category_id', $category_id)->where('brand_id', $brand_id)
             ->first();
 
         if ($product) {

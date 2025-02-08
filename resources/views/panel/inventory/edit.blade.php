@@ -4,9 +4,9 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>ویرایش کالا</h6>
+                <h6> ویرایش کالا {{$inventory->product->title}}</h6>
             </div>
-            <form action="{{ route('inventory.update', $inventory->id) }}" method="post">
+            <form action="{{ route('inventory.update', [$inventory->id,'warehouse_id' => $warehouse_id]) }}" method="post">
                 @csrf
                 @method('PUT')
                 <div class="form-row">
@@ -22,5 +22,27 @@
             </form>
         </div>
     </div>
+    <script>
+        $('#submit_button').on('click', function () {
+            let button = $(this);
+            let dots = 0;
+
+            // غیرفعال کردن دکمه
+            button.prop('disabled', true).text('در حال ارسال');
+
+            // ایجاد افکت چشمک‌زن و تغییر نقطه‌ها
+            let interval = setInterval(() => {
+                dots = (dots + 1) % 4; // مقدار 0 تا 3
+                let text = 'در حال ارسال' + '.'.repeat(dots);
+                button.text(text).fadeOut(3000).fadeIn(3000); // افکت چشمک زدن
+            }, 6000);
+
+            // ارسال فرم به صورت خودکار
+            button.closest('form').submit();
+
+            // متوقف کردن افکت بعد از ارسال (اختیاری، چون صفحه معمولاً رفرش می‌شود)
+            setTimeout(() => clearInterval(interval), 10000);
+        });
+    </script>
 @endsection
 

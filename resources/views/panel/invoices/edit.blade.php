@@ -9,6 +9,11 @@
         #other_products_table input, #other_products_table select {
             width: auto;
         }
+
+        .no1 {
+            height: 10px;
+            visibility: hidden;
+        }
     </style>
 @endsection
 @section('content')
@@ -57,7 +62,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title d-flex justify-content-between align-items-center mb-5">
-                                <div class="w-100">
+                                <div class="w-100 no1">
                                     @if($invoice->status != 'invoiced')
                                         <div class="col-12 mb-4 text-center mt-5">
                                             <h4>درخواست برای</h4>
@@ -454,14 +459,17 @@
                                         </div>
                                     @endif
                                 </div>
-                                <button class="btn btn-primary float-start mx-1" type="submit" id="btn_form">ثبت فرم
-                                </button>
-
+                                <div class="w-100 row justify-content-start">
+                                    <button class="btn btn-primary float-start mx-1" type="submit" id="btn_form">ثبت فرم
+                                    </button>
+                                </div>
                             </form>
-                            <form action="{{ route('invoices.download') }}" method="post" class="">
+                            <form action="{{ route('invoices.download') }}" method="post"
+                                  class="w-100 row justify-content-end">
                                 @csrf
                                 <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
-                                <button class="btn btn-danger"><i class="fa fa-file-pdf me-2"></i>دانلود</button>
+                                <button class="btn btn-danger"><i class="fa fa-file-pdf mx-2"></i>دانلود
+                                </button>
                             </form>
                         </div>
                     </div>

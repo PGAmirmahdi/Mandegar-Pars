@@ -24,8 +24,8 @@ class CostController extends Controller
     public function create()
     {
         $this->authorize('costs-create');
-
-        return view('panel.costs.create');
+        $productId = null;
+        return view('panel.costs.create',compact('productId'));
     }
 
 
@@ -37,7 +37,7 @@ class CostController extends Controller
 
         $cost = new Cost();
         $cost->user_id = auth()->id();
-        $cost->product = $request->product;
+        $cost->product_id = $request->product;
         $cost->count = $request->count;
         $cost->price = $request->price;
         $cost->Logistic_price = $request->Logistic_price;
@@ -60,7 +60,8 @@ class CostController extends Controller
     public function edit(Cost $cost)
     {
         $this->authorize('costs-edit');
-        return view('panel.costs.edit', compact(['cost']));
+        $productId = null;
+        return view('panel.costs.edit', compact(['cost'],'productId'));
     }
 
     public function update(StoreCostRequest $request, Cost $cost)
@@ -70,7 +71,7 @@ class CostController extends Controller
         $additional_cost = ((int)$request->Logistic_price + (int)$request->other_price) / $request->count;
         $final_price = $additional_cost + (int)$request->price;
 
-        $cost->product = $request->product;
+        $cost->product_id = $request->product;
         $cost->count = $request->count;
         $cost->price = $request->price;
         $cost->Logistic_price = $request->Logistic_price;
@@ -90,7 +91,6 @@ class CostController extends Controller
         return redirect()->route('costs.index');
     }
 
-
     public function destroy(Cost $cost)
     {
         $this->authorize('costs-delete');
@@ -109,6 +109,20 @@ class CostController extends Controller
     public function exportExcel(Request $request)
     {
         return Excel::download(new \App\Exports\CostExport, 'costs.xlsx');
+    }
+
+    public function search(Request $request)
+    {
+        $query = Cost::query();
+
+        if ($request->product && $request->product !== 'all') {
+            $query->where('product_id', $request->product);
+        }
+
+        $costs = $query->paginate(10);
+        $products = \App\Models\Product::all();
+
+        return view('panel.costs.index', compact('costs', 'products'));
     }
 
 }

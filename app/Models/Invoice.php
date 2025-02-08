@@ -12,8 +12,7 @@ class Invoice extends Model
     protected $guarded = [];
 
     const STATUS = [
-        'order' => 'ثبت سفارش',
-        'orders' => 'ثبت سفارش ها',
+        'orders' => 'ثبت سفارش',
         'pending' => 'پیش فاکتور شده',
         'invoiced' => 'فاکتور شده',
 //        'return' => 'عودت داده شده',

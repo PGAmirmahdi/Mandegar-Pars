@@ -14,6 +14,10 @@
         #other_products_table input, #other_products_table select {
             width: auto;
         }
+        .no1{
+            height: 10px;
+            visibility: hidden;
+        }
     </style>
 @endsection
 @section('content')
@@ -34,7 +38,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title d-flex justify-content-between align-items-center mb-5">
-                                <div class="w-100">
+                                <div class="w-100 no1">
                                     <div class="col-12 mb-4 text-center mt-5">
                                         <h4>درخواست برای</h4>
                                     </div>
@@ -585,7 +589,7 @@
                 var inputVal = $(this).val().trim();
                 var processDesc = $('#process_desc');
                 if (inputVal === '') {
-                    $('#buyer_name, #economical_number, #national_number, #postal_code, #phone, #address, #province, #city').val('');
+                    $('#buyer_name, #economical_number, #national_number, #postal_code, #phone, #address, #province, #city, #description').val('');
                     $('#other_products_table tbody').empty();
                     processDesc.empty();
                     $('.sum_total_price').text('0').val('0');
@@ -615,6 +619,7 @@
             function handleResponse(response) {
                 var processDesc = $('#process_desc');
                 if (response.status === 'success') {
+                    $('#description').val(response.data.description)
                     $('#buyer_name').val(response.data.customer.name)
                     $('#buyer_id').val(response.data.customer.id)
                     $('#economical_number').val(response.data.customer.economical_number ?? 0)
@@ -630,7 +635,7 @@
                     add_products(response.data.order);
                     processDesc.html("<span class='text-success'>تایید ✓</span>");
                 } else {
-                    $('#buyer_name, #economical_number, #national_number, #postal_code, #phone, #address, #province, #city, #payment_type').val('');
+                    $('#buyer_name, #economical_number, #national_number, #postal_code, #phone, #address, #province, #city, #payment_type, #description').val('');
                     $('.sum_total_price').text('0').val('0');
                     $('.total_invoice').text('0').val('0');
                     $('#other_products_table tbody').empty();
