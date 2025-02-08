@@ -42,14 +42,12 @@
             <form action="{{ route('products.search') }}" method="get" id="search_form">
                 <div class="row mb-3">
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                        <label for="code">کد کالا</label>
                         <input type="text" name="code" class="form-control" placeholder="کد کالا"
                                value="{{ request()->code ?? null }}" form="search_form">
                     </div>
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-3">
-                        <label for="category">شرح کالا</label>
                         <select class="form-control" name="category" id="category">
-                            <option value="">انتخاب کنید</option>
+                            <option value="">شرح کالا(همه)</option>
                             @foreach(\App\Models\Category::all() as $category)
                                 <option value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
@@ -61,7 +59,7 @@
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-3">
                         <label for="brand">برند</label>
                         <select class="form-control" name="brand" id="brand">
-                            <option value="">انتخاب کنید</option>
+                            <option value="">برند(همه)</option>
                             @if(request()->category)
                                 @foreach(App\Models\ProductModel::where('category_id', request()->category)->get() as $productModel)
                                     <option value="{{ $productModel->id }}" {{ request()->brand == $productModel->id ? 'selected' : '' }}>{{ $productModel->name }}</option>

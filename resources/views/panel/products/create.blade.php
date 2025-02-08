@@ -332,7 +332,7 @@
         $('#title').on('input', debounce(function () {
             const title = $(this).val();
             const category = $('#category').val();
-
+            const brand = $('#brand').val();
             // پاک کردن پیام‌های قبلی
             $('#duplicateMessage').remove();
 
@@ -347,6 +347,7 @@
                 data: {
                     title: title,
                     category: category,
+                    brand:brand,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function (response) {
