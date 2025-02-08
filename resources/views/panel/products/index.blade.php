@@ -57,7 +57,6 @@
                         @enderror
                     </div>
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-3">
-                        <label for="brand">برند</label>
                         <select class="form-control" name="brand" id="brand">
                             <option value="">برند(همه)</option>
                             @if(request()->category)
@@ -71,7 +70,6 @@
                         @enderror
                     </div>
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                        <label for="product">مدل کالا</label>
                         <select name="product" form="search_form"
                                 class="js-example-basic-single select2-hidden-accessible"
                                 data-select2-id="3">
