@@ -21,13 +21,13 @@ class PacketController extends Controller
     {
         $this->authorize('packets-list');
 
-        if (auth()->user()->isAdmin() || auth()->user()->isCEO() || auth()->user()->isAccountant()){
+        // if (auth()->user()->isAdmin() || auth()->user()->isCEO() || auth()->user()->isAccountant()){
+        //     $packets = Packet::latest()->paginate(30);
+        //     $invoices = Invoice::with('customer')->latest()->get(['id','customer_id']);
+        // }else{
             $packets = Packet::latest()->paginate(30);
             $invoices = Invoice::with('customer')->latest()->get(['id','customer_id']);
-        }else{
-            $packets = Packet::where('user_id', auth()->id())->latest()->paginate(30);
-            $invoices = Invoice::with('customer')->latest()->get(['id','customer_id']);
-        }
+        // }
 
         return view('panel.packets.index', compact('packets', 'invoices'));
     }
