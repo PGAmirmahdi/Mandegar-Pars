@@ -64,7 +64,7 @@ class ArtinController extends Controller
         $this->authorize('artin-products-list');
 
         $page = $request->input('page', 1);
-        $response = Http::get('https://artintoner.com/wp-json/custom-api/v1/products', [
+        $response = Http::get('https://artintoner.com/wp-json/custom/v1/products/', [
             'page' => $page
         ]);
 
