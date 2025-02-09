@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use PDO;
 
@@ -26,90 +27,56 @@ class ArtinController extends Controller
         }
     }
 
-    public function products()
+//    public function products()
+//    {
+//        $this->authorize('artin-products-list');
+//
+//        try {
+//            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//
+//            // SQL query to fetch products with accounting code
+//            $sql = "SELECT mand_posts.id, mand_posts.post_date, mand_posts.post_title, mand_posts.post_status, mand_wc_product_meta_lookup.sku, mand_wc_product_meta_lookup.min_price, meta.meta_value AS code_accounting
+//                FROM mand_posts
+//                INNER JOIN mand_wc_product_meta_lookup ON mand_posts.id = mand_wc_product_meta_lookup.product_id
+//                LEFT JOIN mand_postmeta AS meta ON mand_posts.id = meta.post_id AND meta.meta_key = 'code_accounting'
+//                WHERE mand_posts.post_type = 'product'";
+//
+//            $stmt = $this->conn->prepare($sql);
+//            $stmt->execute();
+//            $stmt->setFetchMode(PDO::FETCH_OBJ);
+//            $products = $stmt->fetchAll(); // Fetch results as objects
+//
+//            if ($products === false) {
+//                return view('panel.artin.products', ['products' => []]); // Return empty array if no products
+//            }
+//
+//            $this->conn = null;
+//
+//            return view('panel.artin.products', compact('products')); // Pass products to view
+//        } catch(\PDOException $e) {
+//            return "Connection failed: " . $e->getMessage();
+//        }
+//    }
+
+//
+    public function products(Request $request)
     {
         $this->authorize('artin-products-list');
 
-        try {
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $page = $request->input('page', 1);
+        $response = Http::get('https://artintoner.com/wp-json/custom-api/v1/products', [
+            'page' => $page
+        ]);
 
-            // SQL query to fetch products with accounting code
-            $sql = "SELECT mand_posts.id, mand_posts.post_date, mand_posts.post_title, mand_posts.post_status, mand_wc_product_meta_lookup.sku, mand_wc_product_meta_lookup.min_price, meta.meta_value AS code_accounting
-                FROM mand_posts
-                INNER JOIN mand_wc_product_meta_lookup ON mand_posts.id = mand_wc_product_meta_lookup.product_id
-                LEFT JOIN mand_postmeta AS meta ON mand_posts.id = meta.post_id AND meta.meta_key = 'code_accounting'
-                WHERE mand_posts.post_type = 'product'";
-
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
-            $products = $stmt->fetchAll(); // Fetch results as objects
-
-            if ($products === false) {
-                return view('panel.artin.products', ['products' => []]); // Return empty array if no products
-            }
-
-            $this->conn = null;
-
-            return view('panel.artin.products', compact('products')); // Pass products to view
-        } catch(\PDOException $e) {
-            return "Connection failed: " . $e->getMessage();
+        if ($response->successful()) {
+            $products = collect($response->json())->map(function ($item) {
+                return (object)$item;
+            })->all();
+        } else {
+            dd('Error:', $response->status());
         }
-    }
 
-    public function updatePrice(Request $request)
-    {
-        $this->authorize('artin-products-edit');
-
-        $product_id = $request->product_id;
-        $price = $request->price;
-
-        try {
-            // اطمینان از وجود اتصال به پایگاه داده
-            if (!$this->conn) {
-                throw new \Exception("Database connection is not initialized.");
-            }
-
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // متد کمکی برای اجرای کوئری
-            $this->executeQuery(
-                "UPDATE mand_wc_product_meta_lookup SET min_price = :price, max_price = :price WHERE product_id = :product_id",
-                ['price' => $price, 'product_id' => $product_id]
-            );
-
-            $this->executeQuery(
-                "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id AND meta_key = '_regular_price'",
-                ['price' => $price, 'product_id' => $product_id]
-            );
-
-            $this->executeQuery(
-                "UPDATE mand_postmeta SET meta_value = :price WHERE post_id = :product_id AND meta_key = '_price'",
-                ['price' => $price, 'product_id' => $product_id]
-            );
-
-            // گرفتن نام محصول از پایگاه داده
-            $product_name = $this->fetchSingleColumn(
-                "SELECT post_title FROM mand_posts WHERE ID = :product_id",
-                ['product_id' => $product_id]
-            );
-
-            // ثبت فعالیت کاربر
-            Activity::create([
-                'user_id' => auth()->id(),
-                'action' => 'ویرایش قیمت محصول سایت',
-                'description' => 'کاربر ' . auth()->user()->family . ' قیمت محصول "' . $product_name . '" را ویرایش کرد.',
-            ]);
-
-            return back()->with('success', 'قیمت محصول با موفقیت به‌روزرسانی شد.');
-        } catch (\PDOException $e) {
-            // ثبت خطا در لاگ‌ها و نمایش پیام عمومی به کاربر
-            Log::error("Database error: " . $e->getMessage());
-            return back()->with('error', 'خطایی در به‌روزرسانی قیمت رخ داد.');
-        } catch (\Exception $e) {
-            Log::error("General error: " . $e->getMessage());
-            return back()->with('error', 'مشکلی رخ داد. لطفاً دوباره تلاش کنید.');
-        }
+        return view('panel.artin.products', compact(['products', 'page']));
     }
 
 // متد کمکی برای اجرای کوئری

@@ -357,7 +357,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::get('get-report-items/{report}', [ReportController::class, 'getItems'])->name('report.get-items');
 
     // Artin
-    Route::get('artin-products', [ArtinController::class, 'products'])->name('artin.products');
+    Route::match(['get', 'post'],'artin-products', [ArtinController::class, 'products'])->name('artin.products');
     Route::post('artin-products-update-price', [ArtinController::class, 'updatePrice'])->name('artin-products-update-price');
     Route::post('artin-products-store', [ArtinController::class, 'store'])->name('artin-products-store');
     Route::delete('artin-products-destroy/{id}', [ArtinController::class, 'destroy'])->name('artin-products-destroy');
@@ -378,11 +378,12 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Price Request
     Route::resource('price-requests', PriceRequestController::class);
 
-    // Setad Price Request
+    // Sale Price Request
     Route::resource('sale_price_requests', SalePriceRequestController::class);
     Route::get('sale_price_requests/action/{sale_price_request}', [SalePriceRequestController::class, 'action'])->name('sale_price_requests.action');
     Route::post('sale_price_requests/actionStore', [SalePriceRequestController::class, 'actionStore'])->name('sale_price_requests.actionStore');
     Route::post('/sale_price_requests/actionResult', [SalePriceRequestController::class, 'actionResult'])->name('sale_price_requests.actionResult');
+    Route::post('export_sale_price_requests', [SalePriceRequestController::class, 'export'])->name('export_sale_price_requests');
 
     // Cheque Request
     Route::resource('cheque', ChequeController::class);

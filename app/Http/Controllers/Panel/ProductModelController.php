@@ -14,11 +14,18 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductModelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('productsModel-list');
+        $query = ProductModel::query();
 
-        $productsModel = ProductModel::latest()->paginate(30);
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('slug', 'LIKE', "%{$search}%");
+        }
+
+        $productsModel = $query->paginate(10);
         return view('panel.productsModel.index', compact('productsModel'));
     }
 
