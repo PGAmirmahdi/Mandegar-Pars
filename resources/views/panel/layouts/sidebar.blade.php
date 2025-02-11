@@ -17,8 +17,8 @@
                     </a>
                 </li>
             @endcanany
-            @canany(['invoices-list','sale-reports-list','price-requests','buy-orders','buy-orders/comments/{id}','delivery-day','sale-price-requests'])
-                <li class="{{ active_sidebar(['sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}','orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','order-action/{order}','setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}','search/cost','costs/{cost}/accounting','costs','costs/create','costs/{cost}/edit','invoices','invoices/create','invoices/{invoice}/edit','search/invoices','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days','buy-orders/comments/{id}']) ? 'active' : '' }}"
+            @canany(['invoices-list','sale-reports-list','price-requests','buy-orders','buy-orders/comments/{id}','delivery-day','sale-price-requests','exchange'])
+                <li class="{{ active_sidebar(['exchange','exchange/details/{item}','sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}','orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','order-action/{order}','setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}','search/cost','costs/{cost}/accounting','costs','costs/create','costs/{cost}/edit','invoices','invoices/create','invoices/{invoice}/edit','search/invoices','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports','invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','delivery-days','buy-orders/comments/{id}']) ? 'active' : '' }}"
                     data-toggle="tooltip" title="سفارشات">
                     <a href="#navigationInvoices" title="سفارشات">
                         <i class="icon ti-shopping-cart"></i>
@@ -256,12 +256,18 @@
             @endcan
         </ul>
         <ul id="navigationInvoices"
-            class="{{ active_sidebar(['sale_price_requests/action/{sale_price_request}','sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}','orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','panel/customers/{customer}','order-action/{order}','setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}','search/cost','costs/{cost}/accounting','costs','costs/create','costs/{cost}/edit','invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','buy-orders/comments/{id}','delivery-days','cheque','cheque/create','cheque/{cheque}/edit','cheque/{cheque}']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['exchange','exchange/details/{item}','sale_price_requests/action/{sale_price_request}','sale_price_requests','sale_price_requests/create','sale_price_requests/{sale_price_request}/edit','sale_price_requests/{sale_price_request}','orders','orders/create','orders/{order}/edit','search/orders','order-action/{orders}','customer-orders-status/{orders}','panel/customers/{customer}','order-action/{order}','setad-fee','setad-fee/create','setad-fee/{order}/action','setad-fee/{setad_fee}/edit','setad-fee/{setad_fee}','search/cost','costs/{cost}/accounting','costs','costs/create','costs/{cost}/edit','invoices','invoices/create','invoices/{invoice}/edit','search/invoices','factors','factors/create','factors/{factor}/edit','search/factors','sale-reports','sale-reports/create','sale-reports/{sale_report}/edit','search/sale-reports', 'invoice-action/{invoice}','orders-status/{invoice}','price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}','buy-orders','buy-orders/create','buy-orders/{buy_order}/edit','buy-orders/{buy_order}','search/buy-orders','buy-orders/comments/{id}','delivery-days','cheque','cheque/create','cheque/{cheque}/edit','cheque/{cheque}']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">سفارشات</li>
             @can('costs-list')
                 <li>
                     <a class="{{ active_sidebar(['search/cost','costs/{cost}/accounting','costs','costs/create','costs/{cost}/edit']) ? 'active' : '' }}"
                        href="{{ route('costs.index') }}">بهای تمام شده</a>
+                </li>
+            @endcan
+            @can('exchange-list')
+                <li>
+                    <a class="{{ active_sidebar(['exchange','exchange/details/{item}']) ? 'active' : '' }}"
+                       href="{{ route('exchange.index') }}">قیمت ارزها</a>
                 </li>
             @endcan
             @can('invoices-list')

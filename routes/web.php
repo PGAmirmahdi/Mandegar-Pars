@@ -236,8 +236,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('coupons', CouponController::class)->except('show');
 
     // Exchange Price
-    Route::resource('exchange', ExchangeController::class)->except('show');
-    Route::get('/exchange/ohlc', [ExchangeController::class, 'ohlcSearch'])->name('exchange.ohlc');
+    Route::resource('exchange', ExchangeController::class)->except('show','edit','update','destroy');
     Route::get('/exchange/details/{item}', [ExchangeController::class, 'showDetails'])->name('exchange.details');
 
     // Packets

@@ -198,6 +198,7 @@ class PermissionSeeder extends Seeder
 //            'costs-delete' => 'حذف بهای تمام شده'
 
 //            'delivery-verify' => 'تایید تحویل مرسوله',
+        'exchange-list' => 'لیست ارز ها'
         ];
 
         foreach ($items as $key => $item)

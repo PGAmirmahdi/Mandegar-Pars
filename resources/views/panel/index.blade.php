@@ -240,16 +240,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="container">
-                        <h2 class="text-center">نمودار قیمت لحظه‌ای دلار</h2>
-                        <canvas id="line_chart_dollar_price"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
@@ -1574,77 +1564,6 @@
                         }
                     }
                 });
-            }
-        });
-        $(document).ready(function () {
-            if ($('#line_chart_dollar_price').length) {
-                var ctx = document.getElementById("line_chart_dollar_price").getContext('2d');
-                var dollarChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [],  // برچسب‌های محور X (زمان)
-                        datasets: [{
-                            label: "قیمت دلار (ریال)",
-                            borderColor: '#28a745',
-                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
-                            data: [],
-                            fill: true,
-                            tension: 0.2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            x: {
-                                title: { display: true, text: 'زمان' },
-                                ticks: { fontSize: 14, color: '#999' }
-                            },
-                            y: {
-                                title: { display: true, text: 'قیمت (ریال)' },
-                                ticks: {
-                                    beginAtZero: false,
-                                    fontSize: 14,
-                                    color: '#999',
-                                    callback: function (value) {
-                                        return value.toLocaleString('fa-IR') + ' ریال';
-                                    }
-                                }
-                            }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        return context.raw.toLocaleString('fa-IR') + ' ریال';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-
-                function fetchDollarPrice() {
-                    $.get('/api/dollar-price', function (data) {
-                        if (data.price) {
-                            dollarChart.data.labels.push(data.time);
-                            dollarChart.data.datasets[0].data.push(data.price);
-
-                            // نمایش فقط 10 مقدار آخر
-                            if (dollarChart.data.labels.length > 10) {
-                                dollarChart.data.labels.shift();
-                                dollarChart.data.datasets[0].data.shift();
-                            }
-
-                            dollarChart.update();
-                        }
-                    }).fail(function () {
-                        console.error("Error fetching dollar price.");
-                    });
-                }
-
-                // دریافت قیمت لحظه‌ای هر 5 ثانیه
-                setInterval(fetchDollarPrice, 5000);
-                fetchDollarPrice();
             }
         });
     </script>
