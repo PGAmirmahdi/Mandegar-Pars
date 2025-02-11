@@ -12,6 +12,15 @@
                     </a>
                 @endcan
             </div>
+            <form method="GET" action="{{ route('productsModel.index') }}" class="mb-3">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="جستجو برند..." value="{{ request('search') }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">جستجو</button>
+                    </div>
+                </div>
+            </form>
+
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>

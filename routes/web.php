@@ -19,6 +19,7 @@ use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\DebtorController;
 use App\Http\Controllers\Panel\DeliveryDayController;
+use App\Http\Controllers\Panel\ExchangeController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
 use App\Http\Controllers\Panel\FileController;
@@ -234,6 +235,10 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Coupons
     Route::resource('coupons', CouponController::class)->except('show');
 
+    // Exchange Price
+    Route::resource('exchange', ExchangeController::class)->except('show','edit','update','destroy');
+    Route::get('/exchange/details/{item}', [ExchangeController::class, 'showDetails'])->name('exchange.details');
+
     // Packets
     Route::resource('packets', PacketController::class)->except('show');
     Route::match(['get', 'post'], 'search/packets', [PacketController::class, 'search'])->name('packets.search');
@@ -372,11 +377,12 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Price Request
     Route::resource('price-requests', PriceRequestController::class);
 
-    // Setad Price Request
+    // Sale Price Request
     Route::resource('sale_price_requests', SalePriceRequestController::class);
     Route::get('sale_price_requests/action/{sale_price_request}', [SalePriceRequestController::class, 'action'])->name('sale_price_requests.action');
     Route::post('sale_price_requests/actionStore', [SalePriceRequestController::class, 'actionStore'])->name('sale_price_requests.actionStore');
     Route::post('/sale_price_requests/actionResult', [SalePriceRequestController::class, 'actionResult'])->name('sale_price_requests.actionResult');
+    Route::post('export_sale_price_requests', [SalePriceRequestController::class, 'export'])->name('export_sale_price_requests');
 
     // Cheque Request
     Route::resource('cheque', ChequeController::class);
@@ -413,7 +419,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Cost
     Route::resource('costs', CostController::class);
-    Route::post('excel/costs', [CostController::class, 'excel'])->name('costs.excel');
+    Route::post('excel/costs', [CostController::class, 'exportExcel'])->name('costs.excel');
+    Route::match(['get', 'post'], 'search/cost', [CostController::class, 'search'])->name('costs.search');
 
     // Sms
     Route::resource('sms', SMSController::class)->except('edit', 'update');

@@ -18,6 +18,7 @@
                         ? ' درخواست ' . auth()->user()->role->label
                         : 'درخواست های فروش' }}
                 </h6>
+                <div class="row">
                 @can('sale-price-requests-create')
                     <a href="{{ route('sale_price_requests.create') }}" class="btn btn-primary">
                         <h6>ثبت
@@ -31,6 +32,15 @@
                         <i class="fa fa-plus ml-2"></i>
                     </a>
                 @endcan
+                <form action="{{ route('export_sale_price_requests') }}" method="post" id="excel_form" class="mr-2">
+                    @csrf
+                </form>
+
+                <button class="btn btn-success" form="excel_form">
+                    <i class="fa fa-file-excel mr-2"></i>
+                    دریافت اکسل
+                </button>
+                </div>
             </div>
             <div class="modal fade" id="actionResultModal" tabindex="-1" aria-labelledby="actionResultModalLabel"
                  aria-hidden="true">

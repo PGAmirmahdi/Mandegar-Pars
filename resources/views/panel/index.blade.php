@@ -211,315 +211,161 @@
             @endif
         </div>
     </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">فیلتر گزارشات</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
-                                <label for="from_date">از تاریخ</label>
-                                <input type="text" name="from_date" class="form-control date-picker-shamsi-list"
-                                       id="from_date" value="{{ request()->from_date }}" form="search_form">
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
-                                <label for="to_date">تا تاریخ</label>
-                                <input type="text" name="to_date" class="form-control date-picker-shamsi-list"
-                                       id="to_date" value="{{ request()->to_date }}" form="search_form">
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
-                                <div style="height: 36px"></div>
-                                <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
-                            </div>
-                            <form action="{{ route('panel') }}" method="post" id="search_form">
-                                @csrf
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">گزارشات سفارش مشتری</h6>
-                            <h6 class="card-title m-b-20">مجموع: {{ number_format($invoices->sum('amount')) }}</h6>
-                        </div>
-                        <canvas id="bar_chart_sale1" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
-                            <h6 class="card-title m-b-20">مجموع: {{ number_format($factors->sum('amount')) }}</h6>
-                        </div>
-                        <canvas id="bar_chart_sale2" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار سفارشات محصولات</h6>
-                            <h6 class="card-title m-b-20">تعداد کل
-                                سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
-                        </div>
-                        <canvas id="bar_chart_product_orders" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title m-b-20">نمودار موجودی انبارها</h6>
-                        <canvas id="pie_chart_inventory" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار سفارشات مشتریان</h6>
-                            <h6 class="card-title m-b-20">تعداد کل
-                                سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
-                        </div>
-                        <canvas id="bar_chart_customer_orders" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار بازدید همکاران از MPSystem</h6>
-                            <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits) }}</h6>
-                        </div>
-                        <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">گزارشات ماهیانه (فاکتور)</h6>
-                            <select class="form-control mr-4" style="width: 140px" id="change_line_chart3">
-                                <option value="line">نمودار خطی</option>
-                                <option value="bar">نمودار ستونی</option>
-                            </select>
-                        </div>
-                        <div id="bar_chart_sale3_sec" class="d-none">
-                            <canvas id="bar_chart_sale3" style="width: auto"></canvas>
-                        </div>
-                        <div id="line_chart_sale3_sec" class="d-block">
-                            <canvas id="line_chart_sale3" style="width: auto"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @can('sms-list')
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="card-title m-b-20">آمار SMS‌های ارسال شده به تفکیک کاربر</h6>
-                            </div>
-                            <canvas id="sms_chart" style="width: auto;"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="card-title m-b-20">گزارشات SMS</h6>
-                                <h6 class="card-title m-b-20">مجموع SMS‌های ارسال
-                                    شده: {{ number_format($totalSmsSent) }}</h6>
-                            </div>
-                            <canvas id="bar_chart_sms_sent" style="width: auto"></canvas>
-                        </div>
-                    </div>
-                </div>
-            @endcan
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">موجودی محصولات در انبار</h6>
-                            <h6 class="card-title m-b-20">تعداد کل
-                                موجودی: {{ number_format($productCounts->sum()) }}</h6>
-                        </div>
-                        <canvas id="bar_chart_product_inventory" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            @can('activity-list')
-                <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                    <div class="card-body">
-                        <div class="card-title d-flex justify-content-between align-items-center">
-                            <h6>آخرین فعالیت ها</h6>
-                            <a class="btn btn-info" href="{{route('activity')}}">مشاهده بقیه فعالیت ها</a>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>نام کاربر</th>
-                                    <th>نوع فعالیت</th>
-                                    <th>توضیحات</th>
-                                    <th>تاریخ</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @forelse($activities as $key => $activity)
-                                    <tr>
-                                        <td>{{ ++$key }}</td>
-                                        <td>{{ $activity->user->name }}</td>
-                                        <td>{{ $activity->action }}</td>
-                                        <td>{{ \Illuminate\Support\Str::limit($activity->description, 50, '...') }}</td>
-                                        <td>{{ verta($activity->created_at)->format('H:i - Y/m/d') }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5">هیچ فعالیتی یافت نشد.</td>
-                                    </tr>
-                                @endforelse
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div
-                            class="d-flex justify-content-center">{{ $activities->appends(request()->all())->links() }}</div>
-                    </div>
-                </div>
-            @endcan
-            @can('sms-list')
-                <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                    <div class="card-body">
-                        <div class="card-title d-flex justify-content-between align-items-center">
-                            <h6>آمار پیامک‌های همکاران</h6>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>نام کاربر</th>
-                                    <th>تعداد SMS‌ها</th>
-                                    <th>آخرین ارسال</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($smsData as $key => $data)
-                                    @php
-                                        $user2 = $users2->find($data['user_id']);
-                                    @endphp
-                                    <tr>
-                                        <td>{{ ++$key }}</td>
-                                        <td>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</td>
-                                        <td>{{ $data['sms_count'] }}</td>
-                                        <td>{{ $data['last_sent_at'] }}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div
-                            class="d-flex justify-content-center">{{ $smsData->appends(request()->all())->links() }}</div>
-                    </div>
-                </div>
-            @endcan
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار شهر بازدیدکنندگان لینک ارسالی</h6>
-                            <h6 class="card-title m-b-20">مجموع بازدیدها: {{ $userVisits9->count() }}</h6>
-                        </div>
-                        <canvas id="bar_chart_user_visits3" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title m-b-20">آمار کلیک همکاران بر روی لینک ارسالی</h6>
-                            <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalRows) }}</h6>
-                        </div>
-                        <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <h6>لیست شهرهای کلیک کرده</h6>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>نام شهر</th>
-                            <th>آیپی کاربر</th>
-                            <th>زمان ورود</th>
-                            <th>پلتفرم کاربر</th>
-                            <th>مرورگر کاربر</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($bazdid as $key => $baz)
-                            <tr>
-                                <td>{{ ++$key }}</td>
-                                <td>{{ $baz->city}}</td>
-                                <td>{{ $baz->ip_address }}</td>
-                                <td>{{ verta($baz->created_at)->format('H:i - Y/m/d') }}</td>
-                                <td>{{ $baz->platform }}</td>
-                                <td>{{ $baz->browser }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div class="d-flex justify-content-center">{{ $bazdid->appends(request()->all())->links() }}</div>
-            </div>
-        </div>
-        <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12">
+    <div class="row">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">آمار قیمت و تعداد فاکتور همکاران</h6>
+                        <h6 class="card-title m-b-20">فیلتر گزارشات</h6>
                     </div>
-                    <canvas id="invoiceChart"></canvas>
+                    <div class="row">
+                        <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
+                            <label for="from_date">از تاریخ</label>
+                            <input type="text" name="from_date" class="form-control date-picker-shamsi-list"
+                                   id="from_date" value="{{ request()->from_date }}" form="search_form">
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
+                            <label for="to_date">تا تاریخ</label>
+                            <input type="text" name="to_date" class="form-control date-picker-shamsi-list"
+                                   id="to_date" value="{{ request()->to_date }}" form="search_form">
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-3 mb-3">
+                            <div style="height: 36px"></div>
+                            <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
+                        </div>
+                        <form action="{{ route('panel') }}" method="post" id="search_form">
+                            @csrf
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-        @can('UserVisit')
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">گزارشات سفارش مشتری</h6>
+                        <h6 class="card-title m-b-20">مجموع: {{ number_format($invoices->sum('amount')) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_sale1" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">گزارشات فاکتور</h6>
+                        <h6 class="card-title m-b-20">مجموع: {{ number_format($factors->sum('amount')) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_sale2" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار سفارشات محصولات</h6>
+                        <h6 class="card-title m-b-20">تعداد کل
+                            سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_product_orders" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title m-b-20">نمودار موجودی انبارها</h6>
+                    <canvas id="pie_chart_inventory" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار سفارشات مشتریان</h6>
+                        <h6 class="card-title m-b-20">تعداد کل
+                            سفارشات: {{ number_format($orderCounts->sum()) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_customer_orders" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار بازدید همکاران از MPSystem</h6>
+                        <h6 class="card-title m-b-20">مجموع بازدیدها: {{ number_format($totalVisits) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_user_visits" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">گزارشات ماهیانه (فاکتور)</h6>
+                        <select class="form-control mr-4" style="width: 140px" id="change_line_chart3">
+                            <option value="line">نمودار خطی</option>
+                            <option value="bar">نمودار ستونی</option>
+                        </select>
+                    </div>
+                    <div id="bar_chart_sale3_sec" class="d-none">
+                        <canvas id="bar_chart_sale3" style="width: auto"></canvas>
+                    </div>
+                    <div id="line_chart_sale3_sec" class="d-block">
+                        <canvas id="line_chart_sale3" style="width: auto"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @can('sms-list')
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title m-b-20">آمار SMS‌های ارسال شده به تفکیک کاربر</h6>
+                        </div>
+                        <canvas id="sms_chart" style="width: auto;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title m-b-20">گزارشات SMS</h6>
+                            <h6 class="card-title m-b-20">مجموع SMS‌های ارسال
+                                شده: {{ number_format($totalSmsSent) }}</h6>
+                        </div>
+                        <canvas id="bar_chart_sms_sent" style="width: auto"></canvas>
+                    </div>
+                </div>
+            </div>
+        @endcan
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">موجودی محصولات در انبار</h6>
+                        <h6 class="card-title m-b-20">تعداد کل
+                            موجودی: {{ number_format($productCounts->sum()) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_product_inventory" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+        @can('activity-list')
+            <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card-body">
                     <div class="card-title d-flex justify-content-between align-items-center">
-                        <h6>لیست بازدید همکاران</h6>
+                        <h6>آخرین فعالیت ها</h6>
+                        <a class="btn btn-info" href="{{route('activity')}}">مشاهده بقیه فعالیت ها</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered dataTable dtr-inline text-center">
@@ -527,21 +373,63 @@
                             <tr>
                                 <th>#</th>
                                 <th>نام کاربر</th>
-                                <th>آیپی کاربر</th>
-                                <th>شماره تلفن کاربر</th>
-                                <th>سمت کاربر</th>
-                                <th>زمان ورود</th>
+                                <th>نوع فعالیت</th>
+                                <th>توضیحات</th>
+                                <th>تاریخ</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($users as $key => $user)
+                            @forelse($activities as $key => $activity)
                                 <tr>
                                     <td>{{ ++$key }}</td>
-                                    <td>{{ $user->user->fullName() }}</td>
-                                    <td>{{ $user->ip_address }}</td>
-                                    <td>{{ $user->user->phone }}</td>
-                                    <td>{{ $user->user->role->label }}</td>
-                                    <td>{{ verta($user->created_at)->format('H:i - Y/m/d') }}</td>
+                                    <td>{{ $activity->user->name }}</td>
+                                    <td>{{ $activity->action }}</td>
+                                    <td>{{ \Illuminate\Support\Str::limit($activity->description, 50, '...') }}</td>
+                                    <td>{{ verta($activity->created_at)->format('H:i - Y/m/d') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5">هیچ فعالیتی یافت نشد.</td>
+                                </tr>
+                            @endforelse
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div
+                        class="d-flex justify-content-center">{{ $activities->appends(request()->all())->links() }}</div>
+                </div>
+            </div>
+        @endcan
+        @can('sms-list')
+            <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card-body">
+                    <div class="card-title d-flex justify-content-between align-items-center">
+                        <h6>آمار پیامک‌های همکاران</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>نام کاربر</th>
+                                <th>تعداد SMS‌ها</th>
+                                <th>آخرین ارسال</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($smsData as $key => $data)
+                                @php
+                                    $user2 = $users2->find($data['user_id']);
+                                @endphp
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</td>
+                                    <td>{{ $data['sms_count'] }}</td>
+                                    <td>{{ $data['last_sent_at'] }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -552,10 +440,122 @@
                         </table>
                     </div>
                     <div
-                        class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
+                        class="d-flex justify-content-center">{{ $smsData->appends(request()->all())->links() }}</div>
                 </div>
             </div>
         @endcan
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار شهر بازدیدکنندگان لینک ارسالی</h6>
+                        <h6 class="card-title m-b-20">مجموع بازدیدها: {{ $userVisits9->count() }}</h6>
+                    </div>
+                    <canvas id="bar_chart_user_visits3" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title m-b-20">آمار کلیک همکاران بر روی لینک ارسالی</h6>
+                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalRows) }}</h6>
+                    </div>
+                    <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title d-flex justify-content-between align-items-center">
+                <h6>لیست شهرهای کلیک کرده</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>نام شهر</th>
+                        <th>آیپی کاربر</th>
+                        <th>زمان ورود</th>
+                        <th>پلتفرم کاربر</th>
+                        <th>مرورگر کاربر</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($bazdid as $key => $baz)
+                        <tr>
+                            <td>{{ ++$key }}</td>
+                            <td>{{ $baz->city}}</td>
+                            <td>{{ $baz->ip_address }}</td>
+                            <td>{{ verta($baz->created_at)->format('H:i - Y/m/d') }}</td>
+                            <td>{{ $baz->platform }}</td>
+                            <td>{{ $baz->browser }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="d-flex justify-content-center">{{ $bazdid->appends(request()->all())->links() }}</div>
+        </div>
+    </div>
+    <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h6 class="card-title m-b-20">آمار قیمت و تعداد فاکتور همکاران</h6>
+                </div>
+                <canvas id="invoiceChart"></canvas>
+            </div>
+        </div>
+    </div>
+    @can('UserVisit')
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <h6>لیست بازدید همکاران</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered dataTable dtr-inline text-center">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نام کاربر</th>
+                            <th>آیپی کاربر</th>
+                            <th>شماره تلفن کاربر</th>
+                            <th>سمت کاربر</th>
+                            <th>زمان ورود</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($users as $key => $user)
+                            <tr>
+                                <td>{{ ++$key }}</td>
+                                <td>{{ $user->user->fullName() }}</td>
+                                <td>{{ $user->ip_address }}</td>
+                                <td>{{ $user->user->phone }}</td>
+                                <td>{{ $user->user->role->label }}</td>
+                                <td>{{ verta($user->created_at)->format('H:i - Y/m/d') }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div
+                    class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
+            </div>
+        </div>
+    @endcan
 @endsection
 @section('scripts')
     <script>
@@ -1562,69 +1562,6 @@
                                 }
                             }
                         }
-                    }
-                });
-            }
-        });
-        $(document).ready(function () {
-            if ($('#bar_chart_customer_orders').length) {
-                var ctx = document.getElementById("bar_chart_customer_orders").getContext('2d');
-
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: @json($customerNames),  // نام مشتریان به عنوان برچسب محور X
-                        datasets: [{
-                            label: "تعداد سفارشات",
-                            backgroundColor: '#28a745',  // رنگ پس‌زمینه
-                            data: @json($orderCounts2),  // تعداد سفارشات به عنوان داده‌های محور Y
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        legend: {
-                            display: false
-                        },
-                        scales: {
-                            x: {
-                                ticks: {
-                                    fontSize: 15,
-                                    color: '#999'
-                                },
-                                grid: {
-                                    display: false,
-                                }
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'تعداد',
-                                    fontSize: 18
-                                },
-                                ticks: {
-                                    beginAtZero: true,
-                                    fontSize: 15,
-                                    color: '#999',
-                                    callback: function (value) {
-                                        return value.toLocaleString('fa-IR');
-                                    }
-                                },
-                                grid: {
-                                    color: '#e8e8e8',
-                                }
-                            }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        var value = context.raw;
-                                        return value.toLocaleString('fa-IR') + ' سفارش';
-                                    }
-                                }
-                            }
-                        }
-
                     }
                 });
             }

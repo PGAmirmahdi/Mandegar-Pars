@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Exports\SalePriceRequestExport;
+use App\Exports\SalePriceRequestSetadExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSalePriceRequest;
 use App\Models\Activity;
@@ -15,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SalePriceRequestController extends Controller
 {
@@ -378,4 +381,13 @@ class SalePriceRequestController extends Controller
 
         return back();
     }
+    public function export()
+    {
+        if (!in_array(auth()->user()->role->name , ['setad_sale','admin','ceo'])) {
+            return Excel::download(new SalePriceRequestSetadExport(), 'setad_sale_price_requests.xlsx');
+        } else {
+            return Excel::download(new SalePriceRequestExport(), 'sale_price_requests.xlsx');
+        }
+    }
+
 }

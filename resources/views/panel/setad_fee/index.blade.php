@@ -22,7 +22,8 @@
                                 <div class="alert alert-info">
                                     <i class="fa fa-info-circle font-size-20 align-middle"></i>
                                     <strong>توجه!</strong>
-                                   برای پرداخت کارمزد سامانه ستاد مشخصات را از دکمه اقدام مشاهده کرده و سپس رسید پرداخت را به صورت فایل PDF آپلود کنید.
+                                    برای پرداخت کارمزد سامانه ستاد مشخصات را از دکمه اقدام مشاهده کرده و سپس رسید پرداخت
+                                    را به صورت فایل PDF آپلود کنید.
                                 </div>
                             @else
                                 <div class="alert alert-info">
@@ -35,14 +36,14 @@
 
                             <div class="card-title d-flex justify-content-end">
                                 <div>
-{{--                                    <form action="{{ route('orders.excel') }}" method="post" id="excel_form">--}}
-{{--                                        @csrf--}}
-{{--                                    </form>--}}
+                                    {{--                                    <form action="{{ route('orders.excel') }}" method="post" id="excel_form">--}}
+                                    {{--                                        @csrf--}}
+                                    {{--                                    </form>--}}
 
-{{--                                    <button class="btn btn-success" form="excel_form">--}}
-{{--                                        <i class="fa fa-file-excel mr-2"></i>--}}
-{{--                                        دریافت اکسل--}}
-{{--                                    </button>--}}
+                                    {{--                                    <button class="btn btn-success" form="excel_form">--}}
+                                    {{--                                        <i class="fa fa-file-excel mr-2"></i>--}}
+                                    {{--                                        دریافت اکسل--}}
+                                    {{--                                    </button>--}}
 
                                     @can('setad-fee-create')
                                         @cannot('accountant')
@@ -92,10 +93,10 @@
                                             <th>همکار</th>
                                         @endcanany
                                         <th>تاریخ ایجاد</th>
-                                        @canany(['accountant','sales-manager'])
-                                            <th>اقدام</th>
-                                        @endcanany
-
+                                        {{--                                        @canany(['accountant','sales-manager'])--}}
+                                        {{--                                            <th>اقدام</th>--}}
+                                        {{--                                        @endcanany--}}
+                                        <th>مشاهده جزئیات</th>
                                         @cannot('accountant')
                                             @can('setad-fee-edit')
                                                 <th>ویرایش</th>
@@ -120,7 +121,9 @@
                                                     $highlightedNumber = str_ireplace($search, "<span class='bg-warning'>" . $search . "</span>", $highlightedNumber);
                                                 }
                                             @endphp
-                                            <td><a href="/panel/orders?code={{$setad->order->code}}">{!! $highlightedNumber !!}</a></td>
+                                            <td>
+                                                <a href="/panel/orders?code={{$setad->order->code}}">{!! $highlightedNumber !!}</a>
+                                            </td>
                                             @php
                                                 $highlightedNumber2 = $setad->tracking_number ?? '---';
                                                 if ($tracking_number) {
@@ -137,27 +140,32 @@
                                                 <td>{{ $setad->user->fullName() }}</td>
                                             @endcanany
                                             <td>{{ verta($setad->created_at)->format('H:i - Y/m/d') }}</td>
-                                            @canany(['accountant', 'sales-manager'])
-                                                <td>
-                                                    @php
-                                                        $isDisabled = false;
-                                                        if (!auth()->user()->isAccountant()) {
-                                                            $isDisabled = $setad->status == 'pending';
-                                                        }
-                                                    @endphp
-                                                    <a class="btn btn-primary btn-floating {{ $isDisabled ? 'disabled' : '' }}"
-                                                       href="{{ route('setad-fee.action', $setad->id) }}">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                </td>
-                                            @endcanany
-
-                                        @cannot('accountant')
+                                            {{--                                            @canany(['accountant', 'sales-manager'])--}}
+                                            {{--                                                <td>--}}
+                                            {{--                                                    @php--}}
+                                            {{--                                                        $isDisabled = false;--}}
+                                            {{--                                                        if (!auth()->user()->isAccountant()) {--}}
+                                            {{--                                                            $isDisabled = $setad->status == 'pending';--}}
+                                            {{--                                                        }--}}
+                                            {{--                                                    @endphp--}}
+                                            {{--                                                    <a class="btn btn-primary btn-floating {{ $isDisabled ? 'disabled' : '' }}"--}}
+                                            {{--                                                       href="{{ route('setad-fee.action', $setad->id) }}">--}}
+                                            {{--                                                        <i class="fa fa-edit"></i>--}}
+                                            {{--                                                    </a>--}}
+                                            {{--                                                </td>--}}
+                                            {{--                                            @endcanany--}}
+                                            <td>
+                                                <a class="btn btn-info btn-floating"
+                                                   href="{{ route('setad-fee.show', $setad->id) }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </td>
+                                            @cannot('accountant')
                                                 @can('sales-manager')
                                                     @can('setad-fee-edit')
                                                         <td>
                                                             <a class="btn btn-warning btn-floating {{ $setad->status == 'approved' ? 'disabled' : '' }}"
-                                                               href="{{ route('setad-fee.edit', $setad->id) }}" >
+                                                               href="{{ route('setad-fee.edit', $setad->id) }}">
                                                                 <i class="fa fa-edit"></i>
                                                             </a>
                                                         </td>
@@ -280,7 +288,7 @@
                             </div>
                         `;
 
-                           const stageTemplate = `
+                            const stageTemplate = `
                             ${progressBar}
                             <div class="timeline-stage stage-left d-flex align-items-center">
                                 <div class="rounded-circle ${stageClass} text-white stage-circle me-2">${icon}</div>

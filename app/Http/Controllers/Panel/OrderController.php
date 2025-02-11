@@ -505,7 +505,7 @@ class OrderController extends Controller
         $mergedProducts = [];
 
         if ($order) {
-            $decodedProducts = json_decode($order->products, true); // تبدیل به آرایه
+            $decodedProducts = json_decode($order->products, true);
 
             $total_price = $this->calculateTotal($decodedProducts);
 
@@ -531,6 +531,7 @@ class OrderController extends Controller
                 'created_in'=> $order->created_in,
                 'order' => $mergedProducts,
                 'total_price' => $total_price,
+                'description' => $order->description,
             ];
 
             $response = [

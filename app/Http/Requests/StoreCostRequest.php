@@ -25,7 +25,6 @@ class StoreCostRequest extends FormRequest
     {
         return [
             'product'=>'required',
-            'final_price'=>'required',
             'other_price'=>'required',
             'Logistic_price'=>'required',
             'price'=>'required',
@@ -36,7 +35,6 @@ class StoreCostRequest extends FormRequest
     {
         return [
             'product.required'=>'فیلد محصولات الزامی است.',
-            'final_price.required'=>'فیلد قیمت نهایی الزامی است.',
             'other_price.required'=>'فیلد قیمت اضافی الزامی است.',
             'Logistic_price.required'=>'فیلد هزینه ارسال الزامی است.',
             'price.required'=>'فیلد قیمت الزامی است.',
