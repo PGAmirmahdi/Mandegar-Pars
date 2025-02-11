@@ -15,6 +15,11 @@
             $title = 'محصولات ایمالز';
         @endphp
     @break
+    @case('royzkala')
+        @php
+            $title = 'محصولات رویزکالا';
+        @endphp
+    @break
 @endswitch
 
 @section('title', $title)
@@ -158,6 +163,9 @@
                         break;
                     case 'emalls':
                         emallsChart();
+                        break;
+                    case 'royzkala':
+                        royzkalaChart();
                         break;
                 }
             })
@@ -348,6 +356,16 @@
             }
 
             function emallsChart() {
+                $.ajax({
+                    url: `/panel/off-site-product-history/${website}/${id}`,
+                    type: 'get',
+                    success: function (res) {
+                        window.open(`https://emalls.ir/chartshow.aspx?id=${res.data}`);
+                    }
+                })
+            }
+
+            function royzkalaChart() {
                 $.ajax({
                     url: `/panel/off-site-product-history/${website}/${id}`,
                     type: 'get',

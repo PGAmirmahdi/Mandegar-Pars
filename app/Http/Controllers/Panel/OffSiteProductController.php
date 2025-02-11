@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\OffSiteProduct;
+use DOMDocument;
+use DOMXPath;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mpdf\Tag\P;
@@ -40,6 +42,9 @@ class OffSiteProductController extends Controller
             case 'digikala':
                 $this->digikalaStore($request);
                 break;
+            case 'royzkala':
+                $this->royzkalaStore($request);
+                break;
             default:
                 return back();
         }
@@ -65,6 +70,8 @@ class OffSiteProductController extends Controller
                 return $this->emalls($offSiteProduct->url);
             case 'digikala':
                 return $this->digikala($offSiteProduct->url);
+            case 'royzkala':
+                return $this->royzkala($offSiteProduct->url);
             default:
                 return '';
         }
@@ -287,6 +294,41 @@ class OffSiteProductController extends Controller
         return view('panel.off-site-products.emalls', compact('data'));
     }
 
+    private function royzkala($url)
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://royzkala.com/product/hp-150a-black-cartridge/');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+
+//        $r = html_entity_decode('[{&quot;attributes&quot;:{&quot;attribute_pa_cartridge14&quot;:&quot;%d8%b7%d8%b1%d8%ad&quot;,&quot;attribute_pa_coloring&quot;:&quot;%d9%85%d8%b4%da%a9%db%8c&quot;,&quot;attribute_pa_warranty&quot;:&quot;%da%af%d8%a7%d8%b1%d8%a7%d9%86%d8%aa%db%8c-%d8%b3%d9%84%d8%a7%d9%85%d8%aa-%d9%81%db%8c%d8%b2%db%8c%da%a9%db%8c&quot;},&quot;availability_html&quot;:&quot;&quot;,&quot;backorders_allowed&quot;:false,&quot;dimensions&quot;:{&quot;length&quot;:&quot;&quot;,&quot;width&quot;:&quot;&quot;,&quot;height&quot;:&quot;&quot;},&quot;dimensions_html&quot;:&quot;\u0646\u0627\u0645\u0639\u0644\u0648\u0645&quot;,&quot;display_price&quot;:1690000,&quot;display_regular_price&quot;:1690000,&quot;image&quot;:{&quot;title&quot;:&quot;HP 150A Black cartridge&quot;,&quot;caption&quot;:&quot;&quot;,&quot;url&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge.jpg&quot;,&quot;alt&quot;:&quot;\u06a9\u0627\u0631\u062a\u0631\u06cc\u062c \u0644\u06cc\u0632\u0631\u06cc \u0645\u062f\u0644 150A \u0645\u0634\u06a9\u06cc \u0627\u0686 \u067e\u06cc&quot;,&quot;src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-600x600.jpg&quot;,&quot;srcset&quot;:false,&quot;sizes&quot;:[],&quot;full_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge.jpg&quot;,&quot;full_src_w&quot;:950,&quot;full_src_h&quot;:950,&quot;gallery_thumbnail_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-100x100.jpg&quot;,&quot;gallery_thumbnail_src_w&quot;:100,&quot;gallery_thumbnail_src_h&quot;:100,&quot;thumb_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-220x220.jpg&quot;,&quot;thumb_src_w&quot;:220,&quot;thumb_src_h&quot;:220,&quot;src_w&quot;:600,&quot;src_h&quot;:600},&quot;image_id&quot;:65776,&quot;is_downloadable&quot;:false,&quot;is_in_stock&quot;:true,&quot;is_purchasable&quot;:true,&quot;is_sold_individually&quot;:&quot;no&quot;,&quot;is_virtual&quot;:false,&quot;max_qty&quot;:1000,&quot;min_qty&quot;:1,&quot;price_html&quot;:&quot;&lt;span class=\&quot;price\&quot;&gt;&lt;span class=\&quot;woocommerce-Price-amount amount\&quot;&gt;&lt;bdi&gt;1,690,000&amp;nbsp;&lt;span class=\&quot;woocommerce-Price-currencySymbol\&quot;&gt;\u062a\u0648\u0645\u0627\u0646&lt;\/span&gt;&lt;\/bdi&gt;&lt;\/span&gt;&lt;\/span&gt;&quot;,&quot;sku&quot;:&quot;14011117&quot;,&quot;variation_description&quot;:&quot;&quot;,&quot;variation_id&quot;:98134,&quot;variation_is_active&quot;:true,&quot;variation_is_visible&quot;:true,&quot;weight&quot;:&quot;&quot;,&quot;weight_html&quot;:&quot;\u0646\u0627\u0645\u0639\u0644\u0648\u0645&quot;,&quot;step&quot;:1},{&quot;attributes&quot;:{&quot;attribute_pa_cartridge14&quot;:&quot;%d8%b4%d8%b1%da%a9%d8%aa%db%8c-%d8%a8%d8%a7-%da%af%d8%a7%d8%b1%d8%a7%d9%86%d8%aa%db%8c-%d8%b1%d9%88%db%8c%d8%b2-%da%a9%d8%a7%d9%84%d8%a7&quot;,&quot;attribute_pa_coloring&quot;:&quot;%d9%85%d8%b4%da%a9%db%8c&quot;,&quot;attribute_pa_warranty&quot;:&quot;%da%af%d8%a7%d8%b1%d8%a7%d9%86%d8%aa%db%8c-%d8%b3%d9%84%d8%a7%d9%85%d8%aa-%d9%81%db%8c%d8%b2%db%8c%da%a9%db%8c&quot;},&quot;availability_html&quot;:&quot;&quot;,&quot;backorders_allowed&quot;:false,&quot;dimensions&quot;:{&quot;length&quot;:&quot;&quot;,&quot;width&quot;:&quot;&quot;,&quot;height&quot;:&quot;&quot;},&quot;dimensions_html&quot;:&quot;\u0646\u0627\u0645\u0639\u0644\u0648\u0645&quot;,&quot;display_price&quot;:2490000,&quot;display_regular_price&quot;:2490000,&quot;image&quot;:{&quot;title&quot;:&quot;HP 150A Black cartridge&quot;,&quot;caption&quot;:&quot;&quot;,&quot;url&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge.jpg&quot;,&quot;alt&quot;:&quot;\u06a9\u0627\u0631\u062a\u0631\u06cc\u062c \u0644\u06cc\u0632\u0631\u06cc \u0645\u062f\u0644 150A \u0645\u0634\u06a9\u06cc \u0627\u0686 \u067e\u06cc&quot;,&quot;src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-600x600.jpg&quot;,&quot;srcset&quot;:false,&quot;sizes&quot;:[],&quot;full_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge.jpg&quot;,&quot;full_src_w&quot;:950,&quot;full_src_h&quot;:950,&quot;gallery_thumbnail_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-100x100.jpg&quot;,&quot;gallery_thumbnail_src_w&quot;:100,&quot;gallery_thumbnail_src_h&quot;:100,&quot;thumb_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-220x220.jpg&quot;,&quot;thumb_src_w&quot;:220,&quot;thumb_src_h&quot;:220,&quot;src_w&quot;:600,&quot;src_h&quot;:600},&quot;image_id&quot;:65776,&quot;is_downloadable&quot;:false,&quot;is_in_stock&quot;:true,&quot;is_purchasable&quot;:true,&quot;is_sold_individually&quot;:&quot;no&quot;,&quot;is_virtual&quot;:false,&quot;max_qty&quot;:1000,&quot;min_qty&quot;:1,&quot;price_html&quot;:&quot;&lt;span class=\&quot;price\&quot;&gt;&lt;span class=\&quot;woocommerce-Price-amount amount\&quot;&gt;&lt;bdi&gt;2,490,000&amp;nbsp;&lt;span class=\&quot;woocommerce-Price-currencySymbol\&quot;&gt;\u062a\u0648\u0645\u0627\u0646&lt;\/span&gt;&lt;\/bdi&gt;&lt;\/span&gt;&lt;\/span&gt;&quot;,&quot;sku&quot;:&quot;14011117&quot;,&quot;variation_description&quot;:&quot;&quot;,&quot;variation_id&quot;:65778,&quot;variation_is_active&quot;:true,&quot;variation_is_visible&quot;:true,&quot;weight&quot;:&quot;&quot;,&quot;weight_html&quot;:&quot;\u0646\u0627\u0645\u0639\u0644\u0648\u0645&quot;,&quot;step&quot;:1},{&quot;attributes&quot;:{&quot;attribute_pa_cartridge14&quot;:&quot;%d8%a7%d9%88%d8%b1%d8%ac%db%8c%d9%86%d8%a7%d9%84&quot;,&quot;attribute_pa_coloring&quot;:&quot;%d9%85%d8%b4%da%a9%db%8c&quot;,&quot;attribute_pa_warranty&quot;:&quot;%da%af%d8%a7%d8%b1%d8%a7%d9%86%d8%aa%db%8c-%d8%b3%d9%84%d8%a7%d9%85%d8%aa-%d9%81%db%8c%d8%b2%db%8c%da%a9%db%8c&quot;},&quot;availability_html&quot;:&quot;&quot;,&quot;backorders_allowed&quot;:false,&quot;dimensions&quot;:{&quot;length&quot;:&quot;&quot;,&quot;width&quot;:&quot;&quot;,&quot;height&quot;:&quot;&quot;},&quot;dimensions_html&quot;:&quot;\u0646\u0627\u0645\u0639\u0644\u0648\u0645&quot;,&quot;display_price&quot;:4690000,&quot;display_regular_price&quot;:4690000,&quot;image&quot;:{&quot;title&quot;:&quot;HP 150A Black cartridge&quot;,&quot;caption&quot;:&quot;&quot;,&quot;url&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge.jpg&quot;,&quot;alt&quot;:&quot;\u06a9\u0627\u0631\u062a\u0631\u06cc\u062c \u0644\u06cc\u0632\u0631\u06cc \u0645\u062f\u0644 150A \u0645\u0634\u06a9\u06cc \u0627\u0686 \u067e\u06cc&quot;,&quot;src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-600x600.jpg&quot;,&quot;srcset&quot;:false,&quot;sizes&quot;:[],&quot;full_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge.jpg&quot;,&quot;full_src_w&quot;:950,&quot;full_src_h&quot;:950,&quot;gallery_thumbnail_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-100x100.jpg&quot;,&quot;gallery_thumbnail_src_w&quot;:100,&quot;gallery_thumbnail_src_h&quot;:100,&quot;thumb_src&quot;:&quot;https:\/\/royzkala.com\/wp-content\/uploads\/2022\/05\/HP-150A-Black-cartridge-220x220.jpg&quot;,&quot;thumb_src_w&quot;:220,&quot;thumb_src_h&quot;:220,&quot;src_w&quot;:600,&quot;src_h&quot;:600},&quot;image_id&quot;:65776,&quot;is_downloadable&quot;:false,&quot;is_in_stock&quot;:true,&quot;is_purchasable&quot;:true,&quot;is_sold_individually&quot;:&quot;no&quot;,&quot;is_virtual&quot;:false,&quot;max_qty&quot;:1000,&quot;min_qty&quot;:1,&quot;price_html&quot;:&quot;&lt;span class=\&quot;price\&quot;&gt;&lt;span class=\&quot;woocommerce-Price-amount amount\&quot;&gt;&lt;bdi&gt;4,690,000&amp;nbsp;&lt;span class=\&quot;woocommerce-Price-currencySymbol\&quot;&gt;\u062a\u0648\u0645\u0627\u0646&lt;\/span&gt;&lt;\/bdi&gt;&lt;\/span&gt;&lt;\/span&gt;&quot;,&quot;sku&quot;:&quot;14011117&quot;,&quot;variation_description&quot;:&quot;&quot;,&quot;variation_id&quot;:65779,&quot;variation_is_active&quot;:true,&quot;variation_is_visible&quot;:true,&quot;weight&quot;:&quot;&quot;,&quot;weight_html&quot;:&quot;\u0646\u0627\u0645\u0639\u0644\u0648\u0645&quot;,&quot;step&quot;:1}]');
+//        dd(json_decode($r));
+        $dom = new DOMDocument();
+        $dom->validateOnParse = true;
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $response);
+
+        $xpath = new DOMXPath($dom);
+        $classname = "variations_form cart";
+        $rows = $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+
+        dd($rows->item(0)->getAttribute('data-product_variations'));
+        foreach ($rows as $row) {
+            dump($row->getAttribute('class'));
+        }
+        dd('end');
+        $data = collect(json_decode($response));
+
+        return view('panel.off-site-products.royzkala', compact('data'));
+    }
+
     private function publicStore($request)
     {
         $request->validate([
@@ -363,6 +405,21 @@ class OffSiteProductController extends Controller
         OffSiteProduct::create([
             'title' => $request->title,
             'url' => "https://api.digikala.com/v2/product/$request->code/",
+            'website' => $request->website,
+        ]);
+    }
+
+    private function royzkalaStore($request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'url' => 'required',
+        ]);
+
+
+        OffSiteProduct::create([
+            'title' => $request->title,
+            'url' => $request->url,
             'website' => $request->website,
         ]);
     }
