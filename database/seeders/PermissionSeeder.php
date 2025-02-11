@@ -187,15 +187,17 @@ class PermissionSeeder extends Seeder
 //            'analyse-delete' => 'حذف آنالیز',
 //            'analyse-edit' => 'ویرایش آنالیز'
 
-        'suppliers-list' => 'لیست تامین کنندگان',
-            'suppliers-create' => 'ایجاد تامین کننده',
-            'suppliers-edit' => 'ویرایش تامین کننده',
-            'suppliers-delete' => 'حذف تامین کننده',
+//        'suppliers-list' => 'لیست تامین کنندگان',
+//            'suppliers-create' => 'ایجاد تامین کننده',
+//            'suppliers-edit' => 'ویرایش تامین کننده',
+//            'suppliers-delete' => 'حذف تامین کننده',
+//
+//            'costs-list' => 'لیست بهای تمام شده',
+//            'costs-create' => 'ایجاد بهای تمام شده',
+//            'costs-edit' => 'ویرایش بهای تمام شده',
+//            'costs-delete' => 'حذف بهای تمام شده'
 
-            'costs-list' => 'لیست بهای تمام شده',
-            'costs-create' => 'ایجاد بهای تمام شده',
-            'costs-edit' => 'ویرایش بهای تمام شده',
-            'costs-delete' => 'حذف بهای تمام شده'
+//            'delivery-verify' => 'تایید تحویل مرسوله',
         ];
 
         foreach ($items as $key => $item)

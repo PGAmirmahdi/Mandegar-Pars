@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\OffSiteProduct;
+use DOMDocument;
+use DOMXPath;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mpdf\Tag\P;
@@ -40,6 +42,9 @@ class OffSiteProductController extends Controller
             case 'digikala':
                 $this->digikalaStore($request);
                 break;
+            case 'royzkala':
+                $this->royzkalaStore($request);
+                break;
             default:
                 return back();
         }
@@ -65,6 +70,8 @@ class OffSiteProductController extends Controller
                 return $this->emalls($offSiteProduct->url);
             case 'digikala':
                 return $this->digikala($offSiteProduct->url);
+            case 'royzkala':
+                return $this->royzkala($offSiteProduct->url);
             default:
                 return '';
         }
@@ -90,6 +97,9 @@ class OffSiteProductController extends Controller
                 break;
             case 'digikala':
                 $this->digikalaUpdate($offSiteProduct, $request);
+                break;
+            case 'royzkala':
+                $this->publicUpdate($offSiteProduct, $request);
                 break;
             default:
                 return back();
@@ -287,6 +297,35 @@ class OffSiteProductController extends Controller
         return view('panel.off-site-products.emalls', compact('data'));
     }
 
+    private function royzkala($url)
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+
+        $dom = new DOMDocument();
+        $dom->validateOnParse = true;
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $response);
+
+        $xpath = new DOMXPath($dom);
+        $classname = "variations_form cart";
+        $rows = $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+
+        $response = html_entity_decode($rows->item(0)->getAttribute('data-product_variations'));
+        $data = collect(json_decode($response));
+
+        return view('panel.off-site-products.royzkala', compact('data'));
+    }
+
     private function publicStore($request)
     {
         $request->validate([
@@ -363,6 +402,21 @@ class OffSiteProductController extends Controller
         OffSiteProduct::create([
             'title' => $request->title,
             'url' => "https://api.digikala.com/v2/product/$request->code/",
+            'website' => $request->website,
+        ]);
+    }
+
+    private function royzkalaStore($request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'url' => 'required',
+        ]);
+
+
+        OffSiteProduct::create([
+            'title' => $request->title,
+            'url' => $request->url,
             'website' => $request->website,
         ]);
     }

@@ -85,6 +85,7 @@
                         <th>آدرس</th>
                         <th>شماره سفارش</th>
                         <th>نوع ارسال</th>
+                        <th>احراز توسط مشتری</th>
                         <th>وضعیت بسته</th>
                         <th>وضعیت فاکتور</th>
                         <th>زمان ارسال</th>
@@ -108,6 +109,13 @@
                                 <strong><u><a href="{{ route('invoices.show', [$packet->invoice_id, 'type' => 'pishfactor']) }}" class="text-primary" target="_blank">{{ $packet->invoice_id }}</a></u></strong>
                             </td>
                             <td>{{ \App\Models\Packet::SENT_TYPE[$packet->sent_type] }}</td>
+                            <td>
+                                @if($packet->delivery_verify == 'confirmed')
+                                    <span class="badge badge-success">{{ \App\Models\Packet::DELIVERY_VERIFY[$packet->delivery_verify] }}</span>
+                                @else
+                                    <span class="badge badge-warning">{{ \App\Models\Packet::DELIVERY_VERIFY[$packet->delivery_verify] }}</span>
+                                @endif
+                            </td>
                             <td>
                                 @if($packet->packet_status == 'delivered')
                                     <span class="badge badge-success">{{ \App\Models\Packet::PACKET_STATUS[$packet->packet_status] }}</span>
