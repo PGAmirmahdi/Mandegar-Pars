@@ -98,6 +98,9 @@ class OffSiteProductController extends Controller
             case 'digikala':
                 $this->digikalaUpdate($offSiteProduct, $request);
                 break;
+            case 'royzkala':
+                $this->publicUpdate($offSiteProduct, $request);
+                break;
             default:
                 return back();
         }
@@ -298,9 +301,9 @@ class OffSiteProductController extends Controller
     {
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, 'https://royzkala.com/product/hp-150a-black-cartridge/');
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, 1);
 
         $response = curl_exec($ch);

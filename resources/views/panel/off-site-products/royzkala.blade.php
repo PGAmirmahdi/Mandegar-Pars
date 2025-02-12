@@ -11,7 +11,8 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>نوع کارتریج</th>
+                        <th>خصوصیات</th>
+                        <th>قیمت اصلی</th>
                         <th>قیمت <span class="text-success">(30،000+)</span></th>
                     </tr>
                     </thead>
@@ -19,8 +20,13 @@
                     @foreach($data as $key => $item)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ urldecode($item->attributes->attribute_pa_cartridge14) }}</td>
+                            <td>
+                                @foreach($item->attributes as $attribute)
+                                    {{ urldecode($attribute).' ،' }}
+                                @endforeach
+                            </td>
                             <td>{{ number_format($item->display_price) }} تومان</td>
+                            <td>{{ number_format($item->display_price + 30000) }} تومان</td>
                         </tr>
                     @endforeach
                     </tbody>
