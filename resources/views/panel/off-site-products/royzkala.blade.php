@@ -1,10 +1,10 @@
 @extends('panel.layouts.master')
-@section('title', 'وبسایت رویز کالا')
+@section('title', 'وبسایت رویزکالا')
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>وبسایت رویز کالا</h6>
+                <h6>وبسایت رویزکالا</h6>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
