@@ -18,7 +18,7 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    @if($offSiteProduct->website == 'torob' || $offSiteProduct->website == 'emalls' || $offSiteProduct->website == 'royzkala')
+                    @if($offSiteProduct->website == 'torob' || $offSiteProduct->website == 'emalls' || $offSiteProduct->website == 'royzkala' || $offSiteProduct->website == 'ariaprint')
                         <div class="col-xl-4 col-lg-4 col-md-4 mb-3">
                             <label for="url">لینک صفحه (URL)<span class="text-danger">*</span></label>
                             <input type="url" name="url" class="form-control" id="url" value="{{ $offSiteProduct->url }}">

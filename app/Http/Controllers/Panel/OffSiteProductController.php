@@ -43,7 +43,10 @@ class OffSiteProductController extends Controller
                 $this->digikalaStore($request);
                 break;
             case 'royzkala':
-                $this->royzkalaStore($request);
+                $this->publicStore($request);
+                break;
+            case 'ariaprint':
+                $this->publicStore($request);
                 break;
             default:
                 return back();
@@ -72,6 +75,8 @@ class OffSiteProductController extends Controller
                 return $this->digikala($offSiteProduct->url);
             case 'royzkala':
                 return $this->royzkala($offSiteProduct->url);
+            case 'ariaprint':
+                return $this->ariaprint($offSiteProduct->url);
             default:
                 return '';
         }
@@ -99,6 +104,9 @@ class OffSiteProductController extends Controller
                 $this->digikalaUpdate($offSiteProduct, $request);
                 break;
             case 'royzkala':
+                $this->publicUpdate($offSiteProduct, $request);
+                break;
+            case 'ariaprint':
                 $this->publicUpdate($offSiteProduct, $request);
                 break;
             default:
@@ -326,6 +334,31 @@ class OffSiteProductController extends Controller
         return view('panel.off-site-products.royzkala', compact('data'));
     }
 
+    private function ariaprint($url)
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+
+        $dom = new DOMDocument();
+        $dom->validateOnParse = true;
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $response);
+
+        $response = html_entity_decode($dom->getElementsByTagName('script')->item(20)->nodeValue);
+        $data = collect(json_decode($response));
+
+        return view('panel.off-site-products.ariaprint', compact('data'));
+    }
+
     private function publicStore($request)
     {
         $request->validate([
@@ -402,21 +435,6 @@ class OffSiteProductController extends Controller
         OffSiteProduct::create([
             'title' => $request->title,
             'url' => "https://api.digikala.com/v2/product/$request->code/",
-            'website' => $request->website,
-        ]);
-    }
-
-    private function royzkalaStore($request)
-    {
-        $request->validate([
-            'title' => 'required',
-            'url' => 'required',
-        ]);
-
-
-        OffSiteProduct::create([
-            'title' => $request->title,
-            'url' => $request->url,
             'website' => $request->website,
         ]);
     }

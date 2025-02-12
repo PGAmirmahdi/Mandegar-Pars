@@ -20,6 +20,11 @@
             $title = 'محصولات رویزکالا';
         @endphp
     @break
+    @case('ariaprint')
+        @php
+            $title = 'محصولات آریا پرینت';
+        @endphp
+    @break
 @endswitch
 
 @section('title', $title)
@@ -82,7 +87,7 @@
                         <th>#</th>
                         <th>عنوان محصول</th>
                         <th>تاریخ ایجاد</th>
-                        @if(request()->website == 'royzkala')
+                        @if(request()->website == 'royzkala' || request()->website == 'ariaprint')
                             <th>مشاهده قیمت</th>
                         @else
                             <th>مشاهده قیمت فروشندگان</th>
@@ -90,7 +95,7 @@
                         @if(request()->website == 'torob' || request()->website == 'emalls')
                             <th>میانگین قیمت</th>
                         @endif
-                        @if(request()->website != 'royzkala')
+                        @if(request()->website != 'royzkala' &&  request()->website != 'ariaprint')
                             <th>تاریخچه قیمت</th>
                         @endif
                         <th>ویرایش</th>
@@ -115,7 +120,7 @@
                                     </button>
                                 </td>
                             @endif
-                            @if(request()->website != 'royzkala')
+                            @if(request()->website != 'royzkala' && request()->website != 'ariaprint')
                                 <td>
                                     <button class="btn btn-info btn-floating btn_price_history" data-toggle="modal" data-target="#priceHistoryModal" data-id="{{ $item->id }}">
                                         <i class="fa fa-eye"></i>
