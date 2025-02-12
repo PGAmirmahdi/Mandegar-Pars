@@ -16,10 +16,22 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SalePriceRequestExport implements FromCollection, WithHeadings, WithMapping
 {
+    protected $auth;
+
+    public function __construct($auth)
+    {
+        $this->auth = $auth;
+    }
+
     public function collection()
     {
-        return SalePriceRequest::all();
+        $query = SalePriceRequest::query();
+        if (!in_array($this->auth, ['ceo', 'office-manager', 'admin'])) {
+            $query->where('type', '=', $this->auth);
+        }
+        return $query->get();
     }
+
     public function map($salePriceRequest): array
     {
         return [
@@ -28,7 +40,7 @@ class SalePriceRequestExport implements FromCollection, WithHeadings, WithMappin
             optional($salePriceRequest->acceptor)->fullname(),
             optional($salePriceRequest->customer)->name,
             $this->getTotalPrice($salePriceRequest->products),
-            $this->getPaymentType($salePriceRequest->payment_type), // نوع پرداختی فارسی$this->getPaymentType($salePriceRequest->payment_type), // نوع پرداختی فارسی
+            $this->getPaymentType($salePriceRequest->payment_type),
             $salePriceRequest->status ? SalePriceRequest::STATUS[$salePriceRequest->status] : 'نامشخص',
             $this->formatProducts($salePriceRequest->products),
             $salePriceRequest->code,
@@ -64,47 +76,46 @@ class SalePriceRequestExport implements FromCollection, WithHeadings, WithMappin
 
         return number_format($total) . ' ریال';
     }
+
     public function headings(): array
     {
         return [
-            'A'=>'ID',
-            'B'=>'درخواست دهنده',
-            'C'=>'تایید کننده',
-            'D'=>'مشتری',
-            'F'=>'قیمت کل کارشناس',
-            'G'=>'نوع پرداختی',
-            'H'=>'وضعیت',
-            'I'=>'محصولات',
-            'K'=>'کد درخواست',
-            'L'=>'نوع فروش',
-            'P'=>'تاریخ ایجاد',
+            'ID',
+            'درخواست دهنده',
+            'تایید کننده',
+            'مشتری',
+            'قیمت کل کارشناس',
+            'نوع پرداختی',
+            'وضعیت',
+            'محصولات',
+            'کد درخواست',
+            'نوع فروش',
+            'تاریخ ایجاد',
         ];
     }
+
     public function registerEvents(): array
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-
                 $sheet->setRightToLeft(true)
-                    ->getStyle('A1:XFD1048576')
+                    ->getStyle('A1:Z1048576')
                     ->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                $sheet->getStyle('A1:XFD1048576')->getFont()->setName('B Nazanin');
-
-//                $event->sheet->mergeCells('B1:C1');
+                $sheet->getStyle('A1:Z1')->getFont()->setName('B Nazanin')->setBold(true);
             },
         ];
     }
+
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:I1')->applyFromArray([
+        $sheet->getStyle('A1:J1')->applyFromArray([
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => '5d4a9c']
             ]
-        ])->getFont()->setColor(Color::indexedColor(2));
+        ])->getFont()->getColor()->setRGB('FFFFFF');
 
         return [
             1 => ['font' => ['bold' => true]],
@@ -114,9 +125,10 @@ class SalePriceRequestExport implements FromCollection, WithHeadings, WithMappin
     public function columnFormats(): array
     {
         return [
-            'F' => NumberFormat::FORMAT_NUMBER,
+            'E' => NumberFormat::FORMAT_NUMBER,
         ];
     }
+
     private function getPaymentType($paymentType)
     {
         return Order::Payment_Type[$paymentType] ?? 'نامشخص';
