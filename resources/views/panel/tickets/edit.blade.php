@@ -13,9 +13,9 @@
             background-repeat: no-repeat;
             background-position: center;
         }
-        .message-item, .message-item-file{
-            backdrop-filter: blur(6.9px);
-            background-color: gainsboro;
+        .message-item, .btn.btn-outline-light{
+            backdrop-filter: blur(6.9px) !important;
+            background-color: gainsboro !important;
         }
         .message-item-date{
             color: #333;
