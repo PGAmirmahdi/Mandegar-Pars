@@ -13,6 +13,13 @@
             background-repeat: no-repeat;
             background-position: center;
         }
+        .message-item, .message-item-file{
+            backdrop-filter: blur(6.9px);
+            background-color: gainsboro;
+        }
+        .message-item-date{
+            color: #333;
+        }
     </style>
 @endsection
 
