@@ -115,7 +115,7 @@ class SalePriceRequestController extends Controller
 
     public function show(SalePriceRequest $sale_price_request)
     {
-
+        $type = request()->get('type');
         // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
         $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             // بازیابی قیمت محصول برای فروشنده مشخص
@@ -381,12 +381,20 @@ class SalePriceRequestController extends Controller
 
         return back();
     }
+
     public function export()
     {
-        if (!in_array(auth()->user()->role->name , ['setad_sale','admin','ceo'])) {
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'خروجی اکسل از درخواست های فروش',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ')از درخواست های فروش خروجی اکسل گرفت.',
+            'created_at' => now(),
+        ]);
+        $auth = auth()->user()->role->name;
+        if (in_array($auth, ['setad_sale'])) {
             return Excel::download(new SalePriceRequestSetadExport(), 'setad_sale_price_requests.xlsx');
         } else {
-            return Excel::download(new SalePriceRequestExport(), 'sale_price_requests.xlsx');
+            return Excel::download(new SalePriceRequestExport($auth), 'sale_price_requests.xlsx');
         }
     }
 

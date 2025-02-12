@@ -32,8 +32,12 @@ class TicketController extends Controller
     public function create()
     {
         $this->authorize('tickets-create');
-
-        return view('panel.tickets.create');
+                                    $accountants = \App\Models\User::whereHas('role', function ($role) {
+                                        $role->whereHas('permissions', function ($q) {
+                                            $q->where('name', 'accountant');
+                                        });
+                                    })->pluck('id');
+        return view('panel.tickets.create', compact('accountants'));
     }
 
     public function store(StoreTicketRequest $request)
@@ -102,20 +106,21 @@ class TicketController extends Controller
     {
         $this->authorize('tickets-create');
 
-        $ticket->update(['status' => 'pending']);
+        $ticket->update(['status' => 'pending', 'updated_at' => now()]);
 
-        // prevent from send sequence notification
+        // جلوگیری از ارسال نوتیفیکیشن متوالی
         $first_message = $ticket->messages()->orderBy('created_at', 'desc')->first();
         if ($first_message != null && $first_message->user_id != auth()->id()){
-            $title='تیکت';
-            $message = 'پاسخی برای تیکت "'.$ticket->title.'" ثبت شده است';
+            $title = 'تیکت';
+            $messageNotification = 'پاسخی برای تیکت "' . $ticket->title . '" ثبت شده است';
             $url = route('tickets.edit', $ticket->id);
             $receiver = auth()->id() == $ticket->sender_id ? $ticket->receiver : $ticket->sender;
-            Notification::send($receiver, new SendMessage($title,$message, $url));
+            Notification::send($receiver, new SendMessage($title, $messageNotification, $url));
         }
-        // end prevent from send sequence notification
+        // پایان ارسال نوتیفیکیشن
 
-        if ($request->file){
+        // پردازش فایل در صورت وجود
+        if ($request->hasFile('file')) {
             $file_info = [
                 'name' => $request->file('file')->getClientOriginalName(),
                 'type' => $request->file('file')->getClientOriginalExtension(),
@@ -123,16 +128,17 @@ class TicketController extends Controller
             ];
 
             $file = upload_file($request->file, 'Messages');
-
             $file_info['path'] = $file;
         }
 
-        $ticket->messages()->create([
+        // ایجاد پیام جدید
+        $message = $ticket->messages()->create([
             'user_id' => auth()->id(),
             'text' => $request->text,
             'file' => isset($file) ? json_encode($file_info) : null,
         ]);
-// ذخیره فعالیت
+
+        // ذخیره فعالیت
         $activityData = [
             'user_id' => auth()->id(),
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') پاسخی به تیکت "' . $ticket->title . '" ارسال کرد',
@@ -140,7 +146,33 @@ class TicketController extends Controller
             'created_at' => now(),
         ];
         Activity::create($activityData);
+
+        if ($request->expectsJson()) {
+            $message_html = view('panel.tickets.single-message', compact('message'))->render();
+            return response()->json(['message_html' => $message_html]);
+        }
         return back();
+    }
+    public function getNewMessages(Ticket $ticket)
+    {
+        $lastMessageTime = session('last_message_time', now());
+        $newMessages = $ticket->messages()
+            ->where('created_at', '>', $lastMessageTime)
+            ->get();
+
+        session(['last_message_time' => now()]);
+
+        if ($newMessages->isEmpty()) {
+            return response()->json(['new_messages' => '']);
+        }
+
+        // رندر هر پیام به صورت جداگانه و جمع‌آوری HTML
+        $messagesHtml = '';
+        foreach ($newMessages as $message) {
+            $messagesHtml .= view('panel.tickets.single-message', compact('message'))->render();
+        }
+
+        return response()->json(['new_messages' => $messagesHtml]);
     }
 
     public function destroy(Ticket $ticket)
@@ -164,7 +196,6 @@ class TicketController extends Controller
         $ticket->delete();
         return back();
     }
-
     public function changeStatus(Ticket $ticket)
     {
         if ($ticket->sender_id == auth()->id() || $ticket->receiver_id == auth()->id()){

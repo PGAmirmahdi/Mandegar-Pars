@@ -326,16 +326,16 @@
                 $userRole = auth()->user()->role->name;
             @endphp
 
-            @if(in_array($userRole, array_keys($roles)))
+            @if(array_key_exists($userRole, $roles))
                 <li>
-                    <a class="{{ active_sidebar(['sale_price_requests', 'sale_price_requests/action/{sale_price_request}', 'sale_price_requests/create', 'sale_price_requests/{sale_price_request}/edit', 'sale_price_requests/{sale_price_request}']) ? 'active' : '' }}"
-                       href="{{ url('/panel/sale_price_requests?type=' . $userRole) }}">{{ $roles[$userRole] }}</a>
+                    <a class="{{ active_sidebar(['sale_price_requests', 'sale_price_requests/action/*', 'sale_price_requests/create', 'sale_price_requests/*/edit', 'sale_price_requests/*']) ? 'active' : '' }}"
+                       href="{{ url('/panel/sale_price_requests?type=' . urlencode($userRole)) }}">{{ $roles[$userRole] }}</a>
                 </li>
             @elseif(in_array($userRole, ['ceo', 'admin', 'office-manager']))
                 @foreach($roles as $key => $label)
                     <li>
-                        <a class="{{ request()->query('type') === $key || active_sidebar(['sale_price_requests/action/{sale_price_request}']) ? 'active' : '' }}"
-                           href="{{ url('/panel/sale_price_requests?type=' . $key) }}">{{ $label }}</a>
+                        <a class="{{ (request()->query('type') == $key) || (request()->is('panel/sale_price_requests/action/*') && request()->query('type') == $key) ? 'active' : '' }}"
+                           href="{{ url('/panel/sale_price_requests?type=' . urlencode($key)) }}">{{ $label }}</a>
                     </li>
                 @endforeach
             @endif

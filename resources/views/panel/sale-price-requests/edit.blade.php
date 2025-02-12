@@ -148,7 +148,7 @@
                             <label class="form-label" for="description">توضیحات</label>
                             <textarea name="description" id="description"
                                       class="description form-control"
-                                      rows="10">{{ old('description') }}</textarea>
+                                      rows="10">{{ $sale_price_request->description }}</textarea>
                             @error('description')
                             <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                             @enderror

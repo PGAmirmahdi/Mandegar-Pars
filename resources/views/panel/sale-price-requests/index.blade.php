@@ -214,14 +214,15 @@
                                     <a class="btn btn-primary btn-floating @if(in_array($saleprice_request->status, ['accepted', 'rejected','finished','winner','lose'])) disabled @endif"
                                        @if(in_array($saleprice_request->status, ['accepted', 'rejected','finished','winner','lose'])) disabled
                                        @endif
-                                       href="{{ route('sale_price_requests.action', $saleprice_request->id) }}">
+                                       href="{{ route('sale_price_requests.action', [$saleprice_request->id, 'type'=>$saleprice_request->type]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                                 <td>
                                     <a class="btn btn-info btn-floating"
-                                       href="{{ route('sale_price_requests.show', $saleprice_request->id) }}">
-                                        <i class="fa fa-eye"></i>
+                                       href="{{ route('sale_price_requests.show', ['sale_price_request' => $saleprice_request->id, 'type'=>$saleprice_request->type]) }}"
+>
+                                    <i class="fa fa-eye"></i>
                                     </a>
                                 </td>
                             @else
