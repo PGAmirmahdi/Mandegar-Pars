@@ -115,7 +115,7 @@ class SalePriceRequestController extends Controller
 
     public function show(SalePriceRequest $sale_price_request)
     {
-
+        $type = request()->get('type');
         // تبدیل آیتم‌ها به مجموعه و افزودن قیمت پیشنهادی سیستم
         $items = collect(json_decode($sale_price_request->items))->map(function ($item) {
             // بازیابی قیمت محصول برای فروشنده مشخص
