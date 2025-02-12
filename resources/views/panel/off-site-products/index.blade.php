@@ -15,6 +15,11 @@
             $title = 'محصولات ایمالز';
         @endphp
     @break
+    @case('royzkala')
+        @php
+            $title = 'محصولات رویزکالا';
+        @endphp
+    @break
 @endswitch
 
 @section('title', $title)
@@ -77,11 +82,17 @@
                         <th>#</th>
                         <th>عنوان محصول</th>
                         <th>تاریخ ایجاد</th>
-                        <th>مشاهده قیمت فروشندگان</th>
+                        @if(request()->website == 'royzkala')
+                            <th>مشاهده قیمت</th>
+                        @else
+                            <th>مشاهده قیمت فروشندگان</th>
+                        @endif
                         @if(request()->website == 'torob' || request()->website == 'emalls')
                             <th>میانگین قیمت</th>
                         @endif
-                        <th>تاریخچه قیمت</th>
+                        @if(request()->website != 'royzkala')
+                            <th>تاریخچه قیمت</th>
+                        @endif
                         <th>ویرایش</th>
                         <th>حذف</th>
                     </tr>
@@ -104,11 +115,13 @@
                                     </button>
                                 </td>
                             @endif
-                            <td>
-                                <button class="btn btn-info btn-floating btn_price_history" data-toggle="modal" data-target="#priceHistoryModal" data-id="{{ $item->id }}">
-                                    <i class="fa fa-eye"></i>
-                                </button>
-                            </td>
+                            @if(request()->website != 'royzkala')
+                                <td>
+                                    <button class="btn btn-info btn-floating btn_price_history" data-toggle="modal" data-target="#priceHistoryModal" data-id="{{ $item->id }}">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </td>
+                            @endif
                             <td>
                                 <a class="btn btn-warning btn-floating" href="{{ route('off-site-products.edit', $item->id) }}">
                                     <i class="fa fa-edit"></i>
@@ -158,6 +171,9 @@
                         break;
                     case 'emalls':
                         emallsChart();
+                        break;
+                    case 'royzkala':
+                        royzkalaChart();
                         break;
                 }
             })
@@ -348,6 +364,16 @@
             }
 
             function emallsChart() {
+                $.ajax({
+                    url: `/panel/off-site-product-history/${website}/${id}`,
+                    type: 'get',
+                    success: function (res) {
+                        window.open(`https://emalls.ir/chartshow.aspx?id=${res.data}`);
+                    }
+                })
+            }
+
+            function royzkalaChart() {
                 $.ajax({
                     url: `/panel/off-site-product-history/${website}/${id}`,
                     type: 'get',

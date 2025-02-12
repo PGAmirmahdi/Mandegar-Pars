@@ -440,6 +440,13 @@
                     <span class="ml-2">ایمالز</span>
                 </a>
             </li>
+            <li>
+                <a class="{{ active_sidebar(['off-site-products/{website}','off-site-product/{off_site_product}','off-site-product-create/{website}','off-site-products/{off_site_product}/edit']) && request()->website == 'royzkala' ? 'active' : '' }}"
+                   href="{{ route('off-site-products.index', 'royzkala') }}">
+                    <img src="{{ asset('assets/media/image/shop-logo/royzkala.png') }}" style="width: 1.5rem">
+                    <span class="ml-2">رویز کالا</span>
+                </a>
+            </li>
         </ul>
         <ul id="navigationInventory"
             class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports','guarantees','guarantees/create','guarantees/{guarantee}/edit']) ? 'navigation-active' : '' }}">
