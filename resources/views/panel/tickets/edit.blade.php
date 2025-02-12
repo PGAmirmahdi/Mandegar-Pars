@@ -3,10 +3,15 @@
 @section('styles')
     <!-- lightbox -->
     <link rel="stylesheet" href="/vendors/lightbox/magnific-popup.css" type="text/css">
-
     <style>
         .fa-check-double, .fa-check {
             color: green !important;
+        }
+        .chat-body-messages {
+            background-image: url({{asset('assets/media/image/chat.jpg')}});
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
         }
     </style>
 @endsection
@@ -90,7 +95,8 @@
                     </div>
                 </div>
                 <div class="chat-body-footer">
-                    <form action="{{ route('tickets.update', $ticket->id) }}" method="post" class="d-flex align-items-center" enctype="multipart/form-data">
+                    <!-- فرم ارسال پیام با AJAX -->
+                    <form id="chatForm" action="{{ route('tickets.update', $ticket->id) }}" method="post" enctype="multipart/form-data" class="d-flex align-items-center">
                         @csrf
                         @method('PUT')
                         <input type="text" name="text" class="form-control" placeholder="پیام ..." required>
@@ -131,10 +137,64 @@
 
     <script>
         $(document).ready(function () {
+            // تغییر نام برچسب فایل پس از انتخاب فایل
             $('#file').on('change', function () {
-                $('#file_lbl').text(this.files[0].name)
-                $('input[name="text"]').removeAttr('required')
-            })
-        })
+                $('#file_lbl').text(this.files[0].name);
+                $('input[name="text"]').removeAttr('required');
+            });
+
+            // ارسال فرم پیام با AJAX
+            $('#chatForm').on('submit', function (e) {
+                e.preventDefault(); // جلوگیری از رفرش صفحه
+                var formData = new FormData(this);
+                var url = $(this).attr('action');
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        // if(response.message_html) {
+                        //     $('.message-items').append(response.message_html);
+                        //     // اسکرول به پایین لیست پیام‌ها
+                        //     $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
+                        // }
+
+                        // پاکسازی فرم پس از ارسال موفق
+                        $('#chatForm')[0].reset();
+                        $('#file_lbl').text('فایل');
+                    },
+                    error: function (xhr) {
+                        alert('خطا در ارسال پیام.');
+                    }
+                });
+            });
+        });
+        function fetchNewMessages() {
+            $.ajax({
+                url: "{{ route('tickets.getNewMessages', $ticket->id) }}",
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (response.new_messages) {
+                        $('.message-items').append(response.new_messages);
+                        $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
+                    }
+                },
+                error: function () {
+                    console.log("خطا در دریافت پیام‌های جدید");
+                }
+            });
+        }
+
+        // هر ۵ ثانیه یک بار اجرا شود
+        setInterval(fetchNewMessages, 5000);
+
     </script>
 @endsection
