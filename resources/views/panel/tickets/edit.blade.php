@@ -7,28 +7,76 @@
         .fa-check-double, .fa-check {
             color: green !important;
         }
+
         .chat-body-messages {
             background-image: url({{asset('assets/media/image/chat.jpg')}});
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
         }
-        .btn.btn-outline-light{
-            background-color: #5d4a9c !important;
-            color: #fff;
+
+        .message-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
         }
-        .message-item-date{
-            color:#333 !important;
+
+        .message-item {
+            max-width: 70%;
+            position: relative;
+            border-radius: 15px;
+            padding: 10px 15px;
         }
-         .fa-check {
-             color: #bbb;
-         }
-        .fa-check-double {
-            color: #34b7f1; /* رنگ آبی شبیه تلگرام */
+
+        .message-item.outgoing {
+            align-self: flex-end;
+            background: #007bff;
+            color: white;
+            border-bottom-right-radius: 3px;
         }
-        .message-item-date {
-            font-size: 0.85rem;
-            color: #777;
+
+        .message-item.incoming {
+            align-self: flex-start;
+            background: #e9ecef;
+            color: black;
+            border-bottom-left-radius: 3px;
+        }
+
+        .message-item.has-media {
+            padding: 5px;
+            max-width: 300px;
+        }
+
+        .message-meta {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: flex-end;
+            font-size: 0.75rem;
+            margin-top: 5px;
+        }
+
+        .message-item.outgoing .message-meta {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .message-item.incoming .message-meta {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .status-sent,
+        .status-read {
+            font-size: 0.65rem;
+        }
+
+        .status-read {
+            color: #00ff9d;
+        }
+
+        .message-text {
+            word-wrap: break-word;
+            margin-bottom: 3px;
         }
 
     </style>
@@ -73,9 +121,12 @@
                                     <ul>
                                         <li>
                                             @if($ticket->status == 'closed')
-                                                <a class="dropdown-item" href="{{ route('ticket.changeStatus', $ticket->id) }}">درحال بررسی</a>
+                                                <a class="dropdown-item"
+                                                   href="{{ route('ticket.changeStatus', $ticket->id) }}">درحال
+                                                    بررسی</a>
                                             @else
-                                                <a class="dropdown-item" href="{{ route('ticket.changeStatus', $ticket->id) }}">بسته شده</a>
+                                                <a class="dropdown-item"
+                                                   href="{{ route('ticket.changeStatus', $ticket->id) }}">بسته شده</a>
                                             @endif
                                         </li>
                                     </ul>
@@ -88,25 +139,41 @@
                     <div class="message-items">
                         @foreach($ticket->messages as $message)
                             @if($message->user_id == auth()->id())
-                                <div class="message-item {{ $message->file ? 'message-item-media' : '' }}">
-                                    {{ $message->text }}
-                                    @includeWhen($message->file, 'panel.partials.file-message')
-                                    <small class="message-item-date text-muted">
-                                           {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                        @if($message->read_at)
-                                            <i class="fa fa-check-double"></i>
-                                        @else
-                                            <i class="fa fa-check"></i>
+                                <div class="message-item outgoing {{ $message->file ? 'has-media' : '' }}">
+                                    <div class="message-content">
+                                        @if($message->text)
+                                            <div class="message-text">{{ $message->text }}</div>
                                         @endif
-                                    </small>
+
+                                        @includeWhen($message->file, 'panel.partials.file-message')
+
+                                        <div class="message-meta">
+                            <span class="message-time">
+                                {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                            </span>
+                                            @if($message->read_at)
+                                                <i class="status-read fa fa-check-double"></i>
+                                            @else
+                                                <i class="status-sent fa fa-check"></i>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
                             @else
-                                <div class="message-item outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
-                                    {{ $message->text }}
-                                    @includeWhen($message->file, 'panel.partials.file-message')
-                                    <small class="message-item-date text-muted">
-                                        {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                    </small>
+                                <div class="message-item incoming {{ $message->file ? 'has-media' : '' }}">
+                                    <div class="message-content">
+                                        @if($message->text)
+                                            <div class="message-text">{{ $message->text }}</div>
+                                        @endif
+
+                                        @includeWhen($message->file, 'panel.partials.file-message')
+
+                                        <div class="message-meta">
+                            <span class="message-time">
+                                {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             @endif
                         @endforeach
@@ -114,7 +181,8 @@
                 </div>
                 <div class="chat-body-footer">
                     <!-- فرم ارسال پیام با AJAX -->
-                    <form id="chatForm" action="{{ route('tickets.update', $ticket->id) }}" method="post" enctype="multipart/form-data" class="d-flex align-items-center">
+                    <form id="chatForm" action="{{ route('tickets.update', $ticket->id) }}" method="post"
+                          enctype="multipart/form-data" class="d-flex align-items-center">
                         @csrf
                         @method('PUT')
                         <input type="text" name="text" class="form-control" placeholder="پیام ..." required>
@@ -194,6 +262,7 @@
                 });
             });
         });
+
         function fetchNewMessages() {
             $.ajax({
                 url: "{{ route('tickets.getNewMessages', $ticket->id) }}",
@@ -202,7 +271,7 @@
                 success: function (response) {
                     if (response.new_messages) {
                         $('.message-items').append(response.new_messages);
-                        $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
+                        $('.chat-body-messages').animate({scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
                     }
                 },
                 error: function () {
