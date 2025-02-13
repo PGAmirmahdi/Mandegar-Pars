@@ -14,8 +14,11 @@
             background-position: center;
         }
         .btn.btn-outline-light{
-            background-color: #2c3034 !important;
+            background-color: #858688 !important;
             color: #fff;
+        }
+        .message-item-date{
+            color:#333;
         }
     </style>
 @endsection
