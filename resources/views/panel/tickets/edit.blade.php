@@ -22,7 +22,7 @@
         }
 
         .message-time {
-            color: #b0b0b0 !important;
+            color: #c9c9c9 !important;
         }
 
         .message-text {
