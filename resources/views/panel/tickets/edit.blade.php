@@ -33,10 +33,13 @@
         }
 
         .message-item-date {
-            font-size: 0.85rem;
+            font-size: 0.55rem;
             color: #777;
         }
-
+        .message-item{
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 @endsection
 
