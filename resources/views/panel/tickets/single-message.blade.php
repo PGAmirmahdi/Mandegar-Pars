@@ -1,5 +1,5 @@
 @if($message->user_id == auth()->id())
-    <div class="message-item {{ $message->file ? 'message-item-media' : '' }}">
+    <div id="message-{{ $message->id }}" class="message-item {{ $message->file ? 'message-item-media' : '' }}">
         <div class="message-content">
             @if($message->text)
                 <div class="message-text">{{ $message->text }}</div>
@@ -19,8 +19,7 @@
         </div>
     </div>
 @else
-    <div
-        class="message-item outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
+    <div id="message-{{ $message->id }}" class="message-item outgoing-message{{ $message->file ? 'message-item-media' : '' }}">
         @if($message->text)
             <div class="message-text">{{ $message->text }}</div>
         @endif

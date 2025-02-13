@@ -250,7 +250,30 @@
                 });
             });
         });
-
+        function updateReadStatus() {
+            $.ajax({
+                url: "{{ route('tickets.getReadMessages', $ticket->id) }}",
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if(response.read_messages && response.read_messages.length > 0) {
+                        response.read_messages.forEach(function(id) {
+                            // فرض کنید در ویو به هر پیام یک id یکتا مثل message-{{ $message->id }} داده شده
+                            var messageDiv = $('#message-' + id);
+                            // پیدا کردن آیکون وضعیت پیام که هنوز به صورت تک تیک (fa-check) هست
+                            var icon = messageDiv.find('.status-sent');
+                            if(icon.length) {
+                                // تغییر آیکون به دو تیک (fa-check-double) و کلاس status-read
+                                icon.removeClass('fa-check').addClass('fa-check-double status-read');
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    console.log('خطا در بروزرسانی وضعیت خوانده شدن پیام‌ها');
+                }
+            });
+        }
         function fetchNewMessages() {
             // گرفتن آخرین پیام نمایش داده شده
             var lastMessage = $('.message-item').last();
@@ -269,6 +292,7 @@
                                 $('.message-items').append($(this));
                             }
                         });
+                        updateReadStatus();
                         $('.chat-body-messages').animate({scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
                     }
                 },
@@ -277,6 +301,7 @@
                 }
             });
         }
+
         // هر ۵ ثانیه یک بار اجرا شود
         setInterval(fetchNewMessages, 5000);
     </script>

@@ -336,6 +336,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::get('change-status-ticket/{ticket}', [TicketController::class, 'changeStatus'])->name('ticket.changeStatus');
     Route::get('/tickets/{ticket}/new-messages', [TicketController::class, 'getNewMessages'])
         ->name('tickets.getNewMessages');
+    Route::get('tickets/{ticket}/getReadMessages', [TicketController::class, 'getReadMessages'])->name('tickets.getReadMessages');
 
     // Sms Histories
     Route::get('sms-histories', [SmsHistoryController::class, 'index'])->name('sms-histories.index');

@@ -86,6 +86,17 @@ class TicketController extends Controller
         return redirect()->route('tickets.edit', $ticket->id);
     }
 
+    public function getReadMessages(Ticket $ticket)
+    {
+        // دریافت پیام‌هایی که به شما (ارسال شده توسط شما) تعلق دارند و وضعیت read_at آنها مقداردهی شده است
+        $readMessages = $ticket->messages()
+            ->where('user_id', auth()->id())
+            ->whereNotNull('read_at')
+            ->get();
+
+        $ids = $readMessages->pluck('id');
+        return response()->json(['read_messages' => $ids]);
+    }
 
 
     public function show(Ticket $ticket)
