@@ -160,13 +160,19 @@ class TicketController extends Controller
             ->where('created_at', '>', $lastMessageTime)
             ->get();
 
+        // به‌روزرسانی وضعیت خوانده شدن برای پیام‌های دریافتی
+        $ticket->messages()
+            ->whereIn('id', $newMessages->pluck('id'))
+            ->where('user_id', '!=', auth()->id())
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
         session(['last_message_time' => now()]);
 
         if ($newMessages->isEmpty()) {
             return response()->json(['new_messages' => '']);
         }
 
-        // رندر هر پیام به صورت جداگانه و جمع‌آوری HTML
         $messagesHtml = '';
         foreach ($newMessages as $message) {
             $messagesHtml .= view('panel.tickets.single-message', compact('message'))->render();

@@ -20,6 +20,17 @@
         .message-item-date{
             color:#333 !important;
         }
+         .fa-check {
+             color: #bbb;
+         }
+        .fa-check-double {
+            color: #34b7f1; /* رنگ آبی شبیه تلگرام */
+        }
+        .message-item-date {
+            font-size: 0.85rem;
+            color: #777;
+        }
+
     </style>
 @endsection
 
@@ -74,31 +85,21 @@
                     </div>
                 </div>
                 <div class="chat-body-messages">
-                    <div class="message-items">
-                        @foreach($ticket->messages as $message)
+                    <div class="message-item {{ $message->user_id == auth()->id() ? '' : 'outgoing-message' }}">
+                        <p>{{ $message->text }}</p>
+                        @if($message->file)
+                            @include('panel.partials.file-message', ['file' => $message->file])
+                        @endif
+                        <small class="message-item-date text-muted">
+                            {{ verta($message->created_at)->format('H:i - Y/m/d H:i') }}
                             @if($message->user_id == auth()->id())
-                                <div class="message-item {{ $message->file ? 'message-item-media' : '' }}">
-                                    {{ $message->text }}
-                                    @includeWhen($message->file, 'panel.partials.file-message')
-                                    <small class="message-item-date text-muted">
-                                        {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                        @if($message->read_at)
-                                            <i class="fa fa-check-double"></i>
-                                        @else
-                                            <i class="fa fa-check"></i>
-                                        @endif
-                                    </small>
-                                </div>
-                            @else
-                                <div class="message-item outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
-                                    {{ $message->text }}
-                                    @includeWhen($message->file, 'panel.partials.file-message')
-                                    <small class="message-item-date text-muted">
-                                        {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                    </small>
-                                </div>
+                                @if($message->read_at)
+                                    <i class="fa fa-check-double" title="خوانده شده"></i>
+                                @else
+                                    <i class="fa fa-check" title="ارسال شده"></i>
+                                @endif
                             @endif
-                        @endforeach
+                        </small>
                     </div>
                 </div>
                 <div class="chat-body-footer">
