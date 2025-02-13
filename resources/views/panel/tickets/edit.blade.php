@@ -47,7 +47,7 @@
                 color: #fff !important;
             }
             .message-time{
-                color: #461c70;
+                color: #461c70 !important;
             }
         }
 
