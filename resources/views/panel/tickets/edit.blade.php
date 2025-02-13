@@ -35,12 +35,19 @@
             backdrop-filter: blur(6.9px);
             border-radius: 5px !important;
         }
-
+        .message-time {
+            font-size: 0.65rem !important;
+            color: #8a8a8a !important;
+            margin-left: 30px;
+        }
         .outgoing-message {
             background-color: rgba(151, 151, 152, 0.53) !important;
             backdrop-filter: blur(6.9px);
             .message-text{
                 color: #fff !important;
+            }
+            .message-time{
+                color: #461c70;
             }
         }
 
@@ -48,11 +55,7 @@
             color: #34b7f1; /* رنگ آبی شبیه تلگرام */
         }
 
-        .message-time {
-            font-size: 0.65rem !important;
-            color: #8a8a8a !important;
-            margin-left: 30px;
-        }
+
         .message-content{
             padding:0px 8px;
         }
