@@ -22,11 +22,12 @@
         }
 
         .message-time {
-            color: #333 !important;
+            color: #b0b0b0 !important;
         }
 
         .message-text {
             font-size: 13px !important;
+            color: #fff;
         }
 
         .fa-check {
@@ -43,7 +44,7 @@
             background-color: rgba(151, 151, 152, 0.53) !important;
             backdrop-filter: blur(6.9px);
             .message-text{
-                color: #333 !important;
+                color: #fff !important;
             }
         }
 
