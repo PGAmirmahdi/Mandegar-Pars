@@ -16,29 +16,51 @@
         }
 
         .btn.btn-outline-light {
-            background-color: #5d4a9c !important;
+            background-color: transparent !important;
+            border: none;
             color: #fff;
         }
 
-        .message-item-date {
+        .message-time {
             color: #333 !important;
         }
 
+        .message-text {
+            font-size: 13px !important;
+        }
+
         .fa-check {
-            color: #bbb;
+            color: #bbb !important;
+        }
+
+        .message-item {
+            background-color: rgba(93, 74, 156, 0.58) !important;
+            backdrop-filter: blur(6.9px);
+            border-radius: 5px !important;
+        }
+
+        .outgoing-message {
+            background-color: rgba(151, 151, 152, 0.53) !important;
+            backdrop-filter: blur(6.9px);
+            .message-text{
+                color: #333 !important;
+            }
         }
 
         .fa-check-double {
             color: #34b7f1; /* رنگ آبی شبیه تلگرام */
         }
 
-        .message-item-date {
-            font-size: 0.55rem;
-            color: #777;
+        .message-time {
+            font-size: 0.65rem !important;
+            color: #4d4d4d !important;
+            margin-left: 30px;
         }
-        .message-item{
-            display: flex;
-            flex-direction: column;
+        .message-content{
+            padding:0px 8px;
+        }
+        .fa-check, .fa-check-double {
+            font-size: 0.65rem !important;
         }
     </style>
 @endsection
@@ -100,26 +122,35 @@
                     <div class="message-items">
                         @foreach($ticket->messages as $message)
                             @if($message->user_id == auth()->id())
-                                <div class="message-item {{ $message->file ? 'message-item-media' : '' }}">
-                                    {{ $message->text }}
-                                    @includeWhen($message->file, 'panel.partials.file-message')
-                                    <span class="message-time">
-                               {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                        @if($message->read_at)
-                                            <i class="fa fa-check-double"></i>
-                                        @else
-                                            <i class="fa fa-check"></i>
+                                <div id="message-{{ $message->id }}" class="message-item {{ $message->file ? 'message-item-media' : '' }}">
+                                    <div class="message-content">
+                                        @if($message->text)
+                                            <div class="message-text">{{ $message->text }}</div>
                                         @endif
-                            </span>
+                                        @includeWhen($message->file, 'panel.partials.file-message')
+                                        <div class="message-meta row justify-content-between px-3">
+                    <span class="message-time">
+                        {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                    </span>
+                                            @if($message->read_at)
+                                                <i class="status-read fa fa-check-double"></i>
+                                            @else
+                                                <i class="status-sent fa fa-check"></i>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
                             @else
-                                <div
-                                    class="message-item outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
-                                    {{ $message->text }}
+                                <div id="message-{{ $message->id }}" class="message-item outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
+                                    @if($message->text)
+                                        <div class="message-text">{{ $message->text }}</div>
+                                    @endif
                                     @includeWhen($message->file, 'panel.partials.file-message')
-                                    <small class="message-item-date text-muted">
-                                        {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                    </small>
+                                    <div class="message-meta row justify-content-between px-2">
+                <span class="message-time">
+                    {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                </span>
+                                    </div>
                                 </div>
                             @endif
                         @endforeach
@@ -137,7 +168,8 @@
                                 <i class="fa fa-paper-plane"></i>
                             </button>
                             <div class="dropup">
-                                <button type="button" data-toggle="dropdown" class="ml-3 btn btn-success btn-floating">
+                                <button type="button" data-toggle="dropdown"
+                                        class="ml-3 btn btn-success btn-floating">
                                     <i class="fa fa-plus"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
@@ -177,9 +209,23 @@
 
             // ارسال فرم پیام با AJAX
             $('#chatForm').on('submit', function (e) {
-                e.preventDefault(); // جلوگیری از رفرش صفحه
+                e.preventDefault();
                 var formData = new FormData(this);
                 var url = $(this).attr('action');
+
+                // افزودن پیام موقت با آیکون در حال ارسال
+                var tempMessageId = 'temp-' + Date.now();
+                var tempMessage = `<div class="message-item" id="${tempMessageId}">
+        <div class="message-content">
+            <div class="message-text">${$('input[name="text"]').val()}</div>
+            <div class="message-meta row justify-content-between px-3">
+                <span class="message-time">در حال ارسال...</span>
+                <i class="fa fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </div>`;
+                $('.message-items').append(tempMessage);
+                $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
 
                 $.ajax({
                     url: url,
@@ -192,31 +238,37 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        // if(response.message_html) {
-                        //     $('.message-items').append(response.message_html);
-                        //     // اسکرول به پایین لیست پیام‌ها
-                        //     $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
-                        // }
-
-                        // پاکسازی فرم پس از ارسال موفق
+                        if(response.message_html) {
+                            $(`#${tempMessageId}`).replaceWith(response.message_html);
+                        }
                         $('#chatForm')[0].reset();
                         $('#file_lbl').text('فایل');
                     },
-                    error: function (xhr) {
-                        alert('خطا در ارسال پیام.');
+                    error: function () {
+                        $(`#${tempMessageId} .message-meta`).html('<span class="text-danger">ارسال ناموفق</span>');
                     }
                 });
             });
         });
 
         function fetchNewMessages() {
+            // گرفتن آخرین پیام نمایش داده شده
+            var lastMessage = $('.message-item').last();
+            var lastId = lastMessage.attr('id') ? lastMessage.attr('id').replace('message-', '') : 0;
             $.ajax({
                 url: "{{ route('tickets.getNewMessages', $ticket->id) }}",
                 type: "GET",
+                data: { last_id: lastId },
                 dataType: "json",
                 success: function (response) {
                     if (response.new_messages) {
-                        $('.message-items').append(response.new_messages);
+                        var newMessages = $(response.new_messages);
+                        newMessages.each(function() {
+                            var messageId = $(this).attr('id');
+                            if (!$('#' + messageId).length) { // اگر پیام با این id وجود نداشته باشد
+                                $('.message-items').append($(this));
+                            }
+                        });
                         $('.chat-body-messages').animate({scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
                     }
                 },
@@ -225,9 +277,7 @@
                 }
             });
         }
-
         // هر ۵ ثانیه یک بار اجرا شود
         setInterval(fetchNewMessages, 5000);
-
     </script>
 @endsection

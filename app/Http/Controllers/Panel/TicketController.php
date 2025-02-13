@@ -156,7 +156,10 @@ class TicketController extends Controller
     public function getNewMessages(Ticket $ticket)
     {
         $lastMessageTime = session('last_message_time', now());
+
+        // فقط پیام‌هایی که از طرف سایر کاربران ارسال شده‌اند دریافت می‌شود
         $newMessages = $ticket->messages()
+            ->where('user_id', '!=', auth()->id())
             ->where('created_at', '>', $lastMessageTime)
             ->get();
 
