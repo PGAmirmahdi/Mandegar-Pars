@@ -13,6 +13,10 @@
             background-repeat: no-repeat;
             background-position: center;
         }
+        .btn.btn-outline-light{
+            background-color: #2c3034 !important;
+            color: #fff;
+        }
     </style>
 @endsection
 
