@@ -21,10 +21,6 @@
             color: #fff;
         }
 
-        .message-time {
-            color: #c9c9c9 !important;
-        }
-
         .message-text {
             font-size: 13px !important;
             color: #fff;
@@ -54,7 +50,7 @@
 
         .message-time {
             font-size: 0.65rem !important;
-            color: #4d4d4d !important;
+            color: #8a8a8a !important;
             margin-left: 30px;
         }
         .message-content{
