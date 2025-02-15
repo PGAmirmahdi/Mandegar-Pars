@@ -10,7 +10,12 @@ class Product extends Model
     use HasFactory;
 
     const COLORS = [
-        'black' => 'مشکی'
+        'black' => 'مشکی',
+        'white' => 'سفید',
+        'red' => 'قرمز',
+        'yellow' => 'زرد',
+        'blue' => 'آبی',
+        'green' => 'سبز',
     ];
     const STATUS = [
         'approved' => 'تایید شده',

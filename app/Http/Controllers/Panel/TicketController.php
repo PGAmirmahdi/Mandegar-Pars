@@ -20,10 +20,21 @@ class TicketController extends Controller
         $this->authorize('tickets-list');
 
         if (auth()->user()->isAdmin()){
-            $tickets = Ticket::latest()->paginate(30);
-        }else{
-            $tickets = Ticket::where('sender_id', auth()->id())->orWhere('receiver_id', auth()->id())
-                ->latest()->paginate(30);
+            $tickets = Ticket::withCount(['messages as unread_count' => function($query) {
+                $query->where('user_id', '!=', auth()->id())
+                    ->whereNull('read_at');
+            }])->latest()->paginate(30);
+        } else {
+            $tickets = Ticket::withCount(['messages as unread_count' => function($query) {
+                $query->where('user_id', '!=', auth()->id())
+                    ->whereNull('read_at');
+            }])
+                ->where(function($q) {
+                    $q->where('sender_id', auth()->id())
+                        ->orWhere('receiver_id', auth()->id());
+                })
+                ->latest()
+                ->paginate(30);
         }
 
         return view('panel.tickets.index', compact('tickets'));
@@ -86,6 +97,17 @@ class TicketController extends Controller
         return redirect()->route('tickets.edit', $ticket->id);
     }
 
+    public function getReadMessages(Ticket $ticket)
+    {
+        // دریافت پیام‌هایی که به شما (ارسال شده توسط شما) تعلق دارند و وضعیت read_at آنها مقداردهی شده است
+        $readMessages = $ticket->messages()
+            ->where('user_id', auth()->id())
+            ->whereNotNull('read_at')
+            ->get();
+
+        $ids = $readMessages->pluck('id');
+        return response()->json(['read_messages' => $ids]);
+    }
 
 
     public function show(Ticket $ticket)
@@ -156,9 +178,19 @@ class TicketController extends Controller
     public function getNewMessages(Ticket $ticket)
     {
         $lastMessageTime = session('last_message_time', now());
+
+        // فقط پیام‌هایی که از طرف سایر کاربران ارسال شده‌اند دریافت می‌شود
         $newMessages = $ticket->messages()
+            ->where('user_id', '!=', auth()->id())
             ->where('created_at', '>', $lastMessageTime)
             ->get();
+
+        // به‌روزرسانی وضعیت خوانده شدن برای پیام‌های دریافتی
+        $ticket->messages()
+            ->whereIn('id', $newMessages->pluck('id'))
+            ->where('user_id', '!=', auth()->id())
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
 
         session(['last_message_time' => now()]);
 
@@ -166,7 +198,6 @@ class TicketController extends Controller
             return response()->json(['new_messages' => '']);
         }
 
-        // رندر هر پیام به صورت جداگانه و جمع‌آوری HTML
         $messagesHtml = '';
         foreach ($newMessages as $message) {
             $messagesHtml .= view('panel.tickets.single-message', compact('message'))->render();
