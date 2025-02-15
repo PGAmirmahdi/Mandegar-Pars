@@ -21,7 +21,7 @@
 @else
     <div id="message-{{ $message->id }}" class="message-item outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
         @if($message->text)
-            <div class="message-text">{{ $message->text }}</div>
+            <div class="message-text @if($message->file) p-2 @endif">{{ $message->text }}</div>
         @endif
         @includeWhen($message->file, 'panel.partials.file-message')
         <div class="message-meta row @if($message->file) justify-content-center m-2 @else justify-content-between @endif px-2">
