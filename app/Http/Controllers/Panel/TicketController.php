@@ -20,10 +20,21 @@ class TicketController extends Controller
         $this->authorize('tickets-list');
 
         if (auth()->user()->isAdmin()){
-            $tickets = Ticket::latest()->paginate(30);
-        }else{
-            $tickets = Ticket::where('sender_id', auth()->id())->orWhere('receiver_id', auth()->id())
-                ->latest()->paginate(30);
+            $tickets = Ticket::withCount(['messages as unread_count' => function($query) {
+                $query->where('user_id', '!=', auth()->id())
+                    ->whereNull('read_at');
+            }])->latest()->paginate(30);
+        } else {
+            $tickets = Ticket::withCount(['messages as unread_count' => function($query) {
+                $query->where('user_id', '!=', auth()->id())
+                    ->whereNull('read_at');
+            }])
+                ->where(function($q) {
+                    $q->where('sender_id', auth()->id())
+                        ->orWhere('receiver_id', auth()->id());
+                })
+                ->latest()
+                ->paginate(30);
         }
 
         return view('panel.tickets.index', compact('tickets'));

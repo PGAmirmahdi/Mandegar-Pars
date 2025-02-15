@@ -7,7 +7,9 @@
         .fa-check-double, .fa-check {
             color: green !important;
         }
-
+        body{
+            overflow: hidden !important;
+        }
         .chat-body-messages {
             background-image: url({{asset('assets/media/image/chat.jpg')}});
             background-size: cover;
@@ -41,7 +43,7 @@
             margin-left: 30px;
         }
         .outgoing-message {
-            background-color: rgba(151, 151, 152, 0.53) !important;
+            background-color: rgba(151, 151, 152, 0.48) !important;
             backdrop-filter: blur(6.9px);
             .message-text{
                 color: #fff !important;
@@ -52,15 +54,28 @@
         }
 
         .fa-check-double {
-            color: #34b7f1; /* رنگ آبی شبیه تلگرام */
+            color: #34b7f1;
         }
 
-
+        img{
+            max-width: 200px !important;
+        }
         .message-content{
             padding:0px 8px;
         }
         .fa-check, .fa-check-double {
             font-size: 0.65rem !important;
+        }
+        .chat-app{
+            height: 85vh;
+        }
+        .chat-body-messages {
+            height: 70vh !important;
+            overflow-y: auto !important;
+        }
+
+        .message-items {
+            min-height: min-content; /* اطمینان از رشد صحیح محتوا */
         }
     </style>
 @endsection
@@ -128,10 +143,10 @@
                                             <div class="message-text">{{ $message->text }}</div>
                                         @endif
                                         @includeWhen($message->file, 'panel.partials.file-message')
-                                        <div class="message-meta row justify-content-between px-3">
-                    <span class="message-time">
-                        {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                    </span>
+                                        <div class="message-meta row @if($message->file) justify-content-between m-2 @else justify-content-between @endif px-3">
+                                        <span class="message-time">
+                                            {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                                        </span>
                                             @if($message->read_at)
                                                 <i class="status-read fa fa-check-double"></i>
                                             @else
@@ -146,7 +161,7 @@
                                         <div class="message-text">{{ $message->text }}</div>
                                     @endif
                                     @includeWhen($message->file, 'panel.partials.file-message')
-                                    <div class="message-meta row justify-content-between px-2">
+                                        <div class="message-meta row @if($message->file) justify-content-center m-2 @else justify-content-between @endif px-3">
                 <span class="message-time">
                     {{ verta($message->created_at)->format('H:i - Y/m/d') }}
                 </span>
@@ -239,7 +254,13 @@
                     contentType: false,
                     success: function (response) {
                         if(response.message_html) {
+                            // جایگزینی پیام موقت با پیام اصلی
                             $(`#${tempMessageId}`).replaceWith(response.message_html);
+                            setTimeout(() => {
+                                const container = $('.chat-body-messages')[0];
+                                // اسکرول به پایین با محاسبه دقیق
+                                container.scrollTop = container.scrollHeight;
+                            }, 50);
                         }
                         $('#chatForm')[0].reset();
                         $('#file_lbl').text('فایل');
@@ -293,7 +314,7 @@
                             }
                         });
                         updateReadStatus();
-                        $('.chat-body-messages').animate({scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
+                        $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
                     }
                 },
                 error: function () {
