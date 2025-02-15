@@ -47,8 +47,7 @@ class ExchangeController extends Controller
 
     public function showDetails(Request $request)
     {
-        $item = $request->query('item', 'usd_sell'); // مقدار پیش‌فرض دلار فروش
-
+        $item = $request->route('item');
         // دریافت تاریخ‌های انتخاب‌شده از فرم (با تبدیل "/" به "-" در صورت نیاز)
         $startDateInput = $request->query('start_date', null);
         $endDateInput   = $request->query('end_date', null);

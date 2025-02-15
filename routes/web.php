@@ -237,7 +237,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Exchange Price
     Route::resource('exchange', ExchangeController::class)->except('show','edit','update','destroy');
-    Route::get('/exchange/details/{item}', [ExchangeController::class, 'showDetails'])->name('exchange.details');
+    Route::get('exchange/details/{item}', [ExchangeController::class, 'showDetails'])->name('exchange.details');
 
     // Packets
     Route::resource('packets', PacketController::class)->except('show');
