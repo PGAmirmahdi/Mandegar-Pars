@@ -25,6 +25,7 @@ use App\Http\Controllers\Panel\FactorController;
 use App\Http\Controllers\Panel\FileController;
 use App\Http\Controllers\Panel\ForeignCustomerController;
 use App\Http\Controllers\Panel\GuaranteeController;
+use App\Http\Controllers\Panel\IndicatorController;
 use App\Http\Controllers\Panel\InputController;
 use App\Http\Controllers\Panel\InventoryController;
 use App\Http\Controllers\Panel\InventoryReportController;
@@ -363,6 +364,14 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('artin-products-update-price', [ArtinController::class, 'updatePrice'])->name('artin-products-update-price');
     Route::post('artin-products-store', [ArtinController::class, 'store'])->name('artin-products-store');
     Route::delete('artin-products-destroy/{id}', [ArtinController::class, 'destroy'])->name('artin-products-destroy');
+
+    //Indicators
+    Route::resource('indicator', IndicatorController::class)->except('show', 'destroy')->middleware('can:indicator');
+    Route::get('indicator/inbox', [IndicatorController::class, 'inbox'])->name('indicator.inbox')->middleware('can:indicator');
+    //    Route::post('/export-indicator-pdf', [IndicatorController::class, 'exportToPdf'])->middleware('can:indicator');
+    Route::get('download/indicator/{id}', [IndicatorController::class, 'downloadFromIndicator'])->name('indicator.download')->middleware('can:indicator');
+    Route::post('preview/indicator', [IndicatorController::class, 'previewIndicator'])->name('indicator.preview')->middleware('can:indicator');
+    Route::get('export/excel/indicators', [IndicatorController::class, 'exportExcelIndicator'])->name('indicator.excel')->middleware('can:indicator');
 
     // Software Updates
     Route::resource('software-updates', SoftwareUpdateController::class)->except('show');

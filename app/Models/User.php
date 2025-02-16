@@ -162,6 +162,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Leave::class);
     }
+    public function indicators()
+    {
+        return $this->belongsToMany(Indicator::class);
+    }
     public function sms()
     {
         return $this->hasMany(Sms::class);

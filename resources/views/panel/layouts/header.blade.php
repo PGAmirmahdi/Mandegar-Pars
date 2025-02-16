@@ -6,7 +6,7 @@
         <a href="/">
             <img class="large-logo" src="/assets/media/image/logo.png" alt="image">
             <img class="small-logo" src="/assets/media/image/logo-sm.png" alt="image">
-            {{--            <img class="dark-logo" src="assets/media/image/logo-dark.png" alt="image">--}}
+            <img class="dark-logo" src="assets/media/image/logo-dark.png" alt="image">
         </a>
     </div>
     <!-- end::header logo -->
@@ -14,19 +14,76 @@
     <!-- begin::header body -->
     <div class="header-body">
 
-        <div class="header-body-left">
+        @php
+            // دریافت بخش‌های مسیر URL
+            $segments = Request::segments();
+            $mapping = [
+    'panel' => 'داشبورد',
+    'users' => 'همکاران',
+    'activity' => 'فعالیت ها',
+    'search' => 'جست و جو',
+    'create'=>'ایجاد',
+    'edit' => 'ویرایش',
+    'show' => 'مشاهده',
+    'roles' => 'نقش‌ها',
+    'tasks' => 'وظایف',
+    'notes' => 'یادداشت‌ها',
+    'leaves' => 'مرخصی‌ها',
+    'reports' => 'گزارش‌ها',
+    'baseinfo' => 'اطلاعات پایه',
+    'indicator' => 'شاخص‌ها',
+    'inbox' => 'صندوق ورودی نامه ها',
+    'indicator' => 'نامه نگاری',
+    'suppliers' => 'تأمین‌کنندگان',
+    'customers' => 'مشتریان',
+    'foreign-customers' => 'مشتریان خارجی',
+    'categories' => 'دسته‌بندی‌ها',
+    'products' => 'محصولات',
+    'price-history' => 'تاریخچه قیمت‌ها',
+    'artin-products' => 'محصولات آرتین',
+    'other-prices-list' => 'لیست قیمت‌های دیگر',
+    'invoices-list' => 'لیست فاکتورها',
+    'sale-reports-list' => 'گزارش‌های فروش',
+    'price-requests' => 'درخواست‌های قیمت',
+    'buy-orders' => 'سفارش‌های خرید',
+    'comments' => 'نظرات',
+    'delivery-day' => 'روز تحویل',
+    'software-updates' => 'تغییرات نرم افزار',
+    'sale-price-requests' => 'درخواست‌های قیمت فروش',
+    'exchange' => 'ارزها',
+];
 
-            <h3 class="page-title">داشبورد</h3>
+            // تعیین عنوان صفحه بر اساس آخرین بخش (با ترجمه در صورت وجود)
+            $pageTitle = !empty($segments)
+                ? ($mapping[$segments[count($segments)-1]] ?? ucfirst($segments[count($segments)-1]))
+                : 'داشبورد';
+        @endphp
+
+        <div class="header-body-left">
+            <h3 class="page-title">{{ $pageTitle }}</h3>
 
             <!-- begin::breadcrumb -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">داشبورد</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">فروش و مدیریت مشتری</li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ url('/') }}">{{ $mapping['dashboard'] ?? 'داشبورد' }}</a>
+                    </li>
+                    @foreach($segments as $key => $segment)
+                        @php
+                            $translatedSegment = $mapping[$segment] ?? $segment;
+                            $url = url(implode('/', array_slice($segments, 0, $key + 1)));
+                        @endphp
+                        @if($loop->last)
+                            <li class="breadcrumb-item active" aria-current="page">{{ $translatedSegment }}</li>
+                        @else
+                            <li class="breadcrumb-item">
+                                <a href="{{ $url }}">{{ $translatedSegment }}</a>
+                            </li>
+                        @endif
+                    @endforeach
                 </ol>
             </nav>
             <!-- end::breadcrumb -->
-
         </div>
 
         <div class="header-body-right">
@@ -34,7 +91,7 @@
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <div style="font-size: larger" id="network_sec">
-                        <span data-toggle="tooltip" data-placement="bottom" data-original-title="connected">
+                        <span data-toggle="tooltip" data-placement="bottom" data-original-title="متصل">
                             <i class="fa fa-wifi text-success"></i>
                         </span>
                     </div>
@@ -100,7 +157,7 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="javascript:void(0)" class="nav-link bg-none">
+                    <a href="javascript:void(0)" data-sidebar-open="#userProfile" class="nav-link bg-none">
                         <div>
                             <figure class="avatar avatar-state-success avatar-sm">
                                 @if(auth()->user()->profile)

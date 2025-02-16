@@ -2,6 +2,7 @@
 
 {{--@include('panel.layouts.loader')--}}
 @includeWhen(!isset($sidebar), 'panel.layouts.sidebar')
+@includeWhen(!isset($leftsidebar), 'panel.layouts.left-sidebar')
 @includeWhen(!isset($header), 'panel.layouts.header')
 @includeWhen(!isset($loader), 'panel.layouts.loader')
 @includeWhen(!isset($loader), 'panel.layouts.internal-tels')

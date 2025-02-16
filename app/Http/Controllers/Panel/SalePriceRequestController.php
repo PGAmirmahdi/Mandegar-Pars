@@ -233,7 +233,7 @@ class SalePriceRequestController extends Controller
             'created_at' => now(),
         ];
         Activity::create($activityData);
-        $this->notif_to_ceo();
+        $this->notif_to_ceo($sale_price_request);
         alert()->success('درخواست فروش با موفقیت تایید شد', 'تایید درخواست فروش');
         return redirect()->route('sale_price_requests.index');
 
@@ -316,13 +316,9 @@ class SalePriceRequestController extends Controller
         return redirect(url('/panel/sale_price_requests?type=' . $sale_price_request->type));
     }
 
-    public function notif_to_ceo()
+    public function notif_to_ceo($sale_price_request)
     {
-        $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
-            $role->whereHas('permissions', function ($q) {
-                $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
-            });
-        })->get();
+        $notifiables = User::where('id','=',$sale_price_request->user_id)->get();
 
         $notif_title = 'تایید درخواست فروش';
         $notif_message = 'تایید درخواست فروش توسط مدیر انجام گردید';

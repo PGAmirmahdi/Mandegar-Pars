@@ -195,31 +195,88 @@
     // end network status
 
     // realtime notification
-    var audio = new Audio('/audio/notification.wav');
-    Echo.channel('presence-notification.'+userId)
-        .listen('SendMessage', (e) =>{
-            $('#notification_sec a').addClass('nav-link-notify')
-            $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
-            $(".timeline").prepend(`<div class="timeline-item">
-                                        <div>
-                                            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-													<i class="fa fa-bell font-size-20"></i>
-												</span>
-                                            </figure>
-                                        </div>
-                                        <div>
-                                            <p class="m-b-5">
-                                                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-                                            </p>
-                                            <small class="text-muted">
-                                                <i class="fa fa-clock-o m-r-5"></i>الان
-                                                </small>
-                                            </div>
-                                        </div>`)
-            audio.play();
-        });
+    // تعریف متغیرهای سراسری
+    var notificationsBlocked = false;
+    var soundMuted = false;
 
+    // ثبت رویداد بعد از لود شدن صفحه
+    document.addEventListener('DOMContentLoaded', function() {
+        var blockSwitch = document.getElementById('customSwitch11');
+        var muteSwitch = document.getElementById('customSwitch12');
+
+        if(blockSwitch) {
+            blockSwitch.addEventListener('change', function() {
+                notificationsBlocked = this.checked;
+                console.log("Notifications blocked: " + notificationsBlocked);
+            });
+        }
+
+        if(muteSwitch) {
+            muteSwitch.addEventListener('change', function() {
+                soundMuted = this.checked;
+                console.log("Sound muted: " + soundMuted);
+            });
+        }
+    });
+    // فرض کنید اینجا آدرس فایل صوتی نوتیفیکیشن شماست.
+    var audio = new Audio('/audio/notification.wav');
+
+    // دریافت شناسه کاربر از سرور (همانطور که در کد شما وجود دارد)
+    var userId = {{ Auth::user()->id }};
+
+    // دریافت نوتیفیکیشن از کانال Echo
+    Echo.channel('presence-notification.' + userId)
+        .listen('SendMessage', (e) => {
+            // در صورتی که نوتیفیکیشن‌ها مسدود شده باشند، هیچ عملی انجام نمی‌شود
+            if (notificationsBlocked) {
+                console.log("Notification blocked.");
+                return;
+            }
+
+            // به‌روزرسانی بخش اعلان‌ها
+            $('#notification_sec a').addClass('nav-link-notify');
+            $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
+            $(".timeline").prepend(`
+                <div class="timeline-item">
+                    <div>
+                        <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+                            <span class="avatar-title bg-primary-bright text-primary rounded-circle">
+                                <i class="fa fa-bell font-size-20"></i>
+                            </span>
+                        </figure>
+                    </div>
+                    <div>
+                        <p class="m-b-5">
+                            <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                        </p>
+                        <small class="text-muted">
+                            <i class="fa fa-clock-o m-r-5"></i>الان
+                        </small>
+                    </div>
+                </div>
+            `);
+
+            if (!soundMuted) {
+                audio.play();
+            }
+        });
+    messaging.onMessage(function(payload) {
+        // اگر نوتیفیکیشن‌ها مسدود شده باشند، از نمایش آن جلوگیری می‌شود
+        if (notificationsBlocked) return;
+
+        const noteTitle = payload.notification.title;
+        const noteOptions = {
+            body: payload.notification.body,
+            icon: payload.notification.icon,
+        };
+
+        new Notification(noteTitle, noteOptions);
+
+        // در صورتی که صدای نوتیفیکیشن فعال باشد، صدا پخش شود
+        if (!soundMuted) {
+            audio.play();
+        }
+    });
     // window.Echo.channel(`my-test`)
     //     .listen('.test.event', (e) => {
     //         console.log(e)
