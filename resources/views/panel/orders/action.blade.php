@@ -25,7 +25,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="resetModalLabel">تایید حذف</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
                             <i class="ti-close"></i>
                         </button>
                     </div>
@@ -38,7 +38,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">لغو</button>
                         <button type="submit" class="btn btn-danger" form="deleteInvoiceAction">حذف</button>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="factorResetModalLabel">تایید حذف</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
                             <i class="ti-close"></i>
                         </button>
                     </div>
@@ -65,7 +65,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">لغو</button>
                         <button type="submit" class="btn btn-danger" form="deleteFactorAction">حذف</button>
                     </div>
                 </div>
@@ -192,7 +192,7 @@
                                                         @can('accountant')
                                                             @if(!$order->action->confirm)
                                                                 <a href="#resetModal" class="nav-link"
-                                                                   data-bs-toggle="modal">
+                                                                   data-toggle="modal">
                                                                     <i class="fa fa-times me-2 text-danger"></i>
                                                                     حذف و بارگذاری مجدد فایل
                                                                 </a>
@@ -212,7 +212,7 @@
                                                         </a>
                                                         @can('accountant')
                                                             <a href="#factorResetModal" class="nav-link"
-                                                               data-bs-toggle="modal">
+                                                               data-toggle="modal">
                                                                 <i class="fa fa-times mr-2 text-danger"></i>
                                                                 حذف و بارگذاری مجدد فایل
                                                             </a>
