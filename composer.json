@@ -32,6 +32,7 @@
         "mojtabaahn/php-persian-number-to-words": "^1.2",
         "morilog/jalali": "^3.4",
         "pusher/pusher-php-server": "4.*",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "uxweb/sweet-alert": "^2.0"
     },
     "require-dev": {

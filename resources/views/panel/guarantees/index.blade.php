@@ -5,6 +5,11 @@
         .modal-body ol{
             line-height: 2rem !important;
         }
+
+        td svg{
+            width: 50px;
+            height: 50px;
+        }
     </style>
 @endsection
 @section('content')
@@ -24,6 +29,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
+                        <th>QR Code</th>
                         <th>شماره سریال</th>
                         <th>مدت گارانتی</th>
                         <th>تاریخ فعالسازی</th>
@@ -40,8 +46,10 @@
                     </thead>
                     <tbody>
                     @foreach($guarantees as $key => $guarantee)
+
                         <tr>
                             <td>{{ ++$key }}</td>
+                            <td>{!! $guarantee->qr_code ?? '---' !!}</td>
                             <td>{{ $guarantee->serial }}</td>
                             <td>{{ \App\Models\Guarantee::PERIOD[$guarantee->period] }}</td>
                             <td>{{ $guarantee->activated_at ? verta($guarantee->activated_at)->format('Y/m/d') : '---' }}</td>
