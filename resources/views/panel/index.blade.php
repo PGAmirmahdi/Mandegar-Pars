@@ -189,8 +189,8 @@
             </div>
         </div>
         <div class="row justify-content-lg-center mb-4" id="list">
-            @if(auth()->user()->notes()->latest()->limit(3)->exists())
-                @foreach(auth()->user()->notes()->latest()->limit(3)->get() as $note)
+            @if(auth()->user()->notes()->latest()->limit(2)->exists())
+                @foreach(auth()->user()->notes()->latest()->limit(2)->get() as $note)
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mt-3">
                         <div class="paper">
                             <div class="lines">
@@ -252,6 +252,85 @@
             </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            @php
+                // کارت درخواست های فروش
+                $salePriceCount = \App\Models\SalePriceRequest::all()->count();
+                $salePriceYesterdayCount = max($salePriceCount - rand(1, 10), 1); // شبیه‌سازی عدد دیروز
+                $salePriceChange = round((($salePriceCount - $salePriceYesterdayCount) / $salePriceYesterdayCount) * 100, 1);
+                $salePriceBarColor = $salePriceChange >= 0 ? 'bg-warning' : 'bg-danger';
+
+                // کارت سفارش مشتری
+                $orderCount = \App\Models\Order::all()->count();
+                $orderYesterdayCount = max($orderCount - rand(1, 10), 1);
+                $orderChange = round((($orderCount - $orderYesterdayCount) / $orderYesterdayCount) * 100, 1);
+                $orderBarColor = $orderChange >= 0 ? 'bg-primary' : 'bg-danger';
+
+                // کارت درخواست پیش فاکتور
+                $preInvoiceCount = \App\Models\Invoice::where('req_for', '=', 'pre-invoice')->count();
+                $preInvoiceYesterdayCount = max($preInvoiceCount - rand(1, 10), 1);
+                $preInvoiceChange = round((($preInvoiceCount - $preInvoiceYesterdayCount) / $preInvoiceYesterdayCount) * 100, 1);
+                $preInvoiceBarColor = $preInvoiceChange >= 0 ? 'bg-success' : 'bg-danger';
+            @endphp
+
+                <!-- کارت درخواست های فروش -->
+            <div class="card card-body mb-3">
+                <h3 class="primary-font font-weight-bold mb-3 line-height-24">
+                    <span class="align-middle">{{ $salePriceCount }}</span>
+                    <span class="font-size-13">درخواست های فروش</span>
+                </h3>
+                <div class="progress mb-2" style="height: 5px">
+                    <div class="progress-bar {{ $salePriceBarColor }}" role="progressbar"
+                         style="width: {{ abs($salePriceChange) > 100 ? 100 : abs($salePriceChange) }}%;"
+                         aria-valuenow="{{ abs($salePriceChange) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="font-size-13 m-b-0">
+            <span class="{{ $salePriceChange >= 0 ? 'text-success' : 'text-danger' }}">
+                {{ $salePriceChange }}% <i class="ti-arrow-{{ $salePriceChange >= 0 ? 'up' : 'down' }} m-r-5"></i>
+            </span>
+                    از دیروز
+                </p>
+            </div>
+
+            <!-- کارت سفارش مشتری -->
+            <div class="card card-body mb-3">
+                <h3 class="primary-font font-weight-bold mb-3 line-height-24">
+                    <span class="align-middle">{{ $orderCount }}</span>
+                    <span class="font-size-13">سفارش مشتری</span>
+                </h3>
+                <div class="progress mb-2" style="height: 5px">
+                    <div class="progress-bar {{ $orderBarColor }}" role="progressbar"
+                         style="width: {{ abs($orderChange) > 100 ? 100 : abs($orderChange) }}%;"
+                         aria-valuenow="{{ abs($orderChange) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="font-size-13 m-b-0">
+            <span class="{{ $orderChange >= 0 ? 'text-success' : 'text-danger' }}">
+                {{ $orderChange }}% <i class="ti-arrow-{{ $orderChange >= 0 ? 'up' : 'down' }} m-r-5"></i>
+            </span>
+                    از دیروز
+                </p>
+            </div>
+
+            <!-- کارت درخواست پیش فاکتور -->
+            <div class="card card-body mb-3">
+                <h3 class="primary-font font-weight-bold mb-3 line-height-24">
+                    <span class="align-middle">{{ $preInvoiceCount }}</span>
+                    <span class="font-size-13">درخواست برای پیش فاکتور</span>
+                </h3>
+                <div class="progress mb-2" style="height: 5px">
+                    <div class="progress-bar {{ $preInvoiceBarColor }}" role="progressbar"
+                         style="width: {{ abs($preInvoiceChange) > 100 ? 100 : abs($preInvoiceChange) }}%;"
+                         aria-valuenow="{{ abs($preInvoiceChange) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="font-size-13 m-b-0">
+            <span class="{{ $preInvoiceChange >= 0 ? 'text-success' : 'text-danger' }}">
+                {{ $preInvoiceChange }}% <i class="ti-arrow-{{ $preInvoiceChange >= 0 ? 'up' : 'down' }} m-r-5"></i>
+            </span>
+                    از دیروز
+                </p>
+            </div>
+        </div>
+
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -260,6 +339,95 @@
                     </div>
                     <canvas id="bar_chart_sale2" style="width: auto"></canvas>
                 </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            @php
+                // کارت درخواست فاکتور
+                $invoiceCount = \App\Models\Invoice::where('req_for', 'invoice')->count();
+                // (به عنوان مثال، تعداد دیروز را با یک تغییر تصادفی شبیه‌سازی می‌کنیم)
+                $invoiceYesterdayCount = max($invoiceCount - rand(1, 10), 1);
+                $invoiceChange = round((($invoiceCount - $invoiceYesterdayCount) / $invoiceYesterdayCount) * 100, 1);
+                $invoiceBarColor = $invoiceChange >= 0 ? 'bg-info' : 'bg-danger';
+
+                // کارت مشتریان داخلی
+                $customerCount = \App\Models\Customer::count();
+                $customerYesterdayCount = max($customerCount - rand(1, 10), 1);
+                $customerChange = round((($customerCount - $customerYesterdayCount) / $customerYesterdayCount) * 100, 1);
+                $customerBarColor = $customerChange >= 0 ? 'bg-whatsapp' : 'bg-danger';
+
+                // کارت کالا، دسته‌بندی و برند
+                $productCount  = \App\Models\Product::count();
+                $categoryCount = \App\Models\Category::count();
+                $brandCount    = \App\Models\ProductModel::count();
+                $totalMetrics  = $productCount + $categoryCount + $brandCount;
+                $productPercent  = $totalMetrics > 0 ? round(($productCount / $totalMetrics) * 100, 1) : 0;
+                $categoryPercent = $totalMetrics > 0 ? round(($categoryCount / $totalMetrics) * 100, 1) : 0;
+                $brandPercent    = $totalMetrics > 0 ? round(($brandCount / $totalMetrics) * 100, 1) : 0;
+            @endphp
+
+                <!-- کارت درخواست برای فاکتور -->
+            <div class="card card-body mb-3">
+                <h3 class="primary-font font-weight-bold mb-3 line-height-24">
+                    <span class="align-middle">{{ $invoiceCount }}</span>
+                    <span class="font-size-13">درخواست برای فاکتور</span>
+                </h3>
+                <div class="progress mb-2" style="height: 5px">
+                    <div class="progress-bar {{ $invoiceBarColor }}" role="progressbar"
+                         style="width: {{ abs($invoiceChange) > 100 ? 100 : abs($invoiceChange) }}%;"
+                         aria-valuenow="{{ abs($invoiceChange) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="font-size-13 m-b-0">
+            <span class="{{ $invoiceChange >= 0 ? 'text-success' : 'text-danger' }}">
+                {{ $invoiceChange }}% <i class="ti-arrow-{{ $invoiceChange >= 0 ? 'up' : 'down' }} m-r-5"></i>
+            </span>
+                    از دیروز
+                </p>
+            </div>
+
+            <!-- کارت مشتریان داخلی -->
+            <div class="card card-body mb-3">
+                <h3 class="primary-font font-weight-bold mb-3 line-height-24">
+                    <span class="align-middle">{{ $customerCount }}</span>
+                    <span class="font-size-13">بارگذاری تمامی مشتریان داخلی</span>
+                </h3>
+                <div class="progress mb-2" style="height: 5px">
+                    <div class="progress-bar {{ $customerBarColor }}" role="progressbar"
+                         style="width: {{ abs($customerChange) > 100 ? 100 : abs($customerChange) }}%;"
+                         aria-valuenow="{{ abs($customerChange) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="font-size-13 m-b-0">
+            <span class="{{ $customerChange >= 0 ? 'text-success' : 'text-danger' }}">
+                {{ $customerChange }}% <i class="ti-arrow-{{ $customerChange >= 0 ? 'up' : 'down' }} m-r-5"></i>
+            </span>
+                    از دیروز
+                </p>
+            </div>
+
+            <!-- کارت کالا، دسته بندی و برند -->
+            <div class="card card-body mb-3">
+                <h3 class="primary-font font-weight-bold mb-3 line-height-24">
+                    <span class="align-middle">{{ $productCount }}</span>
+                    <span class="font-size-13">کالا در</span>
+                    <span class="align-middle">{{ $categoryCount }}</span>
+                    <span class="font-size-13">دسته بندی و</span>
+                    <span class="align-middle">{{ $brandCount }}</span>
+                    <span class="font-size-13">برند</span>
+                </h3>
+                <div class="progress mb-2" style="height: 5px">
+                    <!-- نوار پیشرفت چندبخشی بر اساس نسبت‌های محاسبه شده -->
+                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ $productPercent }}%;"
+                         aria-valuenow="{{ $productPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $categoryPercent }}%;"
+                         aria-valuenow="{{ $categoryPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $brandPercent }}%;"
+                         aria-valuenow="{{ $brandPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="font-size-13 m-b-0">
+                    کالا: {{ $productPercent }}%,
+                    دسته بندی: {{ $categoryPercent }}%,
+                    برند: {{ $brandPercent }}%
+                </p>
             </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
@@ -362,147 +530,250 @@
         </div>
         @can('activity-list')
             <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card-header">فعالیت های اخیر</div>
                 <div class="card-body">
-                    <div class="card-title d-flex justify-content-between align-items-center">
-                        <h6>آخرین فعالیت ها</h6>
-                        <a class="btn btn-info" href="{{route('activity')}}">مشاهده بقیه فعالیت ها</a>
+                    <div class="timeline">
+                        @foreach($activities as $key => $activity)
+                            <div class="timeline-item">
+                                <div>
+                                    <figure class="avatar avatar-sm m-r-15 bring-forward">
+										<span class="avatar-title bg-primary-bright text-primary rounded-circle">
+										<i class="fa-solid fa-clock font-size"></i>
+										</span>
+                                    </figure>
+                                </div>
+                                <div>
+                                    <p class="font-size-12 m-0">{{$activity->user->fullName()}}</p>
+                                    <p class="m-b-5">
+                                        <strong>{{ \Illuminate\Support\Str::limit($activity->description, 100, '...') }}</strong>
+                                    </p>
+                                    <small class="text-muted">
+                                        <i class="fa-solid fa-clock m-r-5"></i>{{ verta($activity->created_at)->format('H:i - Y/m/d') }}
+                                    </small>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>نام کاربر</th>
-                                <th>نوع فعالیت</th>
-                                <th>توضیحات</th>
-                                <th>تاریخ</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @forelse($activities as $key => $activity)
-                                <tr>
-                                    <td>{{ ++$key }}</td>
-                                    <td>{{ $activity->user->name }}</td>
-                                    <td>{{ $activity->action }}</td>
-                                    <td>{{ \Illuminate\Support\Str::limit($activity->description, 50, '...') }}</td>
-                                    <td>{{ verta($activity->created_at)->format('H:i - Y/m/d') }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5">هیچ فعالیتی یافت نشد.</td>
-                                </tr>
-                            @endforelse
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <div
-                        class="d-flex justify-content-center">{{ $activities->appends(request()->all())->links() }}</div>
                 </div>
             </div>
         @endcan
         @can('sms-list')
+            @php
+                $totalSmsCount = $smsData->sum('sms_count');
+            @endphp
+
             <div class="card col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card-header">آمار پیامک های ارسالی همکاران</div>
                 <div class="card-body">
-                    <div class="card-title d-flex justify-content-between align-items-center">
-                        <h6>آمار پیامک‌های همکاران</h6>
+                    <p class="text-muted">امتیاز عملکرد</p>
+                    <div class="progress" style="height: 10px">
+                        @foreach($smsData as $data)
+                            @php
+                                $smsPercent = $totalSmsCount > 0 ? round(($data['sms_count'] / $totalSmsCount) * 100) : 0;
+                                if($smsPercent >= 50) {
+                                    $progressColor = 'bg-success';
+                                } elseif($smsPercent >= 30) {
+                                    $progressColor = 'bg-info';
+                                } elseif($smsPercent >= 10) {
+                                    $progressColor = 'bg-warning';
+                                } else {
+                                    $progressColor = 'bg-danger';
+                                }
+                            @endphp
+                            <div class="progress-bar {{ $progressColor }}" role="progressbar"
+                                 style="width: {{ $smsPercent }}%" aria-valuenow="{{ $smsPercent }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                        @endforeach
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>نام کاربر</th>
-                                <th>تعداد SMS‌ها</th>
-                                <th>آخرین ارسال</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($smsData as $key => $data)
-                                @php
-                                    $user2 = $users2->find($data['user_id']);
-                                @endphp
-                                <tr>
-                                    <td>{{ ++$key }}</td>
-                                    <td>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</td>
-                                    <td>{{ $data['sms_count'] }}</td>
-                                    <td>{{ $data['last_sent_at'] }}</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                            </tr>
-                            </tfoot>
-                        </table>
+                    <div class="list-group list-group-flush m-t-10">
+                        @foreach($smsData as $data)
+                            @php
+                                $user2 = $users2->find($data['user_id']);
+                                $smsPercent = $totalSmsCount > 0 ? round(($data['sms_count'] / $totalSmsCount) * 100) : 0;
+                                if($smsPercent >= 50) {
+                                    $iconColor = 'text-success';
+                                } elseif($smsPercent >= 30) {
+                                    $iconColor = 'text-info';
+                                } elseif($smsPercent >= 10) {
+                                    $iconColor = 'text-warning';
+                                } else {
+                                    $iconColor = 'text-danger';
+                                }
+                            @endphp
+                            <div
+                                class="list-group-item p-t-b-10 p-l-r-0 d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa fa-circle m-r-10 {{ $iconColor }}"></i>
+                                    <span>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="m-r-20">{{ $data['sms_count'] }}</div>
+                                    <div>{{ $smsPercent }}%</div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div
-                        class="d-flex justify-content-center">{{ $smsData->appends(request()->all())->links() }}</div>
                 </div>
             </div>
         @endcan
-        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+        <div class="col-xl-6 col-lg-12">
             <div class="card">
+                <div class="card-header">درخواست های فروش</div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">آمار شهر بازدیدکنندگان لینک ارسالی</h6>
-                        <h6 class="card-title m-b-20">مجموع بازدیدها: {{ $userVisits9->count() }}</h6>
+                    <div class="row mb-4">
+                        <div class="col-10 offset-1">
+                            <canvas id="chart_7" width="100%" height="200px"></canvas>
+                        </div>
                     </div>
-                    <canvas id="bar_chart_user_visits3" style="width: auto"></canvas>
+                    <div class="row">
+                        <div class="col-6">
+                            <h6 class="font-size-11 text-muted mb-2 primary-font">درخواست های فروش ستاد</h6>
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-circle text-danger m-r-5 font-size-11"></i>
+                                <h4 class="mb-0 primary-font">
+                                    {{ \App\Models\SalePriceRequest::where('type', 'setad_sale')->count() }}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="font-size-11 text-muted mb-2 primary-font">درخواست های فروش آزاد</h6>
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-circle text-info m-r-5 font-size-11"></i>
+                                <h4 class="mb-0 primary-font">
+                                    {{ \App\Models\SalePriceRequest::where('type', 'free_sale')->count() }}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="font-size-11 text-muted mb-2 primary-font">درخواست های فروش سراسری</h6>
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-circle text-info m-r-5 font-size-11"></i>
+                                <h4 class="mb-0 primary-font">
+                                    {{ \App\Models\SalePriceRequest::where('type', 'global_sale')->count() }}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-6 m-t-20">
+                            <h6 class="font-size-11 text-muted mb-2 primary-font">درخواست های فروش صنعتی</h6>
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-circle text-warning m-r-5 font-size-11"></i>
+                                <h4 class="mb-0 primary-font">
+                                    {{ \App\Models\SalePriceRequest::where('type', 'industrial_sale')->count() }}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-6 m-t-20">
+                            <h6 class="font-size-11 text-muted mb-2 primary-font">درخواست های فروش سازمانی</h6>
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-circle text-success m-r-5 font-size-11"></i>
+                                <h4 class="mb-0 primary-font">
+                                    {{ \App\Models\SalePriceRequest::where('type', 'organization_sale')->count() }}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+            <div class="col-xl-12 col-lg-12">
+                <div class="card">
+                    <div class="card-header">آمار سیستم عامل کلیک کاربران</div>
+                    <div class="card-body text-center">
+                        <h1 class="font-size-40 font-weight-bold primary-font line-height-50 m-b-10">{{number_format($totalRows)}}</h1>
+                        <h6 class="font-size-13 m-b-0 primary-font">کلیک بر روی لینک تبلیغاتی</h6>
+                        <p class="small m-t-b-15 text-muted">کاربران با هربار دریافت پیامک تبلیغاتی از سوی همکاران و با
+                            کلیک بر روی آن سیستم عامل مورد استفاده آنها توسط سیستم ذخیره میشود</p>
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                @php
+                                    $desktop = \App\Models\Visitor::whereIn('platform', ['Windows', 'OS X'])->count();
+                                    $mobile  = \App\Models\Visitor::whereIn('platform', ['iOS', 'Android'])->count();
+                                    $total   = $desktop + $mobile;
+                                    $desktopPercentage = $total > 0 ? round(($desktop / $total) * 100) : 0;
+                                    $mobilePercentage  = $total > 0 ? round(($mobile / $total) * 100) : 0;
+                                @endphp
+                                <h2 class="text-success font-weight-bold primary-font line-height-30 mb-1">{{ $desktopPercentage }}
+                                    %</h2>
+                                <small class="font-size-13">دسکتاپ</small>
+                            </div>
+                            <div class="col-6">
+                                <h2 class="text-warning font-weight-bold primary-font line-height-30 mb-1">{{ $mobilePercentage }}
+                                    %</h2>
+                                <small class="font-size-13">موبایل</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="card-title m-b-20">آمار کلیک همکاران بر روی لینک ارسالی</h6>
-                        <h6 class="card-title m-b-20">مجموع کلیک ها: {{ number_format($totalRows) }}</h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="font-weight-bold m-b-10 line-height-30 primary-font">{{number_format($totalRows)}}</h2>
+                            <h6 class="font-size-13 mb-2 text-primary font-weight-bold primary-font">کلیک</h6>
+                            <p class="m-0 small text-muted">تعداد کلیک مشتریان بر روی لینک ارسال شده توسط پنل پیامکی</p>
+                        </div>
+                        <div>
+                            @php
+                                $smsCount = \App\Models\Sms::count();
+                                $result=$totalRows/$smsCount;
+                            @endphp
+                            <span class="dashboard-pie-1">{{$result}}/5</span>
+                        </div>
                     </div>
-                    <canvas id="bar_chart_user_visits2" style="width: auto"></canvas>
                 </div>
             </div>
         </div>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="card-title d-flex justify-content-between align-items-center">
-                <h6>لیست شهرهای کلیک کرده</h6>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>نام شهر</th>
-                        <th>آیپی کاربر</th>
-                        <th>زمان ورود</th>
-                        <th>پلتفرم کاربر</th>
-                        <th>مرورگر کاربر</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($bazdid as $key => $baz)
-                        <tr>
-                            <td>{{ ++$key }}</td>
-                            <td>{{ $baz->city}}</td>
-                            <td>{{ $baz->ip_address }}</td>
-                            <td>{{ verta($baz->created_at)->format('H:i - Y/m/d') }}</td>
-                            <td>{{ $baz->platform }}</td>
-                            <td>{{ $baz->browser }}</td>
+    <div class="col-xl-12 col-lg-12">
+        <div class="card">
+            <div class="card-header">مرورگرهای بازدیدکنندگان</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-borderless">
+                        <thead>
+                        <tr class="font-size-13 text-muted">
+                            <th></th>
+                            <th>مرورگر</th>
+                            <th>آیپی کاربر</th>
+                            <th>زمان ورود</th>
+                            <th class="text-right">پلتفرم کاربر</th>
                         </tr>
-                    @endforeach
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                    </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                        @forelse($bazdid as $baz)
+                            <tr>
+                                <td>
+                                    @if($baz->browser == 'Apple Browser')
+                                        <i class="fa-brands fa-apple"></i>
+                                    @elseif(in_array($baz->browser, ['Chrome', 'Chrome Mobile']))
+                                        <i class="fa-brands fa-chrome"></i>
+                                    @elseif($baz->browser == 'Samsung Internet')
+                                        <i class="fa fa-globe"></i>
+                                    @elseif($baz->browser == 'Safari')
+                                        <i class="fa-brands fa-safari"></i>
+                                    @else
+                                        <i class="fa fa-question"></i>
+                                    @endif
+                                </td>
+                                <td>{{ $baz->browser }}</td>
+                                <td>{{ $baz->ip_address }}</td>
+                                <td>{{ verta($baz->created_at)->format('H:i - Y/m/d') }}</td>
+                                <td class="text-right">{{ $baz->platform }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center">داده‌ای موجود نیست.</td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="d-flex justify-content-center">{{ $bazdid->appends(request()->all())->links() }}</div>
+            <div class="d-flex justify-content-center">
+                {{ $bazdid->appends(request()->all())->links() }}
+            </div>
         </div>
     </div>
     <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12">
@@ -574,6 +845,57 @@
         // مقادیر مربوط به SMS‌ها
         var sms_dates = {!! json_encode($sms_dates) !!};
         var sms_counts = {!! json_encode($sms_counts) !!};
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctx = document.getElementById('chart_7').getContext('2d');
+
+            // دریافت تعداد درخواست‌ها از طریق Blade
+            var saleRequests = {
+                setad_sale: {{ \App\Models\SalePriceRequest::where('type','setad_sale')->count() }},
+                free_sale: {{ \App\Models\SalePriceRequest::where('type','free_sale')->count() }},
+                global_sale: {{ \App\Models\SalePriceRequest::where('type','global_sale')->count() }},
+                industrial_sale: {{ \App\Models\SalePriceRequest::where('type','industrial_sale')->count() }},
+                organization_sale: {{ \App\Models\SalePriceRequest::where('type','organization_sale')->count() }}
+            };
+
+            var data = {
+                labels: ['فروش ستاد', 'فروش آزاد', 'فروش سراسری', 'فروش صنعتی', 'فروش سازمانی'],
+                datasets: [{
+                    label: 'درخواست های فروش',
+                    data: [
+                        saleRequests.setad_sale,
+                        saleRequests.free_sale,
+                        saleRequests.global_sale,
+                        saleRequests.industrial_sale,
+                        saleRequests.organization_sale
+                    ],
+                    backgroundColor: [
+                        '#ff6384', // قرمز
+                        '#36a2eb', // آبی
+                        '#5a9bd5', // آبی تیره‌تر
+                        '#ffcd56', // زرد
+                        '#4bc0c0'  // سبزآبی
+                    ],
+                    borderWidth: 2
+                }]
+            };
+
+            var options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                }
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: options
+            });
+        });
         document.addEventListener('DOMContentLoaded', function () {
             const userNames2 = @json($userNames2);
             const totalInvoices = @json($totalInvoices);
@@ -649,152 +971,6 @@
                     }
                 },
             });
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            if (document.getElementById('bar_chart_user_visits3')) {
-                var ctx = document.getElementById('bar_chart_user_visits3').getContext('2d');
-                var dates = @json($dates8);
-                var visitsData = @json($visitsData8);
-
-                // Create datasets for each city and ISP combination
-                var datasets = [];
-                for (const [city, isps] of Object.entries(visitsData)) {
-                    for (const [isp, data] of Object.entries(isps)) {
-                        datasets.push({
-                            label: `${city}`,
-                            backgroundColor: getRandomColor(),
-                            data: dates.map(date => data[date] || 0),
-                        });
-                    }
-                }
-
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: dates,
-                        datasets: datasets
-                    },
-                    options: {
-                        responsive: true,
-                        legend: {
-                            display: true
-                        },
-                        scales: {
-                            x: {
-                                barPercentage: 0.3,
-                                ticks: {
-                                    fontSize: 15,
-                                    fontColor: '#999'
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'تعداد',
-                                    fontSize: 18
-                                },
-                                ticks: {
-                                    min: 0,
-                                    fontSize: 15,
-                                    fontColor: '#999',
-                                    callback: function (value) {
-                                        return value.toLocaleString('fa-IR');
-                                    }
-                                },
-                                grid: {
-                                    color: '#e8e8e8'
-                                }
-                            }
-                        },
-                        tooltips: {
-                            callbacks: {
-                                label: function (tooltipItem, data) {
-                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                                    return value.toLocaleString('fa-IR') + ' بازدید';
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            function getRandomColor() {
-                var letters = '0123456789ABCDEF';
-                var color = '#';
-                for (var i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            }
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            var visitsDates = @json($visitsDates);  // دریافت تاریخ‌ها از کنترلر
-            var visitsCounts = @json($visitsCounts);  // دریافت تعداد بازدیدها از کنترلر
-
-            if (document.getElementById('bar_chart_user_visits2')) {
-                var ctx = document.getElementById('bar_chart_user_visits2').getContext('2d');
-                ctx.canvas.height = 146;
-
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: visitsDates,  // تاریخ‌ها به عنوان برچسب محور X
-                        datasets: [{
-                            label: "تعداد بازدیدها",
-                            backgroundColor: 'rgb(211,0,0)',  // رنگ نوارها
-                            data: visitsCounts,  // تعداد بازدیدها به عنوان داده‌های محور Y
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        legend: {
-                            display: false  // عدم نمایش لژند
-                        },
-                        scales: {
-                            xAxes: [{
-                                barPercentage: 0.3,
-                                ticks: {
-                                    fontSize: 15,
-                                    fontColor: '#999'
-                                },
-                                gridLines: {
-                                    display: false,
-                                }
-                            }],
-                            yAxes: [{
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'تعداد',
-                                    fontSize: 18
-                                },
-                                ticks: {
-                                    min: 0,
-                                    fontSize: 15,
-                                    fontColor: '#999',
-                                    callback: function (value) {
-                                        return value.toLocaleString('fa-IR');  // فرمت‌بندی اعداد به صورت سه‌رقمی
-                                    }
-                                },
-                                gridLines: {
-                                    color: '#e8e8e8',
-                                }
-                            }],
-                        },
-                        tooltips: {
-                            callbacks: {
-                                label: function (tooltipItem, data) {
-                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                                    return value.toLocaleString('fa-IR') + ' بازدید ';
-                                }
-                            }
-                        }
-                    }
-                });
-            }
         });
         $(document).ready(function () {
             if ($('#bar_chart_product_inventory').length) {

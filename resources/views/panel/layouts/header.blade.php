@@ -6,7 +6,7 @@
         <a href="/">
             <img class="large-logo" src="/assets/media/image/logo.png" alt="image">
             <img class="small-logo" src="/assets/media/image/logo-sm.png" alt="image">
-            <img class="dark-logo" src="assets/media/image/logo-dark.png" alt="image">
+{{--            <img class="dark-logo" src="assets/media/image/logo-dark.png" alt="image">--}}
         </a>
     </div>
     <!-- end::header logo -->
@@ -18,7 +18,9 @@
             // دریافت بخش‌های مسیر URL
             $segments = Request::segments();
             $mapping = [
+                'invoices'=>'پیش فاکتور ها',
     'panel' => 'داشبورد',
+    'orders'=>'سفارشات',
     'users' => 'همکاران',
     'activity' => 'فعالیت ها',
     'search' => 'جست و جو',
@@ -51,9 +53,8 @@
     'software-updates' => 'تغییرات نرم افزار',
     'sale-price-requests' => 'درخواست‌های قیمت فروش',
     'exchange' => 'ارزها',
+    'request'=>'درخواست',
 ];
-
-            // تعیین عنوان صفحه بر اساس آخرین بخش (با ترجمه در صورت وجود)
             $pageTitle = !empty($segments)
                 ? ($mapping[$segments[count($segments)-1]] ?? ucfirst($segments[count($segments)-1]))
                 : 'داشبورد';
@@ -66,7 +67,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="{{ url('/') }}">{{ $mapping['dashboard'] ?? 'داشبورد' }}</a>
+                        <a href=""></a>
                     </li>
                     @foreach($segments as $key => $segment)
                         @php
@@ -107,6 +108,13 @@
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                        data-toggle="tooltip" data-placement="bottom" data-original-title="خروج">
                         <i class="fa fa-power-off"></i>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link" id="darkModeToggle" data-toggle="tooltip"
+                       onclick="toggleDark()"
+                       data-placement="bottom" data-original-title="حالت شب">
+                        <i class="fa fa-moon" id="darkModeIcon"></i>
                     </a>
                 </li>
                 <li class="nav-item dropdown" id="notification_sec">

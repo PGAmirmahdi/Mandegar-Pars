@@ -43,8 +43,19 @@
                 <div class="d-flex align-items-center">
                     <i class="fa fa-bar-chart font-size-30 opacity-7"></i>
                     <div class="m-l-20">
-                        <h5 class="mb-0 font-weight-bold primary-font">{{ number_format($totalSales) }} (ریال)</h5>
-                        <small>فروش شما</small>
+                        @if(in_array(auth()->user()->role->name,['accountant']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\Invoice::where('req_for','pre-invoice')->count()}}</h5>
+                            <small>پیش فاکتور های دریافت شده</small>
+                            @elseif(in_array(auth()->user()->role->name,['inventory-manager','warehouse-keeper','exit-door']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\Inventory::all()->sum('current_count')}}</h5>
+                            <small>تعداد کالا های در انبار</small>
+                        @elseif(in_array(auth()->user()->role->name,['ceo','office-manager']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{number_format(\App\Models\Invoice::all()->sum('total_price'))}}</h5>
+                            <small>فروش پرسنل</small>
+                        @else
+                            <h5 class="mb-0 font-weight-bold primary-font">{{ number_format($totalSales) }} (ریال)</h5>
+                            <small>فروش شما</small>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -54,8 +65,16 @@
                 <div class="d-flex align-items-center">
                     <i class="fa fa-envelope-open font-size-30 opacity-7"></i>
                     <div class="m-l-20">
-                        <h5 class="mb-0 font-weight-bold primary-font">{{ \App\Models\Sms::where('user_id',auth()->user()->id)->count() }}</h5>
-                        <small>پیامک های ارسالی شما</small>
+                        @if(in_array(auth()->user()->role->name,['accountant','inventory-manager','warehouse-keeper','exit-door']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{ \App\Models\Ticket::where('receiver_id',auth()->user()->id)->count() }}</h5>
+                            <small>تیکت های دریافتی</small>
+                        @elseif(in_array(auth()->user()->role->name,['ceo','office-manager']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{ \App\Models\Ticket::all()->count() }}</h5>
+                            <small>پیامک های ارسال شده همکاران</small>
+                        @else
+                            <h5 class="mb-0 font-weight-bold primary-font">{{ \App\Models\Sms::where('user_id',auth()->user()->id)->count() }}</h5>
+                            <small>پیامک های ارسالی شما</small>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -65,17 +84,28 @@
                 <div class="d-flex align-items-center">
                     <i class="fa fa-users font-size-30 opacity-7"></i>
                     <div class="m-l-20">
-                        <h5 class="mb-0 font-weight-bold primary-font">{{ \App\Models\Customer::where('user_id',auth()->user()->id)->count() }}</h5>
-                        <small>مشتریان شما</small>
+                        @if(in_array(auth()->user()->role->name,['accountant']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\Invoice::where('status','invoiced')->count()}}</h5>
+                            <small>فاکتور های دریافت شده</small>
+                            @elseif(in_array(auth()->user()->role->name,['inventory-manager','warehouse-keeper','exit-door']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\InventoryReport::where('type','output')->count()}} خروج و {{\App\Models\InventoryReport::where('type','input')->count()}} ورود </h5>
+                            <small>خروج و ورود های انبار</small>
+                            @elseif(in_array(auth()->user()->role->name,['ceo','office-manager']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\Customer::all()->count()}}</h5>
+                            <small>مشتریان شرکت</small>
+                        @else
+                            <h5 class="mb-0 font-weight-bold primary-font">{{ \App\Models\Customer::where('user_id',auth()->user()->id)->count() }}</h5>
+                            <small>مشتریان شما</small>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-{{--        <div class="mb-4">--}}
-{{--            <h6 class="font-size-13 mb-3 pt-2">درباره</h6>--}}
-{{--            <p class="text-muted">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان--}}
-{{--                گرافیک</p>--}}
-{{--        </div>--}}
+        {{--        <div class="mb-4">--}}
+        {{--            <h6 class="font-size-13 mb-3 pt-2">درباره</h6>--}}
+        {{--            <p class="text-muted">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان--}}
+        {{--                گرافیک</p>--}}
+        {{--        </div>--}}
         <div class="mb-4">
             <h6 class="font-size-13 mb-3">شماره تلفن:</h6>
             <p class="text-muted">{{auth()->user()->phone}}</p>
@@ -100,21 +130,21 @@
                 </li>
             </ul>
         </div>
-        <div class="mb-4">
-            <h6 class="font-size-13 mb-3">تنظیمات</h6>
-            <div class="form-group">
-                <div class="form-item custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch11">
-                    <label class="custom-control-label" for="customSwitch11">مسدود کردن</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="form-item custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch12">
-                    <label class="custom-control-label" for="customSwitch12">بیصدا کردن</label>
-                </div>
-            </div>
-        </div>
+{{--        <div class="mb-4">--}}
+{{--            <h6 class="font-size-13 mb-3">تنظیمات</h6>--}}
+{{--            <div class="form-group">--}}
+{{--                <div class="form-item custom-control custom-switch">--}}
+{{--                    <input type="checkbox" class="custom-control-input" id="customSwitch11">--}}
+{{--                    <label class="custom-control-label" for="customSwitch11">بی صدا کردن</label>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--            <div class="form-group">--}}
+{{--                <div class="form-item custom-control custom-switch">--}}
+{{--                    <input type="checkbox" class="custom-control-input" id="customSwitch12">--}}
+{{--                    <label class="custom-control-label" for="customSwitch12">مسدود کردن</label>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
     </div>
 </div>
 <!-- end::sidebar user profile -->
