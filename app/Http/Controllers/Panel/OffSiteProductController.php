@@ -54,7 +54,7 @@ class OffSiteProductController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ایجاد محصول',
-            'description' => 'محصول جدید در وب‌سایت ' . ucfirst($request->website) . 'توسط' . auth()->user()->family .  '(' . Auth::user()->role->label . ')' . ' ثبت شد.',
+            'description' => 'محصول جدید در وب‌سایت ' . ucfirst($request->website) . ' توسط ' . auth()->user()->family .  '(' . Auth::user()->role->label . ')' . ' ثبت شد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);

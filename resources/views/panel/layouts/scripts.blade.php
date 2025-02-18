@@ -84,6 +84,48 @@
 
 @yield('scripts')
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var body = document.getElementsByTagName('body')[0];
+        var icon = document.getElementById('darkModeIcon');
+        var text = document.getElementById('darkModeToggle');
+
+        // بررسی حالت ذخیره‌شده در localStorage
+        if (localStorage.getItem("darkMode") === "enabled") {
+            body.classList.add("dark");
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+            text.setAttribute("data-original-title", "حالت روز");
+        } else {
+            body.classList.remove("dark");
+            icon.classList.remove("fa-sun");
+            icon.classList.add("fa-moon");
+            text.setAttribute("data-original-title", "حالت شب");
+        }
+    });
+
+    function toggleDark() {
+        var body = document.getElementsByTagName('body')[0];
+        var icon = document.getElementById('darkModeIcon');
+        var text = document.getElementById('darkModeToggle');
+
+        body.classList.toggle('dark');
+
+        if (body.classList.contains('dark')) {
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+            text.setAttribute("data-original-title", "حالت روز");
+
+            // ذخیره حالت تاریک در localStorage
+            localStorage.setItem("darkMode", "enabled");
+        } else {
+            icon.classList.remove("fa-sun");
+            icon.classList.add("fa-moon");
+            text.setAttribute("data-original-title", "حالت شب");
+
+            // ذخیره حالت روشن در localStorage
+            localStorage.setItem("darkMode", "disabled");
+        }
+    }
 
     var userId = {{ Auth::user()->id }};
 
@@ -116,7 +158,7 @@
     {{-- end ajax setup --}}
 
     {{-- delete tables row --}}
-    $(document).on('click','.trashRow', function() {
+    $(document).on('click', '.trashRow', function () {
         let self = $(this)
         Swal.fire({
             title: 'حذف شود؟',
@@ -134,7 +176,7 @@
                         id: self.data('id'),
                         _method: 'delete'
                     },
-                    success: function(res) {
+                    success: function (res) {
                         $('tbody:not(.internal_tels)').html($(res).find('tbody:not(.internal_tels)').html());
                         Swal.fire({
                             title: 'با موفقیت حذف شد',
@@ -200,19 +242,19 @@
     var soundMuted = false;
 
     // ثبت رویداد بعد از لود شدن صفحه
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var blockSwitch = document.getElementById('customSwitch11');
         var muteSwitch = document.getElementById('customSwitch12');
 
-        if(blockSwitch) {
-            blockSwitch.addEventListener('change', function() {
+        if (blockSwitch) {
+            blockSwitch.addEventListener('change', function () {
                 notificationsBlocked = this.checked;
                 console.log("Notifications blocked: " + notificationsBlocked);
             });
         }
 
-        if(muteSwitch) {
-            muteSwitch.addEventListener('change', function() {
+        if (muteSwitch) {
+            muteSwitch.addEventListener('change', function () {
                 soundMuted = this.checked;
                 console.log("Sound muted: " + soundMuted);
             });
@@ -260,7 +302,7 @@
                 audio.play();
             }
         });
-    messaging.onMessage(function(payload) {
+    messaging.onMessage(function (payload) {
         // اگر نوتیفیکیشن‌ها مسدود شده باشند، از نمایش آن جلوگیری می‌شود
         if (notificationsBlocked) return;
 
@@ -303,7 +345,7 @@
             .then(function () {
                 return messaging.getToken()
             })
-            .then(function(token) {
+            .then(function (token) {
                 console.log(token);
 
                 $.ajax({
@@ -317,18 +359,18 @@
                         console.log('Token saved successfully.');
                     },
                     error: function (err) {
-                        console.log('User Chat Token Error'+ err);
+                        console.log('User Chat Token Error' + err);
                     },
                 });
 
             }).catch(function (err) {
-            console.log('User Chat Token Error'+ err);
+            console.log('User Chat Token Error' + err);
         });
     }
 
     initFirebaseMessagingRegistration();
 
-    messaging.onMessage(function(payload) {
+    messaging.onMessage(function (payload) {
         const noteTitle = payload.notification.title;
         const noteOptions = {
             body: payload.notification.body,

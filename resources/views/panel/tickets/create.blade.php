@@ -14,7 +14,6 @@
                         <select name="receiver" class="js-example-basic-single select2-hidden-accessible">
                             <option value="">انتخاب کنید...</option>
                             @canany(['sales-manager','ceo','warehouse-keeper','Organ'])
-                                {{-- در این حالت، همه کاربران (به جز خود شما) نمایش داده می‌شوند --}}
                                 @foreach(\App\Models\User::where('id', '!=', auth()->id())->get() as $user)
                                     <option value="{{ $user->id }}" {{ old('receiver') == $user->id ? 'selected' : '' }}>
                                         {{ $user->role->label . ' - ' . $user->fullName() }}
