@@ -31,3 +31,5 @@ Route::get('get-cartridges/{printer_id}', [ApiController::class, 'getCartridges'
 Route::post('create-bot-user',[ApiController::class, 'createBotUser']);
 
 Route::post('ask-gpt', [ChatGPTController::class, 'askChatGPT'])->name('ask.gpt');
+
+Route::post('check-guarantee',[ApiController::class, 'checkGuarantee']);
