@@ -16,9 +16,6 @@ class GuaranteeController extends Controller
     {
         $this->authorize('guarantees-list');
 
-        // expire the guarantees where expired_at < now
-        Guarantee::where('status', 'active')->where('expired_at', '<', now())->update(['status' => 'expired']);
-
         $guarantees = Guarantee::latest()->paginate(30);
         return view('panel.guarantees.index', compact('guarantees'));
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\BotUser;
 use App\Models\Factor;
+use App\Models\Guarantee;
 use App\Models\Inventory;
 use App\Models\Invoice;
 use App\Models\Order;
@@ -245,5 +246,39 @@ class ApiController extends Controller
         }
 
         return $code;
+    }
+
+    public function checkGuarantee(Request $request)
+    {
+        $serial = 'MP'.$request->serial;
+
+        $guarantee = Guarantee::where('serial', $serial)->first();
+
+        if ($guarantee){
+            if ($guarantee->status == 'active'){
+                $error = false;
+                $date = verta($guarantee->expired_at)->format('Y/m/d');
+                $message = "گارانتی محصولات شما تا تاریخ $date معتبر است";
+            }elseif($guarantee->status == 'inactive'){
+                $error = true;
+                $message = 'سریال گارانتی معتبر نیست';
+            }elseif($guarantee->status == 'voided'){
+                $error = true;
+                $message = 'گارانتی محصولات شما باطل شده است';
+            } else{
+                $error = true;
+                $message = 'گارانتی محصولات شما منقضی شده است';
+            }
+        }else{
+            $error = true;
+            $message = 'سریال گارانتی معتبر نیست';
+        }
+
+        $data = [
+            'error' => $error,
+            'message' => $message,
+        ];
+
+        return response()->json(['data' => $data]);
     }
 }
