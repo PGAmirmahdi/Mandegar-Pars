@@ -6,7 +6,7 @@
         <a href="/">
             <img class="large-logo" src="/assets/media/image/logo.png" alt="image">
             <img class="small-logo" src="/assets/media/image/logo-sm.png" alt="image">
-{{--            <img class="dark-logo" src="assets/media/image/logo-dark.png" alt="image">--}}
+            <img class="dark-logo" src="/assets/media/image/logo-dark.png" alt="image" width="70px" height="70px">
         </a>
     </div>
     <!-- end::header logo -->
@@ -61,7 +61,7 @@
         @endphp
 
         <div class="header-body-left">
-            <h3 class="page-title">{{ $pageTitle }}</h3>
+            <h3 class="page-title">@yield('title')</h3>
 
             <!-- begin::breadcrumb -->
             <nav aria-label="breadcrumb">
