@@ -269,12 +269,6 @@
     // دریافت نوتیفیکیشن از کانال Echo
     Echo.channel('presence-notification.' + userId)
         .listen('SendMessage', (e) => {
-            // در صورتی که نوتیفیکیشن‌ها مسدود شده باشند، هیچ عملی انجام نمی‌شود
-            if (notificationsBlocked) {
-                console.log("Notification blocked.");
-                return;
-            }
-
             // به‌روزرسانی بخش اعلان‌ها
             $('#notification_sec a').addClass('nav-link-notify');
             $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
@@ -298,14 +292,9 @@
                 </div>
             `);
 
-            if (!soundMuted) {
-                audio.play();
-            }
+            audio.play();
         });
     messaging.onMessage(function (payload) {
-        // اگر نوتیفیکیشن‌ها مسدود شده باشند، از نمایش آن جلوگیری می‌شود
-        if (notificationsBlocked) return;
-
         const noteTitle = payload.notification.title;
         const noteOptions = {
             body: payload.notification.body,
@@ -314,10 +303,7 @@
 
         new Notification(noteTitle, noteOptions);
 
-        // در صورتی که صدای نوتیفیکیشن فعال باشد، صدا پخش شود
-        if (!soundMuted) {
-            audio.play();
-        }
+        audio.play();
     });
     // window.Echo.channel(`my-test`)
     //     .listen('.test.event', (e) => {
