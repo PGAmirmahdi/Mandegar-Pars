@@ -279,6 +279,6 @@ class ApiController extends Controller
             'message' => $message,
         ];
 
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data])    ->header('Access-Control-Allow-Origin', 'https://artintoner.com');
     }
 }
