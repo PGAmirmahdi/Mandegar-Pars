@@ -130,21 +130,21 @@
                 </li>
             </ul>
         </div>
-{{--        <div class="mb-4">--}}
-{{--            <h6 class="font-size-13 mb-3">تنظیمات</h6>--}}
-{{--            <div class="form-group">--}}
-{{--                <div class="form-item custom-control custom-switch">--}}
-{{--                    <input type="checkbox" class="custom-control-input" id="customSwitch11">--}}
-{{--                    <label class="custom-control-label" for="customSwitch11">بی صدا کردن</label>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--            <div class="form-group">--}}
-{{--                <div class="form-item custom-control custom-switch">--}}
-{{--                    <input type="checkbox" class="custom-control-input" id="customSwitch12">--}}
-{{--                    <label class="custom-control-label" for="customSwitch12">مسدود کردن</label>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
+        <div class="mb-4">
+            <h6 class="font-size-13 mb-3">تنظیمات</h6>
+            <div class="form-group">
+                <div class="form-item custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="customSwitch11">
+                    <label class="custom-control-label" for="customSwitch11">بی صدا کردن</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-item custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="customSwitch12">
+                    <label class="custom-control-label" for="customSwitch12">مسدود کردن</label>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <!-- end::sidebar user profile -->
