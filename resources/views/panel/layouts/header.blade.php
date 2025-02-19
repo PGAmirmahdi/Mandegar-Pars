@@ -54,6 +54,8 @@
     'sale-price-requests' => 'درخواست‌های قیمت فروش',
     'exchange' => 'ارزها',
     'request'=>'درخواست',
+    'productsModel'=>'برندها',
+    'tickets' => 'تیکت ها',
 ];
             $pageTitle = !empty($segments)
                 ? ($mapping[$segments[count($segments)-1]] ?? ucfirst($segments[count($segments)-1]))

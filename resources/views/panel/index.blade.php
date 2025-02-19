@@ -272,7 +272,7 @@
                 $preInvoiceBarColor = $preInvoiceChange >= 0 ? 'bg-success' : 'bg-danger';
             @endphp
 
-                <!-- کارت درخواست های فروش -->
+                    <!-- کارت درخواست های فروش -->
             <div class="card card-body mb-3">
                 <h3 class="primary-font font-weight-bold mb-3 line-height-24">
                     <span class="align-middle">{{ $salePriceCount }}</span>
@@ -366,7 +366,7 @@
                 $brandPercent    = $totalMetrics > 0 ? round(($brandCount / $totalMetrics) * 100, 1) : 0;
             @endphp
 
-                <!-- کارت درخواست برای فاکتور -->
+                    <!-- کارت درخواست برای فاکتور -->
             <div class="card card-body mb-3">
                 <h3 class="primary-font font-weight-bold mb-3 line-height-24">
                     <span class="align-middle">{{ $invoiceCount }}</span>
@@ -538,7 +538,16 @@
                                 <div>
                                     <figure class="avatar avatar-sm m-r-15 bring-forward">
 										<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-										<i class="fa-solid fa-clock font-size"></i>
+                                             @if(auth()->user()->profile)
+                                                <img
+                                                        src="{{ $activity->user->profile }}"
+                                                        style="max-width: 76.79px"
+                                                        data-toggle="tooltip" data-placement="bottom"
+                                                        title="{{ $activity->user->fullName() }}"
+                                                        class="rounded-circle" alt="image" width="36.5px" height="36.5px">
+                                            @else
+                                                <i class="fa-solid fa-clock font-size"></i>
+                                            @endif
 										</span>
                                     </figure>
                                 </div>
@@ -601,7 +610,7 @@
                                 }
                             @endphp
                             <div
-                                class="list-group-item p-t-b-10 p-l-r-0 d-flex align-items-center justify-content-between">
+                                    class="list-group-item p-t-b-10 p-l-r-0 d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <i class="fa fa-circle m-r-10 {{ $iconColor }}"></i>
                                     <span>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</span>
@@ -653,7 +662,7 @@
                                 </h4>
                             </div>
                         </div>
-                        <div class="col-6 m-t-20">
+                        <div class="col-6">
                             <h6 class="font-size-11 text-muted mb-2 primary-font">درخواست های فروش صنعتی</h6>
                             <div class="d-flex align-items-center">
                                 <i class="fa fa-circle text-warning m-r-5 font-size-11"></i>
@@ -662,12 +671,21 @@
                                 </h4>
                             </div>
                         </div>
-                        <div class="col-6 m-t-20">
+                        <div class="col-6">
                             <h6 class="font-size-11 text-muted mb-2 primary-font">درخواست های فروش سازمانی</h6>
                             <div class="d-flex align-items-center">
                                 <i class="fa fa-circle text-success m-r-5 font-size-11"></i>
                                 <h4 class="mb-0 primary-font">
                                     {{ \App\Models\SalePriceRequest::where('type', 'organization_sale')->count() }}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="font-size-11 text-muted mb-2 primary-font">مجموع درخواست های فروش</h6>
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-circle text-success m-r-5 font-size-11"></i>
+                                <h4 class="mb-0 primary-font">
+                                    {{ \App\Models\SalePriceRequest::count() }}
                                 </h4>
                             </div>
                         </div>
@@ -823,7 +841,7 @@
                     </table>
                 </div>
                 <div
-                    class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
+                        class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
             </div>
         </div>
     @endcan
