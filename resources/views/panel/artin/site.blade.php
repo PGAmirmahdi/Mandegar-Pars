@@ -172,7 +172,7 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">آخرین سفارشات سایت</h5>
-                    <a href="#" class="btn btn-sm btn-facebook">مشاهده بیشتر</a>
+                    <a href="{{route('site-orders')}}" class="btn btn-sm btn-facebook">مشاهده بیشتر</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -218,7 +218,7 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">آخرین ثبت نام ها</h5>
-                    <a href="#" class="btn btn-sm btn-facebook">مشاهده بیشتر</a>
+                    <a href="{{route('site-registered')}}" class="btn btn-sm btn-facebook">مشاهده بیشتر</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
