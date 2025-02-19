@@ -34,7 +34,7 @@ class GuaranteeController extends Controller
 
         $guarantee=Guarantee::create([
             'serial' => $request->serial_number,
-            'qr_code' => QrCode::generate('https://artintoner.com/check-guarantee?'.$request->serial_number),
+            'qr_code' => QrCode::generate('https://artintoner.com/check-guarantee?serial='.$request->serial_number),
             'period' => $request->period,
             'status' => $request->status,
             'activated_at' => $request->status == 'active' ? now() : null,
