@@ -250,7 +250,7 @@ class ApiController extends Controller
 
     public function checkGuarantee(Request $request)
     {
-        $serial = 'MP'.$request->serial;
+        $serial = $request->serial;
 
         $guarantee = Guarantee::where('serial', $serial)->first();
 
