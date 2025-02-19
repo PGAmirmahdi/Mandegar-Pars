@@ -10,7 +10,7 @@
                 </a>
             </li>
             @canany(['categories-list','products-list','printers-list','prices-list','foreign-customers-list','customers-list','debtors-list','suppliers-list','indicator'])
-                <li class="{{ active_sidebar(['indicator/inbox','indicator','indicator/create','indicator/{indicator}/edit','suppliers','suppliers/create','suppliers/{supplier}','suppliers/{supplier}/edit','search/suppliers','request/products','debtors/{debtor}','debtors','debtors/create','debtors/{debtor}/edit','search/debtors','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','customers/{customer}','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search', 'artin-products', 'other-prices-list']) ? 'active' : '' }}"
+                <li class="{{ active_sidebar(['indicator/inbox','indicator','indicator/create','indicator/{indicator}/edit','suppliers','suppliers/create','suppliers/{supplier}','suppliers/{supplier}/edit','search/suppliers','request/products','debtors/{debtor}','debtors','debtors/create','debtors/{debtor}/edit','search/debtors','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','customers','customers/create','customers/{customer}/edit','customers/{customer}','search/customers','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','search/foreign-customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','search/printers','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','site','artin-products','site-orders','site-registered', 'other-prices-list']) ? 'active' : '' }}"
                     data-toggle="tooltip" title="عملیات پایه">
                     <a href="#navigationProducts" title="عملیات پایه">
                         <i class="icon ti-view-list"></i>
@@ -173,7 +173,7 @@
             </li>
         </ul>
         <ul id="navigationProducts"
-            class="{{ active_sidebar(['indicator/inbox','indicator','indicator/create','indicator/{indicator}/edit','suppliers','suppliers/create','suppliers/{supplier}','suppliers/{supplier}/edit','search/suppliers','debtors','debtors/create','debtors/{debtor}','debtors/{debtor}/edit','search/debtors','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','customers/{customer}','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','artin-products','other-prices-list','request/products']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['indicator/inbox','indicator','indicator/create','indicator/{indicator}/edit','suppliers','suppliers/create','suppliers/{supplier}','suppliers/{supplier}/edit','search/suppliers','debtors','debtors/create','debtors/{debtor}','debtors/{debtor}/edit','search/debtors','analyse/show/{date}','analyse/*','analyse','analyse/create','analyse/{analyse}/edit','search/analyse','foreign-customers','foreign-customers/create','foreign-customers/{foreign_customer}/edit','customers/{customer}','search/foreign-customers','customers','customers/create','customers/{customer}/edit','search/customers','productsModel','productsModel/create','productsModel/{productsModel}/edit','categories','categories/create','categories/{category}/edit','products','products/create','products/{product}/edit','search/products','printers','printers/create','printers/{printer}/edit','coupons','coupons/create','coupons/{coupon}/edit','prices-list', 'price-history','price-history-search','search/printers','site','artin-products','site-orders','site-registered','other-prices-list','request/products']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">عملیات پایه</li>
             @can('products-list')
                 <li>
@@ -182,9 +182,42 @@
                 </li>
             @endcan
             @can('artin-products-list')
-                <li>
-                    <a class="{{ active_sidebar(['artin-products']) ? 'active' : '' }}"
-                       href="{{ route('artin.products') }}">کالاهای آرتین</a>
+                @php
+                    $active_side = active_sidebar(['site','artin-products','site-orders','site-registered']);
+                @endphp
+                <li class="{{ $active_side ? 'menuitem-active' : '' }}">
+                    <a href="#site" data-toggle="collapse" aria-expanded="false" aria-controls="site">
+                        <i class="ri-mail-line"></i>
+                        <span> سایت </span>
+                        <i class="sub-menu-arrow ti-plus"></i>
+                    </a>
+                    <div class="collapse {{ $active_side ? 'show' : '' }}" id="site">
+                        <ul class="nav-second-level">
+                            <li class="{{ active_sidebar(['site']) ? 'menuitem-active' : '' }}">
+                                <a href="{{ route('site') }}" class="{{ active_sidebar(['site']) ? 'active' : '' }}">
+                                    آمار سایت
+                                </a>
+                            </li>
+                            <li class="{{ active_sidebar(['artin-products']) ? 'menuitem-active' : '' }}">
+                                <a href="{{ route('artin.products') }}"
+                                   class="{{ active_sidebar(['artin-products']) ? 'active' : '' }}">
+                                    کالا های آرتین
+                                </a>
+                            </li>
+                            <li class="{{ active_sidebar(['site-orders']) ? 'menuitem-active' : '' }}">
+                                <a href="{{ route('site-orders') }}"
+                                   class="{{ active_sidebar(['site-orders']) ? 'active' : '' }}">
+                                    سفارشات سایت
+                                </a>
+                            </li>
+                            <li class="{{ active_sidebar(['site-registered']) ? 'menuitem-active' : '' }}">
+                                <a href="{{ route('site-registered') }}"
+                                   class="{{ active_sidebar(['site-registered']) ? 'active' : '' }}">
+                                    آخرین ثبت نام ها
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
             @endcan
             @can('categories-list')
@@ -248,14 +281,15 @@
                        href="{{ route('price-history') }}">عملیات آرشیو قیمت ها</a>
                 </li>
             @endcan
-            @can('coupons-list')
-                <li>
-                    <a class="{{ active_sidebar(['coupons','coupons/create','coupons/{coupon}/edit']) ? 'active' : '' }}"
-                       href="{{ route('coupons.index') }}">کد تخفیف</a>
-                </li>
-            @endcan
             @can('indicator')
-                @php $active_side = active_sidebar(['indicator','indicator/create','indicator/{indicator}/edit','indicator/inbox']); @endphp
+                @php
+                    $active_side = active_sidebar([
+                        'indicator',
+                        'indicator/create',
+                        'indicator/{indicator}/edit',
+                        'indicator/inbox'
+                    ]);
+                @endphp
                 <li class="{{ $active_side ? 'menuitem-active' : '' }}">
                     <a href="#indicators" data-toggle="collapse" aria-expanded="false" aria-controls="tickets">
                         <i class="ri-mail-line"></i>
@@ -265,20 +299,27 @@
                     <div class="collapse {{ $active_side ? 'show' : '' }}" id="indicators">
                         <ul class="nav-second-level">
                             @can('indicator')
-                                @php $active_item = active_sidebar(['indicator/inbox']); @endphp
-                                <li class="{{ $active_item ? 'menuitem-active' : '' }}">
-                                    <a href="{{ route('indicator.inbox') }}" {{ $active_item ? 'active' : '' }}>
-                                        صندوق نامه ها</a>
+                                <li class="{{ active_sidebar(['indicator/inbox']) ? 'menuitem-active' : '' }}">
+                                    <a href="{{ route('indicator.inbox') }}"
+                                       class="{{ active_sidebar(['indicator/inbox']) ? 'active' : '' }}">
+                                        صندوق نامه ها
+                                    </a>
                                 </li>
-
-                                @php $active_item = active_sidebar(['indicator','/indicator/{indicator}/edit','/indicator/create']); @endphp
-                                <li class="{{ $active_item ? 'menuitem-active' : '' }}">
-                                    <a href="{{ route('indicator.index') }}" {{ $active_item ? 'active' : '' }}>نامه
-                                        های ایجاد شده</a>
+                                <li class="{{ active_sidebar(['indicator', 'indicator/{indicator}/edit', 'indicator/create']) ? 'menuitem-active' : '' }}">
+                                    <a href="{{ route('indicator.index') }}"
+                                       class="{{ active_sidebar(['indicator', 'indicator/{indicator}/edit', 'indicator/create']) ? 'active' : '' }}">
+                                        نامه های ایجاد شده
+                                    </a>
                                 </li>
                             @endcan
                         </ul>
                     </div>
+                </li>
+            @endcan
+            @can('coupons-list')
+                <li>
+                    <a class="{{ active_sidebar(['coupons','coupons/create','coupons/{coupon}/edit']) ? 'active' : '' }}"
+                       href="{{ route('coupons.index') }}">کد تخفیف</a>
                 </li>
             @endcan
         </ul>
@@ -366,7 +407,7 @@
                     </li>
                 @endforeach
             @endif
-        @can('price-requests-list')
+            @can('price-requests-list')
                 <li>
                     <a class="{{ active_sidebar(['price-requests','price-requests/create','price-requests/{price_request}/edit','price-requests/{price_request}']) ? 'active' : '' }}"
                        href="{{ route('price-requests.index') }}">درخواست قیمت</a>

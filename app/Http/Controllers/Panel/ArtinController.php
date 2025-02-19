@@ -54,4 +54,50 @@ class ArtinController extends Controller
         return response()->json(['success' => 'قیمت محصول با موفقیت به‌روزرسانی شد.', 'price' => $price, 'price_text' => $price_text, 'product_id' => $product_id]);
 
     }
+    public function site()
+    {
+        $wpApiUrl = 'http://artintoner.com/wp-json/my-api/v1/stats';
+
+        // ارسال درخواست GET به API وردپرس
+        $response = Http::get($wpApiUrl);
+        $products = Http::get('https://artintoner.com/wp-json/custom-api/v1/products')->object()->products;
+        if ($response->successful()) {
+            $data = $response->json();
+            // انتقال داده‌ها به view به نام wp-stats
+            return view('panel.artin.site', compact('data','products'));
+        } else {
+            return "خطا در دریافت اطلاعات از وردپرس.";
+        }
+    }
+
+    public function orders()
+    {
+        $wpApiUrl = 'http://artintoner.com/wp-json/my-api/v1/stats';
+
+        // ارسال درخواست GET به API وردپرس
+        $response = Http::get($wpApiUrl);
+        if ($response->successful()) {
+            $data = $response->json();
+            // انتقال داده‌ها به view به نام wp-stats
+            return view('panel.artin.orders', compact('data'));
+        } else {
+            return "خطا در دریافت اطلاعات از وردپرس.";
+        }
+
+    }
+
+    public function registered()
+    {
+        $wpApiUrl = 'http://artintoner.com/wp-json/my-api/v1/stats';
+
+        // ارسال درخواست GET به API وردپرس
+        $response = Http::get($wpApiUrl);
+        if ($response->successful()) {
+            $data = $response->json();
+            // انتقال داده‌ها به view به نام wp-stats
+            return view('panel.artin.registered', compact('data'));
+        } else {
+            return "خطا در دریافت اطلاعات از وردپرس.";
+        }
+    }
 }

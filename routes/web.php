@@ -161,6 +161,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('send-sms', [PanelController::class, 'sendSMS'])->name('sendSMS');
     Route::post('najva_token', [PanelController::class, 'najva_token_store']);
     Route::post('saveFcmToken', [PanelController::class, 'saveFCMToken']);
+    Route::get('/sales-data', [PanelController::class, 'getSalesData'])->name('sales.data');
     Route::put('/users/{user}/upload-profile', [UserController::class, 'uploadProfile'])->name('users.uploadProfile');
     Route::put('/users/{user}/upload-sign-image', [UserController::class, 'uploadSignImage'])->name('users.uploadSignImage');
 
@@ -364,6 +365,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('artin-products-update-price', [ArtinController::class, 'updatePrice'])->name('artin-products-update-price');
     Route::post('artin-products-store', [ArtinController::class, 'store'])->name('artin-products-store');
     Route::delete('artin-products-destroy/{id}', [ArtinController::class, 'destroy'])->name('artin-products-destroy');
+    Route::get('site', [ArtinController::class, 'site'])->name('site');
+    Route::get('site-orders', [ArtinController::class, 'orders'])->name('site-orders');
+    Route::get('site-registered', [ArtinController::class, 'registered'])->name('site-registered');
 
     //Indicators
     Route::resource('indicator', IndicatorController::class)->except('show', 'destroy')->middleware('can:indicator');
