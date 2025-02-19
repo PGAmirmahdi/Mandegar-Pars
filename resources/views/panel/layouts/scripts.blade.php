@@ -267,44 +267,29 @@
     var userId = {{ Auth::user()->id }};
 
     // دریافت نوتیفیکیشن از کانال Echo
-    Echo.channel('presence-notification.' + userId)
-        .listen('SendMessage', (e) => {
-            // به‌روزرسانی بخش اعلان‌ها
-            $('#notification_sec a').addClass('nav-link-notify');
-            $('#notif_count').html(parseInt($('#notif_count').html()) + 1);
-            $(".timeline").prepend(`
-                <div class="timeline-item">
-                    <div>
-                        <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
-                            <span class="avatar-title bg-primary-bright text-primary rounded-circle">
-                                <i class="fa fa-bell font-size-20"></i>
-                            </span>
-                        </figure>
-                    </div>
-                    <div>
-                        <p class="m-b-5">
-                            <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
-                        </p>
-                        <small class="text-muted">
-                            <i class="fa fa-clock-o m-r-5"></i>الان
-                        </small>
-                    </div>
-                </div>
-            `);
-
+    Echo.channel('presence-notification.'+userId)
+        .listen('SendMessage', (e) =>{
+            $('#notification_sec a').addClass('nav-link-notify')
+            $('#notif_count').html(parseInt($('#notif_count').html()) + 1)
+            $(".timeline").prepend(`<div class="timeline-item">
+                                        <div>
+                                            <figure class="avatar avatar-state-danger avatar-sm m-r-15 bring-forward">
+												<span class="avatar-title bg-primary-bright text-primary rounded-circle">
+													<i class="fa fa-bell font-size-20"></i>
+												</span>
+                                            </figure>
+                                        </div>
+                                        <div>
+                                            <p class="m-b-5">
+                                                <a href="/panel/read-notifications/${e.data.id}">${e.data.message}</a>
+                                            </p>
+                                            <small class="text-muted">
+                                                <i class="fa fa-clock-o m-r-5"></i>الان
+                                                </small>
+                                            </div>
+                                        </div>`)
             audio.play();
         });
-    messaging.onMessage(function (payload) {
-        const noteTitle = payload.notification.title;
-        const noteOptions = {
-            body: payload.notification.body,
-            icon: payload.notification.icon,
-        };
-
-        new Notification(noteTitle, noteOptions);
-
-        audio.play();
-    });
     // window.Echo.channel(`my-test`)
     //     .listen('.test.event', (e) => {
     //         console.log(e)
@@ -331,8 +316,8 @@
             .then(function () {
                 return messaging.getToken()
             })
-            .then(function (token) {
-                console.log(token);
+            .then(function(token) {
+                // console.log(token);
 
                 $.ajax({
                     url: '/panel/saveFcmToken',
@@ -345,18 +330,18 @@
                         console.log('Token saved successfully.');
                     },
                     error: function (err) {
-                        console.log('User Chat Token Error' + err);
+                        console.log('User Chat Token Error'+ err);
                     },
                 });
 
             }).catch(function (err) {
-            console.log('User Chat Token Error' + err);
+            console.log('User Chat Token Error'+ err);
         });
     }
 
     initFirebaseMessagingRegistration();
 
-    messaging.onMessage(function (payload) {
+    messaging.onMessage(function(payload) {
         const noteTitle = payload.notification.title;
         const noteOptions = {
             body: payload.notification.body,
