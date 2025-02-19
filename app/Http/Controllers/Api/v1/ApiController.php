@@ -250,7 +250,7 @@ class ApiController extends Controller
 
     public function checkGuarantee(Request $request)
     {
-        $serial = 'MP'.$request->serial;
+        $serial = $request->serial;
 
         $guarantee = Guarantee::where('serial', $serial)->first();
 
@@ -279,6 +279,6 @@ class ApiController extends Controller
             'message' => $message,
         ];
 
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data])    ->header('Access-Control-Allow-Origin', 'https://artintoner.com');
     }
 }
