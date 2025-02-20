@@ -92,7 +92,7 @@ class InventoryController extends Controller
 
         $inventory->update([
             'current_count' => $request->count,
-            'initial_count' => $request->count,
+//            'initial_count' => $request->count,
 //            'current_count' => ($inventory->current_count - $inventory->initial_count) + $request->count,
         ]);
         $activityData = [
