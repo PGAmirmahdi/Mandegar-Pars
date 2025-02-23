@@ -32,6 +32,7 @@ class StoreSalePriceRequest extends FormRequest
                 'payment_type' => 'required',
                 'need_no' => 'required|string|max:255',
                 'products' => 'required',
+                'shipping_cost'=>'nullable',
 //            'products.*.id' => 'required|exists:products,id',
 //            'products.*.quantity' => 'required|integer|min:1',
             ];
@@ -43,6 +44,7 @@ class StoreSalePriceRequest extends FormRequest
                 'payment_type' => 'required',
                 'need_no' => 'nullable|string|max:255',
                 'products' => 'required',
+                'shipping_cost'=>'nullable',
             ];
         }
     }

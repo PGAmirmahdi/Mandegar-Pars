@@ -82,12 +82,12 @@
                                     @php
                                         // Decode JSON data from the order
                                         $productsData = json_decode($order->products);
-if (json_last_error() !== JSON_ERROR_NONE) {
-    Log::error("JSON decode error: " . json_last_error_msg());
-    return;
-}
-    $products = is_array($productsData) ? $productsData : [];
-$otherProducts = isset($productsData->other_products) ? $productsData->other_products : [];
+                                        if (json_last_error() !== JSON_ERROR_NONE) {
+                                            Log::error("JSON decode error: " . json_last_error_msg());
+                                            return;
+                                        }
+                                        $products = is_array($productsData) ? $productsData : [];
+                                        $otherProducts = isset($productsData->other_products) ? $productsData->other_products : [];
 
                                         // Merge products and other products, ensuring they are arrays
                                         $mergedProducts = array_merge(
@@ -107,7 +107,8 @@ $otherProducts = isset($productsData->other_products) ? $productsData->other_pro
                                             </td>
 
                                             <td class="pl0">
-                                                {{ isset($product->products) ? \App\Models\Product::whereId($product->products)->first()->title : ($product->other_products ?? 'N/A') }}                                            </td>
+                                                {{ isset($product->products) ? \App\Models\Product::whereId($product->products)->first()->title : ($product->other_products ?? 'N/A') }}
+                                            </td>
 
                                             @php
                                                 $units = isset($product->units) ? (\App\Models\Product::UNITS[$product->units] ?? 'N/A') : (\App\Models\Product::UNITS[$product->other_units] ?? 'N/A');
@@ -138,20 +139,21 @@ $otherProducts = isset($productsData->other_products) ? $productsData->other_pro
                                         </tr>
 
                                         @php
-                                            $total = $total ?? 0; // اطمینان از مقداردهی اولیه
-
-                                            if (!empty($order->created_in) && $order->created_in == 'website') {
-                                                $total += (($product->counts ?? $product->other_counts ?? 0) *
-                                                           (($product->prices ?? $product->other_prices ?? 0) + ($order->shipping_cost ?? 0)));
-                                            } else {
-                                                $total += (($product->counts ?? $product->other_counts ?? 0) *
-                                                           ($product->prices ?? $product->other_prices ?? 0));
-                                            }
+                                            // محاسبه مجموع هر محصول بدون هزینه ارسال
+                                            $total += (($product->counts ?? $product->other_counts ?? 0) *
+                                                       ($product->prices ?? $product->other_prices ?? 0));
                                         @endphp
                                     @endforeach
 
+                                    @php
+                                        // اضافه کردن هزینه ارسال (فقط یکبار)
+                                        if (isset($order->shipping_cost)) {
+                                            $total += $order->shipping_cost;
+                                        }
+                                    @endphp
+
                                     <tr class="tr2">
-                                        @if(!empty($order->created_in) && $order->created_in == 'website')
+                                        @if(isset($order->shipping_cost))
                                             <td>هزینه حمل و نقل</td>
                                             <td class="f-w-600 text-start active-color">{{ number_format($order->shipping_cost) }}</td>
                                         @else

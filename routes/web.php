@@ -31,6 +31,7 @@ use App\Http\Controllers\Panel\InventoryController;
 use App\Http\Controllers\Panel\InventoryReportController;
 use App\Http\Controllers\Panel\InvoiceController;
 use App\Http\Controllers\Panel\LeaveController;
+use App\Http\Controllers\Panel\MandegarPriceController;
 use App\Http\Controllers\Panel\NoteController;
 use App\Http\Controllers\Panel\OffSiteProductController;
 use App\Http\Controllers\Panel\OrderController;
@@ -59,6 +60,7 @@ use App\Http\Controllers\Panel\TransporterController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\Panel\WarehouseController;
 use App\Http\Controllers\PanelController;
+use App\Models\MandegarPrice;
 use App\Models\User;
 use App\Models\UserVisit;
 use App\Models\Visitor;
@@ -292,6 +294,12 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('remove-model', [PriceController::class, 'removeModel'])->name('removeModel');
     Route::get('prices-list/pdf/{type}', [PriceController::class, 'priceList'])->name('prices-list-pdf');
     Route::post('/prices/chart-data', [PriceController::class, 'getPriceChartData'])->name('prices.chart.data');
+    Route::get('Mandegarprice', [MandegarPriceController::class, 'index'])->name('Mandegarprice');
+    Route::Post('MandegarPriceUpdate', [MandegarPriceController::class, 'MandegarPriceUpdate'])->name('MandegarPriceUpdate');
+    Route::post('MandegarPriceDelete', [MandegarPriceController::class, 'MandegarPriceDelete'])->name('MandegarPriceDelete');
+    Route::get('/get-product-details/{id}', [MandegarPriceController::class, 'getDetails'])->name('getProductDetails');
+    Route::post('/update-order', [MandegarPriceController::class, 'updateOrder'])->name('updateOrder');
+    Route::get('/download-pdf', [MandegarPriceController::class, 'downloadPDF'])->name('downloadPDF');
 
 
     // Price History

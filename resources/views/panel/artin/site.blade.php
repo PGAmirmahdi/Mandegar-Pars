@@ -411,10 +411,10 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             let orders = [
-                    @foreach($data['orders']['orders_details'] as $order)
+                    @foreach($data['orders']['orders_timeline'] as $order => $index)
                 {
-                    order_date: "{{ \verta($order['order_date'])->format('Y-m-d') }}",
-                    order_total: {{$order['order_total']}}
+                    order_date: "{{ \verta($order)->format('Y-m-d') }}",
+                    order_total: {{ $index }}
                 },
                 @endforeach
             ];
@@ -493,7 +493,8 @@
                             y: {
                                 ticks: {
                                     callback: function (value) {
-                                        return new Intl.NumberFormat('fa-IR').format(value) + " ریال";
+                                        // استفاده از Intl.NumberFormat برای جدا کردن رقم‌های هزارگان
+                                        return new Intl.NumberFormat('en-US').format(value) + " ریال";
                                     }
                                 }
                             }

@@ -85,6 +85,7 @@
                         <th>شناسه</th>
                         <th>ثبت کننده</th>
                         <th>طرف حساب</th>
+                        <th>مبلغ کل(ریال)</th>
                         <th>زمان ثبت</th>
                         <th>تایید/رد کننده</th>
                         <th>وضعیت</th>
@@ -126,6 +127,7 @@
                             <td>{{$saleprice_request->code}}</td>
                             <td>{{ $saleprice_request->user->name . ' ' . $saleprice_request->user->family }}</td>
                             <td>{{ $saleprice_request->customer->name}}</td>
+                            <td>{{ number_format($saleprice_request->price)}}</td>
                             <td>{{ verta($saleprice_request->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
                                 @if(in_array($saleprice_request->status, ['accepted', 'rejected','winner','lose','finished']))

@@ -49,7 +49,7 @@ class SalePriceRequestController extends Controller
                     'product_name' => $product->title,
                     'product_model' => $product->productModels->slug,
                     'category_name' => $product->category->slug,
-                    'price' => $request->price[$key],
+                    'product_price' => $request->product_price[$key],
                     'count' => $request->counts[$key],
                 ];
             }
@@ -62,8 +62,12 @@ class SalePriceRequestController extends Controller
             'status' => 'pending',
             'description' => $request->description,
             'products' => json_encode($items),
-            'type' => auth()->user()->role->name
+            'price' => $request->price,
+            'type' => auth()->user()->role->name,
         ];
+        if (auth()->user()->role->name !== 'setad_sale'){
+            $data['shipping_cost'] = $request->shipping_cost;
+        }
         if (auth()->user()->role->name == 'setad_sale') {
             $data['date'] = $request->date;
             $data['hour'] = $request->hour;
@@ -159,6 +163,66 @@ class SalePriceRequestController extends Controller
     }
 
 
+    public function update(StoreSalePriceRequest $request, SalePriceRequest $sale_price_request)
+    {
+//        return $request->prices;
+        $this->authorize('sale_price_request_edit');
+        $items = [];
+
+        foreach ($request->products as $key => $productId) {
+            $product = Product::with('category', 'productModels')->find($productId);
+            if ($product) {
+                $items[] = [
+                    'product_id' => $product->id,
+                    'product_name' => $product->title,
+                    'product_model' => $product->productModels->slug,
+                    'category_name' => $product->category->slug,
+                    'product_price' => $request->product_price[$key],
+                    'count' => $request->counts[$key],
+                ];
+            }
+        }
+
+        $sale_price_request->update([
+            'products' => json_encode($items),
+            'status' => 'pending',
+            'description' => $request->description,
+            'customer_id' => $request->customer,
+            'date' => $request->date,
+            'hour' => $request->hour,
+            'price' => $request->price,
+            'code' => $this->generateCode(),
+            'payment_type' => $request->payment_type,
+            'need_no' => $request->need_no,
+            'shipping_cost' => $request->shipping_cost,
+//          'type' => auth()->user()->role->name
+        ]);
+
+        // notification sent to ceo
+        $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
+            $role->whereHas('permissions', function ($q) {
+                $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
+            });
+        })->get();
+
+        $notif_title = 'درخواست ' . auth()->user()->role->label;
+        $notif_message = 'ویرایش درخواست ' . auth()->user()->role->label . ' توسط ' . auth()->user()->family . ' انجام شد.';
+        $url = route('sale_price_requests.index');
+
+        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
+        Notification::send($sale_price_request->user, new SendMessage($notif_title, $notif_message, $url));
+        // ثبت فعالیت
+        $activityData = [
+            'user_id' => auth()->id(),
+            'action' => 'درخواست ' . auth()->user()->role->label,
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ' درخواست  را ویرایش کرد.',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
+        alert()->success('درخواست فروش با موفقیت ویرایش شد', 'ویرایش درخواست فروش');
+        return redirect(url('/panel/sale_price_requests?type=' . $sale_price_request->type));
+    }
+
     public function action(SalePriceRequest $sale_price_request)
     {
         if (!Gate::allows('ceo') && !Gate::allows('admin')) {
@@ -200,7 +264,7 @@ class SalePriceRequestController extends Controller
                     'category_name' => $product->category->slug,
                     'count' => $request->count[$key],
                     'final_price' => str_replace(',', '', $request->final_price[$key] ?? 0),
-                    'price' => str_replace(',', '', $request->price[$key] ?? 0),
+                    'product_price' => str_replace(',', '', $request->product_price[$key] ?? 0),
                 ];
                 $finalPrice = str_replace(',', '', $request->final_price[$key] ?? 0);
                 $OrderItems[] = [
@@ -220,7 +284,9 @@ class SalePriceRequestController extends Controller
             'acceptor_id' => auth()->id(),
             'products' => json_encode($items),
             'status' => $status,
+            'price' => $request->price,
             'description' => $request->description,
+            'shipping_cost' => $request->shipping_cost,
         ]);
         // notification sent to ceo
 
@@ -239,16 +305,17 @@ class SalePriceRequestController extends Controller
 
     }
 
-    public function newOrder($request, $setad_price_request, $OrderItems)
+    public function newOrder($request,  $sale_price_request, $OrderItems)
     {
         $order = new Order();
         $order->description = $request->description;
         $order->type = 'setad';
         $order->req_for = 'pre-invoice';
-        $order->payment_type = $setad_price_request->payment_type;
-        $order->code = $setad_price_request->code;
-        $order->user_id = $setad_price_request->user->id;
-        $order->customer_id = $setad_price_request->customer->id;
+        $order->payment_type = $sale_price_request->payment_type;
+        $order->code = $sale_price_request->code;
+        $order->user_id = $sale_price_request->user->id;
+        $order->customer_id = $sale_price_request->customer->id;
+        $order->shipping_cost = $sale_price_request->shipping_cost;
         $order->created_in = 'automation';
         $order->products = json_encode($OrderItems);
         $order->save();
@@ -256,64 +323,6 @@ class SalePriceRequestController extends Controller
             ['status' => 'register'],
             ['orders' => 1, 'status' => 'register']
         );
-    }
-
-    public function update(StoreSalePriceRequest $request, SalePriceRequest $sale_price_request)
-    {
-//        return $request->prices;
-        $this->authorize('sale_price_request_edit');
-        $items = [];
-
-        foreach ($request->products as $key => $productId) {
-            $product = Product::with('category', 'productModels')->find($productId);
-            if ($product) {
-                $items[] = [
-                    'product_id' => $product->id,
-                    'product_name' => $product->title,
-                    'product_model' => $product->productModels->slug,
-                    'category_name' => $product->category->slug,
-                    'count' => $request->counts[$key],
-                    'price' => $request->price[$key],
-                ];
-            }
-        }
-
-        $sale_price_request->update([
-            'products' => json_encode($items),
-            'status' => 'pending',
-            'description' => $request->description,
-            'customer_id' => $request->customer,
-            'date' => $request->date,
-            'hour' => $request->hour,
-            'code' => $this->generateCode(),
-            'payment_type' => $request->payment_type,
-            'need_no' => $request->need_no,
-//            'type' => auth()->user()->role->name
-        ]);
-
-        // notification sent to ceo
-        $notifiables = User::where('id', '!=', auth()->id())->whereHas('role', function ($role) {
-            $role->whereHas('permissions', function ($q) {
-                $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
-            });
-        })->get();
-
-        $notif_title = 'درخواست ' . auth()->user()->role->label;
-        $notif_message = 'ویرایش درخواست ' . auth()->user()->role->label . ' توسط ' . auth()->user()->family . ' انجام شد.';
-        $url = route('sale_price_requests.index');
-
-        Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
-        Notification::send($sale_price_request->user, new SendMessage($notif_title, $notif_message, $url));
-        // ثبت فعالیت
-        $activityData = [
-            'user_id' => auth()->id(),
-            'action' => 'درخواست ' . auth()->user()->role->label,
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ' درخواست  را ویرایش کرد.',
-            'created_at' => now(),
-        ];
-        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
-        alert()->success('درخواست فروش با موفقیت ویرایش شد', 'ویرایش درخواست فروش');
-        return redirect(url('/panel/sale_price_requests?type=' . $sale_price_request->type));
     }
 
     public function notif_to_ceo($sale_price_request)

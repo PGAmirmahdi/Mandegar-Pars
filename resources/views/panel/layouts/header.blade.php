@@ -60,6 +60,9 @@
     'site'=>'سایت',
     'site-orders' => 'سفارشات سایت',
     'site-registered' => 'ثبت نام مشتریان سایت',
+    'sale_price_requests'=>'درخواست فروش',
+    'Mandegarprice' => 'لیست قیمت ماندگار پارس',
+    'order-action' => 'ثبت وضعیت سفارش',
 ];
             $pageTitle = !empty($segments)
                 ? ($mapping[$segments[count($segments)-1]] ?? ucfirst($segments[count($segments)-1]))

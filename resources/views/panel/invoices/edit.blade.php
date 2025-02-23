@@ -224,6 +224,16 @@
                                         @enderror
                                     </div>
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                        <label class="form-label" for="shipping_cost">هزینه ارسال</label>
+                                        <input type="text" id="shipping_cost" name="shipping_cost"
+                                               value="{{$invoice->shipping_cost}}"
+                                               class="form-control">
+                                        <div id="shipping_cost_display" class="mt-1 text-muted"></div>
+                                        @error('shipping_cost')
+                                        <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label class="form-label" for="description">توضیحات</label>
                                         <textarea name="description" rows="5" id="description"
                                                   class="form-control description">{{ $invoice->description }}</textarea>
@@ -480,6 +490,18 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).on('input', '#shipping_cost', function () {
+            // حذف کاماهای موجود
+            let value = $(this).val().replace(/,/g, '');
+            if(!isNaN(value) && value.trim() !== ''){
+                // فرمت کردن عدد به صورت سه رقم سه رقم
+                let formattedValue = new Intl.NumberFormat('fa-IR').format(value);
+                // نمایش مقدار فرمت‌شده در المنت زیر اینپوت
+                $('#shipping_cost_display').text(formattedValue + ' ریال');
+            } else {
+                $('#shipping_cost_display').text('');
+            }
+        });
         $(document).ready(function () {
             $('#btn_form').on('click', function () {
                 let button = $(this);

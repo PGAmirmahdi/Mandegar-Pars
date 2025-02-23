@@ -94,6 +94,15 @@
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                        <label class="form-label" for="shipping_cost">هزینه ارسال</label>
+                                        <input type="text" id="shipping_cost" name="shipping_cost" value="{{$order->shipping_cost}}"
+                                               class="form-control">
+                                        <div id="shipping_cost_display" class="mt-1 text-muted"></div>
+                                        @error('shipping_cost')
+                                        <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                     <div class="row w-100 mb-4">
                                         <div class="col-xl-12 col-lg-12 col-md-12 mb-3">
                                             <label class="form-label" for="description">توضیحات بیشتر</label>
@@ -167,8 +176,9 @@
                                                         {{-- @dd($products->products)--}}
                                                         <tr>
                                                             <td>
-                                                                <select class="js-example-basic-single w-100" name="products[]"
-                                                                         required>
+                                                                <select class="js-example-basic-single w-100"
+                                                                        name="products[]"
+                                                                        required>
                                                                     <option value="" disabled selected>
                                                                         ..................... انتخاب کنید
                                                                         .....................
@@ -180,7 +190,8 @@
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                                <select class="form-control w-100" name="colors[]" required>
+                                                                <select class="form-control w-100" name="colors[]"
+                                                                        required>
                                                                     @foreach(\App\Models\Product::COLORS as $key => $value)
                                                                         <option
                                                                             value="{{ $key }}" {{ $key == $product->colors ? 'selected' : '' }}>{{ $value }}</option>
@@ -237,6 +248,18 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).on('input', '#shipping_cost', function () {
+            // حذف کاماهای موجود
+            let value = $(this).val().replace(/,/g, '');
+            if(!isNaN(value) && value.trim() !== ''){
+                // فرمت کردن عدد به صورت سه رقم سه رقم
+                let formattedValue = new Intl.NumberFormat('fa-IR').format(value);
+                // نمایش مقدار فرمت‌شده در المنت زیر اینپوت
+                $('#shipping_cost_display').text(formattedValue + ' ریال');
+            } else {
+                $('#shipping_cost_display').text('');
+            }
+        });
         $(document).ready(function () {
             $('#submit_button').on('click', function () {
                 let button = $(this);
@@ -500,6 +523,7 @@
                 this.selectionStart = this.selectionEnd = cursorPos + 1;
             }
         });
+
         function changePriceOnInput(changeable) {
             var index = $(changeable).parent().parent().index();
             var count = $('#products_table input[name="counts[]"]')[index].value;

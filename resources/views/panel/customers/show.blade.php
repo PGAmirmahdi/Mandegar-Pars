@@ -53,16 +53,16 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                        <label for="type">نوع <span class="text-danger">*</span></label>
-                        <input type="text" name="type" class="form-control" id="type"
-                               value="@if($customer->type  == 'government')سازمانی/دولتی/نیروهای مسلح@elseif($customer->type  == 'private')بازار/تهران/شهرستان@endif"
-                               readonly>
-                        @error('type')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+                        <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                            <label for="type">نوع <span class="text-danger">*</span></label>
+                            <input type="text" name="type" class="form-control" id="type"
+                                   value="{{ $types[$customer->type] ?? '' }}"
+                                   readonly>
+                            @error('type')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">
                         <label for="customer_type">نوع مشتری</label>
                         <input class="form-control" value="{{ \App\Models\Customer::CUSTOMER_TYPE[$customer->customer_type] }}" disabled id="customer_type">
                     </div>

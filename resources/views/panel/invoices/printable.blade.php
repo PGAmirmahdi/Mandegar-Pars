@@ -304,24 +304,24 @@
                                 </tr>
                                 <tr>
                                     <th class="py-1 title-sec" colspan="6">تخفیف نهایی</th>
-                                    @if($invoice->created_in == 'website')
+                                    @if(isset($invoice->shipping_cost))
                                     <th class="py-1 title-sec" colspan="2">هزینه حمل و نقل</th>
                                     @endif
-                                    <th class="py-1 title-sec" @if($invoice->created_in == 'website') colspan="4"
+                                    <th class="py-1 title-sec" @if(isset($invoice->shipping_cost)) colspan="4"
                                         @else colspan="6" @endif>مبلغ فاکتور پس از تخفیف نهایی</th>
                                 </tr>
                                 <tr>
                                     <td colspan="6">{{ number_format($invoice->discount) }}</td>
-                                    @if($invoice->created_in == 'website')
+                                    @if(isset($invoice->shipping_cost))
                                         <th colspan="2">{{ number_format($invoice->shipping_cost) }}</th>
                                     @endif
-                                    <td @if($invoice->created_in == 'website') colspan="4"
-                                        @else colspan="6" @endif>{{ number_format($sum_invoice_net - $invoice->discount +($invoice->created_in == 'website' ? $invoice->shipping_cost : 0)) }}</td>
+                                    <td @if(isset($invoice->shipping_cost)) colspan="4"
+                                        @else colspan="6" @endif>{{ number_format($sum_invoice_net - $invoice->discount +(isset($invoice->shipping_cost) ? $invoice->shipping_cost : 0)) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4">
                                         <div class="d-flex">
-                                            <span class="me-4">شرایط و نحوه فروش</span>
+                                            <span class="me-4">شرایط و نحوه فروش:</span>
                                             <div class="d-flex">
                                                 @foreach(\App\Models\Order::Payment_Type as $key => $label)
                                                     @if($invoice->payment_type === $key)
@@ -332,7 +332,7 @@
                                         </div>
                                     </td>
                                     <td colspan="8" class="text-start">
-                                        {{change_number_to_words($sum_invoice_net - $invoice->discount +($invoice->created_in == 'website' ? $invoice->shipping_cost : 0))}} ریال
+                                        {{change_number_to_words($sum_invoice_net - $invoice->discount +(isset($invoice->shipping_cost) ? $invoice->shipping_cost : 0))}} ریال
                                     </td>
                                 </tr>
                                 <tr>

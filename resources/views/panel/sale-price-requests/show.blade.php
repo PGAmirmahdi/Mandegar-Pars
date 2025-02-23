@@ -85,6 +85,14 @@
                                        value="{{ \App\Models\SalePriceRequest::TYPE[$sale_price_request->type]}}"
                                        disabled>
                             </div>
+                            @if($sale_price_request->type !== 'setad_sale')
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="shipping_cost">هزینه ارسال(ریال)</label>
+                                    <input type="text" name="shipping_cost" class="form-control" id="shipping_cost"
+                                           value="{{ number_format($sale_price_request->shipping_cost) }}"
+                                           disabled>
+                                </div>
+                            @endif
                         </div>
                         <table class="table table-striped table-bordered text-center">
                             <thead class="bg-primary">
@@ -93,8 +101,8 @@
                                 <th>مدل</th>
                                 <th>دسته‌بندی</th>
                                 <th>تعداد</th>
-                                <th>قیمت پیشنهادی کارشناس فروش</th>
-                                <th>قیمت نهایی مدیر</th>
+                                <th>قیمت پیشنهادی کارشناس فروش(ریال)</th>
+                                <th>قیمت نهایی مدیر(ریال)</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -121,7 +129,7 @@
                                     </td>
                                     <td>
                                         <input class="form-control readonly" type="text" name="price[{{ $index }}]"
-                                               value="{{ isset($item->price) ? number_format($item->price) : "بدون قیمت" }}"
+                                               value="{{ isset($item->product_price) ? number_format($item->product_price) : "بدون قیمت" }}"
                                                readonly>
                                     </td>
                                     <td>
@@ -133,6 +141,44 @@
                                 </tr>
                             @endforeach
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                <?php
+                                $total_expert_price = 0;
+                                $total_manager_price = 0;
+                                ?>
+                                @foreach(json_decode($sale_price_request->products) as $index => $item2)
+                                        <?php
+                                        $total_expert_price += isset($item2->product_price) ? $item2->product_price * $item2->count : 0;
+                                        if (isset($item2->final_price) && $item2->final_price !== null) {
+                                            $total_manager_price += $item2->final_price * $item2->count;
+                                        }
+                                        ?>
+                                @endforeach
+                                    <?php
+                                    $total_expert_price += $sale_price_request->shipping_cost;
+                                    $total_manager_price += $sale_price_request->shipping_cost;
+                                    ?>
+                                <td class="text-center font-weight-bold" colspan="1">
+                                    مجموع قیمت کارشناس(ریال):
+                                </td>
+                                <td class="text-center font-weight-bold" colspan="1">
+                                    {{ number_format($total_expert_price) }}
+                                </td>
+                                <td class="text-center font-weight-bold" colspan="1">
+                                    مجموع قیمت مدیر(ریال):
+                                </td>
+                                <td class="text-center font-weight-bold" colspan="1">
+                                    {{ $total_manager_price > $sale_price_request->shipping_cost ? number_format($total_manager_price) : 'ثبت نشده' }}
+                                </td>
+                                <td class="text-center font-weight-bold" colspan="1">
+                                    اختلاف قیمت(ریال):
+                                </td>
+                                <td class="text-center font-weight-bold" colspan="1">
+                                    {{ $total_manager_price > $sale_price_request->shipping_cost ? number_format($total_manager_price - $total_expert_price) : 'ثبت نشده' }}
+                                </td>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                     <div class="col-12 row mb-4">

@@ -16,6 +16,8 @@
 <!-- Datepicker -->
 <script src="/vendors/datepicker/daterangepicker.js"></script>
 
+<!-- Drag and Drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <!-- Slick -->
 <script src="/vendors/slick/slick.min.js"></script>

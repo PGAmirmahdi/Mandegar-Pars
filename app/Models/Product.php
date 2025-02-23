@@ -45,6 +45,10 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function mandegarprice()
+    {
+        return $this->hasMany(MandegarPrice::class);
+    }
     public function printers()
     {
         return $this->belongsToMany(Printer::class);
