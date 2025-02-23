@@ -115,9 +115,11 @@
                                     <tr>
                                         <td>
                                             <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id','title','type']) as $inventory)
+                                                @foreach(\App\Models\Inventory::with(['product' => function ($q) {
+                                                            $q->with('category:id,name')->select('id','title','code','category_id');
+                                                        }])->where('warehouse_id', $warehouse_id)->get(['id', 'product_id']) as $inventory)
                                                     <option value="{{ $inventory->id }}" {{ $inventory->id == $item->inventory_id ? 'selected' : '' }}>
-                                                        {{ \App\Models\Inventory::TYPE[$inventory->type] . ' - ' . $inventory->title }}
+                                                        {{ $inventory->product->category->name . ' - ' . $inventory->product->title }}
                                                     </option>
                                                 @endforeach
                                             </select>
