@@ -9,6 +9,7 @@
         td svg{
             width: 50px;
             height: 50px;
+            cursor: pointer;
         }
     </style>
 @endsection
@@ -49,7 +50,7 @@
 
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{!! $guarantee->qr_code ?? '---' !!}</td>
+                            <td class="svg" title="برای دانلود دابل کلیک کنید">{!! $guarantee->qr_code ?? '---' !!}</td>
                             <td>{{ $guarantee->serial }}</td>
                             <td>{{ \App\Models\Guarantee::PERIOD[$guarantee->period] }}</td>
                             <td>{{ $guarantee->activated_at ? verta($guarantee->activated_at)->format('Y/m/d') : '---' }}</td>
@@ -92,4 +93,33 @@
             <div class="d-flex justify-content-center">{{ $guarantees->appends(request()->all())->links() }}</div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        $(document).on('dblclick', '.svg', function(){
+            const svgElement = $(this).children()[0];
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const svgUrl = URL.createObjectURL(svgBlob);
+
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                const pngDataUrl = canvas.toDataURL('image/png');
+                const downloadLink = document.createElement('a');
+                downloadLink.href = pngDataUrl;
+                downloadLink.download = 'image.png';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(svgUrl); // Clean up
+            };
+            img.src = svgUrl;
+        })
+    </script>
 @endsection
