@@ -188,6 +188,15 @@
                                         @enderror
                                     </div>
                                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                        <label class="form-label" for="shipping_cost">هزینه ارسال</label>
+                                        <input type="text" id="shipping_cost" name="shipping_cost" value=""
+                                               class="form-control">
+                                        <div id="shipping_cost_display" class="mt-1 text-muted"></div>
+                                        @error('shipping_cost')
+                                        <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                                         <label class="form-label" for="description">توضیحات</label>
                                         <textarea name="description" rows="5" id="description"
                                                   class="form-control description"></textarea>
@@ -384,6 +393,18 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).on('input', '#shipping_cost', function () {
+            // حذف کاماهای موجود
+            let value = $(this).val().replace(/,/g, '');
+            if(!isNaN(value) && value.trim() !== ''){
+                // فرمت کردن عدد به صورت سه رقم سه رقم
+                let formattedValue = new Intl.NumberFormat('fa-IR').format(value);
+                // نمایش مقدار فرمت‌شده در المنت زیر اینپوت
+                $('#shipping_cost_display').text(formattedValue + ' ریال');
+            } else {
+                $('#shipping_cost_display').text('');
+            }
+        });
         $(document).ready(function () {
             $('#btn_form').on('click', function () {
                 let button = $(this);
@@ -620,6 +641,7 @@
                 var processDesc = $('#process_desc');
                 if (response.status === 'success') {
                     $('#description').val(response.data.description)
+                    $('#shipping_cost').val(response.data.shipping_cost)
                     $('#buyer_name').val(response.data.customer.name)
                     $('#buyer_id').val(response.data.customer.id)
                     $('#economical_number').val(response.data.customer.economical_number ?? 0)
@@ -635,7 +657,7 @@
                     add_products(response.data.order);
                     processDesc.html("<span class='text-success'>تایید ✓</span>");
                 } else {
-                    $('#buyer_name, #economical_number, #national_number, #postal_code, #phone, #address, #province, #city, #payment_type, #description').val('');
+                    $('#shipping_cost, #buyer_name, #economical_number, #national_number, #postal_code, #phone, #address, #province, #city, #payment_type, #description').val('');
                     $('.sum_total_price').text('0').val('0');
                     $('.total_invoice').text('0').val('0');
                     $('#other_products_table tbody').empty();

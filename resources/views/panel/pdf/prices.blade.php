@@ -1,92 +1,67 @@
 <!doctype html>
-<html lang="en" dir="rtl">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لیست قیمت محصولات ماندگار پارس</title>
     <style>
-        body{
+        body {
             font-size: larger;
+            font-family: 'Tahoma', sans-serif;
         }
         tbody tr:nth-child(odd) {
             background-color: #fff;
         }
-
         tbody tr:nth-child(even) {
             background-color: #eee;
         }
-
-        td{
-            padding: 10px 0 !important;
+        td, th {
+            padding: 10px;
+            border: 1px solid #ddd;
         }
-        .No1{
-            direction:ltr;
-            display:flex;
-            flex-direction:row;
-            justify-content:start;
-            align-items:center;
-            width:100% !important;
-            p{
-                font-size:24px;
-            }
-            span{
-                font-size:16px;
-            }
-            .No2{
-                height:75px !important;
-                width:50%;
-                display:flex;
-                flex-direction:column;
-                justify-content:space-between;
-                align-items:start;
-                margin-left:10px;
-                p{
-                    margin:0px;
-                }
-            }
-            .b{
-                height:75px !important;
-                display:flex;
-                flex-direction:column;
-                justify-content:center;
-                align-items:start;
-                margin-left:10px;
-                p{
-                    font-size:14px;
-                    text-align:left !important;
-                    direction:ltr;
-                }
-            }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            height: 100px;
         }
     </style>
 </head>
 <body>
-<div class="No1">
-    <img src="{{asset('assets/media/image/icon1.png')}}" width="fit-content" height="100px" alt="logo" style="margin-bottom:10px;">
+
+<div class="header">
+    <img src="{{ asset('assets/media/image/icon1.png') }}" alt="logo">
+    <h2>لیست قیمت محصولات صنایع ماشین های اداری ماندگار پارس</h2>
 </div>
-<table style="text-align: center; width: 100%; border-collapse: collapse;">
+
+<table style="width: 100%; border-collapse: collapse;">
     <thead>
     <tr>
-        <th style="border-bottom: 2px solid #000; padding-bottom: 10px">ردیف</th>
-        <th style="border-bottom: 2px solid #000; padding-bottom: 10px">مدل</th>
-        <th style="border-bottom: 2px solid #000; padding-bottom: 10px">قیمت (ریال)</th>
+        <th>ردیف</th>
+        <th>دسته بندی</th>
+        <th>برند</th>
+        <th>مدل</th>
+        <th>قیمت (ریال)</th>
     </tr>
     </thead>
     <tbody>
     @foreach($data as $key => $item)
-        <tr style="border-spacing: 1em">
-            <td>{{ ++$key }}</td>
-            <td>{{ $item->title }}</td>
-            <td>{{ number_format($item->{$type}) }}</td>
+        <tr>
+            <td>{{ $key + 1 }}</td>
+            <td>{{ $item->product->category }}</td>
+            <td>{{ $item->product->productModels }}</td>
+            <td>{{ $item->product->title }}</td>
+            <td>{{ number_format($item->price) }}</td>
         </tr>
     @endforeach
     </tbody>
 </table>
-<img src="{{asset('assets/media/image/icon2.png')}}" alt="logo2" width="fit-content" style="margin:auto;display:block !important;margin-left:50%;">
-<img src="{{asset('assets/media/image/icon3.png')}}" alt="logo3" width="fit-content">
+
+<div class="footer">
+    <img src="{{ asset('assets/media/image/icon2.png') }}" alt="icon2">
+    <img src="{{ asset('assets/media/image/icon3.png') }}" alt="icon3">
+</div>
+
 </body>
-
 </html>
-
-

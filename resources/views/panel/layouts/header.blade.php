@@ -15,7 +15,6 @@
     <div class="header-body">
 
         @php
-            // دریافت بخش‌های مسیر URL
             $segments = Request::segments();
             $mapping = [
                 'invoices'=>'پیش فاکتور ها',
@@ -56,6 +55,14 @@
     'request'=>'درخواست',
     'productsModel'=>'برندها',
     'tickets' => 'تیکت ها',
+    'inventory-reports'=>'گزارش انبار',
+    'inventory'=>'انبار',
+    'site'=>'سایت',
+    'site-orders' => 'سفارشات سایت',
+    'site-registered' => 'ثبت نام مشتریان سایت',
+    'sale_price_requests'=>'درخواست فروش',
+    'Mandegarprice' => 'لیست قیمت ماندگار پارس',
+    'order-action' => 'ثبت وضعیت سفارش',
 ];
             $pageTitle = !empty($segments)
                 ? ($mapping[$segments[count($segments)-1]] ?? ucfirst($segments[count($segments)-1]))
@@ -201,6 +208,7 @@
             <!-- end::navbar main body -->
 
             <div class="d-flex align-items-center">
+
                 <!-- begin::navbar navigation toggler -->
                 <div class="d-xl-none d-lg-none d-sm-block navigation-toggler">
                     <a href="#">

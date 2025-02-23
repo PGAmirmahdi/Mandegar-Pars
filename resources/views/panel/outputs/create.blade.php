@@ -168,16 +168,20 @@
 
         var options_html = "";  // تعریف متغیر options_html به صورت رشته‌ای
 
-        @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id', 'product_id']) as $item)
+        @foreach(\App\Models\Inventory::with(['product' => function ($q) {
+            $q->with('category:id,name')->select('id','title','code','category_id');
+        }])->where('warehouse_id', $warehouse_id)->get(['id', 'product_id']) as $item)
+
         inventory.push({
             "id": "{{ $item->id }}",
-            "code": "{{ $item->product->code }}",  // دسترسی به کد محصول از طریق product_id
-            "title": "{{ $item->product->title }}",  // دسترسی به عنوان محصول از طریق product_id
+            "title": "{{ $item->product->title }}",
+            "code": "{{ $item->product->code }}",
+            "category": "{{ $item->product->category->name }}",
         })
         @endforeach
 
         $.each(inventory, function (i, item) {
-            options_html += `<option value="${item.id}">${item.code} - ${item.title}</option>`;  // نمایش کد و عنوان محصول
+            options_html += `<option value="${item.id}">${item.category} - ${item.title}</option>`;  // نمایش کد و عنوان محصول
         });
         $(document).ready(function () {
             // Add property
@@ -242,7 +246,7 @@
                                 var options_html2;
 
                                 $.each(inventory, function (i, item) {
-                                    options_html2 += `<option value="${item.id}" ${item.code === product.code ? 'selected' : ''}>${item.type} - ${item.title}</option>`;
+                                    options_html2 += `<option value="${item.id}" ${item.code === product.code ? 'selected' : ''}>${item.category} - ${item.title}</option>`;
                                 });
 
                                 $('#properties_table tbody').append(`

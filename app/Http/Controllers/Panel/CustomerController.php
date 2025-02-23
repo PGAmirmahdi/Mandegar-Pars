@@ -65,9 +65,15 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
-        $url = \request()->url;
-
-        return view('panel.customers.show', compact('customer','url'));
+        $url = request()->url;
+        $types = [
+            'Industrial'    => 'واحد های صنعتی',
+            'Organizations' => 'سازمانها',
+            'Global'        => 'سراسری',
+            'government'    => 'سازمانی/دولتی/نیروهای مسلح',
+            'private'       => 'بازار/تهران/شهرستان',
+        ];
+        return view('panel.customers.show', compact('customer', 'url', 'types'));
     }
 
     public function edit(Customer $customer)

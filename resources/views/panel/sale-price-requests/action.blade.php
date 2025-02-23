@@ -2,10 +2,10 @@
 @section('title', 'تایید درخواست')
 @section('styles')
     <style>
-        /*table tbody tr td input {*/
-        /*    text-align: center;*/
-        /*    width: fit-content !important;*/
-        /*}*/
+        /*table tbody tr td input {
+            text-align: center;
+            width: fit-content !important;
+        }*/
     </style>
 @endsection
 @section('content')
@@ -54,56 +54,98 @@
                                            value="{{$sale_price_request->need_no}}">
                                 </div>
                             @endif
+                            @if($sale_price_request->type !== 'setad_sale')
+                                <div class="col-xl-2 col-lg-2 col-md-3 mb-4">
+                                    <label for="shipping_cost">هزینه ارسال(ریال)</label>
+                                    <input type="text" name="shipping_cost" class="form-control" autocomplete="off"
+                                           value="{{$sale_price_request->shipping_cost}}" id="shipping_cost">
+                                    <div id="shipping_cost_formatted" style="margin-top: 5px; font-weight: bold;"></div>
+                                </div>
+                            @endif
                         </div>
-                        <table class="table table-striped table-bordered text-center">
+                        <table id="products_table" class="table table-striped table-bordered text-center">
                             <thead>
                             <tr>
                                 <th>عنوان کالا</th>
                                 <th>مدل</th>
                                 <th>دسته‌بندی</th>
                                 <th>تعداد</th>
-                                {{--                                <th>قیمت پیشنهادی سیستم</th>--}}
+                                {{-- <th>قیمت پیشنهادی سیستم</th> --}}
                                 <th>قیمت پیشنهادی کارشناس فروش(ریال)</th>
                                 <th>قیمت نهایی(ریال)</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach(json_decode($sale_price_request->products) as $index => $item)
-                                {{--                                @dd(isset($item->price))--}}
                                 <tr>
                                     <td>
                                         <input class="form-control readonly" type="text"
                                                name="product_name[{{ $index }}]" value="{{ $item->product_name }}"
-                                               readonly>
+                                               readonly autocomplete="off">
                                     </td>
                                     <td>
                                         <input class="form-control readonly" type="text"
                                                name="product_model[{{ $index }}]" value="{{ $item->product_model }}"
-                                               readonly>
+                                               readonly autocomplete="off">
                                     </td>
                                     <td>
                                         <input class="form-control readonly" type="text"
                                                name="category_name[{{ $index }}]" value="{{ $item->category_name }}"
-                                               readonly>
+                                               readonly autocomplete="off">
                                     </td>
                                     <td>
                                         <input class="form-control readonly" type="number" name="count[{{ $index }}]"
-                                               value="{{ $item->count }}" readonly>
+                                               value="{{ $item->count }}" readonly autocomplete="off">
                                     </td>
                                     <td>
-                                        <input class="form-control readonly" type="text" name="price[{{ $index }}]"
-                                               value="{{ isset($item->price) ? number_format($item->price) : "بدون قیمت" }}"
-                                               readonly>
+                                        <input class="form-control readonly" type="text" name="product_price[{{ $index }}]"
+                                               value="{{ isset($item->product_price) ? number_format($item->product_price) : "بدون قیمت" }}"
+                                               readonly autocomplete="off">
                                     </td>
                                     <td>
-                                        <input class="form-control price-input" type="number"
+                                        <input class="form-control final_price_input" type="number"
                                                name="final_price[{{ $index }}]"
-                                               value="{{$item->price}}">
-                                        <span class="price-display">{{ isset($item->price) ? number_format($item->price) : '0' }} ریال </span>
+                                               value="{{$item->product_price}}" autocomplete="off">
+                                        <span class="price-display">{{ isset($item->product_price) ? number_format($item->product_price) : '0' }} ریال </span>
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                    <?php
+                                    // محاسبه اولیه قیمت کارشناس (برای نمایش ثابت)
+                                    $total_expert_price = 0;
+                                    foreach(json_decode($sale_price_request->products) as $item2) {
+                                        $total_expert_price += isset($item2->product_price) ? $item2->product_price * $item2->count : 0;
+                                    }
+                                    $total_expert_price += $sale_price_request->shipping_cost;
+                                    ?>
+                                <td class="text-center font-weight-bold" colspan="1">
+                                    مجموع قیمت کارشناس(ریال):
+                                </td>
+                                <td class="text-center font-weight-bold" colspan="2">
+                                    {{ number_format($total_expert_price) }}
+                                </td>
+                                <td class="text-center font-weight-bold price-display" colspan="1">
+                                    مجموع قیمت مدیر(ریال):
+                                </td>
+                                <td class="text-center font-weight-bold" colspan="2" id="manager_total_price">
+                                    @php
+                                        // مقدار اولیه (در صورت وجود مقدار نهایی در دیتابیس)
+                                        $total_manager_price = 0;
+                                        foreach(json_decode($sale_price_request->products) as $item2) {
+                                            if(isset($item2->final_price) && $item2->final_price !== null) {
+                                                $total_manager_price += $item2->final_price * $item2->count;
+                                            }
+                                        }
+                                        $total_manager_price += $sale_price_request->shipping_cost;
+                                    @endphp
+                                    {{ $total_manager_price > $sale_price_request->shipping_cost ? number_format($total_manager_price) : 'ثبت نشده' }}
+                                </td>
+                            </tr>
+                            </tfoot>
+                            <input type="hidden" name="price" id="final_price_input" value="">
                         </table>
                     </div>
                     <div class="col-12 row mb-4">
@@ -126,6 +168,16 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).on('input', '#shipping_cost', function () {
+            let value = $(this).val().replace(/,/g, ''); // حذف کاماهای موجود
+            if (!isNaN(value) && value.trim() !== '') {
+                let formattedValue = new Intl.NumberFormat('fa-IR').format(value);
+                $('#shipping_cost_formatted').text(formattedValue + ' ریال ');
+            } else {
+                $('#shipping_cost_formatted').text('');
+            }
+        });
+
         $(document).ready(function () {
             $('#submit_button').on('click', function () {
                 let button = $(this);
@@ -148,11 +200,12 @@
                 setTimeout(() => clearInterval(interval), 10000);
             });
         });
-        $(document).on('keyup', '.price-input', function () {
+
+        $(document).on('keyup', '.final_price_input', function () {
             const inputValue = $(this).val().replace(/,/g, ''); // حذف کاماها
             if (!isNaN(inputValue)) { // بررسی معتبر بودن مقدار ورودی
                 const formattedValue = addCommas(inputValue); // فرمت سه‌رقم، سه‌رقم
-                $(this).next('.price-display').text(formattedValue); // نمایش مقدار فرمت‌شده
+                $(this).next('.price-display').text(formattedValue + ' ریال ');
             } else {
                 $(this).next('.price-display').text(''); // پاک کردن مقدار در صورت نامعتبر بودن
             }
@@ -170,5 +223,42 @@
             }
             return x1 + x2;
         }
+
+        $(document).on('input', '.final_price_input', function () {
+            let value = $(this).val().replace(/,/g, '');
+            if (!isNaN(value) && value.trim() !== '') {
+                let formattedValue = new Intl.NumberFormat('fa-IR').format(value);
+                // اصلاح کلاس از formatted-price به price-display
+                $(this).next('.price-display').text(formattedValue + ' ریال ');
+            } else {
+                $(this).next('.price-display').text('');
+            }
+            calculateTotalPrice();
+        });
+
+        function calculateTotalPrice() {
+            let total = 0;
+            $('#products_table tbody tr').each(function () {
+                let count = parseFloat($(this).find('input[name^="count"]').val()) || 0;
+                let price = parseFloat($(this).find('input[name^="final_price"]').val().replace(/,/g, '')) || 0;
+                total += count * price;
+            });
+
+            // اضافه کردن هزینه ارسال
+            let shippingCost = parseFloat($('#shipping_cost').val().replace(/,/g, '')) || 0;
+            total += shippingCost;
+
+            // نمایش مجموع در سلول جدول و مقداردهی به اینپوت هیدن
+            $('#manager_total_price').text(new Intl.NumberFormat('fa-IR').format(total));
+            $('#final_price_input').val(total);
+        }
+
+        $(document).on('input', 'input[name^="final_price"], #shipping_cost', function () {
+            calculateTotalPrice();
+        });
+
+        $(document).ready(function () {
+            calculateTotalPrice();
+        });
     </script>
 @endsection
