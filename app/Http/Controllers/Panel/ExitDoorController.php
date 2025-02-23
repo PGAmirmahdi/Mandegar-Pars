@@ -89,7 +89,7 @@ class ExitDoorController extends Controller
         $this->authorize('exit-door');
 
         $data = [
-            'items' => $inventoryReport->in_outs()->with('inventory')->get(),
+            'items' => $inventoryReport->in_outs()->with('inventory.product:id,title')->get(),
             'invoice_id' => $inventoryReport->invoice_id
         ];
 
