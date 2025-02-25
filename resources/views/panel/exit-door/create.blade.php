@@ -79,12 +79,13 @@
                     url: '/panel/get-in-outs/'+inventory_report_id,
                     type: 'get',
                     success: function (res){
+                        console.log(res)
                         let url = `/panel/invoices/${res.data.invoice_id}`
                         $('#factor_link a').attr('href', url);
                         $('#properties_table tbody').html('')
                         $.each(res.data.items, function (i, item) {
                             $('#properties_table tbody').append(`<tr>
-                                <td>${item.inventory.title}</td>
+                                <td>${item.inventory.product.title}</td>
                                 <td>${item.count}</td>
                             </tr>`)
                         })

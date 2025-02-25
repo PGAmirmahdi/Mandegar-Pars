@@ -186,13 +186,13 @@ class ApiController extends Controller
 
         $invoice_other_products = $invoice->other_products;
         $invoice_products_code = $invoice->products->pluck('code')->toArray();
-        $inventory_products_code = Inventory::pluck('code')->toArray();
+        $products_code = Product::pluck('code')->toArray();
         $missed = false;
         $miss_products = [];
 
-        if (array_intersect($invoice_products_code, $inventory_products_code) != $invoice_products_code) {
+        if (array_intersect($invoice_products_code, $products_code) != $invoice_products_code) {
             $missed = true;
-            $miss_products = array_diff($invoice_products_code, $inventory_products_code);
+            $miss_products = array_diff($invoice_products_code, $products_code);
             $miss_products = implode(', ', $miss_products);
         }
 

@@ -115,9 +115,11 @@
                                     <tr>
                                         <td>
                                             <select class="js-example-basic-single select2-hidden-accessible" name="inventory_id[]">
-                                                @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id','title','type']) as $inventory)
+                                                @foreach(\App\Models\Inventory::with(['product' => function ($q) {
+                                                            $q->with('category:id,name')->select('id','title','code','category_id');
+                                                        }])->where('warehouse_id', $warehouse_id)->get(['id', 'product_id']) as $inventory)
                                                     <option value="{{ $inventory->id }}" {{ $inventory->id == $item->inventory_id ? 'selected' : '' }}>
-                                                        {{ \App\Models\Inventory::TYPE[$inventory->type] . ' - ' . $inventory->title }}
+                                                        {{ $inventory->product->category->name . ' - ' . $inventory->product->title }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -187,17 +189,19 @@
         var inventory = [];
         var options_html;
 
-        @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get(['id','title','code','type']) as $item)
+        @foreach(\App\Models\Inventory::with(['product' => function ($q) {
+                    $q->with('category:id,name')->select('id','title','code','category_id');
+                }])->where('warehouse_id', $warehouse_id)->get(['id', 'product_id']) as $item)
         inventory.push({
             "id": "{{ $item->id }}",
-            "code": "{{ $item->code }}",
-            "type": "{{ \App\Models\Inventory::TYPE[$item->type] }}",
-            "title": "{{ $item->title }}",
+            "code": "{{ $item->product->code }}",
+            "category": "{{ $item->product->category->name }}",
+            "title": "{{ $item->product->title }}",
         })
         @endforeach
 
         $.each(inventory, function (i, item) {
-            options_html += `<option value="${item.id}">${item.type} - ${item.title}</option>`
+            options_html += `<option value="${item.id}">${item.category} - ${item.title}</option>`
         });
 
         $(document).ready(function () {
@@ -260,7 +264,7 @@
                                 var options_html2;
 
                                 $.each(inventory, function (i, item) {
-                                    options_html2 += `<option value="${item.id}" ${item.code === product.code ? 'selected' : ''}>${item.type} - ${item.title}</option>`;
+                                    options_html2 += `<option value="${item.id}" ${item.code === product.code ? 'selected' : ''}>${item.category} - ${item.title}</option>`;
                                 });
 
                                 $('#properties_table tbody').append(`
