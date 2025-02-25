@@ -21,6 +21,7 @@
         }
         .header {
             display: flex;
+            justify-content: start;
             align-items: center;
             border-bottom: 2px solid #ddd;
             padding-bottom: 10px;
@@ -87,6 +88,9 @@
         .footer .icon img {
             width: 100%;
             height: auto;
+        }
+        img{
+            width: 120px !important;
         }
     </style>
 </head>
