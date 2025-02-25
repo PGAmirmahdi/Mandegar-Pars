@@ -89,17 +89,13 @@
             width: 100%;
             height: auto;
         }
-        img{
-            width: 320px !important;
-            height: 400px !important;
-        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <div class="logo">
-            <img src="{{ asset('assets/media/image/icon1.png') }}" alt="لوگو">
+            <img src="{{ asset('assets/media/image/icon1.png') }}" alt="لوگو" width="800px !important">
         </div>
         <div class="title">
             <h2>لیست قیمت محصولات صنایع ماشین های اداری ماندگار پارس</h2>
