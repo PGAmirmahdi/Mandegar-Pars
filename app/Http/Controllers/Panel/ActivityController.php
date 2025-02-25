@@ -13,7 +13,7 @@ class ActivityController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorize('admin');
+        $this->authorize('activity-list');
 
         $query = Activity::query()->with('user'); // اضافه کردن رابطه کاربران
 
@@ -30,8 +30,7 @@ class ActivityController extends Controller
 
     public function search(Request $request)
     {
-        $this->authorize('admin');
-
+        $this->authorize('activity-list');
         // تعیین شناسه‌های کاربر بر اساس انتخاب
         $users_id = $request->user == 'all' ? User::all()->pluck('id') : [$request->user];
         $query = Activity::whereIn('user_id', $users_id);
