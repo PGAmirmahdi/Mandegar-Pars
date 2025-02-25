@@ -91,6 +91,7 @@
         }
         img{
             width: 320px !important;
+            height: 400px !important;
         }
     </style>
 </head>
