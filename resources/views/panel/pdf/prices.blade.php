@@ -90,7 +90,7 @@
             height: auto;
         }
         img{
-            width: 120px !important;
+            width: 320px !important;
         }
     </style>
 </head>
