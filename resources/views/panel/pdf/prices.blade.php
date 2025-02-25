@@ -19,31 +19,39 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        /* Header */
         .header {
-            display: flex;
-            justify-content: start;
-            align-items: center;
+            text-align: center;
             border-bottom: 2px solid #ddd;
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
         .header .logo {
             width: 200px;
-            margin-left: 10px;
+            margin: 0 auto;
         }
         .header .logo img {
             width: 100%;
             height: auto;
         }
-        .header .title {
-            flex: 1;
-            text-align: center;
+        .header .brand-info {
+            margin-top: 10px;
         }
-        .header .title h2 {
-            margin: 0;
-            font-size: 24px;
+        .header .brand-info h1 {
+            margin: 5px 0;
+            font-size: 28px;
             color: #333;
         }
+        .header .brand-info p {
+            margin: 2px 0;
+            font-size: 16px;
+            color: #555;
+        }
+        .header .brand-info a {
+            color: #555;
+            text-decoration: none;
+        }
+        /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -68,6 +76,7 @@
         tbody tr:nth-child(even) {
             background-color: #fff;
         }
+        /* Footer */
         .footer {
             display: flex;
             justify-content: space-between;
@@ -82,23 +91,48 @@
             width: 100%;
             height: auto;
         }
-        .footer .icon {
-            width: 200px;
+        .footer .contact-info {
+            flex: 1;
+            margin-right: 20px;
+            font-size: 16px;
+            color: #333;
         }
-        .footer .icon img {
-            width: 100%;
-            height: auto;
+        .footer .contact-info p {
+            margin: 5px 0;
+        }
+        .footer .contact-info .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            border-radius: 50%;
+            color: #fff;
+            margin-left: 5px;
+        }
+        .tel-icon {
+            background-color: #3498db;
+        }
+        .mail-icon {
+            background-color: #e74c3c;
+        }
+        .address-icon {
+            background-color: #2ecc71;
         }
     </style>
 </head>
 <body>
 <div class="container">
+    <!-- Header with logo and brand info -->
     <div class="header">
         <div class="logo">
-            <img src="{{ asset('assets/media/image/icon1.png') }}" alt="لوگو">
+            <img src="{{ asset('assets/media/image/logo.png') }}" alt="لوگو">
         </div>
-        <div class="title">
-            <h2>لیست قیمت محصولات صنایع ماشین های اداری ماندگار پارس</h2>
+        <div class="brand-info">
+            <h1>لیست قیمت صنایع ماشین های اداری ماندرگار پارس</h1>
+            <p>website: <a href="http://www.mandegarpars.com">www.mandegarpars.com</a></p>
+            <p>ecommerce: <a href="http://www.artintoner.com">www.artintoner.com</a></p>
+            <p>email: <a href="mailto:mandegarparsco@gmail.com">mandegarparsco@gmail.com</a></p>
         </div>
     </div>
 
@@ -125,12 +159,24 @@
         </tbody>
     </table>
 
+    <!-- Footer with signature and contact info -->
     <div class="footer">
         <div class="sign">
             <img src="{{ auth()->user()->sign_image }}" alt="امضا">
         </div>
-        <div class="icon">
-            <img src="{{ asset('assets/media/image/icon3.png') }}" alt="آیکون">
+        <div class="contact-info">
+            <p>
+                <span class="icon tel-icon">&#9742;</span>
+                021-65425052, 021-65425053, 021-65425054
+            </p>
+            <p>
+                <span class="icon mail-icon">&#9993;</span>
+                artintoner@gmail.com, mandegarparsco@gmail.com
+            </p>
+            <p>
+                <span class="icon address-icon">&#127968;</span>
+                آدرس ما: ملارد، صفادشت، شهرک صنعتی صفادشت، بلوار خرداد، بین پنجم و ششم غربی، شرکت صنایع ماشین های اداری ماندگار پارس
+            </p>
         </div>
     </div>
 </div>
