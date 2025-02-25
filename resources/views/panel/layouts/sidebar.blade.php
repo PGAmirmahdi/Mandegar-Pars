@@ -3,7 +3,7 @@
     <div class="navigation-icon-menu"
          style="overflow-y: auto; @if(auth()->user()->family == 'رسولی') background-color: #dba6fc !important; @endif">
         <ul>
-            <li class="{{ active_sidebar(['activity','search/activity','panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit','leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit','software-updates','software-updates/create','software-updates/{software_update}/edit','baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'active' : '' }}"
+            <li class="{{ active_sidebar(['activity','search/activity','panel','user/search','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit','leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit','software-updates','software-updates/create','software-updates/{software_update}/edit','baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'active' : '' }}"
                 data-toggle="tooltip" title="داشبورد">
                 <a href="#navigationDashboards" title="داشبوردها">
                     <i class="icon ti-dashboard"></i>
@@ -114,14 +114,14 @@
     </div>
     <div class="navigation-menu-body">
         <ul id="navigationDashboards"
-            class="{{ active_sidebar(['activity','search/activity','panel','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit', 'leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit','software-updates','software-updates/create','software-updates/{software_update}/edit','baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['activity','search/activity','panel','user/search','users','users/create','users/{user}/edit','roles','roles/create','roles/{role}/edit', 'tasks','tasks/create','tasks/{task}/edit', 'tasks/{task}', 'notes','notes/create','notes/{note}/edit', 'leaves','leaves/create','leaves/{leave}/edit','reports','reports/create','reports/{report}/edit','software-updates','software-updates/create','software-updates/{software_update}/edit','baseinfo','baseinfo/create','baseinfo/{baseinfo}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">داشبورد</li>
             <li>
                 <a class="{{ active_sidebar(['panel']) ? 'active' : '' }}" href="{{ route('panel') }}">پنل</a>
             </li>
             @can('users-list')
                 <li>
-                    <a class="{{ active_sidebar(['users','users/create','users/{user}/edit']) ? 'active' : '' }}"
+                    <a class="{{ active_sidebar(['user/search','users','users/create','users/{user}/edit']) ? 'active' : '' }}"
                        href="{{ route('users.index') }}">همکاران</a>
                 </li>
             @endcan

@@ -65,6 +65,7 @@
     'order-action' => 'ثبت وضعیت سفارش',
     'mandegar-price' => 'لیست قیمت ماندگار پارس',
     "analyse" => 'آنالیز کالا',
+    'user'=>'همکار',
 ];
             $pageTitle = !empty($segments)
                 ? ($mapping[$segments[count($segments)-1]] ?? ucfirst($segments[count($segments)-1]))

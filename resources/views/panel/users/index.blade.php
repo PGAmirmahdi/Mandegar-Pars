@@ -2,11 +2,12 @@
 @section('title', 'همکاران')
 @section('content')
     <style>
-        .profile{
+        .profile {
             box-shadow: 0px 3px 3px 0px gainsboro;
             border-radius: 100%;
         }
-        .profile2{
+
+        .profile2 {
             filter: drop-shadow(0px 4px 2px rgba(0, 0, 0, 0.5));
         }
     </style>
@@ -21,6 +22,29 @@
                     </a>
                 @endcan
             </div>
+            @if(in_array(auth()->user()->role->name , ['admin','ceo','office-manager']))
+                <form action="{{route('User.search')}}" id="user_search">
+                    <div class="row mb-3">
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+                            <select name="user" class="js-example-basic-single select2-hidden-accessible"
+                                    form="user_search">
+                                <option value="all">نام همکار (همه)</option>
+                                @foreach($users as $user)
+                                    <option
+                                        value="{{ $user->id }}" {{ request()->user == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name . ' ' . $user->family }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary mx-2" type="submit">
+                                جست و جو
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            @endif
             <div class="table-responsive">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center" style="width: 100%">
                     <thead>
@@ -53,13 +77,16 @@
                                              height="60px">
                                     </a>
                                 @elseif(!$user->profile && $user->gender == 'female')
-                                    <img src="{{asset('assets/media/image/Female.png')}}" class="profile" alt="female-profile" width="60px"
+                                    <img src="{{asset('assets/media/image/Female.png')}}" class="profile"
+                                         alt="female-profile" width="60px"
                                          height="60px">
                                 @elseif(!$user->profile && $user->gender == 'male')
-                                    <img src="{{asset('assets/media/image/Male.png')}}" class="profile" alt="female-profile" width="60px"
+                                    <img src="{{asset('assets/media/image/Male.png')}}" class="profile"
+                                         alt="female-profile" width="60px"
                                          height="60px">
-                                    @else
-                                    <img src="{{asset('assets/media/image/inquery.png')}}" class="profile2" alt="female-profile" width="60px"
+                                @else
+                                    <img src="{{asset('assets/media/image/inquery.png')}}" class="profile2"
+                                         alt="female-profile" width="60px"
                                          height="60px">
                                 @endif
                             </td>

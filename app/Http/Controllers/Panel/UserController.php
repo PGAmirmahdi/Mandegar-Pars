@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Activity;
 use App\Models\User;
+use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -167,7 +168,13 @@ class UserController extends Controller
     public function uploadProfile(Request $request, User $user)
     {
         $this->authorize('users-edit');
-
+        $activityData = [
+            'user_id' => auth()->id(),
+            'description' => 'همکار ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' برای خود عکس پروفایل آپلود کرد ',
+            'action' => 'آپلود عکس همکار',
+            'created_at' => now(),
+        ];
+        Activity::create($activityData);
         // مدیریت آپلود تصویر پروفایل
         if ($request->hasFile('profile')) {
             // حذف فایل قدیمی اگر وجود داشته باشد
@@ -185,4 +192,24 @@ class UserController extends Controller
 
         return response()->json(['message' => 'فایلی برای آپلود وجود ندارد.'], 400);
     }
+    public function search(Request $request)
+    {
+        if (in_array(auth()->user()->role->name , ['admin','ceo','office-manager'])) {
+            $activityData = [
+                'user_id' => auth()->id(),
+                'description' => 'همکار ' . auth()->user()->family . '(' . Auth::user()->role->label . ')'  . ' همکار با شناسه ' . $request->user . ' را جست وجو کرد',
+                'action' => 'جست و جو همکار',
+                'created_at' => now(),
+            ];
+            Activity::create($activityData);
+            $users_id = $request->user == 'all' ? User::all()->pluck('id') : [$request->user];
+            $query = User::whereIn('id', $users_id);
+            $users = $query->latest()->paginate(10);
+
+            return view('panel.users.index', compact('users'));
+        } else {
+            return back();
+        }
+    }
+
 }

@@ -170,6 +170,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Users
     Route::resource('users', UserController::class)->except('show');
+    Route::get('user/search', [UserController::class, 'search'])->name('User.search');
     Route::get('/file/user/{filename}', [UserController::class, 'userFile'])->name('us.file.show');
 
     Route::resource('chat_messages', ChatsGPTController::class)->except('edit', 'delete', 'destroy');
