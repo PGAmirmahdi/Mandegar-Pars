@@ -38,9 +38,23 @@
                                     <div>
                                         <figure class="avatar avatar-sm m-r-15 bring-forward">
                                             <span class="avatar-title bg-primary-bright text-primary rounded-circle">
-                                                @if(isset($activity->user->profile) && !empty($activity->user->profile))
+                                               @if(isset($activity->user->profile) && !empty($activity->user->profile))
                                                     <img src="{{ $activity->user->profile }}" style="max-width: 76.79px" data-toggle="tooltip" data-placement="bottom" title="{{ $activity->user->fullName() }}" class="rounded-circle" alt="image" width="36.5px" height="36.5px">
+                                                @elseif(isset($activity->user->gender) && $activity->user->gender == 'female')
+                                                    <img src="{{ asset('assets/media/image/Female.png') }}"
+                                                         data-toggle="tooltip" data-placement="bottom"
+                                                         title="{{ $activity->user->fullName() }}"
+                                                         class="rounded-circle" alt="image">
+                                                @elseif(isset($activity->user->gender) && $activity->user->gender == 'male')
+                                                    <img src="{{ asset('assets/media/image/Male.png') }}"
+                                                         data-toggle="tooltip" data-placement="bottom"
+                                                         title="{{ $activity->user->fullName() }}"
+                                                         class="rounded-circle" alt="image">
                                                 @else
+                                                    <img src="{{ asset('assets/media/image/inquery.png') }}"
+                                                         data-toggle="tooltip" data-placement="bottom"
+                                                         title="{{ $activity->user->fullName() }}"
+                                                         class="rounded-circle" alt="image">
                                                     <i class="fa-solid fa-clock"></i>
                                                 @endif
                                             </span>
