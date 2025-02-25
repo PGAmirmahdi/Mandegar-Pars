@@ -215,7 +215,7 @@ class SalePriceRequestController extends Controller
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'درخواست ' . auth()->user()->role->label,
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ' درخواست  را ویرایش کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') ' . ' درخواست  را ویرایش کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData); // ثبت فعالیت در پایگاه داده

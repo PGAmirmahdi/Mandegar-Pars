@@ -546,7 +546,7 @@
                                                     title="{{ $activity->user->fullName() }}"
                                                     class="rounded-circle" alt="image" width="36.5px" height="36.5px">
                                             @else
-                                                <i class="fa-solid fa-clock font-size"></i>
+                                                <i class="fa-solid fa-clock"></i>
                                             @endif
 										</span>
                                     </figure>
