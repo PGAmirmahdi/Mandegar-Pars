@@ -63,6 +63,7 @@
     'sale_price_requests'=>'درخواست فروش',
     'Mandegarprice' => 'لیست قیمت ماندگار پارس',
     'order-action' => 'ثبت وضعیت سفارش',
+    'mandegar-price' => 'لیست قیمت ماندگار پارس',
 ];
             $pageTitle = !empty($segments)
                 ? ($mapping[$segments[count($segments)-1]] ?? ucfirst($segments[count($segments)-1]))

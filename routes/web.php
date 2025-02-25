@@ -300,7 +300,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::get('/get-product-details/{id}', [MandegarPriceController::class, 'getDetails'])->name('getProductDetails');
     Route::post('/update-order', [MandegarPriceController::class, 'updateOrder'])->name('updateOrder');
     Route::get('/download-pdf', [MandegarPriceController::class, 'downloadPDF'])->name('downloadPDF');
-
+    Route::get('/mandegar-price/search', [MandegarPriceController::class, 'search'])->name('MandegarPrice.search');
 
     // Price History
     Route::get('price-history', [ProductController::class, 'pricesHistory'])->name('price-history');
