@@ -51,7 +51,7 @@
                                             {{ $activity->user->fullName() }} <span class="font-size-10 text-secondary m-0 p-0">({{ $activity->action }})</span>
                                         </p>
                                         <p class="mb-0">
-                                            <strong>{{ \Illuminate\Support\Str::limit($activity->description) }}</strong>
+                                            <strong>{{ $activity->description }}</strong>
                                         </p>
                                         <small class="text-muted">
                                             <i class="fa-solid fa-clock m-r-5"></i>{{ verta($activity->created_at)->format('H:i - Y/m/d') }}

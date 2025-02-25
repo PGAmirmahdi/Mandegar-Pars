@@ -199,6 +199,10 @@
                                             <span class="badge badge-success">تکمیل شده</span>
                                         @elseif($order['order_status'] == 'pws-post')
                                             <span class="badge badge-info">تحویل پست شده</span>
+                                        @elseif($order['order_status'] == 'processing')
+                                            <span class="badge badge-facebook">درحال انجام</span>
+                                        @elseif($order['order_status'] == 'pending')
+                                            <span class="badge badge-warning">منتظر پرداخت</span>
                                         @elseif($order['order_status'] == 'cancelled')
                                             <span class="badge badge-danger">لغو شده</span>
                                         @else
