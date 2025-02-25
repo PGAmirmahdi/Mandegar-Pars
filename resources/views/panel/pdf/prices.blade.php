@@ -28,7 +28,7 @@
             margin-bottom: 20px;
         }
         .header .logo {
-            width: 120px;
+            width: 200px;
             margin-left: 10px;
         }
         .header .logo img {
@@ -76,14 +76,14 @@
             padding-top: 10px;
         }
         .footer .sign {
-            width: 150px;
+            width: 200px;
         }
         .footer .sign img {
             width: 100%;
             height: auto;
         }
         .footer .icon {
-            width: 100px;
+            width: 200px;
         }
         .footer .icon img {
             width: 100%;
@@ -95,7 +95,7 @@
 <div class="container">
     <div class="header">
         <div class="logo">
-            <img src="{{ asset('assets/media/image/icon1.png') }}" alt="لوگو" width="800px !important">
+            <img src="{{ asset('assets/media/image/icon1.png') }}" alt="لوگو">
         </div>
         <div class="title">
             <h2>لیست قیمت محصولات صنایع ماشین های اداری ماندگار پارس</h2>
