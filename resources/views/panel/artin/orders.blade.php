@@ -40,7 +40,7 @@
                                             @elseif($order['order_status'] == 'pws-post')
                                                 <span class="badge badge-info">تحویل پست شده</span>
                                             @elseif($order['order_status'] == 'processing')
-                                                <span class="badge badge-facebook">درحال انجام</span>
+                                                <span class="badge badge-info">درحال انجام</span>
                                             @elseif($order['order_status'] == 'pending')
                                                 <span class="badge badge-warning">منتظر پرداخت</span>
                                             @elseif($order['order_status'] == 'cancelled')
