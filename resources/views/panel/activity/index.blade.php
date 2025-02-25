@@ -44,17 +44,17 @@
                                                     <img src="{{ asset('assets/media/image/Female.png') }}"
                                                          data-toggle="tooltip" data-placement="bottom"
                                                          title="{{ $activity->user->fullName() }}"
-                                                         class="rounded-circle" alt="image">
+                                                         class="rounded-circle" alt="image" width="36.5px" height="36.5px">
                                                 @elseif(isset($activity->user->gender) && $activity->user->gender == 'male')
                                                     <img src="{{ asset('assets/media/image/Male.png') }}"
                                                          data-toggle="tooltip" data-placement="bottom"
                                                          title="{{ $activity->user->fullName() }}"
-                                                         class="rounded-circle" alt="image">
+                                                         class="rounded-circle" alt="image" width="36.5px" height="36.5px">
                                                 @else
                                                     <img src="{{ asset('assets/media/image/inquery.png') }}"
                                                          data-toggle="tooltip" data-placement="bottom"
                                                          title="{{ $activity->user->fullName() }}"
-                                                         class="rounded-circle" alt="image">
+                                                         class="rounded-circle" alt="image" width="36.5px" height="36.5px">
                                                 @endif
                                             </span>
                                         </figure>
