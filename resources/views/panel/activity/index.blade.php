@@ -55,7 +55,6 @@
                                                          data-toggle="tooltip" data-placement="bottom"
                                                          title="{{ $activity->user->fullName() }}"
                                                          class="rounded-circle" alt="image">
-                                                    <i class="fa-solid fa-clock"></i>
                                                 @endif
                                             </span>
                                         </figure>
