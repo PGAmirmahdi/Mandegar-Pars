@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لیست قیمت محصولات ماندگار پارس</title>
+    <!-- Font Awesome 4 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+        /* بارگزاری فونت B Estedad */
+        @font-face {
+            font-family: 'B Estedad';
+            src: url('{{ asset("assets/fonts/Estedad-Black.ttf") }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
         body {
-            font-family: 'B Nazanin', sans-serif;
+            font-family: 'B Estedad', sans-serif;
             font-size: 16px;
             margin: 0;
             padding: 0;
@@ -102,10 +111,10 @@
         }
         .footer .contact-info .icon {
             display: inline-block;
-            width: 24px;
-            height: 24px;
+            width: 30px;
+            height: 30px;
             text-align: center;
-            line-height: 24px;
+            line-height: 30px;
             border-radius: 50%;
             color: #fff;
             margin-left: 5px;
@@ -129,13 +138,14 @@
             <img src="{{ asset('assets/media/image/logo.png') }}" alt="لوگو">
         </div>
         <div class="brand-info">
-            <h1>لیست قیمت صنایع ماشین های اداری ماندرگار پارس</h1>
+            <h1>لیست قیمت صنایع ماشین های اداری ماندگار پارس</h1>
             <p>website: <a href="http://www.mandegarpars.com">www.mandegarpars.com</a></p>
             <p>ecommerce: <a href="http://www.artintoner.com">www.artintoner.com</a></p>
             <p>email: <a href="mailto:mandegarparsco@gmail.com">mandegarparsco@gmail.com</a></p>
         </div>
     </div>
 
+    <!-- Table -->
     <table>
         <thead>
         <tr>
@@ -166,15 +176,15 @@
         </div>
         <div class="contact-info">
             <p>
-                <span class="icon tel-icon">&#9742;</span>
+                <span class="icon tel-icon"><i class="fa fa-phone"></i></span>
                 021-65425052, 021-65425053, 021-65425054
             </p>
             <p>
-                <span class="icon mail-icon">&#9993;</span>
+                <span class="icon mail-icon"><i class="fa fa-envelope"></i></span>
                 artintoner@gmail.com, mandegarparsco@gmail.com
             </p>
             <p>
-                <span class="icon address-icon">&#127968;</span>
+                <span class="icon address-icon"><i class="fa fa-map-marker"></i></span>
                 آدرس ما: ملارد، صفادشت، شهرک صنعتی صفادشت، بلوار خرداد، بین پنجم و ششم غربی، شرکت صنایع ماشین های اداری ماندگار پارس
             </p>
         </div>
