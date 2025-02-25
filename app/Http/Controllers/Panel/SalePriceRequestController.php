@@ -7,6 +7,7 @@ use App\Exports\SalePriceRequestSetadExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSalePriceRequest;
 use App\Models\Activity;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\SalePriceRequest;
@@ -54,6 +55,9 @@ class SalePriceRequestController extends Controller
                 ];
             }
         }
+        $totalPrice = collect($items)->sum(function ($item) {
+            return $item['product_price'] * $item['count'];
+        });
         $data = [
             'user_id' => auth()->id(),
             'customer_id' => $request->customer,
@@ -62,7 +66,7 @@ class SalePriceRequestController extends Controller
             'status' => 'pending',
             'description' => $request->description,
             'products' => json_encode($items),
-            'price' => $request->price,
+            'price' => $totalPrice,
             'type' => auth()->user()->role->name,
         ];
         if (auth()->user()->role->name !== 'setad_sale'){
@@ -81,16 +85,15 @@ class SalePriceRequestController extends Controller
                     $q->whereIn('name', ['ceo', 'sales-manager', 'admin']);
                 });
             })->get();
-
+        $customer = Customer::find($request->customer);
         $notif_title = 'درخواست ' . auth()->user()->role->label;
-        $notif_message = "یک درخواست " . auth()->user()->role->label . " توسط همکار فروش " . auth()->user()->family . " ثبت گردید";
+        $notif_message = "یک درخواست فروش " . auth()->user()->role->label . " توسط همکار فروش " . auth()->user()->family . " برای مشتری {$customer->name} " ." ثبت گردید";
         $url = route('sale_price_requests.index');
         Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
-
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'ثبت درخواست ' . auth()->user()->role->label,
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') یک درخواست ' . auth()->user()->role->label . ' ثبت کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') یک درخواست ' . auth()->user()->role->label . ' برای مشتری '. $customer->name .' ثبت کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
@@ -182,7 +185,9 @@ class SalePriceRequestController extends Controller
                 ];
             }
         }
-
+        $totalPrice = collect($items)->sum(function ($item) {
+            return $item['product_price'] * $item['count'];
+        });
         $sale_price_request->update([
             'products' => json_encode($items),
             'status' => 'pending',
@@ -190,7 +195,7 @@ class SalePriceRequestController extends Controller
             'customer_id' => $request->customer,
             'date' => $request->date,
             'hour' => $request->hour,
-            'price' => $request->price,
+            'price' => $totalPrice,
             'code' => $this->generateCode(),
             'payment_type' => $request->payment_type,
             'need_no' => $request->need_no,
@@ -208,17 +213,17 @@ class SalePriceRequestController extends Controller
         $notif_title = 'درخواست ' . auth()->user()->role->label;
         $notif_message = 'ویرایش درخواست ' . auth()->user()->role->label . ' توسط ' . auth()->user()->family . ' انجام شد.';
         $url = route('sale_price_requests.index');
-
+        $customer = Customer::whereId($sale_price_request->customer_id)->first();
         Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
         Notification::send($sale_price_request->user, new SendMessage($notif_title, $notif_message, $url));
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'درخواست ' . auth()->user()->role->label,
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') ' . ' درخواست  را ویرایش کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') ' . ' درخواست فروش ' . $customer->name . ' را ویرایش کرد.',
             'created_at' => now(),
         ];
-        Activity::create($activityData); // ثبت فعالیت در پایگاه داده
+        Activity::create($activityData);
         alert()->success('درخواست فروش با موفقیت ویرایش شد', 'ویرایش درخواست فروش');
         return redirect(url('/panel/sale_price_requests?type=' . $sale_price_request->type));
     }
@@ -290,12 +295,12 @@ class SalePriceRequestController extends Controller
         ]);
         // notification sent to ceo
 
-
+        $customer = Customer::whereId($sale_price_request->customer_id)->first();
         // ثبت فعالیت
         $activityData = [
             'user_id' => auth()->id(),
             'action' => 'تایید درخواست ' . auth()->user()->role->label,
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') درخواست فروش را تایید کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') درخواست فروش ' . $customer->name .' را تایید کرد.',
             'created_at' => now(),
         ];
         Activity::create($activityData);
@@ -364,12 +369,12 @@ class SalePriceRequestController extends Controller
         $url = route('sale_price_requests.index');
 
         Notification::send($notifiables, new SendMessage($notif_title, $notif_message, $url));
-
+        $customer = Customer::whereId($sale_price_request->customer_id)->first();
         // ثبت فعالیت
         Activity::create([
             'user_id' => auth()->id(),
             'action' => 'نتیجه درخواست ستاد',
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') نتیجه درخواست ستاد را بارگذاری کرد.',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') نتیجه درخواست ستاد '. $customer->name . ' را بارگذاری کرد.',
             'created_at' => now(),
         ]);
 
@@ -380,7 +385,13 @@ class SalePriceRequestController extends Controller
     public function destroy(SalePriceRequest $sale_price_request)
     {
         $this->authorize('sale-price-requests-delete');
-
+        $customer = Customer::whereId($sale_price_request->customer_id)->first();
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'حذف درخواست فروش',
+            'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') درخواست فروش '. $customer->name . ' را حذف کرد.',
+            'created_at' => now(),
+        ]);
         $sale_price_request->delete();
         alert()->success('درخواست فروش با موفقیت حذف شد', 'حذف درخواست فروش');
 

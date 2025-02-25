@@ -19,27 +19,32 @@
                         : 'درخواست های فروش' }}
                 </h6>
                 <div class="row">
-                @can('sale-price-requests-create')
-                    <a href="{{ route('sale_price_requests.create') }}" class="btn btn-primary">
-                        <h6>ثبت
-                            {{ in_array(auth()->user()->role->name, [
-                                'setad_sale', 'internet_sale', 'free_sale',
-                                'industrial_sale', 'global_sale', 'organization_sale'
-                            ])
-                                ? ' درخواست ' . auth()->user()->role->label
-                                : 'درخواست های فروش' }}
-                        </h6>
-                        <i class="fa fa-plus ml-2"></i>
-                    </a>
-                @endcan
-                <form action="{{ route('export_sale_price_requests') }}" method="post" id="excel_form" class="mr-2">
-                    @csrf
-                </form>
+                    <div>
+                        @can('sale-price-requests-create')
+                            <a href="{{ route('sale_price_requests.create') }}" class="btn btn-primary">
+                                <span>ثبت
+                                    {{ in_array(auth()->user()->role->name, [
+                                        'setad_sale', 'internet_sale', 'free_sale',
+                                        'industrial_sale', 'global_sale', 'organization_sale'
+                                    ])
+                                        ? ' درخواست ' . auth()->user()->role->label
+                                        : 'درخواست فروش' }}
+                                </span>
+                                <i class="fa fa-plus ml-2"></i>
+                            </a>
+                        @endcan
+                    </div>
+                    <div class="mx-3">
+                        <form action="{{ route('export_sale_price_requests') }}" method="post" id="excel_form"
+                              class="mr-2">
+                            @csrf
+                        </form>
 
-                <button class="btn btn-success" form="excel_form">
-                    <i class="fa fa-file-excel mr-2"></i>
-                    دریافت اکسل
-                </button>
+                        <button class="btn btn-success" form="excel_form">
+                            <i class="fa fa-file-excel mr-2"></i>
+                            دریافت اکسل
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="modal fade" id="actionResultModal" tabindex="-1" aria-labelledby="actionResultModalLabel"
@@ -202,7 +207,7 @@
                                             class="badge badge-success">{{ \App\Models\SalePriceRequest::STATUS['winner'] }}</span>
                                     @elseif($saleprice_request->status == 'lose')
                                         <span
-                                            class="badge badge-warning">{{ \App\Models\SalePriceRequest::STATUS['lose'] }}</span>
+                                            class="badge badge-danger">{{ \App\Models\SalePriceRequest::STATUS['lose'] }}</span>
                                     @elseif($saleprice_request->status == 'finished')
                                         <span
                                             class="badge badge-info">{{ \App\Models\SalePriceRequest::STATUS['finished'] }}</span>
@@ -223,8 +228,8 @@
                                 <td>
                                     <a class="btn btn-info btn-floating"
                                        href="{{ route('sale_price_requests.show', ['sale_price_request' => $saleprice_request->id, 'type'=>$saleprice_request->type]) }}"
->
-                                    <i class="fa fa-eye"></i>
+                                    >
+                                        <i class="fa fa-eye"></i>
                                     </a>
                                 </td>
                             @else

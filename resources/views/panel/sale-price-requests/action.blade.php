@@ -244,15 +244,17 @@
                 total += count * price;
             });
 
-            // اضافه کردن هزینه ارسال
-            let shippingCost = parseFloat($('#shipping_cost').val().replace(/,/g, '')) || 0;
+            // بررسی وجود input هزینه ارسال
+            let shippingCost = 0;
+            if ($('#shipping_cost').length) {
+                shippingCost = parseFloat(($('#shipping_cost').val() || '').replace(/,/g, '')) || 0;
+            }
             total += shippingCost;
 
-            // نمایش مجموع در سلول جدول و مقداردهی به اینپوت هیدن
+            // به روز رسانی نمایش قیمت کل و مقدار اینپوت هیدن
             $('#manager_total_price').text(new Intl.NumberFormat('fa-IR').format(total));
             $('#final_price_input').val(total);
         }
-
         $(document).on('input', 'input[name^="final_price"], #shipping_cost', function () {
             calculateTotalPrice();
         });
