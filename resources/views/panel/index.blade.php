@@ -538,7 +538,7 @@
                                 <div>
                                     <figure class="avatar avatar-sm m-r-15 bring-forward">
 										<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-                                             @if(isset(auth()->user()->profile))
+                                             @if(isset($activity->user->profile) && !empty($activity->user->profile))
                                                 <img
                                                     src="{{ $activity->user->profile }}"
                                                     style="max-width: 76.79px"

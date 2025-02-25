@@ -38,7 +38,7 @@
                                     <div>
                                         <figure class="avatar avatar-sm m-r-15 bring-forward">
                                             <span class="avatar-title bg-primary-bright text-primary rounded-circle">
-                                                @if(isset($activity->user->profile))
+                                                @if(isset($activity->user->profile) && !empty($activity->user->profile))
                                                     <img src="{{ $activity->user->profile }}" style="max-width: 76.79px" data-toggle="tooltip" data-placement="bottom" title="{{ $activity->user->fullName() }}" class="rounded-circle" alt="image" width="36.5px" height="36.5px">
                                                 @else
                                                     <i class="fa-solid fa-clock"></i>

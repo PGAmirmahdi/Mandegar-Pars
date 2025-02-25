@@ -15,9 +15,8 @@ class ActivityController extends Controller
     {
         $this->authorize('activity-list');
 
-        $query = Activity::query()->with('user'); // اضافه کردن رابطه کاربران
+        $query = Activity::query()->with('user');
 
-        // اعمال فیلتر بر اساس user_id اگر کاربر مشخص شده باشد
         if ($request->user && $request->user !== 'all') {
             $query->where('user_id', $request->user);
         }
