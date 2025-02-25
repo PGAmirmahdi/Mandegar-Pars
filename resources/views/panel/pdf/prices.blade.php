@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لیست قیمت محصولات ماندگار پارس</title>
     <!-- Font Awesome 4 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{asset('assets/icons/font-awesome/css/font-awesome.min.css')}}">
     <style>
         /* بارگزاری فونت B Estedad */
         @font-face {
@@ -120,13 +120,13 @@
             margin-left: 5px;
         }
         .tel-icon {
-            background-color: #3498db;
+            background-color: #8a34db;
         }
         .mail-icon {
-            background-color: #e74c3c;
+            background-color: #8a34db;
         }
         .address-icon {
-            background-color: #2ecc71;
+            background-color: #8a34db;
         }
     </style>
 </head>
@@ -138,10 +138,10 @@
             <img src="{{ asset('assets/media/image/logo.png') }}" alt="لوگو">
         </div>
         <div class="brand-info">
-            <h1>لیست قیمت صنایع ماشین های اداری ماندگار پارس</h1>
             <p>website: <a href="http://www.mandegarpars.com">www.mandegarpars.com</a></p>
             <p>ecommerce: <a href="http://www.artintoner.com">www.artintoner.com</a></p>
             <p>email: <a href="mailto:mandegarparsco@gmail.com">mandegarparsco@gmail.com</a></p>
+            <h1>لیست قیمت صنایع ماشین های اداری ماندگار پارس</h1>
         </div>
     </div>
 

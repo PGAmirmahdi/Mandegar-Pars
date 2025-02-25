@@ -125,8 +125,8 @@
                                     type="number"
                                     name="products[{{ $product->id }}][total_count]"
                                     min="0"
-                                    class="form-control"
-                                    value="{{ $product->total_count }}"
+                                    class="form-control readonly"
+                                    value="{{ $product->total_count }}" readonly
                                 >
                             </td>
                         </tr>

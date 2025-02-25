@@ -272,7 +272,7 @@
                 $preInvoiceBarColor = $preInvoiceChange >= 0 ? 'bg-success' : 'bg-danger';
             @endphp
 
-                    <!-- کارت درخواست های فروش -->
+                <!-- کارت درخواست های فروش -->
             <div class="card card-body mb-3">
                 <h3 class="primary-font font-weight-bold mb-3 line-height-24">
                     <span class="align-middle">{{ $salePriceCount }}</span>
@@ -366,7 +366,7 @@
                 $brandPercent    = $totalMetrics > 0 ? round(($brandCount / $totalMetrics) * 100, 1) : 0;
             @endphp
 
-                    <!-- کارت درخواست برای فاکتور -->
+                <!-- کارت درخواست برای فاکتور -->
             <div class="card card-body mb-3">
                 <h3 class="primary-font font-weight-bold mb-3 line-height-24">
                     <span class="align-middle">{{ $invoiceCount }}</span>
@@ -538,13 +538,13 @@
                                 <div>
                                     <figure class="avatar avatar-sm m-r-15 bring-forward">
 										<span class="avatar-title bg-primary-bright text-primary rounded-circle">
-                                             @if(auth()->user()->profile)
+                                             @if(isset(auth()->user()->profile))
                                                 <img
-                                                        src="{{ $activity->user->profile }}"
-                                                        style="max-width: 76.79px"
-                                                        data-toggle="tooltip" data-placement="bottom"
-                                                        title="{{ $activity->user->fullName() }}"
-                                                        class="rounded-circle" alt="image" width="36.5px" height="36.5px">
+                                                    src="{{ $activity->user->profile }}"
+                                                    style="max-width: 76.79px"
+                                                    data-toggle="tooltip" data-placement="bottom"
+                                                    title="{{ $activity->user->fullName() }}"
+                                                    class="rounded-circle" alt="image" width="36.5px" height="36.5px">
                                             @else
                                                 <i class="fa-solid fa-clock font-size"></i>
                                             @endif
@@ -552,8 +552,10 @@
                                     </figure>
                                 </div>
                                 <div>
-                                    <p class="font-size-12 m-0">{{$activity->user->fullName()}}</p>
-                                    <p class="m-b-5">
+                                    <p class="font-size-12 m-0">{{$activity->user->fullName()}} <span
+                                            class="font-size-10 text-secondary m-0 p-0">({{$activity->action}})</span>
+                                    </p>
+                                    <p class="mb-0">
                                         <strong>{{ \Illuminate\Support\Str::limit($activity->description, 100, '...') }}</strong>
                                     </p>
                                     <small class="text-muted">
@@ -610,7 +612,7 @@
                                 }
                             @endphp
                             <div
-                                    class="list-group-item p-t-b-10 p-l-r-0 d-flex align-items-center justify-content-between">
+                                class="list-group-item p-t-b-10 p-l-r-0 d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <i class="fa fa-circle m-r-10 {{ $iconColor }}"></i>
                                     <span>{{ $user2 ? $user2->fullName() : 'نامشخص' }}</span>
@@ -841,7 +843,7 @@
                     </table>
                 </div>
                 <div
-                        class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
+                    class="d-flex justify-content-center">{{ $users->appends(request()->all())->links() }}</div>
             </div>
         </div>
     @endcan
