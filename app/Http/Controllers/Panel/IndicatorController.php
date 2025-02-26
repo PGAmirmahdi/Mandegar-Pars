@@ -57,12 +57,12 @@ class IndicatorController extends Controller
 
         if (!is_null($request->receiver)) {
             $Indicator->users()->sync($request->receiver);
+            $title = 'نامه نگاری';
             $users = User::whereIn('id', $request->receiver)->get();
             $message = 'یک نامه با عنوان ' . $Indicator->title . ' برای شما ارسال شده است';
-            Notification::send($users, new SendMessage($message, url('/panel/indicator/inbox')));
+            Notification::send($users, new SendMessage($title,$message, url('/panel/indicator/inbox')));
         }
 
-        activity_log('create-indicator', __METHOD__, [$request->all(), $Indicator]);
         alert()->success('نامه مورد نظر با موفقیت ثبت شد', 'ثبت نامه');
         return redirect()->route('indicator.index');
     }
@@ -99,11 +99,11 @@ class IndicatorController extends Controller
         $indicator->users()->sync($request->receiver);
         if (!is_null($request->receiver)) {
             $indicator->users()->sync($request->receiver);
+            $title = 'نامه نگاری';
             $users = User::whereIn('id', $request->receiver)->get();
             $message = 'یک نامه با عنوان ' . $indicator->title . ' برای شما ارسال شده است';
-            Notification::send($users, new SendMessage($message, url('/panel/indicator/inbox')));
+            Notification::send($users, new SendMessage($title,$message, url('/panel/indicator/inbox')));
         }
-        activity_log('edit-indicator', __METHOD__, [$request->all(), $indicator]);
         alert()->success('نامه مورد نظر با موفقیت ویرایش شد', 'ویرایش نامه');
         return redirect()->route('indicator.index');
     }
@@ -163,7 +163,7 @@ class IndicatorController extends Controller
     public function exportPdfInfoPersian($title, $text, $date, $number, $attachment)
     {
 
-        $backgroundImage = public_path('/assets/images/persian-header-info.png');
+        $backgroundImage = public_path('/assets/media/image/persian-header-info.png');
 
         $pdf = PDF::loadView('panel.indicator.indicator-header-info-persian-pdf', ['text' => $text, 'date' => $date, 'number' => $number, 'attachment' => $attachment], [], [
             'format' => 'A4',

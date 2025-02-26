@@ -58,7 +58,7 @@
                                     <div class="mb-2 col-xl-3 col-lg-3 col-md-3">
                                         <label for="to_date" class="form-label">تاریخ</label>
                                         <input type="text" name="date" class="form-control date-picker-shamsi-list"
-                                               id="date" value="{{ old('date') }}">
+                                               id="date" value="{{ old('date') }}" autocomplete="off">
                                         @error('date')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
@@ -83,9 +83,9 @@
                                     <div class="mb-2 col-xl-3 col-lg-3 col-md-3">
                                         <label for="attachment" class="form-label">سربرگ</label>
                                         <select name="header" class="form-control" id="header">
-                                            <option value="info">سربرگ فارسی پرسو تجارت (Info)</option>
-                                            <option value="sale">سربرگ فارسی پرسو تجارت (Sale)</option>
-                                            <option value="english">سربرگ انگلیسی پرسو تجارت</option>
+                                            <option value="info">سربرگ فارسی ماندگار پارس (Info)</option>
+                                            <option value="sale">سربرگ فارسی ماندگار پارس (Sale)</option>
+                                            <option value="english">سربرگ انگلیسی ماندگار پارس</option>
                                         </select>
                                         @error('header')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
@@ -94,7 +94,7 @@
 
                                     <div class="mb-2 col-xl-3 col-lg-3 col-md-3">
                                         <label for="attachment" class="form-label">ارسال به</label>
-                                        <select name="receiver[]" class="form-control" id="receiver"
+                                        <select name="receiver[]" class="form-control js-example-basic-single select2-hidden-accessible" id="receiver"
                                                 data-toggle="select2" multiple>
                                             @foreach($users as $user)
                                                 <option value="{{$user->id}}">{{$user->name.' '.$user->family}}</option>
@@ -115,7 +115,7 @@
                                     <div class="mb-2 col-xl-12 col-lg-12 col-md-12">
                                         <label for="code" class="form-label">متن نامه<span
                                                 class="text-danger">*</span></label>
-                                        <textarea type="text" class="summernote-basic" name="text"
+                                        <textarea type="text" class="summernote-basic w-100" name="text"
                                                   id="text">{{ old('text') }}</textarea>
                                         @error('text')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
