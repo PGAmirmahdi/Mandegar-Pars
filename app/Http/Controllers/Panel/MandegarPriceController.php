@@ -38,10 +38,25 @@ class MandegarPriceController extends Controller
         $items = json_decode($request->items, true);
 
         foreach ($items as $item) {
+            // دریافت قیمت قبلی (در صورت وجود)
+            $existing = MandegarPrice::where('product_id', $item['id'])->first();
+            $previousPrice = $existing ? $existing->price : 0;
+            $price = $item['price'];
+
+            // به‌روزرسانی یا ایجاد رکورد قیمت
             MandegarPrice::updateOrCreate(
                 ['product_id' => $item['id']],
-                ['price'      => $item['price']]
+                ['price'      => $price]
             );
+
+            // ثبت تاریخچه تغییر قیمت
+            \App\Models\PriceHistory::create([
+                'user_id'           => auth()->id(),
+                'product_id'        => $item['id'],
+                'price_field'       => 'لیست قیمت ماندگار',
+                'price_amount_from' => $previousPrice,
+                'price_amount_to'   => $price,
+            ]);
         }
 
         // ثبت فعالیت به‌روزرسانی قیمت
@@ -56,6 +71,7 @@ class MandegarPriceController extends Controller
             'message' => 'قیمت‌ها با موفقیت به‌روزرسانی شدند!',
         ]);
     }
+
 
     public function MandegarPriceDelete(Request $request)
     {
