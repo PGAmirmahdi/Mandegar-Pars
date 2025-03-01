@@ -16,62 +16,11 @@
 
         @php
             $segments = Request::segments();
-            $mapping = [
-                'invoices'=>'پیش فاکتور ها',
-    'panel' => 'داشبورد',
-    'orders'=>'سفارشات',
-    'users' => 'همکاران',
-    'activity' => 'فعالیت ها',
-    'search' => 'جست و جو',
-    'create'=>'ایجاد',
-    'edit' => 'ویرایش',
-    'show' => 'مشاهده',
-    'roles' => 'نقش‌ها',
-    'tasks' => 'وظایف',
-    'notes' => 'یادداشت‌ها',
-    'leaves' => 'مرخصی‌ها',
-    'reports' => 'گزارش‌ها',
-    'baseinfo' => 'اطلاعات پایه',
-    'indicator' => 'شاخص‌ها',
-    'inbox' => 'صندوق ورودی نامه ها',
-    'indicator' => 'نامه نگاری',
-    'suppliers' => 'تأمین‌کنندگان',
-    'customers' => 'مشتریان',
-    'foreign-customers' => 'مشتریان خارجی',
-    'categories' => 'دسته‌بندی‌ها',
-    'products' => 'محصولات',
-    'price-history' => 'تاریخچه قیمت‌ها',
-    'artin-products' => 'محصولات آرتین',
-    'other-prices-list' => 'لیست قیمت‌های دیگر',
-    'invoices-list' => 'لیست فاکتورها',
-    'sale-reports-list' => 'گزارش‌های فروش',
-    'price-requests' => 'درخواست‌های قیمت',
-    'buy-orders' => 'سفارش‌های خرید',
-    'comments' => 'نظرات',
-    'delivery-day' => 'روز تحویل',
-    'software-updates' => 'تغییرات نرم افزار',
-    'sale-price-requests' => 'درخواست‌های قیمت فروش',
-    'exchange' => 'ارزها',
-    'request'=>'درخواست',
-    'productsModel'=>'برندها',
-    'tickets' => 'تیکت ها',
-    'inventory-reports'=>'گزارش انبار',
-    'inventory'=>'انبار',
-    'site'=>'سایت',
-    'site-orders' => 'سفارشات سایت',
-    'site-registered' => 'ثبت نام مشتریان سایت',
-    'sale_price_requests'=>'درخواست فروش',
-    'Mandegarprice' => 'لیست قیمت ماندگار پارس',
-    'order-action' => 'ثبت وضعیت سفارش',
-    'mandegar-price' => 'لیست قیمت ماندگار پارس',
-    "analyse" => 'آنالیز کالا',
-    'user'=>'همکار',
-];
+            $mapping = breadcrumb_mapping();
             $pageTitle = !empty($segments)
                 ? ($mapping[$segments[count($segments)-1]] ?? ucfirst($segments[count($segments)-1]))
                 : 'داشبورد';
         @endphp
-
         <div class="header-body-left">
             <h3 class="page-title">@yield('title')</h3>
 

@@ -173,27 +173,37 @@ class AnalyseController extends Controller
     {
         $category_id = $request->input('category_id');
         $brand_id = $request->input('brand_id');
+        $search = $request->input('search');
 
         if (!$category_id || !$brand_id) {
             return response()->json(['products' => []]);
         }
 
-        $products = Product::where('category_id', $category_id)
-            ->where('brand_id', $brand_id)
-            ->get();
+        // ساخت کوئری اولیه براساس دسته‌بندی و برند
+        $query = Product::where('category_id', $category_id)
+            ->where('brand_id', $brand_id);
+
+        // در صورتی که متن جستجو ارسال شده باشد، فیلتر کنید
+        if ($search) {
+            $query->where('title', 'LIKE', "%{$search}%");
+        }
+
+        $products = $query->get();
 
         $productsWithQuantity = $products->map(function ($product) {
             $lastQuantity = AnalyseProducts::where('product_id', $product->id)
                 ->latest('id')
                 ->value('quantity');
 
-            $storageCount = $product->total_count ?? 0 ;
-            $product->quantity = $lastQuantity ?? 0;
+            $storageCount = $product->total_count ?? 0;
+//            $product->quantity = $lastQuantity ?? 0;
+            $product->quantity = 0;
             $product->storage_count = $storageCount;
-return $product;
+            return $product;
         });
 
         return response()->json(['products' => $productsWithQuantity]);
     }
+
 
 }
