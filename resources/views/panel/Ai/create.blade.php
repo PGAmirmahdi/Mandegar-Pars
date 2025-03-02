@@ -21,7 +21,7 @@
             background-size: cover;
             background-repeat: no-repeat;
             padding: 20px;
-            max-height: 625px;
+            height: 625px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
