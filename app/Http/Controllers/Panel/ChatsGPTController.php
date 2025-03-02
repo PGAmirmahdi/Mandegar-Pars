@@ -17,7 +17,7 @@ class ChatsGPTController extends Controller
             ->orderBy('updated_at', 'desc') // مرتب‌سازی بر اساس آخرین زمان پیام
             ->paginate(10);
         // بررسی مجوز دسترسی
-        if (auth()->user()->can('ChatGPT-list')) {
+        if (auth()->user()->can('Ai-list')) {
             return view('panel.ChatGPT.index', compact('conversations'));
         } else {
             return view('panel.ChatGPT.create', compact('conversations'));

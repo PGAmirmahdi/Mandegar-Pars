@@ -283,6 +283,7 @@ if (! function_exists('breadcrumb_mapping')) {
     function breadcrumb_mapping()
     {
         return [
+            'Ai' =>'هوش مصنوعی ماندگار',
             'invoices'            => 'پیش فاکتور ها',
             'panel'               => 'داشبورد',
             'orders'              => 'سفارشات',

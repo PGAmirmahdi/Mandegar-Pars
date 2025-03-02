@@ -281,4 +281,13 @@ class ApiController extends Controller
 
         return response()->json(['data' => $data])    ->header('Access-Control-Allow-Origin', 'https://artintoner.com');
     }
+    public function appSendNotification(Request $request)
+    {
+        $title = 'پیام جدید';
+        $user = User::whereId($request->user_id)->get();
+        $message = $request->message;
+        $url = route('tickets.index');
+        Notification::send($user, new SendMessage($title,$message, $url));
+        return "success";
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\ApiController;
-use App\Http\Controllers\Api\v1\ChatGPTController;
+use App\Http\Controllers\Api\v1\AiController;
 use App\Http\Controllers\Api\v1\WhatsappController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::post('/send-notification-to-user', [ApiController::class, 'appSendNotification']);
 Route::post('invoice-create', [ApiController::class, 'createInvoice']);
 Route::post('get-invoice-products', [ApiController::class, 'getInvoiceProducts']);
 
@@ -29,7 +29,5 @@ Route::get('get-printers/{brand?}', [ApiController::class, 'getPrinters']);
 Route::get('get-cartridges/{printer_id}', [ApiController::class, 'getCartridges']);
 
 Route::post('create-bot-user',[ApiController::class, 'createBotUser']);
-
-Route::post('ask-gpt', [ChatGPTController::class, 'askChatGPT'])->name('ask.gpt');
 
 Route::post('check-guarantee',[ApiController::class, 'checkGuarantee']);

@@ -42,7 +42,7 @@
                 </li>
             @endcanany
             @canany(['tickets-list','sms-histories','sms'])
-                <li class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}','chat_messages','chat_messages/create','chat_messages/{chat_message}/edit','search/chat_messages']) ? 'active' : '' }}"
+                <li class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}','Ai','Ai/create','Ai/{Ai}','search/Ai']) ? 'active' : '' }}"
                     data-toggle="tooltip" title="پشتیبانی و تیکت">
                     <a href="#navigationTickets" title="پشتیبانی و تیکت">
                         <i class="icon ti-comment-alt"></i>
@@ -483,11 +483,11 @@
             @endcan
         </ul>
         <ul id="navigationTickets"
-            class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}','chat_messages','chat_messages/create','chat_messages/{chat_message}/edit','search/chat_messages']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}','Ai','Ai/create','Ai/{Ai}','search/Ai']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">پشتیبانی و تیکت</li>
             <li>
-                <a class="{{ active_sidebar(['chat_messages','chat_messages/create','chat_messages/{chat_message}/edit','search/chat_messages']) ? 'active' : '' }}"
-                   href="{{ route('chat_messages.index') }}">ام پی چت</a>
+                <a class="{{ active_sidebar(['Ai','Ai/create','Ai/{Ai}','search/Ai']) ? 'active' : '' }}"
+                   href="{{ route('Ai.index') }}">هوش مصنوعی ماندگار</a>
             </li>
             @can('tickets-list')
                 <li>

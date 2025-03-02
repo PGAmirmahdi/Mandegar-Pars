@@ -2,7 +2,9 @@
 
 use App\Events\TestEvent;
 use App\Http\Controllers\Api\v1\WhatsappController;
+use App\Http\Controllers\GlobalTicketController;
 use App\Http\Controllers\Panel\ActivityController;
+use App\Http\Controllers\Panel\AiController;
 use App\Http\Controllers\Panel\AnalyseController;
 use App\Http\Controllers\Panel\AnalysisController;
 use App\Http\Controllers\Panel\ArtinController;
@@ -173,7 +175,9 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::get('user/search', [UserController::class, 'search'])->name('User.search');
     Route::get('/file/user/{filename}', [UserController::class, 'userFile'])->name('us.file.show');
 
-    Route::resource('chat_messages', ChatsGPTController::class)->except('edit', 'delete', 'destroy');
+//    Ai
+    Route::resource('Ai', AiController::class)->except('edit', 'delete', 'destroy');
+
     // Roles
     Route::resource('roles', RoleController::class)->except('show');
 
@@ -348,6 +352,10 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::get('/tickets/{ticket}/new-messages', [TicketController::class, 'getNewMessages'])
         ->name('tickets.getNewMessages');
     Route::get('tickets/{ticket}/getReadMessages', [TicketController::class, 'getReadMessages'])->name('tickets.getReadMessages');
+
+    //    Global Ticket
+    Route::resource('global-tickets', \App\Http\Controllers\Panel\GlobalTicketController::class)->except('show');
+
 
     // Sms Histories
     Route::get('sms-histories', [SmsHistoryController::class, 'index'])->name('sms-histories.index');

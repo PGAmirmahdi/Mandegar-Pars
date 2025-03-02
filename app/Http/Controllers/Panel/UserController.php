@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -103,6 +104,15 @@ class UserController extends Controller
             'password' => bcrypt($request->password),
             'gender' => $request->gender,
         ]);
+        $userData = [
+            'company_user_id' => $user->id,
+            'name' => $user->name,
+            'family' => $user->family,
+            'company' => env('COMPANY_NAME'),
+            'role_name' => $user->role->label,
+            'phone' => $user->phone,
+        ];
+        $this->addUserToMoshrefiApp($userData);
 
         // آپلود فایل پروفایل در صورت موجود بودن
         if ($request->hasFile('profile')) {
@@ -211,5 +221,19 @@ class UserController extends Controller
             return back();
         }
     }
+    private function addUserToMoshrefiApp($data)
+    {
+        try {
+            $response = Http::timeout(30)->post(env('API_BASE_URL') . 'add-user', $data);
+            if ($response->successful()) {
+                return $response->json();
+            } else {
+                return response()->json(['error' => 'Request-failed'], $response->status());
+            }
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            return response()->json(['error' => 'Request-timed-out-or-failed', 'message' => $e->getMessage()], 500);
+        }
+    }
+
 
 }
