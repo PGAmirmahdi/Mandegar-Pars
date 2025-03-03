@@ -102,6 +102,49 @@
             20% { opacity: 1; }
             100% { opacity: 0.2; }
         }
+
+        /* Media Query برای موبایل */
+        @media only screen and (max-width: 768px) {
+            .chat-container {
+                margin: 10px;
+                border-radius: 5px;
+            }
+            .chat-header {
+                padding: 10px;
+                font-size: 16px;
+            }
+            .chat-body {
+                padding: 10px;
+                height: auto;
+                max-height: 400px;
+            }
+            .message-content {
+                padding: 8px 10px;
+                border-radius: 15px;
+                max-width: 100%;
+                font-size: 14px;
+            }
+            .chat-footer {
+                flex-direction: column;
+                padding: 10px;
+            }
+            .chat-footer input {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                padding-right: 10px;
+            }
+            .chat-footer button {
+                position: relative;
+                left: auto;
+                top: auto;
+                transform: none;
+                width: 100%;
+                height: auto;
+                border-radius: 10px;
+                padding: 10px;
+            }
+        }
     </style>
 @endsection
 
@@ -158,17 +201,17 @@
                 // ابتدا هر المان تایپینگ موجود را حذف می‌کنیم تا تکراری نشود
                 $('#typing-indicator').remove();
                 $('#chat-body').append(`
-        <div id="typing-indicator" class="message">
-            <div class="message-content">
-                <div class="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <div class="message-time">${currentTime}</div>
-            </div>
-        </div>
-    `);
+                    <div id="typing-indicator" class="message">
+                        <div class="message-content">
+                            <div class="typing-indicator">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div class="message-time">${currentTime}</div>
+                        </div>
+                    </div>
+                `);
                 $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
             }
 
