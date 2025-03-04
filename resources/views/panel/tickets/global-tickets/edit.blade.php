@@ -338,7 +338,7 @@
 
         function updateReadStatus() {
             $.ajax({
-                url: "{{ env('api_base_url') . 'tickets/getReadMessages' }}",
+                url: "{{ env('API_BASE_URL') . 'tickets/getReadMessages' }}",
                 type: "POST",
                 data: {
                     ticket_id: {{$ticket->id}},
