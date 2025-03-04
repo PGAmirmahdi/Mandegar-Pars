@@ -18,6 +18,7 @@ class GlobalTicket extends Model
 
 
     const COMPANIES = [
+
         'parso' => 'پرسو تجارت ایرانیان',
         'barman' => 'بارمان سیستم سرزمین پارس',
         'adaktejarat' => 'آداک تجارت خورشید قشم',
