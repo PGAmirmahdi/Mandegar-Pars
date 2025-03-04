@@ -149,6 +149,8 @@
             .company_name{
                 font-size: 10px !important;
             }
+            .message-text,.message-time{}
+            font-size: 12px !important;
         }
     </style>
 @endsection
