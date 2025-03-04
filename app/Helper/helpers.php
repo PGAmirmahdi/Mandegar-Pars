@@ -3,17 +3,17 @@
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
-if (!function_exists('active_sidebar')){
-    function active_sidebar(array $items){
+if (!function_exists('active_sidebar')) {
+    function active_sidebar(array $items)
+    {
         $route = Route::current()->uri;
         $data = [];
 
         foreach ($items as $value) {
-            if ($value == 'panel')
-            {
+            if ($value == 'panel') {
                 $data[] = "panel";
-            } else{
-                $data[] = "panel/".$value;
+            } else {
+                $data[] = "panel/" . $value;
             }
         }
         if (in_array($route, $data)) {
@@ -24,7 +24,7 @@ if (!function_exists('active_sidebar')){
     }
 }
 
-if (!function_exists('make_slug')){
+if (!function_exists('make_slug')) {
     function make_slug(string $string)
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
@@ -72,12 +72,11 @@ if (!function_exists('calculateTotal')) {
         return $sum_total_price;
     }
 }
-if (!function_exists('calculateTotalInvoice')){
+if (!function_exists('calculateTotalInvoice')) {
     function calculateTotalInvoice($products)
     {
 //        dd($products);
         $sum_total = 0;
-
 
 
         foreach ($products as $product) {
@@ -113,10 +112,10 @@ if (!function_exists('upload_file_factor')) {
             $imgWidthMm = $imgWidth * 0.084583;
             $imgHeightMm = $imgHeight * 0.084583;
 
-            if ($paperFormat == 'A4'){
+            if ($paperFormat == 'A4') {
                 $x = 280 - $imgWidthMm;
                 $y = 180 - $imgHeightMm;
-            }else{
+            } else {
                 $x = 350 - $imgWidthMm;
                 $y = 220 - $imgHeightMm;
             }
@@ -138,7 +137,6 @@ if (!function_exists('upload_file_factor')) {
             $uploadPath = public_path("/uploads/{$folder}/{$year}/{$month}/");
 
 
-
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
@@ -151,7 +149,6 @@ if (!function_exists('upload_file_factor')) {
             return $img;
 
 
-
         }
     }
 }
@@ -161,7 +158,7 @@ if (!function_exists('formatBytes')) {
         $base = log($size, 1024);
         $suffixes = array('', 'K', 'M', 'G', 'T');
 
-        return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+        return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
     }
 }
 
@@ -240,7 +237,7 @@ function getPaperSizeFromPdf($pdfFile)
 
     $A3Width = 420;
     $A3Height = 297;
-    $A4Width =  297;
+    $A4Width = 297;
     $A4Height = 210;
 
     if ($width >= $A3Width || $height >= $A3Height) {
@@ -249,8 +246,6 @@ function getPaperSizeFromPdf($pdfFile)
         return 'A4';
     }
 }
-
-
 
 
 if (!function_exists('change_number_to_words')) {
@@ -279,61 +274,94 @@ function englishToPersianNumbers($input)
 
     return strtr($input, $persianNumbers);
 }
-if (! function_exists('breadcrumb_mapping')) {
+
+if (!function_exists('breadcrumb_mapping')) {
     function breadcrumb_mapping()
     {
         return [
-            'Ai' =>'هوش مصنوعی ماندگار',
-            'invoices'            => 'پیش فاکتور ها',
-            'panel'               => 'داشبورد',
-            'orders'              => 'سفارشات',
-            'users'               => 'همکاران',
-            'activity'            => 'فعالیت ها',
-            'search'              => 'جست و جو',
-            'create'              => 'ایجاد',
-            'edit'                => 'ویرایش',
-            'show'                => 'مشاهده',
-            'roles'               => 'نقش‌ها',
-            'tasks'               => 'وظایف',
-            'notes'               => 'یادداشت‌ها',
-            'leaves'              => 'مرخصی‌ها',
-            'reports'             => 'گزارش‌ها',
-            'baseinfo'            => 'اطلاعات پایه',
-            'indicator'           => 'شاخص‌ها',
-            'inbox'               => 'صندوق ورودی نامه ها',
-            'suppliers'           => 'تأمین‌کنندگان',
-            'customers'           => 'مشتریان',
-            'foreign-customers'   => 'مشتریان خارجی',
-            'categories'          => 'دسته‌بندی‌ها',
-            'products'            => 'محصولات',
-            'price-history'       => 'تاریخچه قیمت‌ها',
-            'artin-products'      => 'محصولات آرتین',
-            'other-prices-list'   => 'لیست قیمت‌های دیگر',
-            'invoices-list'       => 'لیست فاکتورها',
-            'sale-reports-list'   => 'گزارش‌های فروش',
-            'price-requests'      => 'درخواست‌های قیمت',
-            'buy-orders'          => 'سفارش‌های خرید',
-            'comments'            => 'نظرات',
-            'delivery-day'        => 'روز تحویل',
-            'software-updates'    => 'تغییرات نرم افزار',
+            'global-tickets' => 'تیکت بین شرکتی',
+            'Ai' => 'هوش مصنوعی ماندگار',
+            'invoices' => 'پیش فاکتور ها',
+            'panel' => 'داشبورد',
+            'orders' => 'سفارشات',
+            'users' => 'همکاران',
+            'activity' => 'فعالیت ها',
+            'search' => 'جست و جو',
+            'create' => 'ایجاد',
+            'edit' => 'ویرایش',
+            'show' => 'مشاهده',
+            'roles' => 'نقش‌ها',
+            'tasks' => 'وظایف',
+            'notes' => 'یادداشت‌ها',
+            'leaves' => 'مرخصی‌ها',
+            'reports' => 'گزارش‌ها',
+            'baseinfo' => 'اطلاعات پایه',
+            'indicator' => 'شاخص‌ها',
+            'inbox' => 'صندوق ورودی نامه ها',
+            'suppliers' => 'تأمین‌کنندگان',
+            'customers' => 'مشتریان',
+            'foreign-customers' => 'مشتریان خارجی',
+            'categories' => 'دسته‌بندی‌ها',
+            'products' => 'محصولات',
+            'price-history' => 'تاریخچه قیمت‌ها',
+            'artin-products' => 'محصولات آرتین',
+            'other-prices-list' => 'لیست قیمت‌های دیگر',
+            'invoices-list' => 'لیست فاکتورها',
+            'sale-reports-list' => 'گزارش‌های فروش',
+            'price-requests' => 'درخواست‌های قیمت',
+            'buy-orders' => 'سفارش‌های خرید',
+            'comments' => 'نظرات',
+            'delivery-day' => 'روز تحویل',
+            'software-updates' => 'تغییرات نرم افزار',
             'sale-price-requests' => 'درخواست‌های قیمت فروش',
-            'exchange'            => 'ارزها',
-            'request'             => 'درخواست',
-            'productsModel'       => 'برندها',
-            'tickets'             => 'تیکت ها',
-            'inventory-reports'   => 'گزارش انبار',
-            'inventory'           => 'انبار',
-            'site'                => 'سایت',
-            'site-orders'         => 'سفارشات سایت',
-            'site-registered'     => 'ثبت نام مشتریان سایت',
+            'exchange' => 'ارزها',
+            'request' => 'درخواست',
+            'productsModel' => 'برندها',
+            'tickets' => 'تیکت ها',
+            'inventory-reports' => 'گزارش انبار',
+            'inventory' => 'انبار',
+            'site' => 'سایت',
+            'site-orders' => 'سفارشات سایت',
+            'site-registered' => 'ثبت نام مشتریان سایت',
             'sale_price_requests' => 'درخواست فروش',
-            'Mandegarprice'       => 'لیست قیمت ماندگار پارس',
-            'order-action'        => 'ثبت وضعیت سفارش',
-            'mandegar-price'      => 'لیست قیمت ماندگار پارس',
-            'analyse'             => 'آنالیز کالا',
-            'user'                => 'همکار',
+            'Mandegarprice' => 'لیست قیمت ماندگار پارس',
+            'order-action' => 'ثبت وضعیت سفارش',
+            'mandegar-price' => 'لیست قیمت ماندگار پارس',
+            'analyse' => 'آنالیز کالا',
+            'user' => 'همکار',
         ];
     }
 }
+
+function getCompany($data)
+{
+    $company = '';
+    switch ($data) {
+        case "parso":
+            $company = 'پرسو تجارت ایرانیان';
+            break;
+        case "barman":
+            $company = 'بارمان سیستم سرزمین پارس';
+            break;
+        case "adaktejarat":
+            $company = 'آداک تجارت خورشید قشم';
+            break;
+        case "adakhamrah":
+            $company = 'آداک همراه خورشید قشم';
+            break;
+        case 'mandegarpars':
+            echo "ماشین های اداری ماندگار پارس";
+            break;
+        case "sayman":
+            $company = 'فناوران رایانه سایمان داده';
+            break;
+
+        case "adakpetro":
+            $company = 'آداک پترو خورشید قشم';
+            break;
+    }
+    return $company;
+}
+
 
 

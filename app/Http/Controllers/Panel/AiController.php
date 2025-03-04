@@ -79,7 +79,7 @@ class AiController extends Controller
                     "role" => "user"
                 ]
             ],
-            "model" => "google/gemini-2.0-pro-exp-02-05:free",
+            "model" => "deepseek/deepseek-chat:free",
             "frequency_penalty" => 0,
             "max_tokens" => 2048,
             "presence_penalty" => 0,
