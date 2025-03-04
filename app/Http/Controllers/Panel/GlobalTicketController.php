@@ -133,7 +133,7 @@ class GlobalTicketController extends Controller
         $message = $request->input('message');
         $users = User::whereIn('id', [$userId])->get();
         $url = route('tickets.index');
-        Notification::send($users, new SendMessage($message, $url, $title));
+        Notification::send($users, new SendMessage($title,$message, $url));
         return response()->json(['message' => 'Job ایجاد شد'], 201);
     }
 }
