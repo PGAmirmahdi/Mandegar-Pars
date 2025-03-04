@@ -42,7 +42,7 @@
                 </li>
             @endcanany
             @canany(['tickets-list','sms-histories','sms'])
-                <li class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}','Ai','Ai/create','Ai/{Ai}','search/Ai']) ? 'active' : '' }}"
+                <li class="{{ active_sidebar(['global-tickets','global-tickets/create','global-tickets/{global_ticket}/edit','search/global-tickets','tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}','Ai','Ai/create','Ai/{Ai}','search/Ai']) ? 'active' : '' }}"
                     data-toggle="tooltip" title="پشتیبانی و تیکت">
                     <a href="#navigationTickets" title="پشتیبانی و تیکت">
                         <i class="icon ti-comment-alt"></i>
@@ -483,7 +483,7 @@
             @endcan
         </ul>
         <ul id="navigationTickets"
-            class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}','Ai','Ai/create','Ai/{Ai}','search/Ai']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['global-tickets','global-tickets/create','global-tickets/{global_ticket}/edit','search/global-tickets','tickets','tickets/create','tickets/{ticket}/edit','search/tickets','sms-histories','sms-histories/{sms_history}','Ai','Ai/create','Ai/{Ai}','search/Ai']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">پشتیبانی و تیکت</li>
             <li>
                 <a class="{{ active_sidebar(['Ai','Ai/create','Ai/{Ai}','search/Ai']) ? 'active' : '' }}"
@@ -492,7 +492,13 @@
             @can('tickets-list')
                 <li>
                     <a class="{{ active_sidebar(['tickets','tickets/create','tickets/{ticket}/edit','search/tickets']) ? 'active' : '' }}"
-                       href="{{ route('tickets.index') }}">تیکت ها</a>
+                       href="{{ route('tickets.index') }}">تیکت داخلی</a>
+                </li>
+            @endcan
+            @can('global-tickets-list')
+                <li>
+                    <a class="{{ active_sidebar(['global-tickets','global-tickets/create','global-tickets/{global_ticket}/edit','search/global-tickets']) ? 'active' : '' }}"
+                       href="{{ route('global-tickets.index') }}">تیکت بین شرکتی</a>
                 </li>
             @endcan
             @can('sms-histories')

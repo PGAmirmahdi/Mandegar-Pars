@@ -202,7 +202,12 @@ class PermissionSeeder extends Seeder
 //              'exchange-list' => 'لیست ارز ها'
 
 //                        'indicator' => 'نامه نگاری',
-            'MandegarPrice-create' => 'ایجاد محصول در لیست قیمت ماندگار پارس'
+
+//            'MandegarPrice-create' => 'ایجاد محصول در لیست قیمت ماندگار پارس'
+
+           'global-tickets-list' => 'لیست تیکت بین شرکتی',
+            'global-tickets-create' => 'ثبت تیکت بین شرکتی',
+            'global-tickets-delete' => 'حذف تیکت بین شرکتی'
         ];
 
         foreach ($items as $key => $item)

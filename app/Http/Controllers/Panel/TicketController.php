@@ -37,7 +37,7 @@ class TicketController extends Controller
                 ->paginate(30);
         }
 
-        return view('panel.tickets.index', compact('tickets'));
+        return view('panel.tickets.inner-tickets.index', compact('tickets'));
     }
 
     public function create()
@@ -48,7 +48,7 @@ class TicketController extends Controller
                                             $q->where('name', 'accountant');
                                         });
                                     })->pluck('id');
-        return view('panel.tickets.create', compact('accountants'));
+        return view('panel.tickets.inner-tickets.create', compact('accountants'));
     }
 
     public function store(StoreTicketRequest $request)
@@ -97,9 +97,9 @@ class TicketController extends Controller
         return redirect()->route('tickets.edit', $ticket->id);
     }
 
+    // دریافت تیک مشاهده پیام
     public function getReadMessages(Ticket $ticket)
     {
-        // دریافت پیام‌هایی که به شما (ارسال شده توسط شما) تعلق دارند و وضعیت read_at آنها مقداردهی شده است
         $readMessages = $ticket->messages()
             ->where('user_id', auth()->id())
             ->whereNotNull('read_at')
@@ -115,15 +115,16 @@ class TicketController extends Controller
         //
     }
 
+//    صفحه چت
     public function edit(Ticket $ticket)
     {
         $this->authorize('tickets-create');
 
         $ticket->messages()->whereNull('read_at')->where('user_id','!=',auth()->id())->update(['read_at' => now()]);
 
-        return view('panel.tickets.edit', compact('ticket'));
+        return view('panel.tickets.inner-tickets.edit', compact('ticket'));
     }
-
+//  گفت و گو
     public function update(Request $request, Ticket $ticket)
     {
         $this->authorize('tickets-create');
@@ -170,11 +171,12 @@ class TicketController extends Controller
         Activity::create($activityData);
 
         if ($request->expectsJson()) {
-            $message_html = view('panel.tickets.single-message', compact('message'))->render();
+            $message_html = view('panel.tickets.inner-tickets.single-message', compact('message'))->render();
             return response()->json(['message_html' => $message_html]);
         }
         return back();
     }
+//    دریافت پیام ها
     public function getNewMessages(Ticket $ticket)
     {
         $lastMessageTime = session('last_message_time', now());
@@ -200,7 +202,7 @@ class TicketController extends Controller
 
         $messagesHtml = '';
         foreach ($newMessages as $message) {
-            $messagesHtml .= view('panel.tickets.single-message', compact('message'))->render();
+            $messagesHtml .= view('panel.tickets.inner-tickets.single-message', compact('message'))->render();
         }
 
         return response()->json(['new_messages' => $messagesHtml]);
