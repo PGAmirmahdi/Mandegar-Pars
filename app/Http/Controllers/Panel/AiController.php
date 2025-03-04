@@ -139,9 +139,9 @@ class AiController extends Controller
         ]);
         return response()->json($resultData);
     }
-    public function show()
+    public function show($id)
     {
-        $messages = ChatMessage::where('user_id', auth()->id())
+        $messages = ChatMessage::where('id', $id)
             ->orderBy('created_at', 'asc')
             ->get();
         return view('panel.Ai.create', compact('messages'));
