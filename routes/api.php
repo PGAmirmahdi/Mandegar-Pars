@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\v1\ApiController;
 use App\Http\Controllers\Api\v1\AiController;
 use App\Http\Controllers\Api\v1\WhatsappController;
+use App\Http\Controllers\Panel\GlobalTicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,3 +32,6 @@ Route::get('get-cartridges/{printer_id}', [ApiController::class, 'getCartridges'
 Route::post('create-bot-user',[ApiController::class, 'createBotUser']);
 
 Route::post('check-guarantee',[ApiController::class, 'checkGuarantee']);
+
+// Global Ticket API
+Route::post('create-ticket-job', [GlobalTicketController::class, 'createTicketJob']);

@@ -127,6 +127,7 @@ class GlobalTicketController extends Controller
     }
     public function createTicketJob(Request $request)
     {
+
         $userId = $request->input('user_id');
         $title = $request->input('title');
         $message = $request->input('message');

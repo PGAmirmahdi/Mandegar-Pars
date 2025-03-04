@@ -357,7 +357,6 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     Route::resource('global-tickets', \App\Http\Controllers\Panel\GlobalTicketController::class)->except('show','update','destroy');
     Route::get('change-status-global-ticket/{global-ticket}', [\App\Http\Controllers\Panel\GlobalTicketController::class, 'changeStatus'])->name('global-tickets.changeStatus');
-    Route::post('create-ticket-job', [\App\Http\Controllers\Panel\GlobalTicketController::class, 'createTicketJob']);
 
     // Sms Histories
     Route::get('sms-histories', [SmsHistoryController::class, 'index'])->name('sms-histories.index');
