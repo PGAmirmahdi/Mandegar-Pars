@@ -139,13 +139,19 @@ class AiController extends Controller
         ]);
         return response()->json($resultData);
     }
-    public function show($id)
+    public function show($userId)
     {
-        $messages = ChatMessage::where('id', $id)
+        $messages = ChatMessage::where('user_id', $userId)
             ->orderBy('created_at', 'asc')
             ->get();
+
+        if ($messages->isEmpty()) {
+            return abort(404, 'چت یافت نشد');
+        }
+
         return view('panel.Ai.show', compact('messages'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
