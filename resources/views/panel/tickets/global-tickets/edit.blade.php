@@ -144,10 +144,10 @@
                 height: 75vh !important;
             }
             h5{
-                font-size: 10px !important;
+                font-size: 12px !important;
             }
             .company_name{
-                font-size: 8px !important;
+                font-size: 10px !important;
             }
         }
     </style>
