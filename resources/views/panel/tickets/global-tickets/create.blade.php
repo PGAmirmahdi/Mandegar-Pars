@@ -4,16 +4,16 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col">
+                <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <form method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                    <!-- ستون شرکت -->
+                                    <div class="col-xl-3 col-lg-3 col-md-3 col-12 mb-3">
                                         <label class="form-label" for="company">شرکت<span class="text-danger">*</span></label>
-                                        <select name="company" id="company_id" class="form-control"
-                                                data-toggle="select2">
+                                        <select name="company" id="company_id" class="form-control" data-toggle="select2">
                                             @foreach(\App\Models\GlobalTicket::COMPANIES as $key => $value)
                                                 <option value="{{ $key }}" {{ old('company') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                             @endforeach
@@ -22,9 +22,9 @@
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                                        <label class="form-label" for="receiver">گیرنده<span
-                                                class="text-danger">*</span></label>
+                                    <!-- ستون گیرنده -->
+                                    <div class="col-xl-3 col-lg-3 col-md-3 col-12 mb-3">
+                                        <label class="form-label" for="receiver">گیرنده<span class="text-danger">*</span></label>
                                         <select name="receiver" id="user_select" class="form-control" data-toggle="select2">
                                             <option value="">انتخاب کنید...</option>
                                         </select>
@@ -32,29 +32,27 @@
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                                        <label class="form-label" for="title">عنوان تیکت<span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="title" class="form-control" id="title"
-                                               value="{{ old('title') }}">
+                                    <!-- ستون عنوان -->
+                                    <div class="col-xl-3 col-lg-3 col-md-3 col-12 mb-3">
+                                        <label class="form-label" for="title">عنوان تیکت<span class="text-danger">*</span></label>
+                                        <input type="text" name="title" class="form-control" id="title" value="{{ old('title') }}">
                                         @error('title')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
+                                    <!-- ستون فایل -->
+                                    <div class="col-xl-3 col-lg-3 col-md-3 col-12 mb-3">
                                         <label class="form-label" for="file">فایل</label>
                                         <input type="file" name="file" class="form-control" id="file">
                                         @error('file')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
-                                        <a href="" target="_blank" class="btn btn-link d-none" id="file_preview">پیش
-                                            نمایش</a>
+                                        <a href="" target="_blank" class="btn btn-link d-none" id="file_preview">پیش نمایش</a>
                                     </div>
-
-                                    <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
+                                    <!-- ستون متن تیکت -->
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-3">
                                         <label class="form-label" for="text">متن تیکت<span class="text-danger">*</span></label>
-                                        <textarea type="text" name="text" class="form-control" id="text"
-                                                  rows="5">{{ old('text') }}</textarea>
+                                        <textarea name="text" class="form-control" id="text" rows="5">{{ old('text') }}</textarea>
                                         @error('text')
                                         <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
                                         @enderror
@@ -69,18 +67,15 @@
         </div>
     </div>
 @endsection
+
 @section('scripts')
     <script>
-        var loading = $('.loading');
-        var company_name = 'parso';
         $(document).ready(function () {
             $('#file').on('change', function () {
-                $('#file_preview').removeClass('d-none')
-
+                $('#file_preview').removeClass('d-none');
                 let file = this.files[0];
                 let url = URL.createObjectURL(file);
-
-                $('#file_preview').attr('href', url)
+                $('#file_preview').attr('href', url);
             });
 
             function fetchUsers(companyId) {
@@ -89,7 +84,7 @@
                         url: '{{ env('API_BASE_URL').'get-users' }}',
                         type: 'POST',
                         headers: {
-                            'API_KEY': "{{env('API_KEY_TOKEN_FOR_TICKET')}}"
+                            'API_KEY': "{{ env('API_KEY_TOKEN_FOR_TICKET') }}"
                         },
                         data: {
                             company_name: companyId,
@@ -97,12 +92,10 @@
                             _token: '{{ csrf_token() }}'
                         },
                         beforeSend: function () {
-                            $('#user_select').empty();
-                            $('#user_select').append('<option value="">در حال بارگذاری...</option>');
+                            $('#user_select').empty().append('<option value="">در حال بارگذاری...</option>');
                         },
                         success: function (response) {
-                            $('#user_select').empty();
-                            $('#user_select').append('<option value="">انتخاب کنید...</option>');
+                            $('#user_select').empty().append('<option value="">انتخاب کنید...</option>');
                             $.each(response, function (key, user) {
                                 $('#user_select').append('<option value="' + user.id + '">' + user.name + ' ' + user.family + ' - ' + user.role_name + '</option>');
                             });
@@ -114,24 +107,21 @@
                 }
             }
 
+            var company_name = 'parso';
             fetchUsers(company_name);
 
             $('#company_id').change(function () {
                 var selectedValue = $(this).val();
-                console.log(selectedValue);
                 fetchUsers(selectedValue);
             });
-
 
             var initialCompanyId = $('#company_id').val();
             if (initialCompanyId) {
                 fetchUsers(initialCompanyId);
             }
 
-
             $('#submit_ticket').on('click', function (e) {
                 e.preventDefault();
-
                 var sender_id = {{ auth()->id() }};
                 var company = "{{ env('COMPANY_NAME') }}";
                 var receiver_id = $('#user_select').val();
@@ -145,7 +135,6 @@
                 formData.append('receiver_id', receiver_id);
                 formData.append('title', title);
                 formData.append('text', text);
-
                 if (fileInput) {
                     formData.append('file', fileInput);
                 }
@@ -179,9 +168,6 @@
                     }
                 });
             });
-
-
-
         });
     </script>
 @endsection
