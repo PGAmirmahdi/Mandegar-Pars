@@ -140,6 +140,15 @@
                 height: 60vh !important;
                 overflow-y: auto !important;
             }
+            .chat-app{
+                height: 75vh !important;
+            }
+            h5{
+                font-size: 10px !important;
+            }
+            .company_name{
+                font-size: 8px !important;
+            }
         }
     </style>
 @endsection
