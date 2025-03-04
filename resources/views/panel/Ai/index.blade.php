@@ -30,7 +30,7 @@
                             </td>
                             <td>
                                 <a class="btn btn-info btn-floating"
-                                   href="{{ route('Ai.show', $conversation->id) }}">
+                                   href="{{ route('Ai.show', $conversation->user->id) }}">
                                     <i class="fa fa-comments"></i>
                                 </a>
                             </td>
