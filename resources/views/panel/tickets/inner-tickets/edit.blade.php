@@ -290,32 +290,32 @@
             });
         }
 
-        function fetchNewMessages() {
-            var lastMessage = $('.message-item').last();
-            var lastId = lastMessage.attr('id') ? lastMessage.attr('id').replace('message-', '') : 0;
-            $.ajax({
-                url: "{{ route('tickets.getNewMessages', $ticket->id) }}",
-                type: "GET",
-                data: { last_id: lastId },
-                dataType: "json",
-                success: function (response) {
-                    if (response.new_messages) {
-                        var newMessages = $(response.new_messages);
-                        newMessages.each(function() {
-                            var messageId = $(this).attr('id');
-                            if (!$('#' + messageId).length) {
-                                $('.message-items').append($(this));
-                            }
-                        });
-                        updateReadStatus();
-                        $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
-                    }
-                },
-                error: function () {
-                    console.log("خطا در دریافت پیام‌های جدید");
-                }
-            });
-        }
+        {{--function fetchNewMessages() {--}}
+        {{--    var lastMessage = $('.message-item').last();--}}
+        {{--    var lastId = lastMessage.attr('id') ? lastMessage.attr('id').replace('message-', '') : 0;--}}
+        {{--    $.ajax({--}}
+        {{--        url: "{{ route('tickets.getNewMessages', $ticket->id) }}",--}}
+        {{--        type: "GET",--}}
+        {{--        data: { last_id: lastId },--}}
+        {{--        dataType: "json",--}}
+        {{--        success: function (response) {--}}
+        {{--            if (response.new_messages) {--}}
+        {{--                var newMessages = $(response.new_messages);--}}
+        {{--                newMessages.each(function() {--}}
+        {{--                    var messageId = $(this).attr('id');--}}
+        {{--                    if (!$('#' + messageId).length) {--}}
+        {{--                        $('.message-items').append($(this));--}}
+        {{--                    }--}}
+        {{--                });--}}
+        {{--                updateReadStatus();--}}
+        {{--                $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);--}}
+        {{--            }--}}
+        {{--        },--}}
+        {{--        error: function () {--}}
+        {{--            console.log("خطا در دریافت پیام‌های جدید");--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--}--}}
 
         // اجرای fetchNewMessages هر ۵ ثانیه
         setInterval(fetchNewMessages, 5000);
