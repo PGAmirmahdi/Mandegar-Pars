@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Events\NewTicketMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
 use App\Models\Activity;
@@ -161,12 +162,15 @@ class TicketController extends Controller
             'file' => isset($file) ? json_encode($file_info) : null,
         ]);
 
+        // ارسال رویداد وب‌سوکت به همراه HTML پیام
+        broadcast(new NewTicketMessage($message));
+
         // ذخیره فعالیت
         $activityData = [
-            'user_id' => auth()->id(),
-            'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') پاسخی به تیکت "' . $ticket->title . '" ارسال کرد',
-            'action' => 'پاسخ به تیکت',
-            'created_at' => now(),
+            'user_id'      => auth()->id(),
+            'description'  => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') پاسخی به تیکت "' . $ticket->title . '" ارسال کرد',
+            'action'       => 'پاسخ به تیکت',
+            'created_at'   => now(),
         ];
         Activity::create($activityData);
 
@@ -176,6 +180,7 @@ class TicketController extends Controller
         }
         return back();
     }
+
 //    دریافت پیام ها
     public function getNewMessages(Ticket $ticket)
     {

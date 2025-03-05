@@ -11,27 +11,23 @@
             overflow: hidden !important;
         }
         .chat-body-messages {
-            background-image: url({{asset('assets/media/image/chat.jpg')}});
+            background-image: url({{ asset('assets/media/image/chat.jpg') }});
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
         }
-
         .btn.btn-outline-light {
             background-color: transparent !important;
             border: none;
             color: #fff;
         }
-
         .message-text {
             font-size: 13px !important;
             color: #fff;
         }
-
         .fa-check {
             color: #bbb !important;
         }
-
         .message-item {
             background-color: rgba(93, 74, 156, 0.58) !important;
             backdrop-filter: blur(6.9px);
@@ -45,23 +41,15 @@
         .outgoing-message {
             background-color: rgba(151, 151, 152, 0.48) !important;
             backdrop-filter: blur(6.9px);
-            .message-text{
-                color: #fff !important;
-            }
-            .message-time{
-                color: #461c70 !important;
-            }
         }
-
         .fa-check-double {
             color: #34b7f1;
         }
-
         img{
             max-width: 200px !important;
         }
         .message-content{
-            padding:0px 8px;
+            padding: 0px 8px;
         }
         .fa-check, .fa-check-double {
             font-size: 0.65rem !important;
@@ -73,9 +61,8 @@
             height: 70vh !important;
             overflow-y: auto !important;
         }
-
         .message-items {
-            min-height: min-content; /* اطمینان از رشد صحیح محتوا */
+            min-height: min-content;
         }
     </style>
 @endsection
@@ -120,8 +107,7 @@
                                         <li>
                                             @if($ticket->status == 'closed')
                                                 <a class="dropdown-item"
-                                                   href="{{ route('ticket.changeStatus', $ticket->id) }}">درحال
-                                                    بررسی</a>
+                                                   href="{{ route('ticket.changeStatus', $ticket->id) }}">درحال بررسی</a>
                                             @else
                                                 <a class="dropdown-item"
                                                    href="{{ route('ticket.changeStatus', $ticket->id) }}">بسته شده</a>
@@ -144,9 +130,9 @@
                                         @endif
                                         @includeWhen($message->file, 'panel.partials.file-message')
                                         <div class="message-meta row @if($message->file) justify-content-between m-2 @else justify-content-between @endif px-3">
-                                        <span class="message-time">
-                                            {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                                        </span>
+                                            <span class="message-time">
+                                                {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                                            </span>
                                             @if($message->read_at)
                                                 <i class="status-read fa fa-check-double"></i>
                                             @else
@@ -161,10 +147,10 @@
                                         <div class="message-text @if($message->file) p-2 @endif">{{ $message->text }}</div>
                                     @endif
                                     @includeWhen($message->file, 'panel.partials.file-message')
-                                        <div class="message-meta row @if($message->file) justify-content-center m-2 @else justify-content-between @endif px-3">
-                <span class="message-time">
-                    {{ verta($message->created_at)->format('H:i - Y/m/d') }}
-                </span>
+                                    <div class="message-meta row @if($message->file) justify-content-center m-2 @else justify-content-between @endif px-3">
+                                        <span class="message-time">
+                                            {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                                        </span>
                                     </div>
                                 </div>
                             @endif
@@ -213,7 +199,20 @@
     <script src="/vendors/lightbox/jquery.magnific-popup.min.js"></script>
     <script src="/assets/js/examples/lightbox.js"></script>
 
+    <!-- تعریف متغیر ticketId جهت استفاده در کانال وب‌سوکت -->
     <script>
+        var ticketId = "{{ $ticket->id }}";
+    </script>
+
+    <script>
+        // گوش دادن به رویداد وب‌سوکت برای دریافت پیام‌های جدید
+        Echo.channel('ticket.' + ticketId)
+            .listen('NewTicketMessage', (e) => {
+                console.log('New message received:', e);
+                $('.message-items').append(e.message_html);
+                $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
+            });
+
         $(document).ready(function () {
             // تغییر نام برچسب فایل پس از انتخاب فایل
             $('#file').on('change', function () {
@@ -230,14 +229,14 @@
                 // افزودن پیام موقت با آیکون در حال ارسال
                 var tempMessageId = 'temp-' + Date.now();
                 var tempMessage = `<div class="message-item" id="${tempMessageId}">
-        <div class="message-content">
-            <div class="message-text">${$('input[name="text"]').val()}</div>
-            <div class="message-meta row justify-content-between px-3">
-                <span class="message-time">در حال ارسال...</span>
-                <i class="fa fa-spinner fa-spin"></i>
-            </div>
-        </div>
-    </div>`;
+                        <div class="message-content">
+                            <div class="message-text">${$('input[name="text"]').val()}</div>
+                            <div class="message-meta row justify-content-between px-3">
+                                <span class="message-time">در حال ارسال...</span>
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </div>`;
                 $('.message-items').append(tempMessage);
                 $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
 
@@ -256,7 +255,6 @@
                             $(`#${tempMessageId}`).replaceWith(response.message_html);
                             setTimeout(() => {
                                 const container = $('.chat-body-messages')[0];
-                                // اسکرول به پایین با محاسبه دقیق
                                 container.scrollTop = container.scrollHeight;
                             }, 50);
                         }
@@ -269,6 +267,7 @@
                 });
             });
         });
+
         function updateReadStatus() {
             $.ajax({
                 url: "{{ route('tickets.getReadMessages', $ticket->id) }}",
@@ -277,12 +276,9 @@
                 success: function (response) {
                     if(response.read_messages && response.read_messages.length > 0) {
                         response.read_messages.forEach(function(id) {
-                            // فرض کنید در ویو به هر پیام یک id یکتا مثل message-{{ $message->id }} داده شده
                             var messageDiv = $('#message-' + id);
-                            // پیدا کردن آیکون وضعیت پیام که هنوز به صورت تک تیک (fa-check) هست
                             var icon = messageDiv.find('.status-sent');
                             if(icon.length) {
-                                // تغییر آیکون به دو تیک (fa-check-double) و کلاس status-read
                                 icon.removeClass('fa-check').addClass('fa-check-double status-read');
                             }
                         });
@@ -293,8 +289,8 @@
                 }
             });
         }
+
         function fetchNewMessages() {
-            // گرفتن آخرین پیام نمایش داده شده
             var lastMessage = $('.message-item').last();
             var lastId = lastMessage.attr('id') ? lastMessage.attr('id').replace('message-', '') : 0;
             $.ajax({
@@ -307,7 +303,7 @@
                         var newMessages = $(response.new_messages);
                         newMessages.each(function() {
                             var messageId = $(this).attr('id');
-                            if (!$('#' + messageId).length) { // اگر پیام با این id وجود نداشته باشد
+                            if (!$('#' + messageId).length) {
                                 $('.message-items').append($(this));
                             }
                         });
@@ -321,7 +317,7 @@
             });
         }
 
-        // هر ۵ ثانیه یک بار اجرا شود
+        // اجرای fetchNewMessages هر ۵ ثانیه
         setInterval(fetchNewMessages, 5000);
     </script>
 @endsection
