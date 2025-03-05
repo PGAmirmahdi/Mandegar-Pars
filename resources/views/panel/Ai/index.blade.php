@@ -23,7 +23,7 @@
                     @foreach($messages as $conversation)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $conversation->user->name }}</td>
+                            <td>{{ $conversation->user->fullName() }}</td>
                             <td>{{ $conversation->updated_at ? verta($conversation->updated_at)->format('H:i - Y/m/d') : '' }}</td>
                             <td>
                                 <span class="badge badge-primary">بسته شده</span>
@@ -42,6 +42,7 @@
                         <th>#</th>
                         <th>نام کاربر</th>
                         <th>آخرین پیام</th>
+                        <th>وضعیت</th>
                         <th>مشاهده چت</th>
                     </tr>
                     </tfoot>
