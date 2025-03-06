@@ -91,8 +91,9 @@
             @endcan
         </ul>
         <ul>
-            <li data-toggle="tooltip" title="نسخه های برنامه">
-                <a href="{{ route('app.versions') }}" class="go-to-page">
+            <li class="{{ active_sidebar(['app-versions']) ? 'active' : '' }}" data-toggle="tooltip"
+                title="نسخه های برنامه">
+                <a href="#navigationVersion" title="نسخه های برنامه">
                     <i class="fa fa-code icon"></i>
                 </a>
             </li>
@@ -612,6 +613,13 @@
                         ربات</a>
                 </li>
             @endcan
+        </ul>
+        <ul id="navigationVersion"
+            class="{{ active_sidebar(['app-versions']) ? 'navigation-active' : '' }}">
+            <li class="navigation-divider">نسخه های برنامه</li>
+            <li>
+                <a class="{{ active_sidebar(['app-versions']) ? 'active' : '' }}" href="{{route('app.versions') }}">نسخه های برنامه</a>
+            </li>
         </ul>
     </div>
 </div>
