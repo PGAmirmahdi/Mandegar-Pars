@@ -423,5 +423,41 @@ class ProductController extends Controller
             ]);
         }
     }
+    public function bulkAccept(Request $request)
+    {
+        $this->authorize('products-edit');
+
+        // دریافت محصولات انتخاب شده
+        $selectedProducts = $request->input('selected_products');
+
+        if(empty($selectedProducts)) {
+            return redirect()->back()->with('error', 'هیچ کالایی انتخاب نشده است.');
+        }
+
+        Product::whereIn('id', $selectedProducts)->update(['status' => 'approved']);
+
+        // در صورت نیاز، می‌توانید به ازای هر محصول، نوتیفیکیشن و لاگ فعالیت ثبت کنید:
+        foreach ($selectedProducts as $productId) {
+            $product = Product::find($productId);
+            if ($product) {
+                // ارسال نوتیفیکیشن (در صورت نیاز)
+                $title = 'تایید درخواست ثبت کالا';
+                $message = "درخواست ثبت کالای شما به عنوان {$product->title} تایید شد.";
+                $url = route('products.index');
+                Notification::send($product->creator, new SendMessage($title, $message, $url));
+
+                // ثبت فعالیت
+                Activity::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'تایید دسته‌ای کالا',
+                    'description' => 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') کالا ' . $product->title . ' را تایید کرد.',
+                    'created_at' => now(),
+                ]);
+            }
+        }
+
+        alert()->success('کالاهای انتخاب شده با موفقیت تایید شدند', 'عملیات موفق');
+        return redirect()->route('products.request');
+    }
 
 }

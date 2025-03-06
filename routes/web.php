@@ -195,6 +195,7 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('excel/products', [ProductController::class, 'excel'])->name('products.excel');
     Route::post('/get-models-by-category', [ProductController::class, 'getModelsByCategory'])->name('get.models.by.category');
     Route::post('/products/check-duplicate', [ProductController::class, 'checkDuplicate'])->name('products.check_duplicate');
+    Route::post('products/bulk-accept', [ProductController::class, 'bulkAccept'])->name('products.bulkAccept');
 
     // Customer Order
     Route::resource('/orders', OrderController::class);

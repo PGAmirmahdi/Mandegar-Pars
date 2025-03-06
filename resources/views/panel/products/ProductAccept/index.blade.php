@@ -104,81 +104,97 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-striped table-bordered dataTable dtr-inline text-center">
-                    <thead>
-                    <tr>
-                        <th>ردیف</th>
-                        <th>کد کالا</th>
-                        <th>ثبت کننده</th>
-                        <th>شرح کالا</th>
-                        <th>برند</th>
-                        <th>مدل</th>
-                        <th>وضعیت</th>
-                        @canany(['admin','accountant'])
-                            <th>موجودی</th>
-                        @endcanany
-                        @can('admin')
-                            <th>تاریخ ایجاد</th>
-                        @endcan
-                        @can('products-edit')
-                            <th>ویرایش</th>
-                        @endcan
-                        @can('products-delete')
-                            <th>حذف</th>
-                        @endcan
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($products as $key => $product)
-                        <tr @if($product->latestInventory() < 10 ) @canany(['admin','accountant']) class="table-warning" @endcanany @endif>
-                            <td>{{ ++$key }}</td>
-                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->code }}</td>
-                            <td>{{ $product->creator->family }}</td>
-                            <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
-                            <td>{{ $product->productModels->slug ?? 'برند نامشخص' }}</td>
-                            <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
-                            <td>
-                                @if($product->status == 'approved')
-                                    <span class="badge badge-success">تایید شده</span>
-                                @elseif($product->status == 'pending')
-                                    <span class="badge badge-warning">منتظر تایید</span>
-                                @elseif($product->status == 'rejected')
-                                    <span class="badge badge-danger">رد شده</span>
-                                @else
-                                    <span class="badge badge-info">نامشخص</span>
+                @if(in_array(auth()->user()->role->name , ['admin','office-manager','ceo']))
+                    <form action="{{ route('products.bulkAccept') }}" method="POST">
+                        @endif
+                        @csrf
+                        @if(in_array(auth()->user()->role->name , ['admin','office-manager','ceo']))
+                            <div class="d-flex justify-content-start my-2">
+                                <button type="submit" class="btn btn-success">
+                                    تایید انتخاب شده‌ها
+                                </button>
+                            </div>
+                        @endif
+                        <table class="table table-striped table-bordered text-center">
+                            <thead>
+                            <tr>
+                                @if(in_array(auth()->user()->role->name , ['admin','office-manager','ceo']))
+                                <th>انتخاب</th>
                                 @endif
-                            </td>
-                            @canany(['admin','accountant'])
-                                <td>{{ $product->latestInventory() }}</td>
-                            @endcanany
-                            @can('admin')
-                                <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
-                            @endcan
-                            @can('products-edit')
-                                <td>
-                                    <a class="btn btn-warning btn-floating"
-                                       href="{{ route('products.edit', $product->id) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                </td>
-                            @endcan
-                            @can('products-delete')
-                                <td>
-                                    <button class="btn btn-danger btn-floating trashRow"
-                                            data-url="{{ route('products.destroy',$product->id) }}"
-                                            data-id="{{ $product->id }}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            @endcan
-                        </tr>
-                    @endforeach
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                    </tr>
-                    </tfoot>
-                </table>
+                                <th>ردیف</th>
+                                <th>کد کالا</th>
+                                <th>ثبت کننده</th>
+                                <th>شرح کالا</th>
+                                <th>برند</th>
+                                <th>مدل</th>
+                                <th>وضعیت</th>
+                                @canany(['admin','accountant'])
+                                    <th>موجودی</th>
+                                @endcanany
+                                @can('admin')
+                                    <th>تاریخ ایجاد</th>
+                                @endcan
+                                @can('products-edit')
+                                    <th>ویرایش</th>
+                                @endcan
+                                @can('products-delete')
+                                    <th>حذف</th>
+                                @endcan
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($products as $key => $product)
+                                <tr @if($product->latestInventory() < 10) @canany(['admin','accountant']) class="table-warning" @endcanany @endif>
+                                    @if(in_array(auth()->user()->role->name , ['admin','office-manager','ceo']))
+                                    <td>
+                                        <input type="checkbox" name="selected_products[]" value="{{ $product->id }}">
+                                    </td>
+                                    @endif
+                                    <td>{{ ++$key }}</td>
+                                    <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->code }}</td>
+                                    <td>{{ $product->creator->family }}</td>
+                                    <td>{{ $product->category->name ?? 'شرح نامشخص' }}</td>
+                                    <td>{{ $product->productModels->slug ?? 'برند نامشخص' }}</td>
+                                    <td style="font-family: 'Segoe UI Semibold';font-weight: bold">{{ $product->title }}</td>
+                                    <td>
+                                        @if($product->status == 'approved')
+                                            <span class="badge badge-success">تایید شده</span>
+                                        @elseif($product->status == 'pending')
+                                            <span class="badge badge-warning">منتظر تایید</span>
+                                        @elseif($product->status == 'rejected')
+                                            <span class="badge badge-danger">رد شده</span>
+                                        @else
+                                            <span class="badge badge-info">نامشخص</span>
+                                        @endif
+                                    </td>
+                                    @canany(['admin','accountant'])
+                                        <td>{{ $product->latestInventory() }}</td>
+                                    @endcanany
+                                    @can('admin')
+                                        <td>{{ verta($product->created_at)->format('H:i - Y/m/d') }}</td>
+                                    @endcan
+                                    @can('products-edit')
+                                        <td>
+                                            <a class="btn btn-warning btn-floating"
+                                               href="{{ route('products.edit', $product->id) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    @endcan
+                                    @can('products-delete')
+                                        <td>
+                                            <button class="btn btn-danger btn-floating trashRow"
+                                                    data-url="{{ route('products.destroy',$product->id) }}"
+                                                    data-id="{{ $product->id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    @endcan
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </form>
             </div>
             <div class="d-flex justify-content-center">{{ $products->appends(request()->all())->links() }}</div>
         </div>
