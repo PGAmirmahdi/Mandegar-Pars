@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Ticket;
 use Illuminate\Support\Facades\Broadcast;
 
 /*

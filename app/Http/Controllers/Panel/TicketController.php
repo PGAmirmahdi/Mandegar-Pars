@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Events\NewMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
 use App\Models\Activity;
@@ -160,7 +161,8 @@ class TicketController extends Controller
             'text' => $request->text,
             'file' => isset($file) ? json_encode($file_info) : null,
         ]);
-
+        // انتشار رویداد برای پیام جدید (به جز فرستنده خود)
+        broadcast(new NewMessageEvent($message))->toOthers();
         // ذخیره فعالیت
         $activityData = [
             'user_id' => auth()->id(),
