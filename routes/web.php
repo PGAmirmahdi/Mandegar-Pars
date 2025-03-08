@@ -353,10 +353,10 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Tickets
     Route::resource('tickets', TicketController::class)->except('show');
     Route::get('change-status-ticket/{ticket}', [TicketController::class, 'changeStatus'])->name('ticket.changeStatus');
-    Route::get('/tickets/{ticket}/new-messages', [TicketController::class, 'getNewMessages'])
-        ->name('tickets.getNewMessages');
+//    Route::get('/tickets/{ticket}/new-messages', [TicketController::class, 'getNewMessages'])
+//        ->name('tickets.getNewMessages');
     Route::get('tickets/{ticket}/getReadMessages', [TicketController::class, 'getReadMessages'])->name('tickets.getReadMessages');
-
+    Route::post('/typing', [TicketController::class, 'typing'])->name('chat.typing');
     //    Global Ticket
 
     Route::resource('global-tickets', \App\Http\Controllers\Panel\GlobalTicketController::class)->except('show','update','destroy');

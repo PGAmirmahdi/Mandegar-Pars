@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Events\MessageReadEvent;
 use App\Events\NewMessageEvent;
+use App\Events\TypingEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
 use App\Models\Activity;
@@ -98,18 +100,6 @@ class TicketController extends Controller
         return redirect()->route('tickets.edit', $ticket->id);
     }
 
-    // دریافت تیک مشاهده پیام
-    public function getReadMessages(Ticket $ticket)
-    {
-        $readMessages = $ticket->messages()
-            ->where('user_id', auth()->id())
-            ->whereNotNull('read_at')
-            ->get();
-
-        $ids = $readMessages->pluck('id');
-        return response()->json(['read_messages' => $ids]);
-    }
-
 
     public function show(Ticket $ticket)
     {
@@ -121,9 +111,23 @@ class TicketController extends Controller
     {
         $this->authorize('tickets-create');
 
-        $ticket->messages()->whereNull('read_at')->where('user_id','!=',auth()->id())->update(['read_at' => now()]);
+        $updated = $ticket->messages()
+            ->whereNull('read_at')
+            ->where('user_id','!=',auth()->id())
+            ->update(['read_at' => now()]);
+
+        $readMessages = $ticket->messages()
+            ->where('user_id', '!=', auth()->id())
+            ->whereNotNull('read_at')
+            ->pluck('id')
+            ->toArray();
+        if ($updated && !empty($readMessages)) {
+            event(new MessageReadEvent($ticket->id, $readMessages));
+        }
+
         return view('panel.tickets.inner-tickets.edit', compact('ticket'));
     }
+
 //  گفت و گو
     public function update(Request $request, Ticket $ticket)
     {
@@ -131,7 +135,19 @@ class TicketController extends Controller
 
         // به‌روزرسانی وضعیت تیکت
         $ticket->update(['status' => 'pending', 'updated_at' => now()]);
+        $updated = $ticket->messages()
+            ->whereNull('read_at')
+            ->where('user_id','!=',auth()->id())
+            ->update(['read_at' => now()]);
 
+        $readMessages = $ticket->messages()
+            ->where('user_id', '!=', auth()->id())
+            ->whereNotNull('read_at')
+            ->pluck('id')
+            ->toArray();
+        if ($updated && !empty($readMessages)) {
+            event(new MessageReadEvent($ticket->id, $readMessages));
+        }
         // ارسال نوتیفیکیشن به طرف مقابل (در صورت نیاز)
         $first_message = $ticket->messages()->orderBy('created_at', 'desc')->first();
         if ($first_message !== null && $first_message->user_id != auth()->id()) {
@@ -178,37 +194,42 @@ class TicketController extends Controller
         return back();
     }
 //    دریافت پیام ها
-    public function getNewMessages(Ticket $ticket)
+//    public function getNewMessages(Ticket $ticket)
+//    {
+//        $lastMessageTime = session('last_message_time', now());
+//
+//        // فقط پیام‌هایی که از طرف سایر کاربران ارسال شده‌اند دریافت می‌شود
+//        $newMessages = $ticket->messages()
+//            ->where('user_id', '!=', auth()->id())
+//            ->where('created_at', '>', $lastMessageTime)
+//            ->get();
+//
+//        // به‌روزرسانی وضعیت خوانده شدن برای پیام‌های دریافتی
+//        $ticket->messages()
+//            ->whereIn('id', $newMessages->pluck('id'))
+//            ->where('user_id', '!=', auth()->id())
+//            ->whereNull('read_at')
+//            ->update(['read_at' => now()]);
+//
+//        session(['last_message_time' => now()]);
+//
+//        if ($newMessages->isEmpty()) {
+//            return response()->json(['new_messages' => '']);
+//        }
+//
+//        $messagesHtml = '';
+//        foreach ($newMessages as $message) {
+//            $messagesHtml .= view('panel.tickets.inner-tickets.single-message', compact('message'))->render();
+//        }
+//
+//        return response()->json(['new_messages' => $messagesHtml]);
+//    }
+    public function typing(Request $request)
     {
-        $lastMessageTime = session('last_message_time', now());
-
-        // فقط پیام‌هایی که از طرف سایر کاربران ارسال شده‌اند دریافت می‌شود
-        $newMessages = $ticket->messages()
-            ->where('user_id', '!=', auth()->id())
-            ->where('created_at', '>', $lastMessageTime)
-            ->get();
-
-        // به‌روزرسانی وضعیت خوانده شدن برای پیام‌های دریافتی
-        $ticket->messages()
-            ->whereIn('id', $newMessages->pluck('id'))
-            ->where('user_id', '!=', auth()->id())
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
-
-        session(['last_message_time' => now()]);
-
-        if ($newMessages->isEmpty()) {
-            return response()->json(['new_messages' => '']);
-        }
-
-        $messagesHtml = '';
-        foreach ($newMessages as $message) {
-            $messagesHtml .= view('panel.tickets.inner-tickets.single-message', compact('message'))->render();
-        }
-
-        return response()->json(['new_messages' => $messagesHtml]);
+        // dispatch event with ticket_id and current user id
+        event(new TypingEvent($request->ticket_id, auth()->id()));
+        return response()->json(['status' => 'ok']);
     }
-
     public function destroy(Ticket $ticket)
     {
         $this->authorize('tickets-delete');

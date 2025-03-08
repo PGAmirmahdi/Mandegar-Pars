@@ -36,8 +36,10 @@
 
         .message-item {
             background-color: rgba(93, 74, 156, 0.58) !important;
+            box-shadow: 2px 2px 2px 0px #494949;
             backdrop-filter: blur(6.9px);
             border-radius: 5px !important;
+            padding: 0px !important;
         }
 
         .message-time {
@@ -46,15 +48,22 @@
             margin-left: 30px;
         }
 
+        .No2 {
+            box-shadow: -2px 2px 2px 0px #494949 !important;
+        }
+
         .outgoing-message {
             background-color: rgba(151, 151, 152, 0.48) !important;
             backdrop-filter: blur(6.9px);
+            min-width: 200px !important;
+            padding: 2px 8px !important;
 
             .message-text {
                 color: #fff !important;
             }
 
             .message-time {
+                margin: 0px;
                 color: #461c70 !important;
             }
         }
@@ -68,7 +77,8 @@
         }
 
         .message-content {
-            padding: 0px 8px;
+            padding: 2px 8px;
+            min-width: 200px;
         }
 
         .fa-check, .fa-check-double {
@@ -86,6 +96,13 @@
 
         .message-items {
             min-height: min-content; /* اطمینان از رشد صحیح محتوا */
+        }
+
+        .message-meta {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-between !important;
         }
     </style>
 @endsection
@@ -111,6 +128,10 @@
                                 {{ $ticket->sender->fullName() }}
                             @endif
                         </h6>
+                        <div id="typing-indicator" style="display:none; margin: 10px; color: #fff;font-size: 10px"
+                             class="text-dark">
+                            <em>در حال تایپ...</em>
+                        </div>
                     </div>
                     <div class="ml-auto d-flex">
                         <div class="mr-4">
@@ -169,7 +190,7 @@
                                 </div>
                             @else
                                 <div id="message-{{ $message->id }}"
-                                     class="message-item outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
+                                     class="message-item No2 outgoing-message {{ $message->file ? 'message-item-media' : '' }}">
                                     @if($message->text)
                                         <div
                                             class="message-text @if($message->file) p-2 @endif">{{ $message->text }}</div>
@@ -229,8 +250,85 @@
     <script src="/assets/js/examples/lightbox.js"></script>
 
     <script>
+        {{--function updateReadStatus() {--}}
+        {{--    $.ajax({--}}
+        {{--        url: "{{ route('tickets.getReadMessages', $ticket->id) }}",--}}
+        {{--        type: "GET",--}}
+        {{--        dataType: "json",--}}
+        {{--        success: function (response) {--}}
+        {{--            if (response.read_messages && response.read_messages.length > 0) {--}}
+        {{--                response.read_messages.forEach(function (id) {--}}
+        {{--                    // فرض کنید در ویو به هر پیام یک id یکتا مثل message-{{ $message->id }} داده شده--}}
+        {{--                    var messageDiv = $('#message-' + id);--}}
+        {{--                    // پیدا کردن آیکون وضعیت پیام که هنوز به صورت تک تیک (fa-check) هست--}}
+        {{--                    var icon = messageDiv.find('.status-sent');--}}
+        {{--                    if (icon.length) {--}}
+        {{--                        // تغییر آیکون به دو تیک (fa-check-double) و کلاس status-read--}}
+        {{--                        icon.removeClass('fa-check').addClass('fa-check-double status-read');--}}
+        {{--                    }--}}
+        {{--                });--}}
+        {{--            }--}}
+        {{--        },--}}
+        {{--        error: function () {--}}
+        {{--            console.log('خطا در بروزرسانی وضعیت خوانده شدن پیام‌ها');--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--}--}}
+
         var currentUserId = {{ auth()->id() }};
         var ticketId = {{ $ticket->id }};
+        let typingTimer;
+        const typingDelay = 1000; // ۱ ثانیه تا تایپ قطع شود
+        let isTyping = false;
+
+        $('input[name="text"]').on('input', function () {
+            // اگر کاربر تازه شروع به تایپ کرده و هنوز isTyping false است
+            if (!isTyping) {
+                isTyping = true;
+                // ارسال رویداد تایپ به سرور (broadcast) فقط یکبار در ابتدای تایپ
+                $.ajax({
+                    url: "{{ route('chat.typing') }}",
+                    type: "POST",
+                    data: {ticket_id: ticketId},
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            }
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function () {
+                // پس از ۱ ثانیه بدون تایپ، وضعیت تایپ را به false برگردانیم
+                isTyping = false;
+            }, typingDelay);
+        });
+        window.Echo.channel('ticket.' + ticketId)
+            .listen('.MessageReadEvent', (event) => {
+                if (event.read_messages && event.read_messages.length > 0) {
+                    event.read_messages.forEach(function (id) {
+                        // انتخاب المان پیام با آیدی مشخص
+                        var messageDiv = $('#message-' + id);
+                        // تغییر آیکون از تک تیک به دو تیک
+                        var icon = messageDiv.find('.status-sent');
+                        if (icon.length) {
+                            icon.removeClass('fa-check').addClass('fa-check-double status-read');
+                        }
+                    });
+                }
+            });
+
+        window.Echo.channel('ticket.' + ticketId)
+            .listen('.TypingEvent', (event) => {
+                if (event.user_id != currentUserId) {
+                    // نمایش indicator برای تایپ
+                    $('#typing-indicator').fadeIn();
+                    // استفاده از تایمر برای مخفی کردن indicator بعد از چند ثانیه
+                    clearTimeout(window.typingTimeout);
+                    window.typingTimeout = setTimeout(() => {
+                        $('#typing-indicator').fadeOut();
+                    }, 3000);
+                }
+            });
+
         window.Echo.channel('ticket.' + ticketId)
             .listen('.NewMessageEvent', (event) => {
                 var message = event.message;
@@ -238,14 +336,14 @@
                 var formattedDate = event.formatted_date;
                 if (message.user_id == currentUserId) {
                     // پیام ارسال شده توسط من
-                    messageHtml += `<div id="message-${message.id}" class="message-item ${ message.file ? 'message-item-media' : '' }">`;
+                    messageHtml += `<div id="message-${message.id}" class="message-item ${message.file ? 'message-item-media' : ''}">`;
                     messageHtml += '<div class="message-content">';
-                    if(message.text) {
+                    if (message.text) {
                         messageHtml += `<div class="message-text">${message.text}</div>`;
                     }
                     messageHtml += `<div class="message-meta">
                                     <span class="message-time">${formattedDate}</span>`;
-                    if(message.read_at) {
+                    if (message.read_at) {
                         messageHtml += `<i class="status-read fa fa-check-double"></i>`;
                     } else {
                         messageHtml += `<i class="status-sent fa fa-check"></i>`;
@@ -254,19 +352,18 @@
                                 </div>
                             </div>`;
                 } else {
-                    messageHtml += `<div id="message-${message.id}" class="message-item outgoing-message ${ message.file ? 'message-item-media' : '' }">`;
-                    if(message.text) {
-                        messageHtml += `<div class="message-text ${ message.file ? 'p-2' : '' }">${message.text}</div>`;
+                    messageHtml += `<div id="message-${message.id}" class="message-item outgoing-message ${message.file ? 'message-item-media' : ''}">`;
+                    if (message.text) {
+                        messageHtml += `<div class="message-text ${message.file ? 'p-2' : ''}">${message.text}</div>`;
                     }
-                    messageHtml += `<div class="message-meta row ${ message.file ? 'justify-content-center m-2' : 'justify-content-between' } px-2">
+                    messageHtml += `<div class="message-meta row ${message.file ? 'justify-content-center m-2' : 'justify-content-between'} px-2">
                                     <span class="message-time">${formattedDate}</span>
                                 </div>
                             </div>`;
                 }
-
                 // افزودن پیام جدید به صفحه چت
                 $('.message-items').append(messageHtml);
-                $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight }, 500);
+                $('.chat-body-messages').animate({scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
             });
         $(document).ready(function () {
             // تغییر نام برچسب فایل پس از انتخاب فایل
@@ -323,31 +420,6 @@
                 });
             });
         });
-
-        function updateReadStatus() {
-            $.ajax({
-                url: "{{ route('tickets.getReadMessages', $ticket->id) }}",
-                type: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (response.read_messages && response.read_messages.length > 0) {
-                        response.read_messages.forEach(function (id) {
-                            // فرض کنید در ویو به هر پیام یک id یکتا مثل message-{{ $message->id }} داده شده
-                            var messageDiv = $('#message-' + id);
-                            // پیدا کردن آیکون وضعیت پیام که هنوز به صورت تک تیک (fa-check) هست
-                            var icon = messageDiv.find('.status-sent');
-                            if (icon.length) {
-                                // تغییر آیکون به دو تیک (fa-check-double) و کلاس status-read
-                                icon.removeClass('fa-check').addClass('fa-check-double status-read');
-                            }
-                        });
-                    }
-                },
-                error: function () {
-                    console.log('خطا در بروزرسانی وضعیت خوانده شدن پیام‌ها');
-                }
-            });
-        }
         {{--function fetchNewMessages() {--}}
         {{--    // گرفتن آخرین پیام نمایش داده شده--}}
         {{--    var lastMessage = $('.message-item').last();--}}
