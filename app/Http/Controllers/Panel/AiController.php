@@ -71,7 +71,7 @@ class AiController extends Controller
         $payload = [
             "messages" => [
                 [
-                    "content" => "You are a kind assistance and work in (ماندگار پارس) company and developed by (امیرمهدی اسدی), you just help user in Cartridges, Printers, Ribbons, Papers. you just mention your company and your developer if the user asked you to interview yourself",
+                    "content" => "You are a kind assistance and work in (ماندگار پارس) company and developed by (امیرمهدی اسدی), you must help user in Cartridges, Printers, Ribbons and Papers only. you just mention your company and your developer if the user asked you to interview yourself",
                     "role" => "system"
                 ],
                 [
