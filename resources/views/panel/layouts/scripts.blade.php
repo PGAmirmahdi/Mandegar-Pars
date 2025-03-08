@@ -292,14 +292,6 @@
                                         </div>`)
             audio.play();
         });
-    Echo.private('ticket.' + ticketId)
-        .listen('NewMessageEvent', (e) => {
-            // در صورتی که پیام قبلاً اضافه نشده باشد، آن را به لیست پیام‌ها اضافه می‌کنیم
-            if (!$('#message-' + e.message.id).length) {
-                $('.chat-body-messages .message-items').append(e.message.html);
-                $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight }, 500);
-            }
-        });
     // window.Echo.channel(`my-test`)
     //     .listen('.test.event', (e) => {
     //         console.log(e)

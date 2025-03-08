@@ -254,6 +254,19 @@
             });
         });
 
+        // حذف تابع fetchNewMessages و setInterval مربوط به polling
+
+        // اشتراک در کانال خصوصی مربوط به تیکت جهت دریافت پیام‌های جدید به‌صورت real‑time
+        window.Echo.private('ticket.{{ $ticket->id }}')
+            .listen('NewMessageEvent', (e) => {
+                // انتظار می‌رود که e.message.html شامل محتوای رندر شده پیام باشد
+                if (!$('#message-' + e.message.id).length) { // اگر پیام با این id وجود ندارد
+                    $('.message-items').append(e.message.html);
+                    updateReadStatus();
+                    $('.chat-body-messages').animate({ scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
+                }
+            });
+
         // تابع بروزرسانی وضعیت خوانده شدن پیام‌ها (در صورت نیاز)
         function updateReadStatus() {
             $.ajax({
