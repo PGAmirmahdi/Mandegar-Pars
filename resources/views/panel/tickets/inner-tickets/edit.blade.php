@@ -36,7 +36,7 @@
 
         .message-item {
             background-color: rgba(93, 74, 156, 0.58) !important;
-            box-shadow: 2px 2px 2px 0px #494949;
+            box-shadow: 1px 1px 1px 0px #494949;
             backdrop-filter: blur(6.9px);
             border-radius: 5px !important;
             padding: 0px !important;
@@ -49,7 +49,7 @@
         }
 
         .No2 {
-            box-shadow: -2px 2px 2px 0px #494949 !important;
+            box-shadow: -1px 1px 1px 0px #494949 !important;
         }
 
         .outgoing-message {
