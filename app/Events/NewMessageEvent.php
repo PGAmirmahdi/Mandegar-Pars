@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,58 +10,56 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewMessageEvent
+class NewMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $message;
 
     /**
-     * ایجاد نمونه جدید از رویداد.
+     * ایجاد ایونت جدید برای پیام
      *
-     * @param Message $message
+     * @param  \App\Models\Message  $message
+     * @return void
      */
-    public function __construct(Message $message)
+    public function __construct($message)
     {
-        $this->message = $message;
+        $this->message =$message;
+
     }
 
     /**
-     * کانال‌هایی که رویداد در آن‌ها پخش می‌شود.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * داده‌هایی که هنگام broadcast ارسال می‌شوند
+     */
+    public function broadcastWith()
+    {
+        $formattedDate = verta($this->message->created_at)->format('H:i - Y/m/d');
+        $message_html = view('panel.tickets.inner-tickets.single-message', [
+            'message' => $this->message
+        ])->render();
+
+        return [
+            'message_html'    => $message_html,
+            'message'         => $this->message,
+            'formatted_date'  => $formattedDate,
+        ];
+    }
+
+
+
+    /**
+     * تعیین کانال انتشار بر اساس ticket_id پیام
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('ticket.' . $this->message->ticket_id);
+        return new Channel('ticket.' . $this->message->ticket_id);
     }
 
     /**
-     * نام رویداد broadcast شده که در سمت کلاینت گوش داده می‌شود.
-     *
-     * @return string
+     * (اختیاری) نام سفارشی ایونت برای سمت کلاینت
      */
     public function broadcastAs()
     {
         return 'NewMessageEvent';
-    }
-
-    /**
-     * داده‌های ارسال شده همراه رویداد.
-     *
-     * @return array
-     */
-    public function broadcastWith()
-    {
-        // به عنوان نمونه، HTML رندر شده پیام را ارسال می‌کنیم.
-        // توجه داشته باشید که برای این کار باید view مربوط به پیام (panel.partials.message) را ایجاد کنید.
-        $html = view('panel.tickets.inner-tickets.single-message', ['message' => $this->message])->render();
-
-        return [
-            'message' => [
-                'id'   => $this->message->id,
-                'html' => $html,
-            ],
-        ];
     }
 }

@@ -122,7 +122,6 @@ class TicketController extends Controller
         $this->authorize('tickets-create');
 
         $ticket->messages()->whereNull('read_at')->where('user_id','!=',auth()->id())->update(['read_at' => now()]);
-
         return view('panel.tickets.inner-tickets.edit', compact('ticket'));
     }
 //  گفت و گو
@@ -130,18 +129,18 @@ class TicketController extends Controller
     {
         $this->authorize('tickets-create');
 
+        // به‌روزرسانی وضعیت تیکت
         $ticket->update(['status' => 'pending', 'updated_at' => now()]);
 
-        // جلوگیری از ارسال نوتیفیکیشن متوالی
+        // ارسال نوتیفیکیشن به طرف مقابل (در صورت نیاز)
         $first_message = $ticket->messages()->orderBy('created_at', 'desc')->first();
-        if ($first_message != null && $first_message->user_id != auth()->id()){
+        if ($first_message !== null && $first_message->user_id != auth()->id()) {
             $title = 'تیکت';
             $messageNotification = 'پاسخی برای تیکت "' . $ticket->title . '" ثبت شده است';
             $url = route('tickets.edit', $ticket->id);
             $receiver = auth()->id() == $ticket->sender_id ? $ticket->receiver : $ticket->sender;
             Notification::send($receiver, new SendMessage($title, $messageNotification, $url));
         }
-        // پایان ارسال نوتیفیکیشن
 
         // پردازش فایل در صورت وجود
         if ($request->hasFile('file')) {
@@ -150,31 +149,31 @@ class TicketController extends Controller
                 'type' => $request->file('file')->getClientOriginalExtension(),
                 'size' => $request->file('file')->getSize(),
             ];
-
             $file = upload_file($request->file, 'Messages');
             $file_info['path'] = $file;
         }
-
         // ایجاد پیام جدید
         $message = $ticket->messages()->create([
             'user_id' => auth()->id(),
-            'text' => $request->text,
-            'file' => isset($file) ? json_encode($file_info) : null,
+            'text'    => $request->text,
+            'file'    => isset($file) ? json_encode($file_info) : null,
         ]);
-        // انتشار رویداد برای پیام جدید (به جز فرستنده خود)
+
+        // انتشار رویداد پیام جدید به سایر کاربران (با استفاده از وب‌سوکت)
         broadcast(new NewMessageEvent($message))->toOthers();
-        // ذخیره فعالیت
+
+        // ذخیره فعالیت کاربر
         $activityData = [
-            'user_id' => auth()->id(),
+            'user_id'     => auth()->id(),
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') پاسخی به تیکت "' . $ticket->title . '" ارسال کرد',
-            'action' => 'پاسخ به تیکت',
-            'created_at' => now(),
+            'action'      => 'پاسخ به تیکت',
+            'created_at'  => now(),
         ];
         Activity::create($activityData);
-
         if ($request->expectsJson()) {
+            $receiverId = auth()->id();
             $message_html = view('panel.tickets.inner-tickets.single-message', compact('message'))->render();
-            return response()->json(['message_html' => $message_html]);
+            return response()->json(['message_html' => $message_html, 'receiverId' => $receiverId]);
         }
         return back();
     }

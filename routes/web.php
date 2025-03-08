@@ -92,6 +92,9 @@ Route::get('/', function () {
     }
     return view('auth.login');
 });
+Route::get('/ws', function (){
+    return view('websockets');
+});
 Route::get('notif', function () {
 //    dd(\auth()->id());
     $title = 'ثبت کالا';
