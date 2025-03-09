@@ -15,10 +15,15 @@ class ArtinController extends Controller
     {
         $this->authorize('artin-products-list');
 
-        $products = Http::get('https://artintoner.com/wp-json/custom-api/v1/products')->object()->products;
+        $response = Http::withHeaders([
+            'x-api-key' => env('ARTIN_API_KEY'),
+        ])->get('https://artintoner.com/wp-json/custom-api/v1/products');
+
+        $products = $response->object()->products;
 
         return view('panel.artin.products', compact('products'));
     }
+
 
     public function updatePrice(Request $request)
     {
@@ -29,9 +34,13 @@ class ArtinController extends Controller
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://artintoner.com/wp-json/custom-api/v1/update-price');
-        curl_setopt($ch,CURLOPT_POST, true);
-        curl_setopt($ch,CURLOPT_POSTFIELDS, "product_id=$product_id&price=$price");
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "product_id=$product_id&price=$price");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'x-api-key:' . env('ARTIN_API_KEY'),
+            'Content-Type: application/x-www-form-urlencoded'
+        ]);
 
         $result = curl_exec($ch);
 
@@ -41,8 +50,6 @@ class ArtinController extends Controller
 
         curl_close($ch);
 
-//        dd($result);
-
         // ثبت فعالیت کاربر
         Activity::create([
             'user_id' => auth()->id(),
@@ -51,8 +58,12 @@ class ArtinController extends Controller
         ]);
 
         $price_text = number_format($price) . ' تومان';
-        return response()->json(['success' => 'قیمت محصول با موفقیت به‌روزرسانی شد.', 'price' => $price, 'price_text' => $price_text, 'product_id' => $product_id]);
-
+        return response()->json([
+            'success' => 'قیمت محصول با موفقیت به‌روزرسانی شد.',
+            'price' => $price,
+            'price_text' => $price_text,
+            'product_id' => $product_id
+        ]);
     }
     public function site()
     {
