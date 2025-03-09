@@ -71,7 +71,7 @@ class ArtinController extends Controller
 
         // ارسال درخواست GET به API وردپرس
         $response = Http::get($wpApiUrl);
-        $products = Http::get('https://artintoner.com/wp-json/custom-api/v1/products')->object()->products;
+        $products = Http::withHeaders([ 'x-api-key' => env('ARTIN_API_KEY')])->get('https://artintoner.com/wp-json/custom-api/v1/products')->object()->products;
         if ($response->successful()) {
             $data = $response->json();
             // انتقال داده‌ها به view به نام wp-stats
