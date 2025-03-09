@@ -357,8 +357,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 //        ->name('tickets.getNewMessages');
     Route::get('tickets/{ticket}/getReadMessages', [TicketController::class, 'getReadMessages'])->name('tickets.getReadMessages');
     Route::post('/typing', [TicketController::class, 'typing'])->name('chat.typing');
-    //    Global Ticket
 
+    //    Global Ticket
     Route::resource('global-tickets', \App\Http\Controllers\Panel\GlobalTicketController::class)->except('show','update','destroy');
     Route::get('change-status-global-ticket/{global-ticket}', [\App\Http\Controllers\Panel\GlobalTicketController::class, 'changeStatus'])->name('global-tickets.changeStatus');
 

@@ -5,18 +5,24 @@
     <link rel="stylesheet" href="/vendors/lightbox/magnific-popup.css" type="text/css">
     <style>
         .fa-check-double, .fa-check {
-            color: green !important;
+            color: #00ff00 !important;
         }
 
         body {
             overflow: hidden !important;
         }
-
+        .main-content{
+            padding: 10px !important;
+        }
+        .chat-app-wrapper{
+         margin: 0px !important;
+        }
         .chat-body-messages {
             background-image: url({{asset('assets/media/image/chat.jpg')}});
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
+            height: 100% !important;
         }
 
         .btn.btn-outline-light {
@@ -35,9 +41,9 @@
         }
 
         .message-item {
-            background-color: rgba(93, 74, 156, 0.58) !important;
-            box-shadow: 1px 1px 1px 0px #494949;
-            backdrop-filter: blur(6.9px);
+            background: linear-gradient(70deg, rgba(217,104,197,0.4) 0%, rgba(69,0,108,0.6) 100%) !important;
+            box-shadow: 1px 1px 4px -1px #494949;
+            backdrop-filter: blur(4px);
             border-radius: 5px !important;
             padding: 0px !important;
         }
@@ -49,12 +55,12 @@
         }
 
         .No2 {
-            box-shadow: -1px 1px 1px 0px #494949 !important;
+            box-shadow: -1px 1px 4px -1px #494949 !important;
         }
 
         .outgoing-message {
-            background-color: rgba(151, 151, 152, 0.48) !important;
-            backdrop-filter: blur(6.9px);
+            background: linear-gradient(90deg, rgba(238,174,202,0.6) 0%, rgba(148,187,233,0.4) 100%) !important;
+            backdrop-filter: blur(4px);
             min-width: 200px !important;
             padding: 2px 8px !important;
 
@@ -103,6 +109,7 @@
             flex-direction: row !important;
             align-items: center !important;
             justify-content: space-between !important;
+            padding-right: 15px !important;
         }
     </style>
 @endsection
@@ -329,39 +336,85 @@
                 }
             });
 
+        // تابع کمکی برای قالب‌بندی سایز فایل
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
         window.Echo.channel('ticket.' + ticketId)
             .listen('.NewMessageEvent', (event) => {
                 var message = event.message;
                 var messageHtml = '';
                 var formattedDate = event.formatted_date;
+                var fileHtml = '';
+
+                // در صورت وجود فایل، بررسی نوع و ساخت HTML مناسب
+                if (message.file) {
+                    // اگر فایل به صورت رشته (JSON) ارسال شده، ابتدا آن را پارس می‌کنیم
+                    let file = (typeof message.file === "string") ? JSON.parse(message.file) : message.file;
+                    if (['jpg','jpeg','png','webp','svg','gif'].includes(file.type)) {
+                        fileHtml += `<ul class="w-100">
+                                <li class="flex-column justify-content-center align-items-center w-100">
+                                    <a href="${file.path}">
+                                        <img src="${file.path}" alt="image" class="w-100 p-2">
+                                        <span>${file.name}</span>
+                                    </a>
+                                </li>
+                             </ul>`;
+                    } else {
+                        fileHtml += `<div class="m-b-0 text-muted text-left media-file">
+                                <a href="${file.path}" class="btn btn-outline-light row text-left align-items-center justify-content-center h-50 w-100" download="${file.path}">
+                                    <i class="fa fa-download font-size-18 m-r-10"></i>
+                                    <div class="small">
+                                        <div class="mb-2">${file.name}</div>
+                                        <div class="font-size-13" dir="ltr">${formatBytes(file.size)}</div>
+                                    </div>
+                                </a>
+                             </div>`;
+                    }
+                }
+
+                // رندر پیام بر اساس اینکه کاربر فرستنده است یا دریافت‌کننده
                 if (message.user_id == currentUserId) {
-                    // پیام ارسال شده توسط من
-                    messageHtml += `<div id="message-${message.id}" class="message-item ${message.file ? 'message-item-media' : ''}">`;
-                    messageHtml += '<div class="message-content">';
+                    messageHtml += `<div id="message-${message.id}" class="message-item ${message.file ? 'message-item-media' : ''}">
+                                <div class="message-content">`;
                     if (message.text) {
                         messageHtml += `<div class="message-text">${message.text}</div>`;
                     }
+                    // اضافه کردن قسمت فایل در صورت وجود
+                    if(fileHtml !== '') {
+                        messageHtml += fileHtml;
+                    }
                     messageHtml += `<div class="message-meta">
-                                    <span class="message-time">${formattedDate}</span>`;
+                                <span class="message-time">${formattedDate}</span>`;
                     if (message.read_at) {
                         messageHtml += `<i class="status-read fa fa-check-double"></i>`;
                     } else {
                         messageHtml += `<i class="status-sent fa fa-check"></i>`;
                     }
                     messageHtml += `   </div>
-                                </div>
-                            </div>`;
+                            </div>
+                        </div>`;
                 } else {
                     messageHtml += `<div id="message-${message.id}" class="message-item outgoing-message ${message.file ? 'message-item-media' : ''}">`;
                     if (message.text) {
                         messageHtml += `<div class="message-text ${message.file ? 'p-2' : ''}">${message.text}</div>`;
                     }
+                    // اضافه کردن قسمت فایل در صورت وجود
+                    if(fileHtml !== '') {
+                        messageHtml += fileHtml;
+                    }
                     messageHtml += `<div class="message-meta row ${message.file ? 'justify-content-center m-2' : 'justify-content-between'} px-2">
-                                    <span class="message-time">${formattedDate}</span>
-                                </div>
-                            </div>`;
+                                <span class="message-time">${formattedDate}</span>
+                            </div>
+                        </div>`;
                 }
-                // افزودن پیام جدید به صفحه چت
+                // اضافه کردن پیام جدید به صفحه چت
                 $('.message-items').append(messageHtml);
                 $('.chat-body-messages').animate({scrollTop: $('.chat-body-messages')[0].scrollHeight}, 500);
             });

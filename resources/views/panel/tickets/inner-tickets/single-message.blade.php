@@ -5,7 +5,6 @@
                 <div class="message-text">{{ $message->text }}</div>
             @endif
             @includeWhen($message->file, 'panel.partials.file-message')
-
             <div class="message-meta">
                             <span class="message-time">
                                 {{ verta($message->created_at)->format('H:i - Y/m/d') }}

@@ -174,11 +174,8 @@ class TicketController extends Controller
             'text'    => $request->text,
             'file'    => isset($file) ? json_encode($file_info) : null,
         ]);
-
-        // انتشار رویداد پیام جدید به سایر کاربران (با استفاده از وب‌سوکت)
         broadcast(new NewMessageEvent($message))->toOthers();
 
-        // ذخیره فعالیت کاربر
         $activityData = [
             'user_id'     => auth()->id(),
             'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') پاسخی به تیکت "' . $ticket->title . '" ارسال کرد',
