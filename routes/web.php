@@ -21,6 +21,7 @@ use App\Http\Controllers\Panel\CouponController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\DebtorController;
 use App\Http\Controllers\Panel\DeliveryDayController;
+use App\Http\Controllers\Panel\DocumentRequestController;
 use App\Http\Controllers\Panel\ExchangeController;
 use App\Http\Controllers\Panel\ExitDoorController;
 use App\Http\Controllers\Panel\FactorController;
@@ -414,6 +415,13 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
 
     // Price Request
     Route::resource('price-requests', PriceRequestController::class);
+
+    // Document Request
+    Route::resource('document_request', DocumentRequestController::class);
+    Route::get('document_request/{id}/send', [DocumentRequestController::class, 'send'])
+        ->name('document_request.send');
+    Route::post('document_request/{id}/send-action', [DocumentRequestController::class, 'sendAction'])
+        ->name('document_request.sendAction');
 
     // Sale Price Request
     Route::resource('sale_price_requests', SalePriceRequestController::class);

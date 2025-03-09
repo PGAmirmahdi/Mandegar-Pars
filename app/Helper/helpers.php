@@ -355,6 +355,7 @@ if (!function_exists('breadcrumb_mapping')) {
             'exit-door' => 'خروج',
             'files' => 'مدیریت فایل',
             'app-versions' => 'نسخه های برنامه',
+            'document_request' => 'درخواست مدارک'
         ];
     }
 }
