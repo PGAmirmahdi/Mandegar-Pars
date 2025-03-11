@@ -420,8 +420,10 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::resource('document_request', DocumentRequestController::class);
     Route::get('document_request/{id}/send', [DocumentRequestController::class, 'send'])
         ->name('document_request.send');
-    Route::post('document_request/{id}/send-action', [DocumentRequestController::class, 'sendAction'])
+    Route::put('document_request/{id}/send-action', [DocumentRequestController::class, 'sendAction'])
         ->name('document_request.sendAction');
+    Route::get('document_requests/search', [DocumentRequestController::class, 'search'])
+        ->name('document_request.search');
 
     // Sale Price Request
     Route::resource('sale_price_requests', SalePriceRequestController::class);

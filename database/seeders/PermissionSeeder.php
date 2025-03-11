@@ -209,10 +209,12 @@ class PermissionSeeder extends Seeder
 //            'global-tickets-create' => 'ثبت تیکت بین شرکتی',
 //            'global-tickets-delete' => 'حذف تیکت بین شرکتی'
 
-            'document-request-list' => 'لیست درخواست های مدارک',
-            'document-request-create' => 'ایجاد درخواست مدارک',
-            'document-request-edit' => 'ویرایش درخواست مدارک',
-            'document-request-delete' => 'حذف درخواست مدارک'
+//            'document-request-list' => 'لیست درخواست های مدارک',
+//            'document-request-create' => 'ایجاد درخواست مدارک',
+//            'document-request-edit' => 'ویرایش درخواست مدارک',
+//            'document-request-delete' => 'حذف درخواست مدارک'
+
+        'document-request-send' => 'ارسال مدارک'
         ];
 
         foreach ($items as $key => $item)

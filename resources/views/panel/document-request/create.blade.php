@@ -13,7 +13,6 @@
     <div class="card">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between align-items-center mb-4">
-                <h6>ثبت درخواست مدارک</h6>
                 <button type="button" class="btn btn-success" id="btn_add">
                     <i class="fa fa-plus mr-2"></i>
                     افزودن مدرک
