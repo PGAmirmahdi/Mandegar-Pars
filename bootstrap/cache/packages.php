@@ -21,6 +21,18 @@
       0 => 'Barryvdh\\Debugbar\\ServiceProvider',
     ),
   ),
+  'barryvdh/laravel-snappy' => 
+  array (
+    'aliases' => 
+    array (
+      'PDF' => 'Barryvdh\\Snappy\\Facades\\SnappyPdf',
+      'SnappyImage' => 'Barryvdh\\Snappy\\Facades\\SnappyImage',
+    ),
+    'providers' => 
+    array (
+      0 => 'Barryvdh\\Snappy\\ServiceProvider',
+    ),
+  ),
   'beyondcode/laravel-websockets' => 
   array (
     'providers' => 
