@@ -16,7 +16,7 @@
                             @foreach(\App\Models\Product::where('status', 'approved')->get() as $product)
                                 <option
                                     value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
-                                    {{ $product->title . ' - ' . ($product->productModels->name ?? '') }}
+                                    {{ $product->title . ' - ' . ($product->productModels->name  . ' - ' . $product->category->name?? '') }}
                                 </option>
                             @endforeach
                         </select>
@@ -26,7 +26,7 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="count">موجودی <span class="text-danger">*</span></label>
-                        <input type="number" name="count" class="form-control" id="count" value="{{ old('count') }}" min="0">
+                        <input type="number" name="count" class="form-control" id="count" value="{{ old('count', 0) }}" min="0">
                         @error('count')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
