@@ -29,7 +29,7 @@
                             <select name="user" class="js-example-basic-single select2-hidden-accessible"
                                     form="user_search">
                                 <option value="all">نام همکار (همه)</option>
-                                @foreach($users as $user)
+                                @foreach(\App\Models\User::all() as $user)
                                     <option
                                         value="{{ $user->id }}" {{ request()->user == $user->id ? 'selected' : '' }}>
                                         {{ $user->name . ' ' . $user->family }}

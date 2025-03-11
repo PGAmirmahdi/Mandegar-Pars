@@ -25,3 +25,7 @@ Broadcast::channel('notification.{userId}', function ($user, $userId){
 Broadcast::channel('my-test', function ($user){
     return $user;
 });
+Broadcast::channel('ticket.{ticketId}', function ($user, $ticketId) {
+    $ticket = Ticket::find($ticketId);
+    return $ticket && ($ticket->sender_id == $user->id || $ticket->receiver_id == $user->id);
+});
