@@ -35,7 +35,7 @@
                             <td>{{ verta($role->created_at)->format('H:i - Y/m/d') }}</td>
                             @can('roles-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating {{ $role->name == 'admin' || $role->name == 'user' ? 'disabled' : '' }}" href="{{ route('roles.edit', $role->id) }}">
+                                    <a class="btn btn-warning btn-floating {{ $role->name == 'user' ? 'disabled' : '' }}" href="{{ route('roles.edit', $role->id) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
