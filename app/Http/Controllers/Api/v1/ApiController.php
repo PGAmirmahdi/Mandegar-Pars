@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\BotUser;
+use App\Models\Customer;
 use App\Models\Factor;
 use App\Models\Guarantee;
 use App\Models\Inventory;
@@ -12,8 +13,10 @@ use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Printer;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\User;
 use App\Notifications\SendMessage;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -52,7 +55,7 @@ class ApiController extends Controller
             $data = $request->all();
             // محاسبه هزینه ارسال
             $shipping_cost = $request->input('shipping_cost', 0);
-            $role_id = \App\Models\Role::whereHas('permissions', function ($permission) {
+            $role_id = Role::whereHas('permissions', function ($permission) {
                 $permission->where('name', 'single-price-user');
             })->pluck('id');
             $single_price_user = User::whereIn('role_id', $role_id)->latest()->first();
@@ -74,9 +77,12 @@ class ApiController extends Controller
             $url = route('invoices.index');
             Notification::send($notifiables, new SendMessage($notif_title,$notif_message, $url));
 
-            $customer = \App\Models\Customer::updateOrCreate(
-                ['phone1' => $data['phone']],
-                [
+            $customer = Customer::where('phone1', $data['phone'])
+                ->where('name', $data['first_name'] . ' ' . $data['last_name'])
+                ->first();
+
+            if (!$customer) {
+                $customer = Customer::create([
                     'user_id' => $single_price_user->id,
                     'name' => $data['first_name'] . ' ' . $data['last_name'],
                     'type' => 'private',
@@ -89,9 +95,9 @@ class ApiController extends Controller
                     'phone1' => $data['phone'],
                     'customer_type' => 'single-sale',
                     'code' => 'CU-' . random_int(1000000, 9999999),
-                ]
-            );
-            // ایجاد سفارش و ذخیره محصولات به صورت JSON
+                ]);
+            }
+
             $products = [];
             foreach ($request->items as $item2) {
                 $products = array_map(function ($item2) {
@@ -106,7 +112,7 @@ class ApiController extends Controller
                     ];
                 }, $data['items']);
             }
-            $order = \App\Models\Order::create([
+            $order = Order::create([
                 'description' => 'خرید از سایت',
                 'type' => 'private',
                 'req_for' => 'invoice',
@@ -122,7 +128,7 @@ class ApiController extends Controller
                 ['status' => 'register'],
                 ['orders' => 1, 'status' => 'register']
             );
-            $invoice = \App\Models\Invoice::create([
+            $invoice = Invoice::create([
                 'user_id' => $single_price_user->id,
                 'customer_id' => $customer->id,
                 'order_id' => $order->id,
@@ -170,7 +176,7 @@ class ApiController extends Controller
                 'message' => 'سفارش با موفقیت از طریق سایت در اتوماسیون ایجاد شد',
                 'data' => $data
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // ثبت خطا در لاگ
             Log::error('Error processing order data: ' . $e->getMessage(), [
                 'exception' => $e,
