@@ -64,7 +64,7 @@
                         @enderror
                     </div>
                 </div>
-                <button class="btn btn-primary mt-5" type="submit">ثبت فرم</button>
+                <button class="btn btn-primary mt-5" type="submit" id="btn_form">ثبت فرم</button>
             </form>
         </div>
     </div>
@@ -92,6 +92,14 @@
             // حذف سطر مدرک
             $(document).on('click', '.btn_remove', function () {
                 $(this).closest('tr').remove();
+            });
+        });
+        $(document).ready(function () {
+            $('#btn_form').on('click', function () {
+                let button = $(this);
+                // تغییر متن و غیر فعال کردن دکمه برای جلوگیری از چندبار کلیک
+                button.prop('disabled', true).text('در حال ارسال...');
+                button.closest('form').submit();
             });
         });
     </script>
