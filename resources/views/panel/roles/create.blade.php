@@ -35,9 +35,20 @@
                         @enderror
                     </div>
                 </div>
-                <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
             </form>
         </div>
     </div>
 @endsection
-
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            $('#btn_form').on('click', function () {
+                let button = $(this);
+                // تغییر متن و غیر فعال کردن دکمه برای جلوگیری از چندبار کلیک
+                button.prop('disabled', true).text('در حال ارسال...');
+                button.closest('form').submit();
+            });
+        });
+    </script>
+@endsection

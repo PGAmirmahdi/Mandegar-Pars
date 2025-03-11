@@ -12,23 +12,28 @@
                 <div class="form-row">
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="label">نام فارسی<span class="text-danger">*</span></label>
-                        <input type="text" name="label" class="form-control" id="label" value="{{ $role->label }}" placeholder="نویسنده">
+                        <input type="text" name="label" class="form-control" id="label" value="{{ $role->label }}"
+                               placeholder="نویسنده">
                         @error('label')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="name">نام انگلیسی <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" id="name" value="{{ $role->name }}" placeholder="writer">
+                        <input type="text" name="name" class="form-control" id="name" value="{{ $role->name }}"
+                               placeholder="writer">
                         @error('name')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
                         <label for="permissions">دسترسی ها <span class="text-danger">*</span></label>
-                        <select name="permissions[]" id="permissions" class="js-example-basic-single select2-hidden-accessible" multiple="" data-select2-id="4" tabindex="-1" aria-hidden="true">
+                        <select name="permissions[]" id="permissions"
+                                class="js-example-basic-single select2-hidden-accessible" multiple=""
+                                data-select2-id="4" tabindex="-1" aria-hidden="true">
                             @foreach(\App\Models\Permission::all() as $permission)
-                                <option value="{{ $permission->id }}" {{ (in_array($permission->id, $role->permissions->pluck('id')->toArray()) ? 'selected' : '') }}>{{ $permission->label }}</option>
+                                <option
+                                    value="{{ $permission->id }}" {{ (in_array($permission->id, $role->permissions->pluck('id')->toArray()) ? 'selected' : '') }}>{{ $permission->label }}</option>
                             @endforeach
                         </select>
                         @error('permissions')
@@ -36,9 +41,21 @@
                         @enderror
                     </div>
                 </div>
-                <button class="btn btn-primary" type="submit">ثبت فرم</button>
+                <button class="btn btn-primary" type="submit" id="btn_form">ثبت فرم</button>
             </form>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            $('#btn_form').on('click', function () {
+                let button = $(this);
+                // تغییر متن و غیر فعال کردن دکمه برای جلوگیری از چندبار کلیک
+                button.prop('disabled', true).text('در حال ارسال...');
+                button.closest('form').submit();
+            });
+        });
+    </script>
 @endsection
 
