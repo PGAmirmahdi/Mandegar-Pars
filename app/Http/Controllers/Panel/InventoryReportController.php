@@ -10,6 +10,7 @@ use App\Models\InventoryReport;
 use App\Models\Invoice;
 use App\Models\User;
 use App\Notifications\SendMessage;
+use Barryvdh\Snappy\Facades\SnappyImage;
 use Dflydev\DotAccessData\Data;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
@@ -403,5 +404,27 @@ class InventoryReportController extends Controller
             session()->flash('error_data', $error_data);
             $request->validate(['inventory_count' => 'required']);
         }
+    }
+    public function downloadLabel(Request $request)
+    {
+        // دریافت invoice_id از درخواست
+        $invoiceId = $request->get('invoice_id');
+
+        // بازیابی سفارش همراه با اطلاعات مشتری
+        $invoice = \App\Models\Invoice::with('customer')->findOrFail($invoiceId);
+
+        // رندر کردن ویو لیبل به عنوان HTML
+        $html = view('panel.outputs.label-template', ['invoice' => $invoice])->render();
+
+        // استفاده از Snappy برای تولید تصویر PNG از HTML
+        $image = SnappyImage::loadHTML($html)
+            ->setOption('format', 'png')
+            ->setOption('width', 800)
+            ->inline(); // برای نمایش مستقیم در مرورگر یا
+        // ->save($path) برای ذخیره در سرور
+
+        return response($image, 200)
+            ->header('Content-Type', 'image/png')
+            ->header('Content-Disposition', 'attachment; filename="label.png"');
     }
 }

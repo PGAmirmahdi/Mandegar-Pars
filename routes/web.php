@@ -341,6 +341,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::match(['get', 'post'], 'search/inventory-reports', [InventoryReportController::class, 'search'])->name('inventory-reports.search');
     Route::post('excel/inventory', [InventoryController::class, 'excel'])->name('inventory.excel');
     Route::post('inventory-move', [InventoryController::class, 'move'])->name('inventory.move');
+    Route::get('/download-label', [InventoryReportController::class, 'downloadLabel'])
+        ->name('download.label');
 
     // Sale Reports
     Route::resource('sale-reports', SaleReportController::class)->except('show');

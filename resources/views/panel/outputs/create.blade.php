@@ -44,7 +44,7 @@
                             <option value="">انتخاب کنید...</option>
                             @if(\App\Models\Invoice::doesntHave('inventory_report')->count())
                                 @foreach(\App\Models\Invoice::doesntHave('inventory_report')->get() as $invoice)
-                                    <option value="{{ $invoice->id }}" {{ old('invoice_id') == $invoice->id ? 'selected' : '' }}>
+                                    <option value="{{ $invoice->id }}" data-customer-id="{{ $invoice->customer->id }}" {{ old('invoice_id') == $invoice->id ? 'selected' : '' }}>
                                         {{ $invoice->id }} - {{ $invoice->customer->name }}
                                     </option>
                                 @endforeach
@@ -52,6 +52,7 @@
                                 <option value="" disabled selected>سفارشی موجود نیست!</option>
                             @endif
                         </select>
+                        <input type="hidden" id="customer_id" name="customer_id" value="">
                         <span id="factor_link">
                             <a href="" class="btn-link" target="_blank">نمایش سفارش</a>
                         </span>
@@ -159,27 +160,69 @@
                 <button class="btn btn-primary" type="submit" id="btn_submit">ثبت فرم</button>
             </form>
         </div>
-    </div>
-    <span>عکس لیبل:</span>
-    <div class="label col-6">
-        <div class="row justify-content-center align-items-center" style="gap: 20px">
-            <div class="d-flex flex-column" style="gap: 10px">
-                <img src="{{asset('/assets/media/image/logo-192x192.png')}}" alt="Logo">
-                <span class="font-weight-bolder">صنایع ماشین های اداری</span>
-                <h4>ماندگار پارس</h4>
-            </div>
-            <div>
-                <h5>فرستنده: ماندگار پارس</h5>
-                <h5>شماره تماس: 09029463357</h5>
-                <span>آدرس: تهران، صفادشت، شهرک صنعتی صفادشت خیابان خرداد، بین خیابان 5 و 6 غربی، پلاک 212</span>
-                <h6 class="font-weight-bold">((با تشکر از خرید شما))</h6>
-            </div>
-        </div>
+{{--        <div class="label col-6">--}}
+{{--            <div class="row justify-content-center align-items-center" style="gap: 20px">--}}
+{{--                <div class="d-flex flex-column" style="gap: 10px">--}}
+{{--                    <img src="{{ asset('/assets/media/image/logo-192x192.png') }}" alt="Logo" width="100px" height="100px">--}}
+{{--                    <span class="font-weight-bolder text-center">صنایع ماشین های اداری</span>--}}
+{{--                    <h4 class="text-center">ماندگار پارس</h4>--}}
+{{--                </div>--}}
+{{--                <div>--}}
+{{--                    <h5>فرستنده: ماندگار پارس</h5>--}}
+{{--                    <h5>شماره تماس: 09029463357</h5>--}}
+{{--                    <span>آدرس: تهران، صفادشت، شهرک صنعتی صفادشت خیابان خرداد، بین خیابان 5 و 6 غربی، پلاک 212</span>--}}
+{{--                    <h6 class="font-weight-bold mt-4">((با تشکر از خرید شما))</h6>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--            <!-- محفظه اطلاعات مشتری با آی‌دی اختصاصی -->--}}
+{{--            <div id="customer-info" class="flex-column">--}}
+{{--                <p>گیرنده: {{ $invoice->customer->name }}</p>--}}
+{{--                <p>شماره تماس: {{ $invoice->customer->phone1 }}</p>--}}
+{{--                <p>کد پستی: {{ $invoice->customer->postal_code }}</p>--}}
+{{--                <p>آدرس: {{ $invoice->customer->address1 }}</p>--}}
+{{--            </div>--}}
+{{--        </div>--}}
     </div>
 @endsection
 
 @section('scripts')
     <script>
+        // دریافت اطلاعات مشتری پس از انتخاب سفارش
+        $(document).on('change', '#invoice_id', function () {
+            var invoice_id = $(this).val();
+            // استخراج آیدی مشتری از گزینه انتخاب شده
+            var customer_id = $(this).find('option:selected').data('customer-id');
+
+            // قرار دادن آیدی مشتری در اینپوت هیدن
+            $('#customer_id').val(customer_id);
+
+            if (customer_id !== '') {
+                $.ajax({
+                    url: '/panel/get-customer-info/' + customer_id,
+                    type: 'post',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (res) {
+                        console.log(res.data);
+                        // به‌روزرسانی بخش اطلاعات مشتری (مثلاً در یک محفظه با آی‌دی customer-info)
+                        $('#customer-info').html(`
+                    <p>گیرنده: ${res.data.name}</p>
+                    <p>شماره تماس: ${res.data.phone1}</p>
+                    <p>کد پستی: ${res.data.postal_code}</p>
+                    <p>آدرس: ${res.data.address1}</p>
+                `);
+
+                        // به‌روزرسانی لینک نمایش سفارش (در صورت نیاز)
+                        let url = `/panel/invoices/${invoice_id}`;
+                        $('#factor_link a').attr('href', url);
+                    },
+                    error: function (err) {
+                        console.error("Error fetching customer info:", err);
+                    }
+                });
+            }
+        });
         var inventory = [];
 
         var options_html = "";  // تعریف متغیر options_html به صورت رشته‌ای
