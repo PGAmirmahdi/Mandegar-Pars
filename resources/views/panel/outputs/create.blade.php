@@ -160,6 +160,22 @@
             </form>
         </div>
     </div>
+    <span>عکس لیبل:</span>
+    <div class="label col-6">
+        <div class="row justify-content-center align-items-center" style="gap: 20px">
+            <div class="d-flex flex-column" style="gap: 10px">
+                <img src="{{asset('/assets/media/image/logo-192x192.png')}}" alt="Logo">
+                <span class="font-weight-bolder">صنایع ماشین های اداری</span>
+                <h4>ماندگار پارس</h4>
+            </div>
+            <div>
+                <h5>فرستنده: ماندگار پارس</h5>
+                <h5>شماره تماس: 09029463357</h5>
+                <span>آدرس: تهران، صفادشت، شهرک صنعتی صفادشت خیابان خرداد، بین خیابان 5 و 6 غربی، پلاک 212</span>
+                <h6 class="font-weight-bold">((با تشکر از خرید شما))</h6>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')

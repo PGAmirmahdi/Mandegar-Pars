@@ -209,7 +209,7 @@
                                         @includeWhen($message->file, 'panel.partials.global-file-message')
                                         <div class="message-meta px-2 row align-items-center @if($message->file) justify-content-between m-2 @else justify-content-between @endif">
                                             <span class="message-time">
-                                                {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                                                {{ verta($message->created_at)->timezone('Asia/Tehran')->format('H:i - Y/m/d') }}
                                             </span>
                                             @if($message->read_at)
                                                 <i class="status-read fa fa-check-double"></i>
@@ -228,7 +228,7 @@
                                     @includeWhen($message->file, 'panel.partials.global-file-message')
                                     <div class="message-meta row @if($message->file) justify-content-center m-2 @else justify-content-between @endif px-1">
                                         <span class="message-time">
-                                            {{ verta($message->created_at)->format('H:i - Y/m/d') }}
+                                            {{ verta($message->created_at)->timezone('Asia/Tehran')->format('H:i - Y/m/d') }}
                                         </span>
                                     </div>
                                 </div>
