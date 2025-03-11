@@ -66,26 +66,22 @@
                 <div class="col-xl-2 xl-lg-2 col-md-3 col-sm-12">
                     <input type="text" name="code" class="form-control" placeholder="کد کالا" value="{{ request()->code ?? null }}" form="search_form">
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="category" form="search_form" class="js-example-basic-single select2-hidden-accessible"
-                            data-select2-id="1">
-                        <option value="all">شرح کالا (همه)</option>
-                        @foreach(\App\Models\Category::all(['id','name']) as $category)
-                            <option value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-3">
+                    <select class="form-control" name="category" id="category" form="search_form">
+                        <option value="">شرح کالا(همه)</option>
+                        @foreach(\App\Models\Category::all() as $category)
+                            <option value="{{ $category->id }}" {{ request()->category == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="model" form="search_form" class="js-example-basic-single select2-hidden-accessible"
-                            data-select2-id="2">
-                        <option value="all">برند (همه)</option>
-                        @foreach(\App\Models\ProductModel::all(['id','name']) as $model)
-                            <option value="{{ $model->id }}" {{ request()->model ==  $model->id ? 'selected' : '' }}>
-                                {{ $model->name }}
-                            </option>
-                        @endforeach
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-3">
+                    <select class="form-control" name="brand" id="brand" form="search_form">
+                        <option value="">برند(همه)</option>
+                        @if(request()->category)
+                            @foreach(App\Models\ProductModel::where('category_id', request()->category)->get() as $productModel)
+                                <option value="{{ $productModel->id }}" {{ request()->brand == $productModel->id ? 'selected' : '' }}>{{ $productModel->name }}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
@@ -172,6 +168,35 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).ready(function () {
+            $('select[name="category"]').on('change', function () {
+                let categoryId = $(this).val();
+                let brandSelect = $('select[name="brand"]'); // تغییر از 'model' به 'brand'
+
+                // پاک کردن گزینه‌های قبلی
+                brandSelect.empty();
+
+                if (categoryId) {
+                    $.ajax({
+                        url: '{{ route('get.models.by.category') }}',
+                        type: 'POST',
+                        data: {
+                            category_id: categoryId,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (data) {
+                            // اضافه کردن گزینه‌های جدید به لیست برندها
+                            $.each(data, function (key, value) {
+                                brandSelect.append(`<option value="${value.id}">${value.name}</option>`);
+                            });
+                        },
+                        error: function () {
+                            alert('مشکلی در دریافت اطلاعات رخ داده است.');
+                        }
+                    });
+                }
+            });
+        });
         $(document).ready(function (){
             $('.btn_move').on('click', function () {
                 var inventory_id = $(this).data('id');

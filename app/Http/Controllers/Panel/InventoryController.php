@@ -141,9 +141,9 @@ class InventoryController extends Controller
                 });
             })
             // فیلتر برای مدل (brand)
-            ->when($request->model && $request->model !== 'all', function ($query) use ($request) {
+            ->when($request->brand && $request->brand !== 'all', function ($query) use ($request) {
                 return $query->whereHas('product.productModels', function ($query) use ($request) {
-                    $query->where('id', $request->model);
+                    $query->where('id', $request->brand);
                 });
             })
             ->latest()
