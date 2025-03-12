@@ -46,7 +46,7 @@
                         @if(in_array(auth()->user()->role->name,['accountant']))
                             <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\Invoice::where('req_for','pre-invoice')->count()}}</h5>
                             <small>پیش فاکتور های دریافت شده</small>
-                            @elseif(in_array(auth()->user()->role->name,['inventory-manager','warehouse-keeper','exit-door']))
+                        @elseif(in_array(auth()->user()->role->name,['inventory-manager','warehouse-keeper','exit-door']))
                             <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\Inventory::all()->sum('current_count')}}</h5>
                             <small>تعداد کالا های در انبار</small>
                         @elseif(in_array(auth()->user()->role->name,['ceo','office-manager']))
@@ -87,10 +87,11 @@
                         @if(in_array(auth()->user()->role->name,['accountant']))
                             <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\Invoice::where('status','invoiced')->count()}}</h5>
                             <small>فاکتور های دریافت شده</small>
-                            @elseif(in_array(auth()->user()->role->name,['inventory-manager','warehouse-keeper','exit-door']))
-                            <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\InventoryReport::where('type','output')->count()}} خروج و {{\App\Models\InventoryReport::where('type','input')->count()}} ورود </h5>
+                        @elseif(in_array(auth()->user()->role->name,['inventory-manager','warehouse-keeper','exit-door']))
+                            <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\InventoryReport::where('type','output')->count()}}
+                                خروج و {{\App\Models\InventoryReport::where('type','input')->count()}} ورود </h5>
                             <small>خروج و ورود های انبار</small>
-                            @elseif(in_array(auth()->user()->role->name,['ceo','office-manager']))
+                        @elseif(in_array(auth()->user()->role->name,['ceo','office-manager']))
                             <h5 class="mb-0 font-weight-bold primary-font">{{\App\Models\Customer::all()->count()}}</h5>
                             <small>مشتریان شرکت</small>
                         @else
@@ -136,14 +137,30 @@
                 <h6 class="font-size-13 mb-3">رنگ تم:</h6>
                 <button class="theme-btn btn btn-floating" style="background-color: #3498db" value="#3498db">
                 </button>
-                <button class="theme-btn btn btn-floating" value="#e74c3c" style="background-color: #e74c3c">
+                <button class="theme-btn btn btn-floating" value="#e74c3c" style="background-color: #e7de3c">
                 </button>
                 <button class="theme-btn btn btn-floating" value="#27ae60" style="background-color: #27ae60">
                 </button>
                 <button class="theme-btn btn btn-floating" value="#f1c40f" style="background-color: #f1c40f">
                 </button>
-                <button class="theme-btn btn btn-floating" value="#9b59b6" style="background-color: #9b59b6">
+                <button class="theme-btn btn btn-floating" value="#5d4a9c" style="background-color: #5d4a9c">
                 </button>
+                <button class="theme-btn btn btn-floating" value="#c424dc" style="background-color: #c424dc">
+                </button>
+                <div class="mt-2">
+                    <button class="theme-btn btn btn-floating" value="#da5707" style="background-color: #da5707">
+                    </button>
+                    <button class="theme-btn btn btn-floating" value="#04dbe3" style="background-color: #04dbe3">
+                    </button>
+                    <button class="theme-btn btn btn-floating" value="#0731da" style="background-color: #0731da">
+                    </button>
+                    <button class="theme-btn btn btn-floating" value="#da0707" style="background-color: #da0707">
+                    </button>
+                    <button class="theme-btn btn btn-floating" value="#07da62" style="background-color: #07da62">
+                    </button>
+                    <button class="theme-btn btn btn-floating" value="#4b4b4b" style="background-color: #4b4b4b">
+                    </button>
+                </div>
             </div>
             <div class="mb-4">
                 <select id="fontSelect" class="form-control">
@@ -168,30 +185,30 @@
                     <option value="secondary-font-damavand">دماوند</option>
                 </select>
             </div>
-{{--            <div class="form-group">--}}
-{{--                <div class="form-item custom-control custom-switch">--}}
-{{--                    <input type="checkbox" class="custom-control-input" id="customSwitch11">--}}
-{{--                    <label class="custom-control-label" for="customSwitch11">بی صدا کردن</label>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--            <div class="form-group">--}}
-{{--                <div class="form-item custom-control custom-switch">--}}
-{{--                    <input type="checkbox" class="custom-control-input" id="customSwitch12">--}}
-{{--                    <label class="custom-control-label" for="customSwitch12">مسدود کردن</label>--}}
-{{--                </div>--}}
-{{--            </div>--}}
+            {{--            <div class="form-group">--}}
+            {{--                <div class="form-item custom-control custom-switch">--}}
+            {{--                    <input type="checkbox" class="custom-control-input" id="customSwitch11">--}}
+            {{--                    <label class="custom-control-label" for="customSwitch11">بی صدا کردن</label>--}}
+            {{--                </div>--}}
+            {{--            </div>--}}
+            {{--            <div class="form-group">--}}
+            {{--                <div class="form-item custom-control custom-switch">--}}
+            {{--                    <input type="checkbox" class="custom-control-input" id="customSwitch12">--}}
+            {{--                    <label class="custom-control-label" for="customSwitch12">مسدود کردن</label>--}}
+            {{--                </div>--}}
+            {{--            </div>--}}
         </div>
     </div>
 </div>
 <script>
-    document.getElementById('fontSelect').addEventListener('change', function() {
+    document.getElementById('fontSelect').addEventListener('change', function () {
         var selectedFont = this.value;
         document.body.style.fontFamily = selectedFont;
         localStorage.setItem('selectedFont', selectedFont);
     });
 
     // اعمال فونت ذخیره شده در بارگذاری صفحه
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var savedFont = localStorage.getItem('selectedFont');
         if (savedFont) {
             document.body.style.fontFamily = savedFont;
@@ -199,8 +216,8 @@
         }
     });
     // ثبت رویداد کلیک روی هر دکمه برای تغییر رنگ تم
-    document.querySelectorAll('.theme-btn').forEach(function(button) {
-        button.addEventListener('click', function() {
+    document.querySelectorAll('.theme-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
             var selectedColor = this.value;
             // تغییر متغیر CSS مربوط به رنگ اصلی
             document.documentElement.style.setProperty('--primary-color', selectedColor);
@@ -210,7 +227,7 @@
     });
 
     // اعمال رنگ ذخیره‌شده هنگام بارگذاری صفحه
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var savedColor = localStorage.getItem('primaryColor');
         if (savedColor) {
             document.documentElement.style.setProperty('--primary-color', savedColor);
