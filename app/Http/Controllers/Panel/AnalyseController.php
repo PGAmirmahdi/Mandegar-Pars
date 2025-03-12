@@ -18,7 +18,7 @@ class AnalyseController extends Controller
 
     public function index(Request $request)
     {
-        $analyses = Analyse::query()
+        $analysesQuery = Analyse::query()
             ->when($request->start_date && $request->end_date, function ($query) use ($request) {
                 $query->where(function ($subQuery) use ($request) {
                     $subQuery->where('date', '<=', $request->end_date)
@@ -30,14 +30,17 @@ class AnalyseController extends Controller
             })
             ->when($request->brand_id && $request->brand_id !== 'all', function ($query) use ($request) {
                 $query->where('brand_id', $request->brand_id);
-            })
-            ->get()
-            ->groupBy(function ($analyse) {
-                return Carbon::parse($analyse->date)->month; // گروه‌بندی بر اساس ماه
-            })
-            ->sortKeysDesc(); // مرتب‌سازی نزولی بر اساس کلید ماه
+            });
 
-// آرایه نام ماه‌های فارسی
+        // دریافت آنالیزهای فیلتر شده
+        $analyses = $analysesQuery->get();
+
+        // گروه‌بندی بر اساس ماه (برای نمایش در جدول)
+        $analysesGrouped = $analyses->groupBy(function ($analyse) {
+            return Carbon::parse($analyse->date)->month;
+        })->sortKeysDesc();
+
+        // دریافت آرایه نام ماه‌ها به فارسی
         $monthNames = [
             1 => 'فروردین',
             2 => 'اردیبهشت',
@@ -52,11 +55,22 @@ class AnalyseController extends Controller
             11 => 'بهمن',
             12 => 'اسفند',
         ];
+
+        // محاسبه مجموع‌ها در بازه انتخابی
+        $analysisIds = $analyses->pluck('id')->toArray();
+        $aggregate = null;
+        if (count($analysisIds)) {
+            $aggregate = \App\Models\AnalyseProducts::whereIn('analyse_id', $analysisIds)
+                ->selectRaw('SUM(quantity) as total_quantity, SUM(sold_count) as total_sold, SUM(storage_count) as total_storage')
+                ->first();
+        }
+
         $categories = Category::all();
         $models = ProductModel::all();
 
-        return view('panel.analyse.index', compact('analyses', 'categories', 'models','monthNames'));
+        return view('panel.analyse.index', compact('analysesGrouped', 'categories', 'models', 'monthNames', 'aggregate'));
     }
+
 
     public function show(Request $request, $id)
     {

@@ -66,7 +66,7 @@
             width: 90%;
             height: 90%;
             padding: 25px;
-            border: 2px dashed #333;
+            /*border: 2px dashed #333;*/
         }
 
         #downloadBtn {
