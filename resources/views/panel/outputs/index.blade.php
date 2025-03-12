@@ -39,12 +39,12 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>دریافت لیبل</th>
                         <th>تحویل گیرنده</th>
                         <th>سفارش</th>
                         <th>تاریخ خروج</th>
                         <th>تاریخ ثبت</th>
                         <th>خروج انبار</th>
+                        <th>دریافت لیبل</th>
                         @can('output-reports-edit')
                             <th>ویرایش</th>
                         @endcan
@@ -57,8 +57,6 @@
                     @foreach($reports as $key => $item)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td><a href="{{ route('download.label', ['invoice_id' => $item->invoice->id]) }}"
-                                   class="btn btn-info btn-floating"><i class="fa-solid fa-file-lines"></i></a></td>
                             <td><strong>{{ $item->person }}</strong></td>
                             <td>
                                 @if($item->invoice)
@@ -77,6 +75,8 @@
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </td>
+                            <td><a href="{{ route('download.label', ['invoice_id' => $item->invoice->id]) }}"
+                                   class="btn btn-primary btn-floating"><i class="fa-solid fa-file-lines"></i></a></td>
                             @can('output-reports-edit')
                                 <td>
                                     <a class="btn btn-warning btn-floating"
@@ -106,6 +106,7 @@
             <div class="d-flex justify-content-center">{{ $reports->links() }}</div>
         </div>
     </div>
+
 @endsection
 
 

@@ -7,6 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title')</title>
 
+    {{--    Fonts   --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/fonts/secondary-vazir.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fonts/secondary-dana.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fonts/secondary-azarmehr.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fonts/secondary-aviny.css') }}">
     <!-- Favicon -->
     <link rel="shortcut icon" href="/assets/media/image/favicon.png">
     <!-- Drop Zone -->

@@ -130,8 +130,44 @@
                 </li>
             </ul>
         </div>
-{{--        <div class="mb-4">--}}
-{{--            <h6 class="font-size-13 mb-3">تنظیمات</h6>--}}
+        <div class="mb-4">
+            <h6 class="font-size-13 mb-3">تنظیمات</h6>
+            <div class="mb-4">
+                <h6 class="font-size-13 mb-3">رنگ تم:</h6>
+                <button class="theme-btn btn btn-floating" style="background-color: #3498db" value="#3498db">
+                </button>
+                <button class="theme-btn btn btn-floating" value="#e74c3c" style="background-color: #e74c3c">
+                </button>
+                <button class="theme-btn btn btn-floating" value="#27ae60" style="background-color: #27ae60">
+                </button>
+                <button class="theme-btn btn btn-floating" value="#f1c40f" style="background-color: #f1c40f">
+                </button>
+                <button class="theme-btn btn btn-floating" value="#9b59b6" style="background-color: #9b59b6">
+                </button>
+            </div>
+            <div class="mb-4">
+                <select id="fontSelect" class="form-control">
+                    <option value="" disabled>فونت پنل</option>
+                    <option value="secondary-font">یکان(قالب پیش فرض)</option>
+                    <option value="secondary-font-vazir">وزیر</option>
+                    <option value="secondary-font-dana">دانا</option>
+                    <option value="secondary-font-azarmehr">آذرمهر</option>
+                    <option value="secondary-font-aviny">آوینی</option>
+                    <option value="secondary-font-vanda">واندا</option>
+                    <option value="secondary-font-shabnam">شبنم</option>
+                    <option value="secondary-font-sahel">ساحل</option>
+                    <option value="secondary-font-pinar">پینار</option>
+                    <option value="secondary-font-palatino-sans">پالاتینو</option>
+                    <option value="secondary-font-myriad">مای ریاد</option>
+                    <option value="secondary-font-mikhak">میخک</option>
+                    <option value="secondary-font-lalezar">لاله زار</option>
+                    <option value="secondary-font-helvetica-nue">هلوتیکا</option>
+                    <option value="secondary-font-estedad">استعداد</option>
+                    <option value="secondary-font-dubai">دبی</option>
+                    <option value="secondary-font-dastnevis"> دست نویس</option>
+                    <option value="secondary-font-damavand">دماوند</option>
+                </select>
+            </div>
 {{--            <div class="form-group">--}}
 {{--                <div class="form-item custom-control custom-switch">--}}
 {{--                    <input type="checkbox" class="custom-control-input" id="customSwitch11">--}}
@@ -144,7 +180,41 @@
 {{--                    <label class="custom-control-label" for="customSwitch12">مسدود کردن</label>--}}
 {{--                </div>--}}
 {{--            </div>--}}
-{{--        </div>--}}
+        </div>
     </div>
 </div>
+<script>
+    document.getElementById('fontSelect').addEventListener('change', function() {
+        var selectedFont = this.value;
+        document.body.style.fontFamily = selectedFont;
+        localStorage.setItem('selectedFont', selectedFont);
+    });
+
+    // اعمال فونت ذخیره شده در بارگذاری صفحه
+    document.addEventListener('DOMContentLoaded', function() {
+        var savedFont = localStorage.getItem('selectedFont');
+        if (savedFont) {
+            document.body.style.fontFamily = savedFont;
+            document.getElementById('fontSelect').value = savedFont;
+        }
+    });
+    // ثبت رویداد کلیک روی هر دکمه برای تغییر رنگ تم
+    document.querySelectorAll('.theme-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var selectedColor = this.value;
+            // تغییر متغیر CSS مربوط به رنگ اصلی
+            document.documentElement.style.setProperty('--primary-color', selectedColor);
+            // ذخیره رنگ انتخاب شده در localStorage
+            localStorage.setItem('primaryColor', selectedColor);
+        });
+    });
+
+    // اعمال رنگ ذخیره‌شده هنگام بارگذاری صفحه
+    document.addEventListener('DOMContentLoaded', function() {
+        var savedColor = localStorage.getItem('primaryColor');
+        if (savedColor) {
+            document.documentElement.style.setProperty('--primary-color', savedColor);
+        }
+    });
+</script>
 <!-- end::sidebar user profile -->
