@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\InventorySnapshot;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Verta;
 
@@ -11,7 +12,7 @@ class InventorySnapshotController extends Controller
 {
     public function index()
     {
-        // دریافت snapshot های انبار (بدون فیلتر)
+        // دریافت snapshot های انبار بدون فیلتر
         $snap_shots = InventorySnapshot::paginate(30);
         $total_count = InventorySnapshot::query()->sum('stock_count');
 
@@ -34,7 +35,7 @@ class InventorySnapshotController extends Controller
             12 => 'اسفند',
         ];
 
-        // داده‌های نمودار: گروه‌بندی موجودی‌ها بر اساس انبار
+        // داده‌های نمودار دایره‌ای: گروه‌بندی موجودی‌ها بر اساس انبار
         $chartData = InventorySnapshot::select('warehouse_id')
             ->selectRaw('SUM(stock_count) as total_inventory')
             ->groupBy('warehouse_id')
@@ -47,7 +48,39 @@ class InventorySnapshotController extends Controller
                 ];
             });
 
-        return view('panel.inventory.snap-shot.index', compact('monthNames', 'snap_shots', 'snap_shots_grouped', 'total_count', 'chartData'));
+        // داده‌های نمودار میله‌ای: گروه‌بندی موجودی‌ها بر اساس محصول
+        $barChartData = InventorySnapshot::select('product_id')
+            ->selectRaw('SUM(stock_count) as total_inventory')
+            ->groupBy('product_id')
+            ->with('product')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'product_title'   => $item->product->title,
+                    'total_inventory' => (int)$item->total_inventory,
+                ];
+            });
+
+        // دریافت تمام انبارها و محاسبه موجودی هر انبار (برای کارت‌ها)
+        $warehouses = Warehouse::all();
+        $warehouseCards = $warehouses->map(function($warehouse) {
+            $inventory = InventorySnapshot::where('warehouse_id', $warehouse->id)->sum('stock_count');
+            return [
+                'id'        => $warehouse->id,
+                'name'      => $warehouse->name,
+                'inventory' => $inventory,
+            ];
+        });
+
+        return view('panel.inventory.snap-shot.index', compact(
+            'monthNames',
+            'snap_shots',
+            'snap_shots_grouped',
+            'total_count',
+            'chartData',
+            'barChartData',
+            'warehouseCards'
+        ));
     }
 
     public function search(Request $request)
@@ -68,24 +101,24 @@ class InventorySnapshotController extends Controller
             });
         }
 
-        // فیلتر بر اساس انبار
+        // فیلتر بر اساس انبار (در صورتی که 'all' انتخاب نشده باشد)
         if ($request->filled('warehouse') && $request->warehouse !== 'all') {
             $query->where('warehouse_id', $request->warehouse);
         }
 
-        // فیلتر بر اساس محصول (اگر "all" انتخاب نشده باشد)
+        // فیلتر بر اساس محصول (در صورتی که 'all' انتخاب نشده باشد)
         if ($request->filled('product') && $request->product !== 'all') {
             $query->where('product_id', $request->product);
         }
 
-        // فیلتر بر اساس بازه تاریخ (به فرض "YYYY/MM/DD")
+        // فیلتر بر اساس بازه تاریخ (به فرض فرمت "YYYY/MM/DD")
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $start_date = $request->start_date; // مثلاً "1403/09/22"
-            $end_date   = $request->end_date;   // مثلاً "1403/09/30"
+            $start_date = $request->start_date;
+            $end_date   = $request->end_date;
             $query->whereBetween('snapshot_date', [$start_date, $end_date]);
         }
 
-        // محاسبه مجموع موجودی با استفاده از clone برای جلوگیری از محدودیت‌های paginate
+        // محاسبه مجموع موجودی بدون محدودیت صفحه‌بندی
         $total_count = (clone $query)->sum('stock_count');
 
         // دریافت نتایج صفحه‌بندی شده
@@ -110,7 +143,7 @@ class InventorySnapshotController extends Controller
             12 => 'اسفند',
         ];
 
-        // داده‌های نمودار بر اساس نتایج فیلتر شده
+        // داده‌های نمودار دایره‌ای برای نتایج فیلتر شده
         $chartData = (clone $query)
             ->select('warehouse_id')
             ->selectRaw('SUM(stock_count) as total_inventory')
@@ -124,6 +157,39 @@ class InventorySnapshotController extends Controller
                 ];
             });
 
-        return view('panel.inventory.snap-shot.index', compact('monthNames', 'snap_shots', 'snap_shots_grouped', 'total_count', 'chartData'));
+        // داده‌های نمودار میله‌ای برای نتایج فیلتر شده
+        $barChartData = (clone $query)
+            ->select('product_id')
+            ->selectRaw('SUM(stock_count) as total_inventory')
+            ->groupBy('product_id')
+            ->with('product')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'product_title'   => $item->product->title,
+                    'total_inventory' => (int)$item->total_inventory,
+                ];
+            });
+
+        // دریافت تمام انبارها و محاسبه موجودی هر کدام براساس نتایج فیلتر شده
+        $warehouses = \App\Models\Warehouse::all();
+        $warehouseCards = $warehouses->map(function($warehouse) use ($query) {
+            $inventory = (clone $query)->where('warehouse_id', $warehouse->id)->sum('stock_count');
+            return [
+                'id'        => $warehouse->id,
+                'name'      => $warehouse->name,
+                'inventory' => $inventory,
+            ];
+        });
+
+        return view('panel.inventory.snap-shot.index', compact(
+            'monthNames',
+            'snap_shots',
+            'snap_shots_grouped',
+            'total_count',
+            'chartData',
+            'barChartData',
+            'warehouseCards'
+        ));
     }
 }
