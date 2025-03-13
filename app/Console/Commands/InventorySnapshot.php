@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Activity;
 use App\Models\Inventory;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -28,7 +29,11 @@ class InventorySnapshot extends Command
                 'warehouse_id'  => $inventory->warehouse_id,
             ]);
         }
-
+        Activity::create([
+            'user_id' => 191,
+            'action' => 'ذخیره ماهانه موجودی انبار',
+            'description' => 'موجودی ماهانه انبار توسط سیستم با موفقیت ذخیره شد'
+        ]);
         $this->info('successfully Imported the inventory count ' . $yesterdayJalali);
     }
 }
