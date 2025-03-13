@@ -58,7 +58,7 @@
                 </li>
             @endcanany
             @canany(['inventory-list','input-reports-list','output-reports-list'])
-                <li class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports','guarantees','guarantees/create','guarantees/{guarantee}/edit']) ? 'active' : '' }}"
+                <li class="{{ active_sidebar(['inventorysnapshot','inventorysnapshot/search','inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports','guarantees','guarantees/create','guarantees/{guarantee}/edit']) ? 'active' : '' }}"
                     data-toggle="tooltip" title="انبار">
                     <a href="#navigationInventory" title="انبار">
                         <i class="icon ti-package "></i>
@@ -555,7 +555,7 @@
             </li>
         </ul>
         <ul id="navigationInventory"
-            class="{{ active_sidebar(['inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports','guarantees','guarantees/create','guarantees/{guarantee}/edit']) ? 'navigation-active' : '' }}">
+            class="{{ active_sidebar(['inventorysnapshot','inventorysnapshot/search','inventory','inventory/create','inventory/{inventory}/edit','search/inventory','inventory-reports','inventory-reports/create','inventory-reports/{inventory_report}/edit','warehouses','warehouses/create','warehouses/{warehouse}/edit','search/inventory-reports','guarantees','guarantees/create','guarantees/{guarantee}/edit']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">انبار</li>
             @can('guarantees-list')
                 <li>
@@ -567,6 +567,10 @@
                 <li>
                     <a class="{{ active_sidebar(['warehouses','warehouses/create','warehouses/{warehouse}/edit']) ? 'active' : '' }}"
                        href="{{ route('warehouses.index') }}">انبار</a>
+                </li>
+                <li>
+                    <a class="{{ active_sidebar(['inventorysnapshot','inventorysnapshot/search',]) ? 'active' : '' }}"
+                       href="{{ route('inventorysnapshot') }}">موجودی ماهانه انبار</a>
                 </li>
             @endcan
             @if(request()->warehouse_id)
@@ -624,7 +628,8 @@
             class="{{ active_sidebar(['app-versions']) ? 'navigation-active' : '' }}">
             <li class="navigation-divider">نسخه های برنامه</li>
             <li>
-                <a class="{{ active_sidebar(['app-versions']) ? 'active' : '' }}" href="{{route('app.versions') }}">نسخه های برنامه</a>
+                <a class="{{ active_sidebar(['app-versions']) ? 'active' : '' }}" href="{{route('app.versions') }}">نسخه
+                    های برنامه</a>
             </li>
         </ul>
     </div>

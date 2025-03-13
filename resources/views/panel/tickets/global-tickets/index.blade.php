@@ -37,9 +37,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-
                                     @foreach($ticketsData['data'] as $key =>  $ticket)
-{{--                                        @dd($ticket)--}}
                                         <tr>
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $ticket['sender_name'] }}</td>
@@ -55,7 +53,7 @@
                                                     <span class="badge bg-warning">درحال بررسی</span>
                                                 @endif
                                             </td>
-                                            <td>{{ verta($ticket['created_at'])->format('H:i - Y/m/d') }}</td>
+                                            <td>{{ verta($ticket['created_at'])->timezone('Asia/Tehran')->format('H:i - Y/m/d') }}</td>
                                             @can('tickets-create')
                                                 <td>
                                                     <a class="btn btn-info btn-floating"

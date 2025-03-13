@@ -32,6 +32,7 @@ use App\Http\Controllers\Panel\IndicatorController;
 use App\Http\Controllers\Panel\InputController;
 use App\Http\Controllers\Panel\InventoryController;
 use App\Http\Controllers\Panel\InventoryReportController;
+use App\Http\Controllers\Panel\InventorySnapshotController;
 use App\Http\Controllers\Panel\InvoiceController;
 use App\Http\Controllers\Panel\LeaveController;
 use App\Http\Controllers\Panel\MandegarPriceController;
@@ -344,6 +345,12 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::get('/download-label', [InventoryReportController::class, 'downloadLabel'])
         ->name('download.label');
 
+    // Inventory SnapShot
+    Route::get('/inventorysnapshot', [InventorySnapshotController::class, 'index'])
+        ->name('inventorysnapshot');
+    Route::get('/inventorysnapshot/search', [InventorySnapshotController::class, 'search'])
+        ->name('inventorysnapshot.search');
+
     // Sale Reports
     Route::resource('sale-reports', SaleReportController::class)->except('show');
     Route::match(['get', 'post'], 'search/sale-reports', [SaleReportController::class, 'search'])->name('sale-reports.search');
@@ -447,7 +454,6 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     // Activity
     Route::match(['get','post'],'activity', [ActivityController::class, 'index'])->name('activity');
     Route::match(['get', 'post'], 'search/activity', [ActivityController::class, 'search'])->name('activity.search');
-
 
     // Delivery Days
     Route::get('delivery-days', [DeliveryDayController::class, 'index'])->name('delivery-days.index');

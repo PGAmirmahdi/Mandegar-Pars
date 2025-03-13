@@ -358,7 +358,7 @@ if (!function_exists('breadcrumb_mapping')) {
             'document_requests' => 'درخواست مدارک',
             'document_request' => 'درخواست مدارک',
             'send' => 'ارسال',
-
+            'inventorysnapshot' => 'گزارش ماهانه انبار'
         ];
     }
 }
