@@ -87,7 +87,7 @@
                                                 {{ $card['inventory'] }}
                                             </h2>
                                             <h6 class="font-size-13 mb-2 font-weight-bold primary-font">
-                                                موجودی انبار {{ $card['name'] }}
+                                                موجودی {{ $card['name'] }}
                                             </h6>
                                         </div>
                                         <div>
