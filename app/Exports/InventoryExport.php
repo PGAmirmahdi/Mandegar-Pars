@@ -44,8 +44,10 @@ class InventoryExport implements FromCollection, WithMapping, WithHeadings, With
     public function map($inventory): array
     {
         return [
-            $inventory->title,
-            $inventory->code,
+            $inventory->product->title,
+            $inventory->product->code,
+            $inventory->product->category->name,
+            $inventory->product->productModels->name,
 //            Inventory::TYPE[$inventory->type],
             (string) $inventory->initial_count,
             (string) $inventory->current_count,
@@ -75,13 +77,14 @@ class InventoryExport implements FromCollection, WithMapping, WithHeadings, With
     public function headings(): array
     {
         return [
-            'A' => 'عنوان کالا',
+            'A' => 'نام کالا',
             'B' => 'کد کالا',
-            'C' => 'نوع کالا',
-            'D' => 'موجودی اولیه',
-            'E' => 'موجودی فعلی',
-            'F' => 'تعداد ورود',
-            'G' => 'تعداد خروج',
+            'C' => 'نام دسته بندی کالا',
+            'D' => 'نام برند',
+            'E' => 'موجودی اولیه',
+            'F' => 'موجودی فعلی',
+            'G' => 'تعداد ورود',
+            'H' => 'تعداد خروج',
         ];
     }
 
