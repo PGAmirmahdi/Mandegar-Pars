@@ -101,8 +101,8 @@ class ApiController extends Controller
                         'colors' => 'black',
                         'counts' => (string)$item2['quantity'], // تبدیل به رشته
                         'units' => 'number',
-                        'prices' => (string)($item2['total'] / $item2['quantity']) * 10 * 110/100, // قیمت واحد
-                        'total_prices' => (string)$item2['total'] * 10 * 110/100, // قیمت کل
+                        'prices' => (string)($item2['total'] / $item2['quantity']) * 10, // قیمت واحد
+                        'total_prices' => (string)$item2['total'] * 10, // قیمت کل
                     ];
                 }, $data['items']);
             }
