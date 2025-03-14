@@ -14,59 +14,67 @@ use Carbon\Carbon;
 
 class AnalyseController extends Controller
 {
-
-
     public function index(Request $request)
     {
-        $snapshotsQuery = InventorySnapshot::query()
+        $analysesQuery = Analyse::query()
             ->when($request->start_date && $request->end_date, function ($query) use ($request) {
                 $query->where(function ($subQuery) use ($request) {
-                    $subQuery->where('snapshot_date', '<=', $request->end_date)
-                        ->where('snapshot_date', '>=', $request->start_date);
+                    $subQuery->where('date', '<=', $request->end_date)
+                        ->where('to_date', '>=', $request->start_date);
                 });
             })
-            ->when($request->category && $request->category !== 'all', function ($query) use ($request) {
-                $query->whereHas('product', function ($q) use ($request) {
-                    $q->where('category_id', $request->category);
-                });
+            ->when($request->category_id && $request->category_id !== 'all', function ($query) use ($request) {
+                $query->where('category_id', $request->category_id);
+
+
+
+
+
+
+
             })
-            ->when($request->brand && $request->brand !== 'all', function ($query) use ($request) {
-                $query->whereHas('product.productModels', function ($q) use ($request) {
-                    $q->where('id', $request->brand);
-                });
-            })
-            ->when($request->product && $request->product !== 'all', function ($query) use ($request) {
-                $query->where('product_id', $request->product);
+            ->when($request->brand_id && $request->brand_id !== 'all', function ($query) use ($request) {
+                $query->where('brand_id', $request->brand_id);
             });
 
-        // دریافت موجودی‌های فیلتر شده
-        $snapshots = $snapshotsQuery->get();
+        // دریافت آنالیزهای فیلتر شده
+        $analyses = $analysesQuery->get();
 
-        // گروه‌بندی بر اساس ماه شمسی (فرض می‌کنیم snapshot_date به فرم "YYYY/MM/DD" ذخیره شده)
-        $snapshotsGrouped = $snapshots->groupBy(function ($snapshot) {
-            $parts = explode('/', $snapshot->snapshot_date);
-            return isset($parts[1]) ? (int)$parts[1] : null;
+        // گروه‌بندی بر اساس ماه (برای نمایش در جدول)
+        $analysesGrouped = $analyses->groupBy(function ($analyse) {
+            return Carbon::parse($analyse->date)->month;
+
         })->sortKeysDesc();
 
+        // دریافت آرایه نام ماه‌ها به فارسی
         $monthNames = [
-            1  => 'فروردین',
-            2  => 'اردیبهشت',
-            3  => 'خرداد',
-            4  => 'تیر',
-            5  => 'مرداد',
-            6  => 'شهریور',
-            7  => 'مهر',
-            8  => 'آبان',
-            9  => 'آذر',
+            1 => 'فروردین',
+            2 => 'اردیبهشت',
+            3 => 'خرداد',
+            4 => 'تیر',
+            5 => 'مرداد',
+            6 => 'شهریور',
+            7 => 'مهر',
+            8 => 'آبان',
+            9 => 'آذر',
             10 => 'دی',
             11 => 'بهمن',
             12 => 'اسفند',
         ];
 
-        $categories = \App\Models\Category::all();
-        $models     = \App\Models\ProductModel::all();
+        // محاسبه مجموع‌ها در بازه انتخابی
+        $analysisIds = $analyses->pluck('id')->toArray();
+        $aggregate = null;
+        if (count($analysisIds)) {
+            $aggregate = \App\Models\AnalyseProducts::whereIn('analyse_id', $analysisIds)
+                ->selectRaw('SUM(quantity) as total_quantity, SUM(sold_count) as total_sold, SUM(storage_count) as total_storage')
+                ->first();
+        }
 
-        return view('panel.inventory.snap-shot.index', compact('snapshotsGrouped', 'categories', 'models', 'monthNames'));
+        $categories = Category::all();
+        $models = ProductModel::all();
+
+        return view('panel.analyse.index', compact('analysesGrouped', 'categories', 'models', 'monthNames', 'aggregate'));
     }
 
     public function show(Request $request, $id)
