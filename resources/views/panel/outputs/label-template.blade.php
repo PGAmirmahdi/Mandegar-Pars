@@ -128,7 +128,7 @@
 <button id="downloadBtn" style="padding-top: 10px !important;">دانلود لیبل به صورت تصویر</button>
 
 <!-- اضافه کردن html2canvas از CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="{{asset('assets/js/html2canvas.min.js')}}"></script>
 <script>
     document.getElementById('downloadBtn').addEventListener('click', function () {
         html2canvas(document.getElementById('label')).then(function (canvas) {
