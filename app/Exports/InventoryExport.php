@@ -46,7 +46,7 @@ class InventoryExport implements FromCollection, WithMapping, WithHeadings, With
         return [
             $inventory->title,
             $inventory->code,
-            Inventory::TYPE[$inventory->type],
+//            Inventory::TYPE[$inventory->type],
             (string) $inventory->initial_count,
             (string) $inventory->current_count,
             (string) $inventory->getInputCount(),
