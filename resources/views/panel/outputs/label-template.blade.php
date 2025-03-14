@@ -27,8 +27,8 @@
 
         /* تنظیم عنصر لیبل به صورت مربع 600px x 600px */
         .label {
-            width: 1280px;
-            height: 1280px;
+            width: 1200px;
+            height: 1200px;
             margin: 20px auto;
             box-sizing: border-box;
             padding: 10px;
@@ -73,7 +73,7 @@
             display: block;
             margin: 20px auto;
             padding: 10px 20px;
-            font-size: 16px;
+            font-size: 26px;
             font-family: sans-serif;
             background-color: #007bff;
             color: #fff;
@@ -94,38 +94,38 @@
 </head>
 <body>
 <!-- لیبل سفارش -->
+<!-- دکمه دانلود -->
+<button id="downloadBtn" style="padding-top: 10px !important;font-size: 20px">دانلود لیبل به صورت تصویر</button>
+
 <div class="label p-2" id="label">
     <div class="out">
         <div class="khat">
             <div class="row justify-content-center align-items-center w-100">
                 <div class="d-flex flex-column justify-content-center align-items-center No2" style="gap: 0px;">
-                    <img src="{{ asset('/assets/media/image/logo-lg.png') }}" alt="Logo" width="130" height="125">
-                    <p class="font-weight-bolder text-center">صنایع ماشین های اداری</p>
-                    <h1 class="text-center" style="margin: 0px;font-family:'MyFontBold' ">ماندگار پارس</h1>
+                    <img src="{{ asset('/assets/media/image/logo-lg.png') }}" alt="Logo" width="380" height="375">
+                    <p class="font-weight-bolder text-center" style="font-size: 30px">صنایع ماشین های اداری</p>
+                    <h1 class="text-center" style="margin: 0px;font-family:'MyFontBold';font-size: 50px">ماندگار پارس</h1>
                 </div>
                 <div style="display: flex;flex-direction: column;justify-content: start;align-items: start;gap: 5px">
-                    <p style="font-size: 28px;margin: 0px">فرستنده: ماندگار پارس</p>
-                    <p style="font-size: 23px;margin: 0px">شماره تماس: 09029463357</p>
-                    <span>
+                    <p style="font-size: 47px;margin: 0px">فرستنده: ماندگار پارس</p>
+                    <p style="font-size: 43px;margin: 0px">شماره تماس: 09029463357</p>
+                    <span style="font-size: 28px">
                     آدرس: تهران، صفادشت، شهرک صنعتی صفادشت<br>
                     خیابان خرداد، بین خیابان 5 و 6 غربی، پلاک 212
                 </span>
-                    <h5 style="font-family: 'MyFontBold';margin: 5px;width: 100%;display: flex;flex-direction: row;justify-content:center;align-items: center;">((با تشکر از خرید شما))</h5>
+                    <h5 style="font-family: 'MyFontBold';margin: 5px;width: 100%;display: flex;flex-direction: row;justify-content:center;align-items: center;font-size: 43px">((با تشکر از خرید شما))</h5>
                 </div>
             </div>
             <!-- اطلاعات مشتری -->
-            <div class="flex-column" style="padding-right: 20px">
-                <p style="font-size: 18px">گیرنده: {{ $invoice->customer->name }}</p>
-                <p style="font-size: 18px">شماره تماس: {{ $invoice->customer->phone1 }}</p>
-                <p style="font-size: 18px">کد پستی: {{ $invoice->customer->postal_code }}</p>
-                <p style="font-size: 18px">آدرس: {{ $invoice->customer->address1 }}</p>
+            <div class="flex-column" style="padding-right: 50px">
+                <p style="font-size: 33px">گیرنده: {{ $invoice->customer->name }}</p>
+                <p style="font-size: 33px">شماره تماس: {{ $invoice->customer->phone1 }}</p>
+                <p style="font-size: 33px">کد پستی: {{ $invoice->customer->postal_code }}</p>
+                <p style="font-size: 33px">آدرس: {{ $invoice->customer->address1 }}</p>
             </div>
         </div>
     </div>
 </div>
-
-<!-- دکمه دانلود -->
-<button id="downloadBtn" style="padding-top: 10px !important;">دانلود لیبل به صورت تصویر</button>
 
 <!-- اضافه کردن html2canvas از CDN -->
 <script src="{{asset('assets/js/html2canvas.min.js')}}"></script>
