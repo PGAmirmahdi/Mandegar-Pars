@@ -27,8 +27,8 @@
 
         /* تنظیم عنصر لیبل به صورت مربع 600px x 600px */
         .label {
-            width: 600px;
-            height: 600px;
+            width: 1280px;
+            height: 1280px;
             margin: 20px auto;
             box-sizing: border-box;
             padding: 10px;
