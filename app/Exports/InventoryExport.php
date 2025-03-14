@@ -69,7 +69,7 @@ class InventoryExport implements FromCollection, WithMapping, WithHeadings, With
 
                 $sheet->getStyle('A1:XFD1048576')->getFont()->setName('B Nazanin');
 
-                $event->sheet->mergeCells('A1:G1')->setCellValue('A1',$this->warehouse_name);
+                $event->sheet->mergeCells('A1:H1')->setCellValue('A1',$this->warehouse_name);
             },
         ];
     }
