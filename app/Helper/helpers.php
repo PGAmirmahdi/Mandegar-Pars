@@ -360,6 +360,7 @@ if (!function_exists('breadcrumb_mapping')) {
             'send' => 'ارسال',
             'inventorysnapshot' => 'گزارش ماهانه انبار',
             'bijak' => 'بیجک',
+            'inout' => 'ورود-خروج',
         ];
     }
 }

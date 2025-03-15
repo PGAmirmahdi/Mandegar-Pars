@@ -443,4 +443,17 @@ class InventoryReportController extends Controller
         return view('panel.outputs.label-template', compact('invoice'));
     }
 
+    public function inout($id, Request $request)
+    {
+        $warehouse_id = $request->warehouse_id;
+        $inventory = Inventory::findOrFail($id);
+        $reports = \App\Models\InOut::join('inventory_reports', 'in_outs.inventory_report_id', '=', 'inventory_reports.id')
+            ->where('in_outs.inventory_id', $id)
+            ->where('inventory_reports.warehouse_id', 1)
+            ->orderByDesc('inventory_reports.id')
+            ->get();
+
+        return view('panel.inventory.inout', compact('inventory', 'reports', 'warehouse_id'));
+    }
+
 }

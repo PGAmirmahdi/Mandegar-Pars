@@ -98,7 +98,7 @@
                     <button type="submit" class="btn btn-primary" form="search_form">جستجو</button>
                 </div>
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive overflow-auto">
                 <table class="table table-striped table-bordered dataTable dtr-inline text-center">
                     <thead>
                     <tr>
@@ -112,6 +112,7 @@
                         <th>تعداد ورود</th>
                         <th>تعداد خروج</th>
                         <th>تاریخ ایجاد</th>
+                        <th>گزارش ورود/خروج</th>
                         @can('inventory-edit')
                             <th>جابجایی</th>
                             <th>ویرایش</th>
@@ -134,6 +135,11 @@
                             <td>{{ number_format($item->getInputCount()) }}</td>
                             <td>{{ number_format($item->getOutputCount()) }}</td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
+                            <td>
+                                <a class="btn btn-success btn-floating" href="{{ route('inventory.inout', [$item->id, 'warehouse_id' => $warehouse_id]) }}">
+                                    <i class="fa fa-car-side"></i>
+                                </a>
+                            </td>
                             @can('inventory-edit')
                                 <td>
                                     <a class="btn btn-primary btn-floating btn_move" href="#moveModal" data-toggle="modal" data-id="{{ $item->id }}">

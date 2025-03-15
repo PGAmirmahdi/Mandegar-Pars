@@ -20,4 +20,8 @@ class InOut extends Model
     {
         return $this->belongsTo(Inventory::class);
     }
+    public function inventoryReport()
+    {
+        return $this->belongsTo(InventoryReport::class, 'inventory_report_id');
+    }
 }

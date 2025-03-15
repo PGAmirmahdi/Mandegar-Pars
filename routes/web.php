@@ -345,6 +345,8 @@ Route::middleware('auth')->prefix('/panel')->group(function () {
     Route::post('inventory-move', [InventoryController::class, 'move'])->name('inventory.move');
     Route::get('/download-label', [InventoryReportController::class, 'downloadLabel'])
         ->name('download.label');
+    Route::get('/inventory/inout/{id}', [InventoryReportController::class, 'inout'])->name('inventory.inout');
+
 
     // Inventory SnapShot
     Route::get('/inventorysnapshot', [InventorySnapshotController::class, 'index'])
