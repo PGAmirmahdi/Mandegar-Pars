@@ -8,14 +8,14 @@
         /* تعریف فونت با استفاده از @font-face */
         @font-face {
             font-family: 'MyFont';
-            src: url("{{ asset('assets/fonts/farsi-fonts/vazir-400.ttf') }}") format('truetype');
+            src: url("{{ asset('assets/fonts/farsi-fonts/iran-yekan-400.ttf') }}") format('truetype');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'MyFontBold';
-            src: url("{{ asset('assets/fonts/farsi-fonts/vazir-700.ttf') }}") format('truetype');
+            src: url("{{ asset('assets/fonts/farsi-fonts/iran-yekan-700.ttf') }}") format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -23,12 +23,13 @@
         /* استفاده از فونت تعریف‌شده برای کل صفحه */
         body {
             font-family: 'MyFont', sans-serif;
+            zoom: 20%;
         }
 
         /* تنظیم عنصر لیبل به صورت مربع 600px x 600px */
         .label {
-            width: 1200px;
-            height: 1200px;
+            width: 4500px;
+            height: 4500px;
             margin: 20px auto;
             box-sizing: border-box;
             padding: 10px;
@@ -95,33 +96,33 @@
 <body>
 <!-- لیبل سفارش -->
 <!-- دکمه دانلود -->
-<button id="downloadBtn" style="padding-top: 10px !important;font-size: 20px">دانلود لیبل به صورت تصویر</button>
+<button id="downloadBtn" style="padding-top: 10px !important;font-size: 70px !important;">دانلود لیبل به صورت تصویر</button>
 
 <div class="label p-2" id="label">
     <div class="out">
         <div class="khat">
             <div class="row justify-content-center align-items-center w-100">
                 <div class="d-flex flex-column justify-content-center align-items-center No2" style="gap: 0px;">
-                    <img src="{{ asset('/assets/media/image/logo-lg.png') }}" alt="Logo" width="380" height="375">
-                    <p class="font-weight-bolder text-center" style="font-size: 30px">صنایع ماشین های اداری</p>
-                    <h1 class="text-center" style="margin: 0px;font-family:'MyFontBold';font-size: 50px">ماندگار پارس</h1>
+                    <img src="{{ asset('/assets/media/image/logo-lg.png') }}" alt="Logo" width="1200" height="1175">
+                    <p class="font-weight-bolder text-center" style="font-size: 100px">صنایع ماشین های اداری</p>
+                    <h1 class="text-center" style="margin: 0px;font-family:'MyFontBold';font-size: 210px">ماندگار پارس</h1>
                 </div>
                 <div style="display: flex;flex-direction: column;justify-content: start;align-items: start;gap: 5px">
-                    <p style="font-size: 47px;margin: 0px">فرستنده: ماندگار پارس</p>
-                    <p style="font-size: 43px;margin: 0px">شماره تماس: 09029463357</p>
-                    <span style="font-size: 28px">
+                    <p style="font-size: 170px;margin: 0px">فرستنده: ماندگار پارس</p>
+                    <p style="font-size: 170px;margin: 0px">شماره تماس: 09029463357</p>
+                    <span style="font-size: 100px">
                     آدرس: تهران، صفادشت، شهرک صنعتی صفادشت<br>
                     خیابان خرداد، بین خیابان 5 و 6 غربی، پلاک 212
                 </span>
-                    <h5 style="font-family: 'MyFontBold';margin: 5px;width: 100%;display: flex;flex-direction: row;justify-content:center;align-items: center;font-size: 43px">((با تشکر از خرید شما))</h5>
+                    <h5 style="font-family: 'MyFontBold';margin: 5px;width: 100%;display: flex;flex-direction: row;justify-content:center;align-items: center;font-size: 133px;margin-top: 300px">((با تشکر از خرید شما))</h5>
                 </div>
             </div>
             <!-- اطلاعات مشتری -->
-            <div class="flex-column" style="padding-right: 50px">
-                <p style="font-size: 33px">گیرنده: {{ $invoice->customer->name }}</p>
-                <p style="font-size: 33px">شماره تماس: {{ $invoice->customer->phone1 }}</p>
-                <p style="font-size: 33px">کد پستی: {{ $invoice->customer->postal_code }}</p>
-                <p style="font-size: 33px">آدرس: {{ $invoice->customer->address1 }}</p>
+            <div class="flex-column" style="padding-right: 150px">
+                <p style="font-size: 110px">گیرنده: {{ $invoice->customer->name }}</p>
+                <p style="font-size: 110px">شماره تماس: {{ $invoice->customer->phone1 }}</p>
+                <p style="font-size: 110px">کد پستی: {{ $invoice->customer->postal_code }}</p>
+                <p style="font-size: 110px">آدرس: {{ $invoice->customer->address1 }}</p>
             </div>
         </div>
     </div>
@@ -131,16 +132,26 @@
 <script src="{{asset('assets/js/html2canvas.min.js')}}"></script>
 <script>
     document.getElementById('downloadBtn').addEventListener('click', function () {
-        html2canvas(document.getElementById('label')).then(function (canvas) {
-            var imgData = canvas.toDataURL("image/png");
-            var downloadLink = document.createElement('a');
-            downloadLink.href = imgData;
-            downloadLink.download = "label.png";
-            // اضافه کردن لینک به بدنه، کلیک خودکار و سپس حذف آن
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-        });
+        // زوم صفحه رو به 100% تغییر بده
+        document.body.style.zoom = "100%";
+
+        // یه تاخیر کوچک برای اعمال تغییرات
+        setTimeout(() => {
+            html2canvas(document.getElementById('label')).then(function (canvas) {
+                var imgData = canvas.toDataURL("image/png");
+                var downloadLink = document.createElement('a');
+                downloadLink.href = imgData;
+                downloadLink.download = "label.png";
+
+                // اضافه کردن لینک به بدنه، کلیک خودکار و سپس حذف آن
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+
+                // بعد از دانلود، دوباره زوم رو برگردون به 50%
+                document.body.style.zoom = "20%";
+            });
+        }, 100); // تاخیر 200 میلی‌ثانیه برای اطمینان از تغییر زوم
     });
 </script>
 </body>
