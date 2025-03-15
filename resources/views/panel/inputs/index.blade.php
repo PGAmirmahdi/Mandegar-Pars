@@ -6,7 +6,8 @@
             <div class="card-title d-flex justify-content-between align-items-center">
                 <h6>ورود</h6>
                 @can('input-reports-create')
-                    <a href="{{ route('inventory-reports.create', ['type' => 'input', 'warehouse_id' => request()->warehouse_id]) }}" class="btn btn-primary">
+                    <a href="{{ route('inventory-reports.create', ['type' => 'input', 'warehouse_id' => request()->warehouse_id]) }}"
+                       class="btn btn-primary">
                         <i class="fa fa-plus mr-2"></i>
                         ثبت ورودی
                     </a>
@@ -18,10 +19,12 @@
             </form>
             <div class="row mb-3">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
-                    <select name="inventory_id" form="search_form" class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
+                    <select name="inventory_id" form="search_form"
+                            class="js-example-basic-single select2-hidden-accessible" data-select2-id="1">
                         <option value="all">فیلتر بر اساس کالا (همه)</option>
                         @foreach(\App\Models\Inventory::where('warehouse_id', $warehouse_id)->get() as $inventory)
-                            <option value="{{ $inventory->id }}" {{ request()->inventory_id == $inventory->id ? 'selected' : '' }}>
+                            <option
+                                value="{{ $inventory->id }}" {{ request()->inventory_id == $inventory->id ? 'selected' : '' }}>
                                 {{ $inventory->product->title }}
                             </option>
                         @endforeach
@@ -39,6 +42,7 @@
                         <th>تحویل دهنده</th>
                         <th>تاریخ ورود</th>
                         <th>تاریخ ثبت</th>
+                        <th>حواله ورود</th>
                         <th>رسید انبار</th>
                         @can('input-reports-edit')
                             <th>ویرایش</th>
@@ -56,20 +60,29 @@
                             <td>{{ verta($item->date)->format('Y/m/d') }}</td>
                             <td>{{ verta($item->created_at)->format('H:i - Y/m/d') }}</td>
                             <td>
-                                <a class="btn btn-info btn-floating" href="{{ route('inventory-reports.show', $item) }}">
+                                <a class="btn btn-primary btn-floating @if(!$item->file) disabled @endif" href="{{ asset($item->file) }}" @if(!$item->file) disabled @endif target="_blank">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-info btn-floating"
+                                   href="{{ route('inventory-reports.show', $item) }}">
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </td>
                             @can('input-reports-edit')
                                 <td>
-                                    <a class="btn btn-warning btn-floating" href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'input', 'warehouse_id' => request()->warehouse_id]) }}">
+                                    <a class="btn btn-warning btn-floating"
+                                       href="{{ route('inventory-reports.edit', ['inventory_report' => $item->id, 'type' => 'input', 'warehouse_id' => request()->warehouse_id]) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                             @endcan
                             @can('input-reports-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow" data-url="{{ route('inventory-reports.destroy',$item->id) }}" data-id="{{ $item->id }}">
+                                    <button class="btn btn-danger btn-floating trashRow"
+                                            data-url="{{ route('inventory-reports.destroy',$item->id) }}"
+                                            data-id="{{ $item->id }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>

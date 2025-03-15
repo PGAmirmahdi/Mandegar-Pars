@@ -146,7 +146,11 @@ class InventoryReportController extends Controller
 
         $serial = 'MP'.$request->guarantee_serial;
         $guarantee_id = $request->guarantee_serial ? Guarantee::where('serial', $serial)->first()->id : null;
-
+        $filePath = null;
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = upload_file($file, 'uploads');
+        }
         // create report
         $report = InventoryReport::create([
             'warehouse_id' => $request->warehouse_id,
@@ -156,6 +160,7 @@ class InventoryReportController extends Controller
             'person' => $request->person,
             'description' => $request->description,
             'date' => $date,
+            'file' => $filePath,
         ]);
 
         $this->createInOut($report, $request, $type);

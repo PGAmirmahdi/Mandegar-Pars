@@ -15,11 +15,11 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="/assets/media/image/favicon.png">
     <!-- Drop Zone -->
-{{--    <link--}}
-{{--        rel="stylesheet"--}}
-{{--        href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"--}}
-{{--        type="text/css"--}}
-{{--    />--}}
+    <link
+        rel="stylesheet"
+        href="{{asset('css/dropzone.min.css')}}"
+        type="text/css"
+    />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="manifest" href="/manifest.json">
     <!-- Theme Color -->
