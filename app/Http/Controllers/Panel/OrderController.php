@@ -8,6 +8,8 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\CustomerOrderStatus;
+use App\Models\Inventory;
+use App\Models\InventoryReport;
 use App\Models\Invoice;
 use App\Models\InvoiceAction;
 use App\Models\Order;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Notifications\SendMessage;
 use Illuminate\Support\Facades\Notification;
+
 class OrderController extends Controller
 {
 
@@ -54,19 +57,7 @@ class OrderController extends Controller
         $orders->when(request()->query('created_in') && request()->query('created_in') !== 'all', function ($query) {
             $query->where('created_in', request()->query('created_in'));
         });
-
-        if (auth()->user()->isAdmin() || auth()->user()->isAccountant() || auth()->user()->isCEO() || auth()->user()->isPartnerCity()) {
-            $orders = $orders->latest()->paginate(30);
-        } else {
-            $userType = $this->getUserType(auth()->user());
-
-            $orders = $orders->where(function ($query) use ($userType) {
-                $query->where('type', $userType)
-                    ->orWhere('user_id', auth()->id());
-            })->latest()->paginate(30);
-
-        }
-
+        $orders = $orders->latest()->paginate(30);
         $customers = Customer::all(['id', 'name']);
 
 
@@ -175,7 +166,7 @@ class OrderController extends Controller
         return back();
     }
 
-    private function    sortData($request)
+    private function sortData($request)
     {
         $products = [];
         if (isset($request->products) && is_array($request->products)) {
@@ -198,11 +189,11 @@ class OrderController extends Controller
     public function orderAction(Order $order)
     {
 
-        if (!Gate::any(['accountant','PartnerCity']) && $order->action == null) {
+        if (!Gate::any(['accountant', 'PartnerCity']) && $order->action == null) {
             return back();
         }
 
-        if (!Gate::any(['sales-manager', 'accountant','PartnerCity','Organ','buying_engineering','ceo','admin'])) {
+        if (!Gate::any(['sales-manager', 'accountant', 'PartnerCity', 'Organ', 'buying_engineering', 'ceo', 'admin', 'warehouse-keeper'])) {
             return back();
         }
 
@@ -211,9 +202,7 @@ class OrderController extends Controller
 
     public function actionStore(Order $invoice, Request $request)
     {
-//        dd("test");
         $status = $request->status;
-
 
         if ($request->has('send_to_accountant')) {
             if (!$request->has('confirm')) {
@@ -221,132 +210,153 @@ class OrderController extends Controller
                 return back();
             }
 
-            $invoice->action()->updateOrCreate([
-                'order_id' => $invoice->id
-            ], [
-                'acceptor_id' => auth()->id(),
-                'confirm' => 1
-            ]);
+            $invoice->action()->updateOrCreate(
+                ['order_id' => $invoice->id],
+                [
+                    'acceptor_id' => auth()->id(),
+                    'confirm' => 1
+                ]
+            );
 
             $title = 'ثبت و ارسال به حسابدار';
             $message = 'تاییدیه شما به حسابداری ارسال شد';
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ارسال به حسابدار',
-                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  سفارش مشتری ' . ($invoice->customer->name) . ' را به حسابدار ارسال کرد.',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش مشتری ' . ($invoice->customer->name) . ' را به حسابدار ارسال کرد.',
             ]);
-            //send notif to accountants
+
+            // ارسال نوتیف به حسابداران
             $permissionsId = Permission::where('name', 'accountant')->pluck('id');
             $roles_id = Role::whereHas('permissions', function ($q) use ($permissionsId) {
                 $q->whereIn('permission_id', $permissionsId);
             })->pluck('id');
-            $title_message='تایید پیش فاکتور';
+            $title_message = 'تایید پیش فاکتور';
             $url = route('order.action', $invoice->id);
             $notif_message = "پیش فاکتور سفارش {$invoice->customer->name} مورد تایید قرار گرفت";
             $accountants = User::whereIn('role_id', $roles_id)->get();
-          Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
+            Notification::send($accountants, new SendMessage($title_message, $notif_message, $url));
 
             $invoice->order_status()->updateOrCreate(
                 ['status' => 'awaiting_confirm_by_sales_manager'],
                 ['orders' => 4, 'status' => 'awaiting_confirm_by_sales_manager']
             );
-            //end send notif to accountants
-
-
         } elseif ($request->has('send_to_warehouse')) {
             $request->validate(['factor_file' => 'required|mimes:pdf|max:5000']);
 
             $file = upload_file_factor($request->factor_file, 'Action/Factors');
 
-            $invoice->action()->updateOrCreate([
-                'order_id' => $invoice->id
-            ], [
-                'factor_file' => $file,
-                'sent_to_warehouse' => 1
-            ]);
+            $invoice->action()->updateOrCreate(
+                ['order_id' => $invoice->id],
+                [
+                    'factor_file' => $file,
+                    'sent_to_warehouse' => 1
+                ]
+            );
+            $invoice->order_status()->updateOrCreate(
+                ['status' => 'send_invoice'],
+                ['orders' => 8, 'status' => 'send_invoice']
+            );
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ارسال به انبار',
-                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  سفارش مشتری ' . ($invoice->customer->name) . ' را به انبار ارسال کرد.',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش مشتری ' . ($invoice->customer->name) . ' را به انبار ارسال کرد.',
             ]);
             $title = 'ثبت و ارسال به انبار';
             $message = 'فاکتور مورد نظر با موفقیت به انبار ارسال شد';
 
             $invoice->update(['status' => 'invoiced']);
 
-            //send notif to warehouse-keeper and sales-manager
+            // ارسال نوتیف به انباردار و مدیر فروش
             $permissionsId = Permission::whereIn('name', ['warehouse-keeper', 'sales-manager'])->pluck('id');
             $roles_id = Role::whereHas('permissions', function ($q) use ($permissionsId) {
                 $q->whereIn('permission_id', $permissionsId);
             })->pluck('id');
-            $title_message='دریافت پیش فاکتور';
+            $title_message = 'دریافت پیش فاکتور';
             $url = route('invoices.index');
             $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
             $accountants = User::whereIn('role_id', $roles_id)->get();
-          Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
-            //end send notif to warehouse-keeper and sales-manager
+            Notification::send($accountants, new SendMessage($title_message, $notif_message, $url));
+        } elseif ($request->has('warehouse_confirm')) {
+            // مرحله تایید انبار دار
+            $invoice->action()->updateOrCreate(
+                ['order_id' => $invoice->id],
+                [
+                    'status' => 'inventory',
+                ]
+            );
+            $invoice->order_status()->updateOrCreate(
+                ['status' => 'accept_inventory'],
+                ['orders' => 9, 'status' => 'accept_inventory']
+            );
+            $invoice->update(['status' => 'inventory']);
+            Activity::create([
+                'user_id' => auth()->id(),
+                'action' => 'تایید انبار دار',
+                'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش مشتری ' . ($invoice->customer->name) . ' را تایید انبار کرد.',
+            ]);
+            $title = 'تایید انبار دار';
+            $message = 'سفارش مورد نظر با موفقیت توسط انبار تایید شد';
         } else {
-
             if ($status == 'invoice') {
                 $request->validate(['invoice_file' => 'required|mimes:pdf|max:5000']);
 
-
                 $file = upload_file_factor($request->invoice_file, 'Action/Invoices');
-                $invoice->action()->updateOrCreate([
-                    'order_id' => $invoice->id
-                ], [
-                    'status' => $status,
-                    'invoice_file' => $file
-                ]);
+                $invoice->action()->updateOrCreate(
+                    ['order_id' => $invoice->id],
+                    [
+                        'status' => $status,
+                        'invoice_file' => $file
+                    ]
+                );
                 Activity::create([
                     'user_id' => auth()->id(),
                     'action' => 'ارسال به همکار فروش',
-                    'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  سفارش مشتری ' . ($invoice->customer->name) . ' را به همکار فروش ارسال کرد.',
+                    'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش مشتری ' . ($invoice->customer->name) . ' را به همکار فروش ارسال کرد.',
                 ]);
                 $title = 'ثبت و ارسال پیش فاکتور';
                 $message = 'پیش فاکتور مورد نظر با موفقیت به همکار فروش ارسال شد';
 
-                //send notif
+                // ارسال نوتیف
                 $roles_id = Role::whereHas('permissions', function ($q) {
                     $q->where('name', 'sales-manager');
                 })->pluck('id');
                 $sales_manager = User::where('id', '!=', auth()->id())->whereIn('role_id', $roles_id)->get();
-                $title_message='دریافت پیش فاکتور';
+                $title_message = 'دریافت پیش فاکتور';
                 $url = route('order.action', $invoice->id);
                 $notif_message = "پیش فاکتور {$invoice->customer->name} دریافت شد";
-              Notification::send($invoice->user, new SendMessage($title_message,$notif_message, $url));
-              Notification::send($sales_manager, new SendMessage($title_message,$notif_message, $url));
-                //end send notif
+                Notification::send($invoice->user, new SendMessage($title_message, $notif_message, $url));
+                Notification::send($sales_manager, new SendMessage($title_message, $notif_message, $url));
             } else {
                 $request->validate(['factor_file' => 'required|mimes:pdf|max:5000']);
 
                 $file = upload_file_factor($request->factor_file, 'Action/Factors');
-                $invoice->action()->updateOrCreate([
-                    'order_id' => $invoice->id
-                ], [
-                    'status' => $status,
-                    'factor_file' => $file,
-                    'sent_to_warehouse' => 1
-                ]);
+                $invoice->action()->updateOrCreate(
+                    ['order_id' => $invoice->id],
+                    [
+                        'status' => $status,
+                        'factor_file' => $file,
+                        'sent_to_warehouse' => 1
+                    ]
+                );
                 Activity::create([
                     'user_id' => auth()->id(),
                     'action' => 'ارسال به انبار',
-                    'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ')  سفارش مشتری ' . ($invoice->customer->name) . ' را به انبار ارسال کرد.',
+                    'description' => 'کاربر ' . auth()->user()->family . '(' . Auth::user()->role->label . ') سفارش مشتری ' . ($invoice->customer->name) . ' را به انبار ارسال کرد.',
                 ]);
                 $title = 'ثبت و ارسال فاکتور';
                 $message = 'فاکتور مورد نظر با موفقیت به انبار ارسال شد';
 
-                //send notif to warehouse-keeper and sales-manager
+                // ارسال نوتیف به انباردار و مدیر فروش
                 $permissionsId = Permission::whereIn('name', ['warehouse-keeper', 'sales-manager'])->pluck('id');
                 $roles_id = Role::whereHas('permissions', function ($q) use ($permissionsId) {
                     $q->whereIn('permission_id', $permissionsId);
                 })->pluck('id');
-                $title_message='دریافت پیش فاکتور';
+                $title_message = 'دریافت پیش فاکتور';
                 $url = route('invoices.index');
                 $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
                 $accountants = User::whereIn('role_id', $roles_id)->get();
-              Notification::send($accountants, new SendMessage($title_message,$notif_message, $url));
-                //end send notif to warehouse-keeper and sales-manager
+                Notification::send($accountants, new SendMessage($title_message, $notif_message, $url));
             }
 
             $status = $status == 'invoice' ? 'pending' : 'invoiced';
@@ -417,11 +427,11 @@ class OrderController extends Controller
             $q->where('name', 'accountant');
         })->pluck('id');
         $accountants = User::where('id', '!=', auth()->id())->whereIn('role_id', $roles_id)->get();
-        $title= "ثبت سفارش";
+        $title = "ثبت سفارش";
         $url = route('invoices.edit', $order->id);
         $message = "سفارش '{$order->customer->name}' ثبت شد";
 
-        Notification::send($accountants, new SendMessage($title,$message, $url));
+        Notification::send($accountants, new SendMessage($title, $message, $url));
     }
 
     private function send_notif_to_sales_manager(Order $order)
@@ -430,11 +440,11 @@ class OrderController extends Controller
             $q->where('name', 'sales-manager');
         })->pluck('id');
         $managers = User::where('id', '!=', auth()->id())->whereIn('role_id', $roles_id)->get();
-        $title='ثبت سفارش';
+        $title = 'ثبت سفارش';
         $url = route('invoices.edit', $order->id);
         $message = "سفارش '{$order->customer->name}' ثبت شد";
 
-        Notification::send($managers, new SendMessage($title,$message, $url));
+        Notification::send($managers, new SendMessage($title, $message, $url));
     }
 
 
@@ -529,8 +539,8 @@ class OrderController extends Controller
 
             $data = [
                 'customer' => $order->customer,
-                'payment_type'=> $order->payment_type,
-                'created_in'=> $order->created_in,
+                'payment_type' => $order->payment_type,
+                'created_in' => $order->created_in,
                 'order' => $mergedProducts,
                 'total_price' => $total_price,
                 'description' => $order->description,
@@ -549,10 +559,10 @@ class OrderController extends Controller
             'data' => null
         ];
         return response()->json($response, 200);
-        }
+    }
 
 
-        public function calculateTotal($products)
+    public function calculateTotal($products)
     {
         $sum_total_price = 0;
         if (!empty($products)) {
@@ -576,11 +586,71 @@ class OrderController extends Controller
         if ($user->role->name == 'online_sales') {
             $type = 'online_sale';
         }
-        if ($user->role->name == 'systematic_sales') {
+        if ($user->role->name == 'setad_sale') {
             $type = 'setad';
         }
         return $type;
     }
 
+    public function docs($orderId)
+    {
+        // دریافت سفارش یا برگرداندن 404 در صورت عدم وجود
+        $order = \App\Models\Order::findOrFail($orderId);
 
+        // دریافت عملیات سفارش (OrderAction)
+        $orderAction = \App\Models\OrderAction::where('order_id', $orderId)->first();
+
+        // اگر عملیات سفارش وجود ندارد، پاسخ خالی برگردانید
+        if (!$orderAction) {
+            return response()->json([
+                'files'    => [],
+                'exit_url' => '#'
+            ]);
+        }
+
+        // دریافت فاکتور مرتبط با سفارش
+        $invoice = $order->invoice ?? \App\Models\Invoice::where('order_id', $orderId)->first();
+
+        // دریافت گزارش انبار مرتبط (در صورت وجود)
+        $inventoryReport = $invoice ? \App\Models\InventoryReport::where('invoice_id', $invoice->id)->first() : null;
+
+        // دریافت نام فایل‌های پیش فاکتور و فاکتور از عملیات سفارش
+        $invoice_file = $orderAction->invoice_file;
+        $factor_file  = $orderAction->factor_file;
+
+        // در صورتی که هیچ یک از فایل‌ها موجود نباشند
+        if (!$invoice_file && !$factor_file) {
+            return response()->json([
+                'files'    => [],
+                'exit_url' => '#'
+            ]);
+        }
+
+        // آرایه‌ای جهت نگهداری اطلاعات فایل‌ها
+        $files = [];
+
+        if ($invoice_file) {
+            $files[] = [
+                'title'         => 'فایل پیش فاکتور',
+                'file_name'     => $invoice_file,
+                'download_url'  => asset($invoice_file)
+            ];
+        }
+
+        if ($factor_file) {
+            $files[] = [
+                'title'         => 'فایل فاکتور',
+                'file_name'     => $factor_file,
+                'download_url'  => asset($factor_file)
+            ];
+        }
+
+        // تعیین لینک خروج (در صورت وجود گزارش انبار)
+        $exit_url = $inventoryReport ? route('inventory-reports.show', $inventoryReport->id) : '#';
+
+        return response()->json([
+            'files'    => $files,
+            'exit_url' => $exit_url,
+        ]);
+    }
 }

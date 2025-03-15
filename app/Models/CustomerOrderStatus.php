@@ -21,6 +21,8 @@ class CustomerOrderStatus extends Model
         'processing_by_accountant_step_2' => 'در انتظار بررسی توسط حسابدار',
         'upload_setad_fee' => 'آپلود رسید کارمزد',
         'send_invoice' => 'صدور فاکتور',
+        'accept_inventory' => 'تایید انباردار',
+        'exit_inventory' => 'خروج از انبار',
     ];
 
 
@@ -33,6 +35,8 @@ class CustomerOrderStatus extends Model
         6 => 'processing_by_accountant_step_2',
         7 => 'upload_setad_fee',
         8 => 'send_invoice',
+        9 => 'accept_inventory',
+        10 => 'exit_inventory',
     ];
     const ORDER_OTHER = [
         1 => 'register',
@@ -40,6 +44,8 @@ class CustomerOrderStatus extends Model
         3 => 'pre_invoice',
         4 => 'awaiting_confirm_by_sales_manager',
         8 => 'send_invoice',
+        9 => 'accept_inventory',
+        10 => 'exit_inventory',
     ];
 
     public function order()

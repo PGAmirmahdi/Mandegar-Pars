@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\CustomerOrderStatus;
 use App\Models\Factor;
 use App\Models\Guarantee;
 use App\Models\Inventory;
 use App\Models\InventoryReport;
 use App\Models\Invoice;
+use App\Models\OrderStatus;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Barryvdh\Snappy\Facades\SnappyImage;
@@ -17,7 +19,6 @@ use Dompdf\Options;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
-use Imagick;
 
 class InventoryReportController extends Controller
 {
@@ -88,13 +89,13 @@ class InventoryReportController extends Controller
         }else{
             $this->authorize('output-reports-create');
 
-            // order status
+// order status
             if ($request->invoice_id){
                 $invoice = Invoice::find($request->invoice_id);
                 $invoice->order_status()->firstOrCreate(['order' => 2, 'status' => 'processing']);
                 $invoice->order_status()->firstOrCreate(['order' => 3, 'status' => 'out']);
             }
-            // end order status
+// end order status
 
             $type_lbl = 'خروجی';
             $request->validate([
@@ -107,20 +108,40 @@ class InventoryReportController extends Controller
 
             $date = Verta::parseFormat('Y/m/d', $request->output_date)->toCarbon()->toDateTimeString();
 
-            // check inventory count is enough
+// check inventory count is enough
             $this->storeCheckInventoryCount($request);
 
-            // send notification
-            $notifiables = User::whereHas('role' , function ($role) {
+// send notification
+            $notifiables = User::whereHas('role', function ($role) {
                 $role->whereHas('permissions', function ($q) {
                     $q->where('name', 'exit-door');
                 });
             })->get();
-            $title='خروج انبار';
+            $title = 'خروج انبار';
             $notif_message = 'یک خروج انبار توسط انباردار ثبت شد';
             $url = route('exit-door.index');
-            Notification::send($notifiables, new SendMessage($title,$notif_message, $url));
-            // end send notification
+            Notification::send($notifiables, new SendMessage($title, $notif_message, $url));
+// end send notification
+
+// ثبت تغییرات وضعیت سفارش پس از خروج از انبار
+            $invoice = Invoice::find($request->invoice_id);
+            $invoice->action()->updateOrCreate(
+                ['invoice_id' => $invoice->id],
+                [
+                    'status' => 'finished',
+                ]
+            );
+            $invoice->order_status()->updateOrCreate(
+                ['status' => 'exit_inventory'],
+                ['order' => 10, 'status' => 'exit_inventory']
+            );
+            $invoice->order()->update(['status' => 'finished']);
+            $invoice->update(['status' => 'finished']);
+            CustomerOrderStatus::create([
+                'order_id' =>  $invoice->order_id,
+                'orders' => 10,
+                'status' => 'exit_inventory',
+            ]);
         }
 
         $serial = 'MP'.$request->guarantee_serial;

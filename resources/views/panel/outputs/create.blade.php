@@ -40,18 +40,27 @@
                     <!-- Order Selection -->
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <label for="invoice_id">سفارش</label>
+                        @php
+                            $invoices = \App\Models\Invoice::doesntHave('inventory_report')->get()->unique('id');
+                        @endphp
+
                         <select class="js-example-basic-single select2-hidden-accessible" name="invoice_id" id="invoice_id">
                             <option value="">انتخاب کنید...</option>
-                            @if(\App\Models\Invoice::doesntHave('inventory_report')->count())
-                                @foreach(\App\Models\Invoice::doesntHave('inventory_report')->get() as $invoice)
+                            @if($invoices->count())
+                                @foreach($invoices as $invoice)
+                                    @php
+                                        // در صورتی که رابطه order در مدل Invoice تعریف شده باشد
+                                        $order = $invoice->order;
+                                    @endphp
                                     <option value="{{ $invoice->id }}" data-customer-id="{{ $invoice->customer->id }}" {{ old('invoice_id') == $invoice->id ? 'selected' : '' }}>
-                                        {{ $invoice->id }} - {{ $invoice->customer->name }}
+                                        {{ $order->code ?? 'بدون کد سفارش' }} - {{ $invoice->customer->name }}
                                     </option>
                                 @endforeach
                             @else
                                 <option value="" disabled selected>سفارشی موجود نیست!</option>
                             @endif
                         </select>
+
                         <input type="hidden" id="customer_id" name="customer_id" value="">
                         <span id="factor_link">
                             <a href="" class="btn-link" target="_blank">نمایش سفارش</a>

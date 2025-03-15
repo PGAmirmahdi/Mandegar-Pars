@@ -16,6 +16,8 @@ class Invoice extends Model
         'orders' => 'ثبت سفارش',
         'pending' => 'پیش فاکتور شده',
         'invoiced' => 'فاکتور شده',
+        'inventory' => 'تحویل انبار',
+        'finished' => 'تحویل مشتری'
 //        'return' => 'عودت داده شده',
     ];
 

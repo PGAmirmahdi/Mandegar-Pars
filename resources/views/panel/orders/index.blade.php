@@ -179,6 +179,38 @@
 
 @endsection
 @section('content')
+    <!-- Order Documents Modal -->
+    <div class="modal fade" id="orderDocsModal" tabindex="-1" aria-labelledby="orderDocsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDocsModalLabel">اسناد سفارش</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="بستن">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- جدول نمایش عنوان و نام فایل -->
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>عنوان</th>
+{{--                            <th>نام فایل ذخیره شده</th>--}}
+                            <th>اقدام</th>
+                        </tr>
+                        </thead>
+                        <tbody id="docs-table-body">
+                        <!-- ردیف‌های اسناد به صورت داینامیک اینجا اضافه خواهند شد -->
+                        </tbody>
+                    </table>
+                    <div class="loading-doc text-center" style="display: none;">
+                        <i class="fa fa-spinner fa-spin"></i> در حال بارگذاری...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -352,6 +384,7 @@
                                         <th>شماره تماس</th>
                                         <th>ثبت شده</th>
                                         <th>وضعیت</th>
+                                        <th>اسناد سفارش</th>
                                         @canany(['accountant', 'sales-manager','PartnerCity'])
                                             <th>همکار</th>
                                         @endcanany
@@ -362,7 +395,7 @@
                                         {{--                        @endcanany--}}
                                         {{--                                        <th>وضعیت سفارش</th>--}}
 
-                                        @canany(['sales-manager','accountant','PartnerCity','Organ','partner-tehran','buying_engineering','ceo','admin'])
+                                        @canany(['sales-manager','accountant','PartnerCity','Organ','partner-tehran','buying_engineering','ceo','admin','warehouse-keeper'])
                                             <th>اقدام</th>
                                         @endcanany
 
@@ -402,6 +435,17 @@
                                                 <span
                                                     class="badge bg-primary d-block">{{ \App\Models\Invoice::STATUS[$order->status] }}</span>
                                             </td>
+                                            <td>
+                                                <button class="btn btn-facebook btn-floating show-docs" data-id="{{ $order->id }}">
+                                                    <i class="fa fa-file"></i>
+                                                </button>
+                                            </td>
+{{--                                            <td>--}}
+{{--                                                <a class="btn btn-info btn-floating"--}}
+{{--                                                   href="{{ route('orders.docs', $order->id) }}" target="_blank">--}}
+{{--                                                    <i class="fa fa-eye"></i>--}}
+{{--                                                </a>--}}
+{{--                                            </td>--}}
                                             @canany(['accountant', 'sales-manager','PartnerCity'])
                                                 <td>{{ $order->user->fullName() }}</td>
                                             @endcanany
@@ -421,18 +465,7 @@
                                                     <i class="fa fa-eye"></i>
                                                 </a>
                                             </td>
-
-                                            @can('warehouse-keeper')
-
-                                                <td>
-                                                    <a href="{{ $order->action ? $order->action->factor_file ?? '#' : '#' }}"
-                                                       class="btn btn-primary btn-floating {{ $order->action ? $order->action->factor_file ? '' : 'disabled' : 'disabled' }}"
-                                                       target="_blank">
-                                                        <i class="fa fa-download"></i>
-                                                    </a>
-                                                </td>
-                                            @else
-                                                @canany(['sales-manager','accountant','PartnerCity','Organ','buying_engineering','ceo','admin'])
+                                                @canany(['sales-manager','accountant','PartnerCity','Organ','buying_engineering','ceo','admin','warehouse-keeper'])
                                                     <td>
                                                         <a class="btn btn-primary btn-floating @cannot('accountant') {{ $order->action ? '' : 'disabled' }} @endcannot"
                                                            href="{{ route('order.action', $order->id) }}">
@@ -440,7 +473,6 @@
                                                         </a>
                                                     </td>
                                                 @endcanany
-                                            @endcan
                                             @cannot('accountant')
                                                 @can('sales-manager')
                                                     @can('customer-order-edit')
@@ -540,8 +572,8 @@
                             <div class="timeline-stage stage-left d-flex align-items-center">
                                 <div class="rounded-circle ${stageClass} text-white stage-circle me-2">${icon}</div>
                                 <div>
-                                    <h6 class="stage-text" style="font-weight: bolder;font-size: medium;">${stage.status_label}</h6>
-                                    <small class="stage-text">${date}</small>
+                                    <h6 class="stage-text mx-2" style="font-weight: bolder;font-size: medium;">${stage.status_label}</h6>
+                                    <small class="stage-text mx-2">${date}</small>
                                 </div>
                             </div>
                         `;
@@ -562,6 +594,69 @@
                 $('#timelineModal').modal('hide');
             });
         });
+        $(document).ready(function () {
+            $(document).on('click', '.show-docs', function () {
+                var orderId = $(this).data('id');
+                // نمایش مدال
+                $('#orderDocsModal').modal('show');
+                // تغییر عنوان مدال
+                $('#orderDocsModalLabel').text('اسناد سفارش شماره ' + orderId);
+
+                // نمایش انیمیشن بارگذاری
+                $('.loading-doc').show();
+                // پاکسازی محتوای قبلی جدول
+                $('#docs-table-body').empty();
+
+                // ارسال درخواست AJAX
+                $.ajax({
+                    url: '/panel/get-order-docs/' + orderId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        $('.loading-doc').hide();
+                        // بررسی وجود فایل‌ها در آرایه response.files
+                        if (response.files.length > 0) {
+                            response.files.forEach(function(file) {
+                                var row = `<tr>
+                            <td>${file.title}</td>
+                            <td class="text-center">
+                                <a class="btn btn-floating btn-primary" href="${file.download_url}" target="_blank">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                            </td>
+                        </tr>`;
+                                $('#docs-table-body').append(row);
+                            });
+                        } else {
+                            var row = `<tr>
+                        <td colspan="3" class="text-center">سندی موجود نیست</td>
+                    </tr>`;
+                            $('#docs-table-body').append(row);
+                        }
+                        // نمایش مسیر خروجی انبار
+                        if (response.exit_url && response.exit_url != '#') {
+                            var exitRow = `<tr>
+<td>
+  خروج انبار
+</td>
+                        <td colspan="3" class="text-center">
+                            <a class="btn btn-floating btn-primary" href="${response.exit_url}" target="_blank">
+                                <i class="fa fa-sign-out mx-2"></i>
+                            </a>
+                        </td>
+                    </tr>`;
+                            $('#docs-table-body').append(exitRow);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('.loading-doc').hide();
+                        alert('خطا در بارگذاری اسناد سفارش');
+                    }
+                });
+            });
+        });
+
+
     </script>
 @endsection
 

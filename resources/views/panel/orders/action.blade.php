@@ -6,6 +6,7 @@
             box-shadow: 0 0 !important;
             -webkit-box-shadow: 0 0 !important;
         }
+
         .btn-check {
             position: absolute;
             clip: rect(0, 0, 0, 0);
@@ -75,30 +76,29 @@
     @endif
     <div class="content">
         <div class="container-fluid">
-            <!-- start page title -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <h4 class="page-title">تعیین وضعیت سفارش مشتری</h4>
-                    </div>
-                </div>
-            </div>
-            <!-- end page title -->
 
             <div class="row">
-                <div class="col">
+                <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             @can('accountant')
                                 @if($order->action)
                                     @if($order->action->confirm)
                                         <div class="w-100 text-center">
-                                            @if($order->action->sent_to_warehouse)
+                                            @if($order->action->sent_to_warehouse && !in_array($order->status,['inventory','finished']))
                                                 <h5 class="text-success mt-3">تایید توسط همکار فروش - ارسال فاکتور به
                                                     انبار</h5>
+                                            @elseif($order->status == 'inventory')
+                                                <h5 class="text-success mt-3">تایید انبار - در حال ارسال
+
+                                                </h5>
+                                            @elseif($order->status == 'finished')
+                                                <h5 class="text-success mt-3">در حال ارسال - تحویل به مشتری
+
+                                                </h5>
                                             @else
                                                 <h5 class="text-success mt-3">تایید توسط همکار فروش - <span
-                                                        class="text-warning">در انتظار ارسال فاکتور به انبار</span>
+                                                            class="text-warning">در انتظار ارسال فاکتور به انبار</span>
                                                 </h5>
                                             @endif
                                         </div>
@@ -123,13 +123,21 @@
                                     @else
                                         @if($order->action->confirm)
                                             <div class="w-100 text-center">
-                                                @if($order->action->sent_to_warehouse)
+                                                @if($order->action->sent_to_warehouse && !in_array($order->status,['inventory','finished']))
                                                     <h5 class="text-success mt-3">ارسال تاییدیه - ارسال فاکتور به انبار
                                                         توسط
                                                         حسابداری</h5>
+                                                @elseif($order->status == 'inventory')
+                                                    <h5 class="text-success mt-3">تایید انبار - در حال ارسال
+
+                                                    </h5>
+                                                @elseif($order->status == 'finished')
+                                                    <h5 class="text-success mt-3">در حال ارسال - تحویل به مشتری
+
+                                                    </h5>
                                                 @else
                                                     <h5 class="text-success mt-3">ارسال تاییدیه - <span
-                                                            class="text-warning">در انتظار ارسال فاکتور به انبار توسط حسابداری</span>
+                                                                class="text-warning">در انتظار ارسال فاکتور به انبار توسط حسابداری</span>
                                                     </h5>
                                                 @endif
                                             </div>
@@ -143,27 +151,29 @@
                                 @csrf
                                 <div class="form-row mb-4">
                                     <div class="col-12">
-                                        <div class="btn-group btn-group-toggle w-100"  data-toggle="buttons">
+                                        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
 
                                             <label
-                                                class="btn {{ $order->action ? 'disabled' : '' }} {{ $isInvoice ? 'btn-primary' : 'btn-outline-primary' }} justify-content-center"
-                                                for="status1">پیش فاکتور<input type="radio" id="status1" name="status" class="btn-check"
-                                                                               value="invoice"
-                                                                               form="invoice_form" {{ old('status') == 'invoice' || old('status') == null || $isInvoice ? 'checked' : '' }} {{ $order->action ? 'disabled' : '' }}></label>
+                                                    class="btn {{ $order->action ? 'disabled' : '' }} {{ $isInvoice ? 'btn-primary' : 'btn-outline-primary' }} justify-content-center"
+                                                    for="status1">پیش فاکتور<input type="radio" id="status1"
+                                                                                   name="status" class="btn-check"
+                                                                                   value="invoice"
+                                                                                   form="invoice_form" {{ old('status') == 'invoice' || old('status') == null || $isInvoice ? 'checked' : '' }} {{ $order->action ? 'disabled' : '' }}></label>
 
 
                                             <label
-                                                class="btn {{ $order->action ? 'disabled' : '' }} {{ $isFactor ? 'btn-primary' : 'btn-outline-primary' }} justify-content-center"
-                                                for="status2">  <input type="radio" id="status2" name="status" class="btn-check"
-                                                                       value="factor"
-                                                                       form="invoice_form" {{ old('status') == 'factor' || $isFactor ? 'checked' : '' }} {{ $order->action ? 'disabled' : '' }}>فاکتور</label>
+                                                    class="btn {{ $order->action ? 'disabled' : '' }} {{ $isFactor ? 'btn-primary' : 'btn-outline-primary' }} justify-content-center"
+                                                    for="status2"> <input type="radio" id="status2" name="status"
+                                                                          class="btn-check"
+                                                                          value="factor"
+                                                                          form="invoice_form" {{ old('status') == 'factor' || $isFactor ? 'checked' : '' }} {{ $order->action ? 'disabled' : '' }}>فاکتور</label>
                                         </div>
                                     </div>
                                     <div
-                                        class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mt-5 invoice_sec {{ old('status') == 'factor' ? 'd-none' : '' }}">
+                                            class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mt-5 invoice_sec {{ old('status') == 'factor' ? 'd-none' : '' }}">
                                         @if($order->action)
                                             @if($order->action->status != 'factor')
-                                                <div class="row">
+                                                <div class="row col-12">
                                                     @cannot('accountant')
                                                         <div class="alert alert-info">
                                                             <i class="fa fa-info-circle font-size-20 align-middle"></i>
@@ -243,7 +253,7 @@
                                             @endcan
                                             <div class="form-group">
                                                 <label for="invoice_file">فایل پیش فاکتور (PDF)<span
-                                                        class="text-danger">*</span></label>
+                                                            class="text-danger">*</span></label>
                                                 <input type="file" name="invoice_file" class="form-control"
                                                        id="invoice_file"
                                                        accept="application/pdf">
@@ -260,7 +270,7 @@
                                                 <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mt-5">
                                                     <div class="form-group">
                                                         <label for="factor_file">فایل فاکتور (PDF)<span
-                                                                class="text-danger">*</span></label>
+                                                                    class="text-danger">*</span></label>
                                                         <input type="file" name="factor_file" class="form-control"
                                                                id="factor_file"
                                                                accept="application/pdf" form="invoice_form">
@@ -272,7 +282,7 @@
                                             @endif
                                         @else
                                             <div
-                                                class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mt-5 factor_sec {{ old('status') == 'invoice' ? 'd-none' : '' }}">
+                                                    class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mt-5 factor_sec {{ old('status') == 'invoice' ? 'd-none' : '' }}">
                                                 <div class="form-group">
                                                     <label for="factor_file">فایل فاکتور (PDF)<span class="text-danger">*</span></label>
                                                     <input type="file" name="factor_file" class="form-control"
@@ -315,6 +325,28 @@
                                 @endif
                             </form>
                         </div>
+                        @if(!in_array($order->status , ['inventory','finished']))
+                            @can('warehouse-keeper')
+                                @if($order->action && $order->action->sent_to_warehouse)
+                                    @if(!$order->action->warehouse_confirm)
+                                        <form action="{{ route('order.action.store', $order->id) }}"
+                                              method="post" id="warehouse_confirm_form">
+                                            @csrf
+                                            <input type="hidden" name="warehouse_confirm" value="1">
+                                            <button class="btn btn-success mt-3" type="submit"
+                                                    id="btn_warehouse_confirm">
+                                                <i class="fa fa-check mr-2"></i>
+                                                تایید انبار دار
+                                            </button>
+                                        </form>
+                                    @else
+                                        <div class="w-100 text-center">
+                                            <h5 class="text-success mt-3">تایید انبار دار انجام شده</h5>
+                                        </div>
+                                    @endif
+                                @endif
+                            @endcan
+                        @endif
                     </div>
                 </div>
             </div>
