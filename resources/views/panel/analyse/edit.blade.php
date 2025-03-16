@@ -78,6 +78,13 @@
                         @endforeach
                     </select>
                     <input type="hidden" name="brand_id" value="{{ $analyse->brand_id }}">
+                    <!-- جستجوی محصول -->
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mt-2">
+                        <div class="form-group">
+                            <label for="product_search">جستجوی محصول</label>
+                            <input type="text" id="product_search" class="form-control" placeholder="نام محصول">
+                        </div>
+                    </div>
                 </div>
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -91,8 +98,8 @@
                     </thead>
                     <tbody id="products-table-body">
                     @foreach($analyse->products as $product)
-                        <tr>
-                            <td>{{ $product->title }}</td>
+                        <tr data-product-id="{{ $product->id }}">
+                            <td class="product-title">{{ $product->title }}</td>
                             <td>
                                 <input
                                     type="number"
@@ -126,7 +133,8 @@
                                     name="products[{{ $product->id }}][total_count]"
                                     min="0"
                                     class="form-control readonly"
-                                    value="{{ $product->total_count }}" readonly
+                                    value="{{ $product->total_count }}"
+                                    readonly
                                 >
                             </td>
                         </tr>
@@ -140,20 +148,47 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#submit_button').on('click', function () {
-                let button = $(this);
+            // دریافت برندها بر اساس دسته‌بندی انتخاب شده
+            $('select[name="category_id"]').on('change', function () {
+                var categoryId = $(this).val();
+                var brandSelect = $('#brand');
+                brandSelect.empty();
+                brandSelect.append('<option value="">انتخاب کنید</option>');
+                if (categoryId) {
+                    $.ajax({
+                        url: '{{ route("get.models.by.category") }}',
+                        type: 'POST',
+                        data: {
+                            category_id: categoryId,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (data) {
+                            $.each(data, function (key, value) {
+                                brandSelect.append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                            });
+                        },
+                        error: function () {
+                            alert('مشکلی در دریافت برندها رخ داده است.');
+                        }
+                    });
+                }
+            });
+
+            // ارسال فرم و جلوگیری از ارسال چندباره
+            $('#submit_button').on('click', function (e) {
+                e.preventDefault();
+                var button = $(this);
                 button.prop('disabled', true).text('در حال ارسال...');
                 button.closest('form').submit();
             });
-        });
-        $(document).ready(function () {
-            $('#category, #brand').change(function () {
+
+            // دریافت محصولات بر اساس تغییر دسته‌بندی یا برند
+            $('#category, #brand').on('change', function () {
                 var category_id = $('#category').val();
                 var brand_id = $('#brand').val();
-
                 if (category_id && brand_id) {
                     $.ajax({
-                        url: '{{ route('get.products') }}',
+                        url: '{{ route("get.products") }}',
                         type: 'GET',
                         data: {
                             category_id: category_id,
@@ -163,10 +198,12 @@
                             $('#products-table-body').empty();
                             $.each(data.products, function (index, product) {
                                 $('#products-table-body').append(
-                                    '<tr>' +
-                                    '<td>' + product.title + '</td>' +
-                                    '<td><input type="number" name="products[' + product.id + '][quantity]" min="0" class="form-control" value="' + (product.quantity || 0) + '"></td>' +
-                                    '<td><input type="number" name="products[' + product.id + '][storage_count]" min="0" class="form-control" value="' + (product.storage_count || 0) + '"></td>' +
+                                    '<tr data-product-id="'+ product.id +'">' +
+                                    '<td class="product-title">' + product.title + '</td>' +
+                                    '<td><input type="number" name="products['+ product.id +'][quantity]" min="0" class="form-control" value="'+ (product.quantity || 0) +'"></td>' +
+                                    '<td><input type="number" name="products['+ product.id +'][sold_count]" min="0" class="form-control" value="'+ (product.sold_count || 0) +'"></td>' +
+                                    '<td><input type="number" name="products['+ product.id +'][storage_count]" min="0" class="form-control" value="'+ (product.storage_count || 0) +'"></td>' +
+                                    '<td><input type="number" name="products['+ product.id +'][total_count]" min="0" class="form-control" value="'+ (product.total_count || 0) +'" readonly></td>' +
                                     '</tr>'
                                 );
                             });
@@ -179,16 +216,18 @@
                     $('#products-table-body').empty();
                 }
             });
-        });
-        $(document).ready(function () {
-            $('#submit_button').on('click', function () {
-                let button = $(this);
 
-                // تغییر متن و غیر فعال کردن دکمه
-                button.prop('disabled', true).text('در حال ارسال...');
-
-                // ارسال فرم به صورت خودکار
-                button.closest('form').submit();
+            // فیلتر کردن محصولات با استفاده از کلید جستجو
+            $('#product_search').on('keyup', function () {
+                var searchTerm = $(this).val().toLowerCase();
+                $('#products-table-body tr').each(function () {
+                    var title = $(this).find('.product-title').text().toLowerCase();
+                    if (title.indexOf(searchTerm) !== -1) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
             });
         });
     </script>
