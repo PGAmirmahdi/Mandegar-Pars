@@ -197,7 +197,7 @@
                     </div>
                 </div>
             </form>
-            <a href="{{ route('sale_price_requests.index') }}" class="btn btn-secondary">
+            <a href="{{ route('sale_price_requests.index',['type=' . $sale_price_request->type]) }}" class="btn btn-secondary">
                 بازگشت
             </a>
         </div>
