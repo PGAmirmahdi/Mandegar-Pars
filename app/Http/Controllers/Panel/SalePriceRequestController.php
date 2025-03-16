@@ -306,8 +306,7 @@ class SalePriceRequestController extends Controller
         Activity::create($activityData);
         $this->notif_to_ceo($sale_price_request);
         alert()->success('درخواست فروش با موفقیت تایید شد', 'تایید درخواست فروش');
-        return redirect()->route('sale_price_requests.index');
-
+        return redirect()->route('sale_price_requests.index', ['type' => $sale_price_request->type]);
     }
 
     public function newOrder($request,  $sale_price_request, $OrderItems)
