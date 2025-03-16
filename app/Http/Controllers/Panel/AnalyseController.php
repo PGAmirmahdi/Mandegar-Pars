@@ -26,12 +26,6 @@ class AnalyseController extends Controller
             ->when($request->category_id && $request->category_id !== 'all', function ($query) use ($request) {
                 $query->where('category_id', $request->category_id);
 
-
-
-
-
-
-
             })
             ->when($request->brand_id && $request->brand_id !== 'all', function ($query) use ($request) {
                 $query->where('brand_id', $request->brand_id);
@@ -214,8 +208,9 @@ class AnalyseController extends Controller
                 ->latest('id')
                 ->value('quantity');
 
-            $storageCount = $product->total_count ?? 0;
+//            $storageCount = $product->total_count ?? 0;
 //            $product->quantity = $lastQuantity ?? 0;
+            $storageCount = 0;
             $product->quantity = 0;
             $product->storage_count = $storageCount;
             return $product;
