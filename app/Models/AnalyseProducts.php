@@ -9,7 +9,7 @@ class AnalyseProducts extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['analyse_id', 'product_id', 'quantity'];
+    protected $fillable = ['analyse_id', 'product_id', 'quantity','sold_count','storage_count'];
 
     public function analyse()
     {

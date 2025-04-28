@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Notifications\SendMessage;
 use Illuminate\Support\Facades\Notification;
+use Morilog\Jalali\Jalalian;
 
 class OrderController extends Controller
 {
@@ -74,30 +75,35 @@ class OrderController extends Controller
 
         return view('panel.orders.create');
     }
-
-
     public function store(StoreOrderRequest $request)
     {
+        \Log::info('▶︎ STORE ORDER start', ['request' => $request->all()]);
+
         $this->authorize('customer-order-create');
         $customer = Customer::findOrFail($request->buyer_name);
+        \Log::info(' Found customer', ['id' => $customer->id]);
 
         $invoiceData = $this->sortData($request);
+        \Log::info(' InvoiceData', $invoiceData);
+
+        // ۱) ذخیرهٔ سفارش
         $order = new Order();
-        $order->description = $request->description;
-        $order->type = $customer->customer_type;
-        $order->req_for = $request->req_for;
-        $order->payment_type = $request->payment_type;
-        $order->code = $this->generateCode();
-        $order->user_id = auth()->id();
-        $order->customer_id = $request->buyer_name;
-        $order->shipping_cost = $request->shipping_cost;
-        $order->created_in = 'automation';
-        $order->products = json_encode($invoiceData);
+        $order->description    = $request->description;
+        $order->type           = $customer->customer_type;
+        $order->req_for        = $request->req_for;
+        $order->payment_type   = $request->payment_type;
+        $order->code           = $this->generateCode();
+        $order->user_id        = auth()->id();
+        $order->customer_id    = $request->buyer_name;
+        $order->shipping_cost  = $request->shipping_cost;
+        $order->created_in     = 'automation';
+        $order->products       = json_encode($invoiceData);
         $order->save();
+        \Log::info(' Order saved', ['order_id' => $order->id, 'created_at' => $order->created_at]);
 
-        $this->updateAnalysesWithOrder($order, $invoiceData);
+        // ۲) همگام‌سازی
+        $this->syncOrderToAnalyses($order, $invoiceData);
 
-        $this->send_notif_to_accountants($order);
         $this->send_notif_to_sales_manager($order);
 
         $order->order_status()->updateOrCreate(
@@ -105,38 +111,61 @@ class OrderController extends Controller
             ['orders' => 1, 'status' => 'register']
         );
 
-        alert()->success('سفارش مورد نظر با موفقیت ثبت شد', 'ثبت سفارش');
+        alert()->success('سفارش با موفقیت ثبت شد', 'ثبت سفارش');
         return redirect()->route('orders.edit', $order->id);
+
     }
-
-    private function updateAnalysesWithOrder(Order $order, array $invoiceData)
+    protected function syncOrderToAnalyses(Order $order, array $invoiceData)
     {
-        $today = Carbon::now()->toDateString();
+        $orderCarbon = $order->created_at;
+        $jalaliOrder = Jalalian::fromCarbon($orderCarbon);
 
-        $analyses = Analyse::where('date', '<=', $today)
-            ->where('to_date', '>=', $today)
-            ->get();
+        foreach ($invoiceData as $i => $item) {
+            $pid   = $item['products'];
+            $count = $item['counts'];
 
-        foreach ($analyses as $analyse) {
-            foreach ($invoiceData as $item) {
-                $productId = $item['products'];
-                $count     = $item['counts'];
+            $product = \App\Models\Product::find($pid);
+            $catId   = $product->category_id;
+            $brandId = $product->brand_id;
 
-                if ($analyse->products()->wherePivot('product_id', $productId)->exists()) {
-                    $analyse->products()->updateExistingPivot($productId, [
-                        'sold_count'    => DB::raw("sold_count + {$count}"),
-                        'quantity'      => DB::raw("quantity + {$count}"),
-                    ]);
-                } else {
-                    $analyse->products()->attach($productId, [
-                        'quantity'      => 0,            // یا هر مقدار اولیه‌ای که مدنظرتان است
-                        'storage_count' => 0,
-                        'sold_count'    => $count,      // می‌گذاریم از همین اول equal به تعداد سفارش
-                    ]);
-                }
+
+            // ۲) پیدا کردن آنالیز مناسب
+            $analyse = Analyse::where('category_id', $catId)
+                ->where('brand_id', $brandId)
+                ->get()
+                ->filter(function($a) use($jalaliOrder){
+                    $start = Jalalian::fromFormat('Y/m/d', $a->date)->toCarbon()->startOfDay();
+                    $end   = Jalalian::fromFormat('Y/m/d', $a->to_date)->toCarbon()->endOfDay();
+                    return $jalaliOrder->toCarbon()->between($start,$end);
+                })
+                ->first();
+
+            if (! $analyse) {
+                $date    = $jalaliOrder->format('Y/m/01');
+                $to_date = $jalaliOrder->format('Y/m/t');
+                $analyse = Analyse::create([
+                    'date'        => $date,
+                    'to_date'     => $to_date,
+                    'category_id' => $catId,
+                    'brand_id'    => $brandId,
+                    'creator_id'  => auth()->id(),
+                ]);
+            }
+            $exists = $analyse->products()->wherePivot('product_id',$pid)->exists();
+            if ($exists) {
+                $analyse->products()->updateExistingPivot($pid, [
+                    'quantity' => DB::raw("quantity + {$count}")
+                ]);
+            } else {
+                $analyse->products()->attach($pid, [
+                    'quantity'      => $count,
+                    'storage_count' => 0,
+                    'sold_count'    => 0,
+                ]);
             }
         }
     }
+
     public function show(Order $order)
     {
         return view('panel.orders.printable', compact(['order']));

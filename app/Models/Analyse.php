@@ -13,7 +13,7 @@ class Analyse extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'analyse_products')
-            ->withPivot('quantity')
+            ->withPivot(['quantity','storage_count','sold_count'])
             ->withTimestamps();
     }
 

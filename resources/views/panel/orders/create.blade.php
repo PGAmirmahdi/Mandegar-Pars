@@ -102,15 +102,15 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">
-                                        <label class="form-label" for="shipping_cost">هزینه ارسال</label>
-                                        <input type="text" id="shipping_cost" name="shipping_cost" value="{{old($order->shipping_cost)}}"
-                                               class="form-control">
-                                        <div id="shipping_cost_display" class="mt-1 text-muted"></div>
-                                        @error('shipping_cost')
-                                        <div class="invalid-feedback text-danger d-block">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+{{--                                    <div class="col-xl-3 col-lg-3 col-md-3 mb-3">--}}
+{{--                                        <label class="form-label" for="shipping_cost">هزینه ارسال</label>--}}
+{{--                                        <input type="text" id="shipping_cost" name="shipping_cost" value="{{old($order->shipping_cost)}}"--}}
+{{--                                               class="form-control">--}}
+{{--                                        <div id="shipping_cost_display" class="mt-1 text-muted"></div>--}}
+{{--                                        @error('shipping_cost')--}}
+{{--                                        <div class="invalid-feedback text-danger d-block">{{ $message }}</div>--}}
+{{--                                        @enderror--}}
+{{--                                    </div>--}}
                                     <div class="col-12 row mb-4">
                                         <div class="col-xl-6 col-lg-6 col-md-6 mb-3">
                                             <label class="form-label" for="description">توضیحات بیشتر</label>
