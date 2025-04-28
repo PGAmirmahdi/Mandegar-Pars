@@ -12,13 +12,13 @@
   ),
   'barryvdh/laravel-debugbar' => 
   array (
-    'aliases' => 
-    array (
-      'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
-    ),
     'providers' => 
     array (
       0 => 'Barryvdh\\Debugbar\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
     ),
   ),
   'barryvdh/laravel-snappy' => 
@@ -46,24 +46,24 @@
   ),
   'carlos-meneses/laravel-mpdf' => 
   array (
-    'aliases' => 
-    array (
-      'PDF' => 'Mccarlosen\\LaravelMpdf\\Facades\\LaravelMpdf',
-    ),
     'providers' => 
     array (
       0 => 'Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider',
     ),
+    'aliases' => 
+    array (
+      'PDF' => 'Mccarlosen\\LaravelMpdf\\Facades\\LaravelMpdf',
+    ),
   ),
   'facade/ignition' => 
   array (
-    'aliases' => 
-    array (
-      'Flare' => 'Facade\\Ignition\\Facades\\Flare',
-    ),
     'providers' => 
     array (
       0 => 'Facade\\Ignition\\IgnitionServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Flare' => 'Facade\\Ignition\\Facades\\Flare',
     ),
   ),
   'fruitcake/laravel-cors' => 
@@ -86,13 +86,13 @@
   ),
   'jenssegers/agent' => 
   array (
-    'aliases' => 
-    array (
-      'Agent' => 'Jenssegers\\Agent\\Facades\\Agent',
-    ),
     'providers' => 
     array (
       0 => 'Jenssegers\\Agent\\AgentServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Agent' => 'Jenssegers\\Agent\\Facades\\Agent',
     ),
   ),
   'laravel/sail' => 
@@ -136,13 +136,13 @@
   ),
   'melipayamak/laravel' => 
   array (
-    'aliases' => 
-    array (
-      'Melipayamak' => 'Melipayamak\\Laravel\\Facade',
-    ),
     'providers' => 
     array (
       0 => 'Melipayamak\\Laravel\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Melipayamak' => 'Melipayamak\\Laravel\\Facade',
     ),
   ),
   'mews/captcha' => 
@@ -183,13 +183,13 @@
   ),
   'uxweb/sweet-alert' => 
   array (
-    'aliases' => 
-    array (
-      'Alert' => 'UxWeb\\SweetAlert\\SweetAlert',
-    ),
     'providers' => 
     array (
       0 => 'UxWeb\\SweetAlert\\SweetAlertServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Alert' => 'UxWeb\\SweetAlert\\SweetAlert',
     ),
   ),
 );

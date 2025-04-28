@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBuyOrderRequest;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Activity;
+use App\Models\Analyse;
 use App\Models\Customer;
 use App\Models\CustomerOrderStatus;
 use App\Models\Inventory;
@@ -19,8 +20,10 @@ use App\Models\Product;
 use App\Models\Province;
 use App\Models\Role;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Notifications\SendMessage;
@@ -75,11 +78,8 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
-
         $this->authorize('customer-order-create');
-        $customer = Customer::whereId($request->buyer_name)->first();
-//        dd($customer);
-
+        $customer = Customer::findOrFail($request->buyer_name);
 
         $invoiceData = $this->sortData($request);
         $order = new Order();
@@ -95,6 +95,7 @@ class OrderController extends Controller
         $order->products = json_encode($invoiceData);
         $order->save();
 
+        $this->updateAnalysesWithOrder($order, $invoiceData);
 
         $this->send_notif_to_accountants($order);
         $this->send_notif_to_sales_manager($order);
@@ -106,10 +107,36 @@ class OrderController extends Controller
 
         alert()->success('سفارش مورد نظر با موفقیت ثبت شد', 'ثبت سفارش');
         return redirect()->route('orders.edit', $order->id);
-
     }
 
+    private function updateAnalysesWithOrder(Order $order, array $invoiceData)
+    {
+        $today = Carbon::now()->toDateString();
 
+        $analyses = Analyse::where('date', '<=', $today)
+            ->where('to_date', '>=', $today)
+            ->get();
+
+        foreach ($analyses as $analyse) {
+            foreach ($invoiceData as $item) {
+                $productId = $item['products'];
+                $count     = $item['counts'];
+
+                if ($analyse->products()->wherePivot('product_id', $productId)->exists()) {
+                    $analyse->products()->updateExistingPivot($productId, [
+                        'sold_count'    => DB::raw("sold_count + {$count}"),
+                        'quantity'      => DB::raw("quantity + {$count}"),
+                    ]);
+                } else {
+                    $analyse->products()->attach($productId, [
+                        'quantity'      => 0,            // یا هر مقدار اولیه‌ای که مدنظرتان است
+                        'storage_count' => 0,
+                        'sold_count'    => $count,      // می‌گذاریم از همین اول equal به تعداد سفارش
+                    ]);
+                }
+            }
+        }
+    }
     public function show(Order $order)
     {
         return view('panel.orders.printable', compact(['order']));
