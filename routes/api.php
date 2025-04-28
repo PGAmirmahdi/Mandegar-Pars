@@ -35,3 +35,8 @@ Route::post('check-guarantee',[ApiController::class, 'checkGuarantee']);
 
 // Global Ticket API
 Route::post('create-ticket-job', [GlobalTicketController::class, 'createTicketJob']);
+
+// Soroushan API
+Route::post('/sorooshan/token', [ApiController::class, 'getSorooshanToken']);
+Route::post('/sorooshan/serial-details', [ApiController::class, 'getSorooshanSerialDetails']);
+Route::post('/sorooshan/workshop-follow-up', [ApiController::class, 'getSorooshanWorkShopCenterFollowUp']);

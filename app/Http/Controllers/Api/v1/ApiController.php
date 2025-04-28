@@ -16,6 +16,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Notifications\SendMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
@@ -289,5 +290,116 @@ class ApiController extends Controller
         $url = route('tickets.index');
         Notification::send($user, new SendMessage($title,$message, $url));
         return "success";
+    }
+
+    // Soroushan Guarantee
+    /**
+     * دریافت توکن سروشان
+     */
+    public function getSorooshanToken(Request $request)
+    {
+        // اعتبارسنجی ورودی
+        $validated = $request->validate([
+            'username'   => 'required|string',
+            'password'   => 'required|string',
+            'grant_type' => 'required|string',
+        ]);
+
+        try {
+            // ارسال درخواست POST به API سروشان
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post('http://ApiSaymanDadeh.sorooshancloud.ir/api/Token/GetToken', $validated);
+
+            // بررسی موفقیت‌آمیز بودن پاسخ
+            if ($response->successful()) {
+                return response()->json($response->json());
+            } else {
+                return response()->json([
+                    'error'  => 'خطا در دریافت توکن از سروشان',
+                    'detail' => $response->body(),
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'  => 'خطا در دریافت توکن از سروشان',
+                'detail' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * دریافت اطلاعات سریال سروشان
+     */
+    public function getSorooshanSerialDetails(Request $request)
+    {
+        // اعتبارسنجی ورودی
+        $validated = $request->validate([
+            'SerialNo' => 'required|string',
+        ]);
+
+        // دریافت توکن احراز هویت از هدر درخواست
+        $token = $request->bearerToken();
+        if (!$token) {
+            return response()->json(['error' => 'توکن احراز هویت یافت نشد'], 401);
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Content-Type'  => 'application/json',
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://ApiSaymanDadeh.sorooshancloud.ir/api/Home/GetSerialDetails', $validated);
+
+            if ($response->successful()) {
+                return response()->json($response->json());
+            } else {
+                return response()->json([
+                    'error'  => 'خطا در دریافت اطلاعات از سروشان',
+                    'detail' => $response->body(),
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'  => 'خطا در دریافت اطلاعات از سروشان',
+                'detail' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * پیگیری مرکز کارگاهی سروشان
+     */
+    public function getSorooshanWorkShopCenterFollowUp(Request $request)
+    {
+        // اعتبارسنجی ورودی
+        $validated = $request->validate([
+            'SerialNo' => 'required|string',
+        ]);
+
+        $token = $request->bearerToken();
+        if (!$token) {
+            return response()->json(['error' => 'توکن احراز هویت یافت نشد'], 401);
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Content-Type'  => 'application/json',
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://ApiSaymanDadeh.sorooshancloud.ir/api/Home/WorkShopCenterFollowUp', $validated);
+
+            if ($response->successful()) {
+                return response()->json($response->json());
+            } else {
+                return response()->json([
+                    'error'  => 'خطا در دریافت اطلاعات از سروشان',
+                    'detail' => $response->body(),
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'  => 'خطا در دریافت اطلاعات از سروشان',
+                'detail' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
