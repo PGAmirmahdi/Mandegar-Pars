@@ -7,6 +7,7 @@ use App\Exports\SalePriceRequestSetadExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSalePriceRequest;
 use App\Models\Activity;
+use App\Models\Analyse;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
+use Morilog\Jalali\Jalalian;
 
 class SalePriceRequestController extends Controller
 {
@@ -256,59 +258,66 @@ class SalePriceRequestController extends Controller
             alert()->error('شما به این قسمت دسترسی ندارید', 'عدم دسترسی');
             return back();
         }
-        $sale_price_request = SalePriceRequest::findOrfail($request->sale_id);
+
+        $sale_price_request = SalePriceRequest::findOrFail($request->sale_id);
+
         $items = [];
         $OrderItems = [];
         foreach (json_decode($sale_price_request->products, true) as $key => $item) {
             $product = Product::with('category', 'productModels')->find($item['product_id']);
-            if ($product) {
-                $items[] = [
-                    'product_id' => $product->id,
-                    'product_name' => $product->title,
-                    'product_model' => $product->productModels->slug,
-                    'category_name' => $product->category->slug,
-                    'count' => $request->count[$key],
-                    'final_price' => str_replace(',', '', $request->final_price[$key] ?? 0),
-                    'product_price' => str_replace(',', '', $request->product_price[$key] ?? 0),
-                ];
-                $finalPrice = str_replace(',', '', $request->final_price[$key] ?? 0);
-                $OrderItems[] = [
-                    'products' => (integer)$product->id,
-                    'colors' => 'black',
-                    'counts' => (integer)$request->count[$key],
-                    'units' => 'number',
-                    'prices' => $finalPrice,
-                    'total_prices' => (integer)$request->count[$key] * $finalPrice,
-                ];
+            if (! $product) {
+                continue;
             }
+
+            $count      = (int) $request->count[$key];
+            $finalPrice = (int) str_replace(',', '', $request->final_price[$key] ?? 0);
+
+            $items[] = [
+                'product_id'    => $product->id,
+                'product_name'  => $product->title,
+                'product_model' => $product->productModels->slug,
+                'category_name' => $product->category->slug,
+                'count'         => $count,
+                'final_price'   => $finalPrice,
+                'product_price' => (int) str_replace(',', '', $request->product_price[$key] ?? 0),
+            ];
+
+            $OrderItems[] = [
+                'products'     => $product->id,
+                'colors'       => 'black',
+                'counts'       => $count,
+                'units'        => 'number',
+                'prices'       => $finalPrice,
+                'total_prices' => $count * $finalPrice,
+            ];
         }
-        $this->newOrder($request, $sale_price_request, $OrderItems);
-        // تعیین وضعیت بر اساس نوع درخواست
+
+        $order = $this->newOrder($request, $sale_price_request, $OrderItems);
+        $this->syncSaleToAnalyses($order, $OrderItems);
+
         $status = $sale_price_request->type == 'setad_sale' ? 'accepted' : 'finished';
         $sale_price_request->update([
-            'acceptor_id' => auth()->id(),
-            'products' => json_encode($items),
-            'status' => $status,
-            'price' => $request->price,
-            'description' => $request->description,
+            'acceptor_id'   => auth()->id(),
+            'products'      => json_encode($items),
+            'status'        => $status,
+            'price'         => $request->price,
+            'description'   => $request->description,
             'shipping_cost' => $request->shipping_cost,
         ]);
-        // notification sent to ceo
 
-        $customer = Customer::whereId($sale_price_request->customer_id)->first();
-        // ثبت فعالیت
-        $activityData = [
-            'user_id' => auth()->id(),
-            'action' => 'تایید درخواست ' . auth()->user()->role->label,
-            'description' => 'کاربر ' . auth()->user()->family . ' (' . Auth::user()->role->label . ') درخواست فروش ' . $customer->name .' را تایید کرد.',
+        // ثبت فعالیت و ارسال نوتیفیکیشن
+        $customer = Customer::find($sale_price_request->customer_id);
+        Activity::create([
+            'user_id'    => auth()->id(),
+            'action'     => 'تایید درخواست ' . auth()->user()->role->label,
+            'description'=> 'کاربر ' . auth()->user()->family . ' (' . auth()->user()->role->label . ') درخواست فروش ' . $customer->name . ' را تایید کرد.',
             'created_at' => now(),
-        ];
-        Activity::create($activityData);
+        ]);
         $this->notif_to_ceo($sale_price_request);
+
         alert()->success('درخواست فروش با موفقیت تایید شد', 'تایید درخواست فروش');
         return redirect()->route('sale_price_requests.index', ['type' => $sale_price_request->type]);
     }
-
     public function newOrder($request,  $sale_price_request, $OrderItems)
     {
         $order = new Order();
@@ -327,8 +336,64 @@ class SalePriceRequestController extends Controller
             ['status' => 'register'],
             ['orders' => 1, 'status' => 'register']
         );
+        return $order;
     }
 
+    protected function syncSaleToAnalyses(Order $order, array $orderItems)
+    {
+        $jalaliOrder = Jalalian::fromCarbon($order->created_at);
+
+        foreach ($orderItems as $item) {
+            $pid   = $item['products'];
+            $count = $item['counts'];
+
+            $product = Product::find($pid);
+            if (! $product) {
+                continue;
+            }
+
+            $catId   = $product->category_id;
+            $brandId = $product->brand_id;
+
+            // پیدا کردن analyse موجود در بازه‌ی تاریخِ سفارش
+            $analyse = Analyse::where('category_id', $catId)
+                ->where('brand_id', $brandId)
+                ->get()
+                ->filter(function($a) use($jalaliOrder) {
+                    $start = Jalalian::fromFormat('Y/m/d', $a->date)->toCarbon()->startOfDay();
+                    $end   = Jalalian::fromFormat('Y/m/d', $a->to_date)->toCarbon()->endOfDay();
+                    return $jalaliOrder->toCarbon()->between($start, $end);
+                })
+                ->first();
+
+            // اگر پیدا نشد، یک analyse جدید برای ماه جاری بساز
+            if (! $analyse) {
+                $date    = $jalaliOrder->format('Y/m/01');
+                $to_date = $jalaliOrder->format('Y/m/t');
+                $analyse = Analyse::create([
+                    'date'        => $date,
+                    'to_date'     => $to_date,
+                    'category_id' => $catId,
+                    'brand_id'    => $brandId,
+                    'creator_id'  => auth()->id(),
+                ]);
+            }
+
+            // به‌روز رسانی یا الصاق در جدول pivot analyse_product
+            $exists = $analyse->products()->wherePivot('product_id', $pid)->exists();
+            if ($exists) {
+                $analyse->products()->updateExistingPivot($pid, [
+                    'quantity' => DB::raw("quantity + {$count}")
+                ]);
+            } else {
+                $analyse->products()->attach($pid, [
+                    'quantity'      => $count,
+                    'storage_count' => 0,
+                    'sold_count'    => 0,
+                ]);
+            }
+        }
+    }
     public function notif_to_ceo($sale_price_request)
     {
         $notifiables = User::where('id','=',$sale_price_request->user_id)->get();
