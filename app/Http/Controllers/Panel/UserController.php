@@ -163,6 +163,9 @@ class UserController extends Controller
             'created_at' => now(),
         ];
         Activity::create($activityData);
+        if ($user->invoiceActions()->exists()) {
+            return back()->withErrors(['msg' => 'امکان حذف این کاربر وجود ندارد. زیرا دارای سابقه‌ی فاکتور است.']);
+        }
         $user->delete();
         return back();
     }
