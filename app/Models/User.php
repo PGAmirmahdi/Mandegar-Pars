@@ -251,4 +251,8 @@ class User extends Authenticatable
             ]);
         }
     }
+    public function invoiceActions()
+    {
+        return $this->hasMany(InvoiceAction::class, 'acceptor_id');
+    }
 }
