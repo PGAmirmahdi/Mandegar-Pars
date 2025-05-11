@@ -44,7 +44,6 @@ class ApiController extends Controller
                 'items.*.total' => 'required|numeric|min:0',
             ]);
             if ($validator->fails()) {
-                // اگر اعتبارسنجی شکست خورد، خطاها را لاگ کرده و در پاسخ JSON برمی‌گردانیم
                 Log::error('Validation errors: ', $validator->errors()->toArray());
                 return response()->json([
                     'error' => 'Validation failed',
@@ -64,7 +63,7 @@ class ApiController extends Controller
                     $q->whereIn('name', ['single-price-user', 'sales-manager']);
                 });
             })->get();
-            $tax = 0.1;
+            @dd($single_price_user);
             if ($data['created_in'] == 'website') {
                 $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
                 $notif_title= 'سفارش از سایت';
@@ -98,12 +97,12 @@ class ApiController extends Controller
                 $products = array_map(function ($item2) {
                     $product = Product::where('code', $item2['acc_code'])->first();
                     return [
-                        'products' => (string)$product->id, // تغییر به id
+                        'products' => (string)$product->id,
                         'colors' => 'black',
-                        'counts' => (string)$item2['quantity'], // تبدیل به رشته
+                        'counts' => (string)$item2['quantity'],
                         'units' => 'number',
-                        'prices' => (string)($item2['total'] / $item2['quantity']) * 10, // قیمت واحد
-                        'total_prices' => (string)$item2['total'] * 10, // قیمت کل
+                        'prices' => (string)($item2['total'] / $item2['quantity']) * 10,
+                        'total_prices' => (string)$item2['total'] * 10,
                     ];
                 }, $data['items']);
             }
@@ -117,7 +116,7 @@ class ApiController extends Controller
                 'customer_id' => $customer->id,
                 'created_in' => $data['created_in'] ,
                 'shipping_cost' => $shipping_cost * 10,
-                'products' => json_encode($products), // ذخیره محصولات به صورت JSON
+                'products' => json_encode($products),
             ]);
             $order->order_status()->updateOrCreate(
                 ['status' => 'register'],
@@ -160,8 +159,8 @@ class ApiController extends Controller
                     'price' => $price,
                     'total_price' => $total,
                     'discount_amount' => 0,
-                    'tax' => $total * $tax,
-                    'invoice_net' => (int)$total + ($total * $tax), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
+                    'tax' => $total,
+                    'invoice_net' => (int)$total + ($total), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
                 ]);
                 $invoice->factor()->updateOrCreate(['status' => 'paid']);
             }

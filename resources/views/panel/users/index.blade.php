@@ -122,10 +122,16 @@
                             @endcan
                             @can('users-delete')
                                 <td>
-                                    <button class="btn btn-danger btn-floating trashRow"
-                                            data-url="{{ route('users.destroy',$user->id) }}" data-id="{{ $user->id }}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    <form method="POST" action="{{ route('users.destroy', $user->id) }}" style="display:inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button
+                                            class="btn btn-danger btn-floating @if($user->role->name == 'admin') disabled @endif"
+                                            @if($user->role->name == 'admin') disabled @endif
+                                        >
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             @endcan
                         </tr>

@@ -164,7 +164,8 @@ class UserController extends Controller
         ];
         Activity::create($activityData);
         if ($user->invoiceActions()->exists()) {
-            return back()->withErrors(['msg' => 'امکان حذف این کاربر وجود ندارد. زیرا دارای سابقه‌ی فاکتور است.']);
+            alert()->error('امکان حذف این کاربر وجود ندارد. زیرا دارای سابقه‌ی فاکتور است.','عدم امکان حذف');
+            return redirect()->route('users.index');
         }
         $user->delete();
         return back();
