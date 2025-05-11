@@ -63,7 +63,6 @@ class ApiController extends Controller
                     $q->whereIn('name', ['single-price-user', 'sales-manager']);
                 });
             })->get();
-            @dd($single_price_user);
             if ($data['created_in'] == 'website') {
                 $notif_message = 'یک سفارش از سایت آرتین دریافت گردید';
                 $notif_title= 'سفارش از سایت';
