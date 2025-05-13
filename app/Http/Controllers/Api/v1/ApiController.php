@@ -136,7 +136,7 @@ class ApiController extends Controller
                 'status' => 'invoiced',
                 'created_in' => $data['created_in'],
                 'discount' => 0,
-                'description' => $data['customer_note'],
+                'description' => $data['customer_note'] ?? null,
                 'shipping_cost' => $shipping_cost * 10,
             ]);
             $data3 = [
@@ -158,8 +158,8 @@ class ApiController extends Controller
                     'price' => $price,
                     'total_price' => $total,
                     'discount_amount' => 0,
-                    'tax' => $total,
-                    'invoice_net' => (int)$total + ($total), // هزینه ارسال را هم در محاسبه نهایی در نظر بگیرید
+                    'tax' => 0,
+                    'invoice_net' => (int)$total,
                 ]);
                 $invoice->factor()->updateOrCreate(['status' => 'paid']);
             }

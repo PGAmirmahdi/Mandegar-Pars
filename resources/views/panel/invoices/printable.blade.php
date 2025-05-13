@@ -11,7 +11,7 @@
     $sum_total_price_with_off = 0;
     $sum_tax = 0;
     $sum_invoice_net = 0;
-
+    $showTax = $invoice->created_in !== 'website';
     $i = 1;
 @endphp
 @section('styles')
@@ -221,8 +221,10 @@
                                     <th>مبلغ کل</th>
                                     <th>مبلغ تخفیف</th>
                                     <th>مبلغ اضافات</th>
-                                    <th>مبلغ کل پس از تخفیف و اضافات</th>
-                                    <th>جمع مالیات و عوارض</th>
+                                    <th @if(!$showTax) colspan="2" @endif>مبلغ کل پس از تخفیف و اضافات</th>
+                                    @if($showTax)
+                                        <th>جمع مالیات و عوارض</th>
+                                    @endif
                                     <th>خالص فاکتور</th>
                                 </tr>
                                 </thead>
@@ -252,8 +254,10 @@
                                         <td>{{ number_format($item->pivot->total_price) }}</td>
                                         <td>{{ number_format($discount_amount) }}</td>
                                         <td>{{ number_format($item->pivot->extra_amount) }}</td>
-                                        <td>{{ number_format($item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount)) }}</td>
-                                        <td>{{ number_format($item->pivot->tax) }}</td>
+                                        <td @if(!$showTax) colspan="2" @endif>{{ number_format($item->pivot->total_price - ($item->pivot->extra_amount + $discount_amount)) }}</td>
+                                        @if($showTax)
+                                            <td>{{ number_format($item->pivot->tax) }}</td>
+                                        @endif
                                         <td>{{ number_format($item->pivot->invoice_net) }}</td>
                                     </tr>
 
@@ -280,7 +284,9 @@
                                         <td>{{ number_format($item->discount_amount) }}</td>
                                         <td>{{ number_format($item->extra_amount) }}</td>
                                         <td>{{ number_format($item->total_price - ($item->extra_amount + $item->discount_amount)) }}</td>
-                                        <td>{{ number_format($item->tax) }}</td>
+                                        @if($showTax)
+                                            <td>{{ number_format($item->tax) }}</td>
+                                        @endif
                                         <td>{{ number_format($item->invoice_net) }}</td>
                                     </tr>
 
@@ -289,7 +295,7 @@
                                         $sum_discount_amount += $item->discount_amount;
                                         $sum_extra_amount += $item->extra_amount;
                                         $sum_total_price_with_off += $item->total_price - ($item->extra_amount + $item->discount_amount);
-                                        $sum_tax += $item->tax;
+                                        if($showTax){$sum_tax += $item->tax;}
                                         $sum_invoice_net += $item->invoice_net;
                                     @endphp
                                 @endforeach
@@ -298,17 +304,20 @@
                                     <td>{{ number_format($sum_total_price) }}</td>
                                     <td>{{ number_format($sum_discount_amount) }}</td>
                                     <td>{{ number_format($sum_extra_amount) }}</td>
-                                    <td>{{ number_format($sum_total_price_with_off) }}</td>
-                                    <td>{{ number_format($sum_tax) }}</td>
+                                    <td @if(!$showTax) colspan="2" @endif>{{ number_format($sum_total_price_with_off) }}</td>
+                                    @if($showTax)
+                                        <td>{{ number_format($sum_tax) }}</td>
+                                    @endif
                                     <td>{{ number_format($sum_invoice_net) }}</td>
                                 </tr>
                                 <tr>
                                     <th class="py-1 title-sec" colspan="6">تخفیف نهایی</th>
                                     @if(isset($invoice->shipping_cost))
-                                    <th class="py-1 title-sec" colspan="2">هزینه حمل و نقل</th>
+                                        <th class="py-1 title-sec" colspan="2">هزینه حمل و نقل</th>
                                     @endif
                                     <th class="py-1 title-sec" @if(isset($invoice->shipping_cost)) colspan="4"
-                                        @else colspan="6" @endif>مبلغ فاکتور پس از تخفیف نهایی</th>
+                                        @else colspan="6" @endif>مبلغ فاکتور پس از تخفیف نهایی
+                                    </th>
                                 </tr>
                                 <tr>
                                     <td colspan="6">{{ number_format($invoice->discount) }}</td>
@@ -332,7 +341,8 @@
                                         </div>
                                     </td>
                                     <td colspan="8" class="text-start">
-                                        {{change_number_to_words($sum_invoice_net - $invoice->discount +(isset($invoice->shipping_cost) ? $invoice->shipping_cost : 0))}} ریال
+                                        {{change_number_to_words($sum_invoice_net - $invoice->discount +(isset($invoice->shipping_cost) ? $invoice->shipping_cost : 0))}}
+                                        ریال
                                     </td>
                                 </tr>
                                 <tr>
