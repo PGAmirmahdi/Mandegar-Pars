@@ -584,6 +584,7 @@ class OrderController extends Controller
                 foreach ($decodedProducts as $product) {
                     $productModel = $productsFromDB->get($product['products']); // دسترسی به 'products' به صورت آرایه
                     $mergedProducts[] = [
+                        'id' => $product['products'],
                         'title' => $productModel ? $productModel->title : 'Unknown Product',
                         'color' => Product::COLORS[$product['colors']] ?? 'Unknown Color', // دسترسی به 'colors' به صورت آرایه
                         'count' => $product['counts'], // دسترسی به 'counts' به صورت آرایه

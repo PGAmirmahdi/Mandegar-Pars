@@ -675,6 +675,7 @@
                     $('#other_products_table tbody').append(`
                     <tr>
                         <td>
+                            <input type="hidden" name="product_ids[]" value="${item.id}">
                             <input type="text" class="form-control" name="other_products[]" value="${item.title}" placeholder="عنوان کالا" readonly>
                         </td>
                         <td>

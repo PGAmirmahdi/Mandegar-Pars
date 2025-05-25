@@ -41,7 +41,7 @@
                     <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12">
                         <label for="invoice_id">سفارش</label>
                         @php
-                            $invoices = \App\Models\Invoice::doesntHave('inventory_report')->get()->unique('id');
+                            $invoices = \App\Models\Invoice::doesntHave('inventory_report')->orderByDesc('id')->get()->unique('id');
                         @endphp
 
                         <select class="js-example-basic-single select2-hidden-accessible" name="invoice_id" id="invoice_id">
@@ -49,12 +49,13 @@
                             @if($invoices->count())
                                 @foreach($invoices as $invoice)
                                     @php
-                                        // در صورتی که رابطه order در مدل Invoice تعریف شده باشد
                                         $order = $invoice->order;
                                     @endphp
+                                    @if($order && $order->code)  {{-- فقط سفارش‌هایی که کد دارند نمایش داده شوند --}}
                                     <option value="{{ $invoice->id }}" data-customer-id="{{ $invoice->customer->id }}" {{ old('invoice_id') == $invoice->id ? 'selected' : '' }}>
-                                        {{ $order->code ?? 'بدون کد سفارش' }} - {{ $invoice->customer->name }}
+                                        {{ $order->code }} - {{ $invoice->customer->name }}
                                     </option>
+                                    @endif
                                 @endforeach
                             @else
                                 <option value="" disabled selected>سفارشی موجود نیست!</option>

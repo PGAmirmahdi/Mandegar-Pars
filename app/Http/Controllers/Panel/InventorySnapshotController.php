@@ -13,7 +13,7 @@ class InventorySnapshotController extends Controller
     public function index()
     {
         // دریافت snapshot های انبار بدون فیلتر
-        $snap_shots = InventorySnapshot::paginate(30);
+        $snap_shots = InventorySnapshot::query()->orderBy('id','desc')->paginate(30);
         $total_count = InventorySnapshot::query()->sum('stock_count');
 
         $snap_shots_grouped = $snap_shots->groupBy(function ($snapshot) {

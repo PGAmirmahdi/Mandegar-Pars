@@ -44,13 +44,13 @@ class InvoiceController extends Controller
 //        }
 
         $permissionsId = Permission::whereIn('name', ['partner-tehran-user', 'partner-other-user', 'system-user', 'single-price-user'])->pluck('id');
-        $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+        $roles_id = Role::whereHas('permissions', function ($q) use ($permissionsId) {
             $q->whereIn('permission_id', $permissionsId);
         })->pluck('id');
 
         $customers = auth()->user()->isAdmin() || auth()->user()->isAccountant() || auth()->user()->isOrgan() || auth()->user()->isCEO() || auth()->user()->isWareHouseKeeper() || auth()->user()->isSalesManager() ? Customer::all(['id', 'name']) : Customer::where('user_id', auth()->id())->get(['id', 'name']);
 
-        return view('panel.invoices.index', compact('invoices','customers','roles_id'));
+        return view('panel.invoices.index', compact('invoices', 'customers', 'roles_id'));
     }
 
     public function create()
@@ -118,13 +118,13 @@ class InvoiceController extends Controller
         // create order status
         $invoice->order_status()->create(['order' => 1, 'status' => 'register']);
 
-        alert()->success('سفارش مورد نظر با موفقیت ثبت شد','ثبت سفارش');
+        alert()->success('سفارش مورد نظر با موفقیت ثبت شد', 'ثبت سفارش');
         return redirect()->route('invoices.edit', $invoice->id);
     }
 
     public function show(Invoice $invoice)
     {
-        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper() || auth()->user()->isExitDoor()|| auth()->user()->isAccountant() || auth()->user()->isSalesEngineering()) {
+        if (Gate::allows('edit-invoice', $invoice) || auth()->user()->isWareHouseKeeper() || auth()->user()->isExitDoor() || auth()->user()->isAccountant() || auth()->user()->isSalesEngineering()) {
             $factor = \request()->type == 'factor' ? $invoice->factor : null;
 
             return view('panel.invoices.printable', compact('invoice', 'factor'));
@@ -142,7 +142,7 @@ class InvoiceController extends Controller
         $this->authorize('edit-invoice', $invoice);
 
         if (Gate::allows('sales-manager')) {
-            if ($invoice->created_in == 'website' && $invoice->req_for != 'amani-invoice'){
+            if ($invoice->created_in == 'website' && $invoice->req_for != 'amani-invoice') {
                 return back();
             }
         } else {
@@ -159,7 +159,7 @@ class InvoiceController extends Controller
 //        $seller = Seller::first();
 
 
-        return view('panel.invoices.edit', compact(['invoice','order']));
+        return view('panel.invoices.edit', compact(['invoice', 'order']));
     }
 
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
@@ -170,13 +170,13 @@ class InvoiceController extends Controller
         // edit own invoice OR is admin
         $this->authorize('edit-invoice', $invoice);
 
-        if (!Gate::allows('sales-manager')){
-            if (($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice')){
+        if (!Gate::allows('sales-manager')) {
+            if (($invoice->status == 'invoiced' && $invoice->req_for != 'amani-invoice')) {
                 return back();
             }
         }
 
-        if ($invoice->status != 'invoiced' || Gate::allows('sales-manager')){
+        if ($invoice->status != 'invoiced' || Gate::allows('sales-manager')) {
             $invoice->products()->detach();
 
             // create products for invoice
@@ -184,13 +184,13 @@ class InvoiceController extends Controller
         }
 
 //        send notif to creator of the invoice
-        if ($request->status != $invoice->status){
+        if ($request->status != $invoice->status) {
             $status = Invoice::STATUS[$request->status];
-            $title='ویرایش سفارش فروش';
+            $title = 'ویرایش سفارش فروش';
             $url = route('invoices.index');
             $message = "وضعیت سفارش شماره {$invoice->id} به '{$status}' تغییر یافت";
 
-            Notification::send($invoice->user, new SendMessage($title,$message, $url));
+            Notification::send($invoice->user, new SendMessage($title, $message, $url));
         }
 
         $req_for = $request->req_for;
@@ -231,7 +231,7 @@ class InvoiceController extends Controller
         Log::info('Activity Data:', $data);
 
         Activity::create($data);
-        alert()->success('سفارش مورد نظر با موفقیت ویرایش شد','ویرایش سفارش');
+        alert()->success('سفارش مورد نظر با موفقیت ویرایش شد', 'ویرایش سفارش');
         return redirect()->route('invoices.index');
     }
 
@@ -255,7 +255,7 @@ class InvoiceController extends Controller
 
     public function calcProductsInvoice(Request $request)
     {
-        $unofficial = (bool) $request->unofficial;
+        $unofficial = (bool)$request->unofficial;
 
         $usedCoupon = DB::table('coupon_invoice')->where([
             'product_id' => $request->product_id,
@@ -267,17 +267,17 @@ class InvoiceController extends Controller
 
         $total_price = $price * $request->count;
 
-        if ($usedCoupon){
+        if ($usedCoupon) {
             $coupon = Coupon::find($usedCoupon->coupon_id);
             $discount_amount = $total_price * ($coupon->amount_pc / 100);
-        }else{
+        } else {
             $discount_amount = 0;
         }
 
 
         $extra_amount = 0;
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
-        $tax = $unofficial ? 0 : (int) ($total_price_with_off * self::TAX_AMOUNT);
+        $tax = $unofficial ? 0 : (int)($total_price_with_off * self::TAX_AMOUNT);
         $invoice_net = $tax + $total_price_with_off;
 
         $data = [
@@ -295,7 +295,7 @@ class InvoiceController extends Controller
 
     public function calcOtherProductsInvoice(Request $request)
     {
-        $unofficial = (bool) $request->unofficial; // بررسی اینکه آیا فاکتور رسمی است یا خیر
+        $unofficial = (bool)$request->unofficial; // بررسی اینکه آیا فاکتور رسمی است یا خیر
         $price = $request->price;
         $total_price = $price * $request->count;
         $discount_amount = $request->discount_amount;
@@ -385,7 +385,7 @@ class InvoiceController extends Controller
     {
         $coupon = Coupon::whereCode($request->code)->first();
 
-        if (!$coupon){
+        if (!$coupon) {
             return response()->json(['error' => 1, 'message' => 'کد وارد شده صحیح نیست']);
         }
 
@@ -395,7 +395,7 @@ class InvoiceController extends Controller
             'invoice_id' => $request->invoice_id,
         ])->exists();
 
-        if ($usedCoupon){
+        if ($usedCoupon) {
             return response()->json(['error' => 1, 'message' => 'این کد تخفیف قبلا برای این کالا اعمال شده است']);
         }
 
@@ -413,7 +413,7 @@ class InvoiceController extends Controller
         $discount_amount = $total_price * ($coupon->amount_pc / 100);
         $extra_amount = 0;
         $total_price_with_off = $total_price - ($discount_amount + $extra_amount);
-        $tax = (int) ($total_price_with_off * self::TAX_AMOUNT);
+        $tax = (int)($total_price_with_off * self::TAX_AMOUNT);
         $invoice_net = $tax + $total_price_with_off;
 
 
@@ -464,17 +464,17 @@ class InvoiceController extends Controller
     public function changeStatus(Invoice $invoice)
     {
         $this->authorize('accountant');
-        $title='تغییر وضعیت سفارش';
-        if ($invoice->created_in == 'website' || $invoice->factor){
+        $title = 'تغییر وضعیت سفارش';
+        if ($invoice->created_in == 'website' || $invoice->factor) {
             return back();
         }
 
-        $roles_id = Role::whereHas('permissions', function ($q){
-            $q->where('name', ['sales-manager','admin']);
+        $roles_id = Role::whereHas('permissions', function ($q) {
+            $q->where('name', ['sales-manager', 'admin']);
         })->pluck('id');
-        $sales_manager = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id)->get();
+        $sales_manager = User::where('id', '!=', auth()->id())->whereIn('role_id', $roles_id)->get();
 
-        if ($invoice->status == 'pending'){
+        if ($invoice->status == 'pending') {
             $invoice->update(['status' => 'invoiced']);
 
             $status = Invoice::STATUS[$invoice->status];
@@ -487,15 +487,15 @@ class InvoiceController extends Controller
                     "وضعیت سفارش مشتری {$invoice->customer->name} " .
                     "به شماره سفارش {$invoice->id} را به وضعیت {$status} تغییر داد",
             ]);
-            Notification::send($invoice->user, new SendMessage($title,$message, $url));
-            Notification::send($sales_manager, new SendMessage($title,$message, $url));
+            Notification::send($invoice->user, new SendMessage($title, $message, $url));
+            Notification::send($sales_manager, new SendMessage($title, $message, $url));
 
-        }else{
+        } else {
             $status = Invoice::STATUS['pending'];
             $url = route('invoices.index');
             $message = " وضعیت سفارش {$invoice->customer->name} به '{$status}' تغییر یافت";
-            Notification::send($invoice->user, new SendMessage($title,$message, $url));
-            Notification::send($sales_manager, new SendMessage($title,$message, $url));
+            Notification::send($invoice->user, new SendMessage($title, $message, $url));
+            Notification::send($sales_manager, new SendMessage($title, $message, $url));
 
             $invoice->update(['status' => 'pending']);
             Activity::create([
@@ -516,7 +516,7 @@ class InvoiceController extends Controller
         if (!$invoice) {
             return back()->withErrors(['message' => 'فاکتور مورد نظر یافت نشد.']);
         }
-        $pdf = PDF::loadView('panel.pdf.invoice',['invoice' => $invoice],[], [
+        $pdf = PDF::loadView('panel.pdf.invoice', ['invoice' => $invoice], [], [
             'format' => 'A3',
             'orientation' => 'L',
             'margin_left' => 2,
@@ -536,7 +536,7 @@ class InvoiceController extends Controller
 
     public function action(Invoice $invoice)
     {
-        if (!Gate::allows('accountant') && $invoice->action == null){
+        if (!Gate::allows('accountant') && $invoice->action == null) {
             return back();
         }
         if (!Gate::any(['sales-manager', 'accountant'])) {
@@ -549,8 +549,8 @@ class InvoiceController extends Controller
     {
         $status = $request->status;
 
-        if ($request->has('send_to_accountant')){
-            if (!$request->has('confirm')){
+        if ($request->has('send_to_accountant')) {
+            if (!$request->has('confirm')) {
                 alert()->error('لطفا تیک تایید پیش فاکتور را بزنید', 'عدم تایید');
                 return back();
             }
@@ -573,18 +573,18 @@ class InvoiceController extends Controller
             ]);
 
             //send notif to accountants
-            $permissionsId = Permission::where('name', ['accountant','admin'])->pluck('id');
-            $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+            $permissionsId = Permission::where('name', ['accountant', 'admin'])->pluck('id');
+            $roles_id = Role::whereHas('permissions', function ($q) use ($permissionsId) {
                 $q->whereIn('permission_id', $permissionsId);
             })->pluck('id');
 
             $url = route('invoice.action', $invoice->id);
             $notif_message = "پیش فاکتور سفارش {$invoice->customer->name} مورد تایید قرار گرفت";
             $accountants = User::whereIn('role_id', $roles_id)->get();
-            Notification::send($accountants, new SendMessage($title,$notif_message, $url));
+            Notification::send($accountants, new SendMessage($title, $notif_message, $url));
             //end send notif to accountants
 
-        }elseif ($request->has('send_to_warehouse')){
+        } elseif ($request->has('send_to_warehouse')) {
             $request->validate(['factor_file' => 'required|mimes:pdf|max:5000']);
 
             $file = upload_file($request->factor_file, 'Action/Factors');
@@ -602,23 +602,23 @@ class InvoiceController extends Controller
             Activity::create([
                 'user_id' => auth()->id(),
                 'action' => 'ارسال فاکتور به انبار',
-                'description' => "کاربر " . auth()->user()->family . '(' . auth()->user()->role->label . ')'  . " فاکتور مربوط به سفارش مشتری " . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' را به انبار ارسال کرد',
+                'description' => "کاربر " . auth()->user()->family . '(' . auth()->user()->role->label . ')' . " فاکتور مربوط به سفارش مشتری " . ($customer ? $customer->name : 'نامشخص') . ' به شماره سفارش ' . $invoice->id . ' را به انبار ارسال کرد',
             ]);
 
             $invoice->update(['status' => 'invoiced']);
 
             //send notif to warehouse-keeper and sales-manager
-            $permissionsId = Permission::whereIn('name', ['warehouse-keeper','sales-manager','admin'])->pluck('id');
-            $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+            $permissionsId = Permission::whereIn('name', ['warehouse-keeper', 'sales-manager', 'admin'])->pluck('id');
+            $roles_id = Role::whereHas('permissions', function ($q) use ($permissionsId) {
                 $q->whereIn('permission_id', $permissionsId);
             })->pluck('id');
             $url = route('invoices.index');
             $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
             $accountants = User::whereIn('role_id', $roles_id)->get();
-            Notification::send($accountants, new SendMessage($title,$notif_message, $url));
+            Notification::send($accountants, new SendMessage($title, $notif_message, $url));
             //end send notif to warehouse-keeper and sales-manager
-        }else{
-            if ($status == 'invoice'){
+        } else {
+            if ($status == 'invoice') {
                 $request->validate(['invoice_file' => 'required|mimes:pdf|max:5000']);
 
                 $file = upload_file($request->invoice_file, 'Action/Invoices');
@@ -642,22 +642,22 @@ class InvoiceController extends Controller
                 ]);
 
                 //send notif
-                $roles_id = Role::whereHas('permissions', function ($q){
+                $roles_id = Role::whereHas('permissions', function ($q) {
                     $q->where('name', 'sales-manager');
                 })->pluck('id');
-                $sales_manager = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id)->get();
-                $roles_id_admin = Role::whereHas('permissions', function ($q){
+                $sales_manager = User::where('id', '!=', auth()->id())->whereIn('role_id', $roles_id)->get();
+                $roles_id_admin = Role::whereHas('permissions', function ($q) {
                     $q->where('name', 'admin');
                 })->pluck('id');
-                $admin = User::where('id','!=', auth()->id())->whereIn('role_id', $roles_id_admin)->get();
-                $notif_title='ثبت و ارسال پیش فاکتور';
+                $admin = User::where('id', '!=', auth()->id())->whereIn('role_id', $roles_id_admin)->get();
+                $notif_title = 'ثبت و ارسال پیش فاکتور';
                 $url = route('invoice.action', $invoice->id);
                 $notif_message = "پیش فاکتور {$invoice->customer->name} دریافت شد";
-                Notification::send($invoice->user, new SendMessage($notif_title,$notif_message, $url));
-                Notification::send($sales_manager, new SendMessage($notif_title,$notif_message, $url));
-                Notification::send($admin, new SendMessage($notif_title,$notif_message, $url));
+                Notification::send($invoice->user, new SendMessage($notif_title, $notif_message, $url));
+                Notification::send($sales_manager, new SendMessage($notif_title, $notif_message, $url));
+                Notification::send($admin, new SendMessage($notif_title, $notif_message, $url));
                 //end send notif
-            }else{
+            } else {
                 $request->validate(['factor_file' => 'required|mimes:pdf|max:5000']);
 
                 $file = upload_file($request->factor_file, 'Action/Factors');
@@ -681,15 +681,15 @@ class InvoiceController extends Controller
                 ]);
 
                 //send notif to warehouse-keeper and sales-manager
-                $permissionsId = Permission::whereIn('name', ['warehouse-keeper','sales-manager'])->pluck('id');
-                $roles_id = Role::whereHas('permissions', function ($q) use($permissionsId){
+                $permissionsId = Permission::whereIn('name', ['warehouse-keeper', 'sales-manager'])->pluck('id');
+                $roles_id = Role::whereHas('permissions', function ($q) use ($permissionsId) {
                     $q->whereIn('permission_id', $permissionsId);
                 })->pluck('id');
-                $notif_title='ثبت و ارسال فاکتور';
+                $notif_title = 'ثبت و ارسال فاکتور';
                 $url = route('invoices.index');
                 $notif_message = "فاکتور {$invoice->customer->name} دریافت شد";
                 $accountants = User::whereIn('role_id', $roles_id)->get();
-                Notification::send($accountants, new SendMessage($notif_title,$notif_message, $url));
+                Notification::send($accountants, new SendMessage($notif_title, $notif_message, $url));
                 //end send notif to warehouse-keeper and sales-manager
             }
 
@@ -713,7 +713,7 @@ class InvoiceController extends Controller
         Activity::create($activityData);
         $invoiceAction->delete();
 
-        alert()->success('فایل پیش فاکتور مورد نظر حذف شد','حذف پیش فاکتور');
+        alert()->success('فایل پیش فاکتور مورد نظر حذف شد', 'حذف پیش فاکتور');
         return back();
     }
 
@@ -729,79 +729,105 @@ class InvoiceController extends Controller
         Activity::create($activityData);
         $invoiceAction->delete();
 
-        alert()->success('فایل فاکتور مورد نظر حذف شد','حذف فاکتور');
+        alert()->success('فایل فاکتور مورد نظر حذف شد', 'حذف فاکتور');
         return back();
     }
 
     private function storeInvoiceProducts(Invoice $invoice, $request)
     {
-        Log::info('Products in request: ', ['products' => $request->products ?: 'No products found']);
-        Log::info('other_products in request: ', ['products' => $request->other_products ?: 'No other_products found']);
+        $total_invoice_net = 0;
 
-        $total_invoice_net = 0; // مجموع مبلغ کل سفارش
+        // حذف قبلی‌ها برای اطمینان
+        $invoice->other_products()->delete();
+        $invoice->products()->detach(); // پاک کردن محصولات قبلی برای جلوگیری از تکرار
 
-        if ($request->products) {
-            foreach ($request->products as $key => $product_id) {
-                // بررسی داده‌های ارسالی
-                logger()->info('Product ID:', ['product_id' => $product_id]);
-                logger()->info('Color:', ['color' => $request->colors[$key]]);
-                logger()->info('Count:', ['count' => $request->counts[$key]]);
-                logger()->info('Price:', ['price' => $request->prices[$key]]);
-                logger()->info('Total Price:', ['total_price' => $request->total_prices[$key]]);
-
-                // کد کاهش موجودی و ذخیره در جدول
+        // ثبت همه کالاها در هر دو جدول
+        if ($request->product_ids) {
+            foreach ($request->product_ids as $key => $product_id) {
                 $product = Product::find($product_id);
-                $properties = json_decode($product->properties);
-                $product_exist = array_keys(array_column($properties, 'color'), $request->colors[$key]);
-
-                if ($product_exist) {
-                    $properties[$product_exist[0]]->counts -= $request->counts[$key];
-                    $changed_properties = json_encode($properties);
-                    $product->update(['properties' => $changed_properties]);
+                if (!$product) {
+                    logger()->warning("Product not found", ['product_id' => $product_id]);
+                    continue;
                 }
 
-                $product->update(['total_count' => $product->total_count -= $request->counts[$key]]);
-                // ذخیره در invoice_product
-                $invoice_net = $request->invoice_nets[$key];
+                // مشخصات قیمتی از other_* فیلدها
+                $count = $request->other_counts[$key] ?? 1;
+                $price = $request->other_prices[$key] ?? 0;
+                $total_price = $request->other_total_prices[$key] ?? 0;
+                $discount_amount = $request->other_discount_amounts[$key] ?? 0;
+                $extra_amount = $request->other_extra_amounts[$key] ?? 0;
+                $tax = $request->other_taxes[$key] ?? 0;
+                $invoice_net = $request->other_invoice_nets[$key] ?? 0;
+                $color = $request->other_colors[$key] ?? null;
+                $unit = $request->other_units[$key] ?? 'number';
+
                 $total_invoice_net += $invoice_net;
-                // ذخیره در invoice_product
+
+                // ثبت در invoice_product
                 $invoice->products()->attach($product_id, [
-                    'color' => $request->colors[$key],
-                    'count' => $request->counts[$key],
-                    'unit' => $request->units[$key],
-                    'price' => $request->prices[$key],
-                    'total_price' => $request->total_prices[$key],
-                    'discount_amount' => $request->discount_amounts[$key],
-                    'extra_amount' => $request->extra_amounts[$key],
-                    'tax' => $request->taxes[$key],
-                    'invoice_net' => $request->invoice_nets[$key],
+                    'count' => $count,
+                    'unit' => $unit,
+                    'price' => $price,
+                    'color' => $color,
+                    'total_price' => $total_price,
+                    'discount_amount' => $discount_amount,
+                    'extra_amount' => $extra_amount,
+                    'tax' => $tax,
+                    'invoice_net' => $invoice_net,
                 ]);
-            }
-        } else {
-            logger()->warning('No products found in the request.');
-        }
 
-        $invoice->other_products()->delete();
-
-        if ($request->other_products){
-            foreach ($request->other_products as $key => $product){
-                $invoice_net = $request->other_invoice_nets[$key];
-                $total_invoice_net += $invoice_net;
+                // ثبت در other_products
                 $invoice->other_products()->create([
-                    'title' => $product,
-                    'color' => $request->other_colors[$key],
-                    'count' => $request->other_counts[$key],
-                    'unit' => $request->other_units[$key],
-                    'price' => $request->other_prices[$key],
-                    'total_price' => $request->other_total_prices[$key],
-                    'discount_amount' => $request->other_discount_amounts[$key],
-                    'extra_amount' => $request->other_extra_amounts[$key],
-                    'tax' => $request->other_taxes[$key],
-                    'invoice_net' => $request->other_invoice_nets[$key],
+                    'title' => $product->title,
+                    'color' => $color,
+                    'count' => $count,
+                    'unit' => $unit,
+                    'price' => $price,
+                    'total_price' => $total_price,
+                    'discount_amount' => $discount_amount,
+                    'extra_amount' => $extra_amount,
+                    'tax' => $tax,
+                    'invoice_net' => $invoice_net,
                 ]);
             }
         }
-        return $total_invoice_net; // بازگرداندن مبلغ کل سفارش
+
+        // حالا بریم سراغ کالاهایی که فقط در other_products هستن (بدون آیدی)
+        if ($request->other_products) {
+            foreach ($request->other_products as $key => $title) {
+                if (isset($request->product_ids[$key])) {
+                    // اگر قبلاً در product_ids ذخیره شده، ردش کن
+                    continue;
+                }
+
+                $count = $request->other_counts[$key] ?? 1;
+                $price = $request->other_prices[$key] ?? 0;
+                $total_price = $request->other_total_prices[$key] ?? 0;
+                $discount_amount = $request->other_discount_amounts[$key] ?? 0;
+                $extra_amount = $request->other_extra_amounts[$key] ?? 0;
+                $tax = $request->other_taxes[$key] ?? 0;
+                $invoice_net = $request->other_invoice_nets[$key] ?? 0;
+                $color = $request->other_colors[$key] ?? null;
+                $unit = $request->other_units[$key] ?? 'number';
+
+                $total_invoice_net += $invoice_net;
+
+                $invoice->other_products()->create([
+                    'title' => $title,
+                    'color' => $color,
+                    'count' => $count,
+                    'unit' => $unit,
+                    'price' => $price,
+                    'total_price' => $total_price,
+                    'discount_amount' => $discount_amount,
+                    'extra_amount' => $extra_amount,
+                    'tax' => $tax,
+                    'invoice_net' => $invoice_net,
+                ]);
+            }
+        }
+
+        return $total_invoice_net;
     }
 
 //    private function send_notif_to_accountants(Invoice $invoice)

@@ -247,7 +247,7 @@
                                     <tr>
                                         <td>{{ $i++ }}</td>
                                         <td>{{ \App\Models\Product::find($item->pivot->product_id)->title }}</td>
-                                        <td>{{ \App\Models\Product::COLORS[$item->pivot->color] }}</td>
+                                        <td>{{ $item->pivot->color}} </td>
                                         <td>{{ $item->pivot->count }}</td>
                                         <td>{{ \App\Models\Product::UNITS[$item->pivot->unit] }}</td>
                                         <td>{{ number_format($item->pivot->price) }}</td>
@@ -272,33 +272,35 @@
                                 @endforeach
 
                                 {{-- other products --}}
-                                @foreach($invoice->other_products as $key => $item)
-                                    <tr>
-                                        <td>{{ $i++ }}</td>
-                                        <td>{{ $item->title }}</td>
-                                        <td>{{ $item->color }}</td>
-                                        <td>{{ $item->count }}</td>
-                                        <td>{{ \App\Models\Product::UNITS[$item->unit] }}</td>
-                                        <td>{{ number_format($item->price) }}</td>
-                                        <td>{{ number_format($item->total_price) }}</td>
-                                        <td>{{ number_format($item->discount_amount) }}</td>
-                                        <td>{{ number_format($item->extra_amount) }}</td>
-                                        <td>{{ number_format($item->total_price - ($item->extra_amount + $item->discount_amount)) }}</td>
-                                        @if($showTax)
-                                            <td>{{ number_format($item->tax) }}</td>
-                                        @endif
-                                        <td>{{ number_format($item->invoice_net) }}</td>
-                                    </tr>
+                                @if(!$invoice->products)
+                                    @foreach($invoice->other_products as $key => $item)
+                                        <tr>
+                                            <td>{{ $i++ }}</td>
+                                            <td>{{ $item->title }}</td>
+                                            <td>{{ $item->color }}</td>
+                                            <td>{{ $item->count }}</td>
+                                            <td>{{ \App\Models\Product::UNITS[$item->unit] }}</td>
+                                            <td>{{ number_format($item->price) }}</td>
+                                            <td>{{ number_format($item->total_price) }}</td>
+                                            <td>{{ number_format($item->discount_amount) }}</td>
+                                            <td>{{ number_format($item->extra_amount) }}</td>
+                                            <td>{{ number_format($item->total_price - ($item->extra_amount + $item->discount_amount)) }}</td>
+                                            @if($showTax)
+                                                <td>{{ number_format($item->tax) }}</td>
+                                            @endif
+                                            <td>{{ number_format($item->invoice_net) }}</td>
+                                        </tr>
 
-                                    @php
-                                        $sum_total_price += $item->total_price;
-                                        $sum_discount_amount += $item->discount_amount;
-                                        $sum_extra_amount += $item->extra_amount;
-                                        $sum_total_price_with_off += $item->total_price - ($item->extra_amount + $item->discount_amount);
-                                        if($showTax){$sum_tax += $item->tax;}
-                                        $sum_invoice_net += $item->invoice_net;
-                                    @endphp
-                                @endforeach
+                                        @php
+                                            $sum_total_price += $item->total_price;
+                                            $sum_discount_amount += $item->discount_amount;
+                                            $sum_extra_amount += $item->extra_amount;
+                                            $sum_total_price_with_off += $item->total_price - ($item->extra_amount + $item->discount_amount);
+                                            if($showTax){$sum_tax += $item->tax;}
+                                            $sum_invoice_net += $item->invoice_net;
+                                        @endphp
+                                    @endforeach
+                                @endif
                                 <tr>
                                     <td colspan="6">جمع کل</td>
                                     <td>{{ number_format($sum_total_price) }}</td>
