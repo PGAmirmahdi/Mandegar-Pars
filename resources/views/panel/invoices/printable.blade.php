@@ -272,7 +272,6 @@
                                 @endforeach
 
                                 {{-- other products --}}
-                                @if(!$invoice->products)
                                     @foreach($invoice->other_products as $key => $item)
                                         <tr>
                                             <td>{{ $i++ }}</td>
@@ -300,7 +299,6 @@
                                             $sum_invoice_net += $item->invoice_net;
                                         @endphp
                                     @endforeach
-                                @endif
                                 <tr>
                                     <td colspan="6">جمع کل</td>
                                     <td>{{ number_format($sum_total_price) }}</td>

@@ -72,7 +72,6 @@
     $sum_total_price_with_off = 0;
     $sum_tax = 0;
     $sum_invoice_net = 0;
-
     $i = 1;
 @endphp
 <div style="font-size: 20px;width: 100%;">
